@@ -99,8 +99,33 @@
         .map-section iframe { width: 100%; height: 200px; border-radius: 20px; border: none; }
 
         .footer { text-align: center; padding: 20px; font-size: 10px; opacity: 0.6; }
+		/* Popup Modal Styles */
+.modal {
+    display: none; position: fixed; z-index: 2000;
+    left: 0; top: 0; width: 100%; height: 100%;
+    background-color: rgba(0,0,0,0.8); backdrop-filter: blur(5px);
+}
+.modal-content {
+    position: relative; background: #fff; margin: 15% auto;
+    padding: 10px; border-radius: 20px; width: 85%; max-width: 400px;
+    animation: zoomIn 0.4s;
+}
+@keyframes zoomIn { from {transform:scale(0)} to {transform:scale(1)} }
+.close-modal {
+    position: absolute; right: 10px; top: -40px;
+    color: white; font-size: 30px; font-weight: bold; cursor: pointer;
+}
+.modal-content img { width: 100%; border-radius: 15px; display: block; }
     </style>
 </head>
+
+<div id="specialModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closePopup()">&times;</span>
+        <div id="popup-image-container">
+            </div>
+    </div>
+</div>
 <body>
 
 <div class="voice-box">
@@ -263,6 +288,43 @@ Marriage Photo / Temple Receipt / Marriage Certificate
         const msg = new SpeechSynthesisUtterance("సిటిజెన్ డిజిటల్ సేవా మరియు మీసేవకు స్వాగతం.");
         msg.lang = 'te-IN'; window.speechSynthesis.speak(msg);
     }
+	async function loadAlerts() {
+    const container = document.getElementById('live-alerts');
+    const modal = document.getElementById('specialModal');
+    const popupContainer = document.getElementById('popup-image-container');
+
+    try {
+        const res = await fetch(sheetURL + '&cache=' + Date.now());
+        const data = await res.text();
+        const rows = data.split('\n').filter(r => r.trim() !== '').slice(1);
+        
+        // --- పాపప్ లాజిక్ ---
+        // షీట్ లో మొదటి వరుసలోని 4వ కాలమ్ (D1) లో ఇమేజ్ ఉందో లేదో చూస్తుంది
+        const firstRowCols = rows[0].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+        const popupImgPath = firstRowCols[3] ? firstRowCols[3].trim() : "";
+
+        if (popupImgPath && popupImgPath !== "") {
+            popupContainer.innerHTML = `<img src="${popupImgPath}" alt="Special Greeting">`;
+            modal.style.display = "block";
+        }
+
+        // --- పాత అలర్ట్స్ లాజిక్ ---
+        container.innerHTML = '';
+        rows.forEach(row => {
+            const cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+            if(cols.length >= 2) {
+                const title = cols[0].replace(/"/g, '').trim();
+                const link = cols[1].replace(/"/g, '').trim() || '#';
+                const icon = cols[2] ? cols[2].replace(/"/g, '').trim() : 'fa-bell';
+                container.innerHTML += `<a href="${link}" target="_blank" class="tab-btn"><i class="fas ${icon}"></i><span>${title}</span></a>`;
+            }
+        });
+    } catch (e) { console.log("Data load error"); }
+}
+
+function closePopup() {
+    document.getElementById('specialModal').style.display = "none";
+}
 </script>
 </body>
 </html>
