@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>సిటిజెన్ DIGITAL SEVA | Premium Master Card</title>
+    <title>సిటిజెన్ DIGITAL SEVA | Master Card</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -17,7 +17,7 @@
             --primary: #818cf8; --glass: rgba(15, 23, 42, 0.95); --text: #f1f5f9;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; scroll-behavior: smooth; transition: 0.3s; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; transition: 0.3s; }
 
         body {
             background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
@@ -33,6 +33,7 @@
             position: relative; color: var(--text);
         }
 
+        /* Navigation & Controls */
         .top-nav { display: flex; justify-content: space-between; padding: 15px 20px; position: sticky; top: 0; z-index: 1000; background: var(--glass); }
         .nav-btn { background: var(--primary); color: white; border: none; width: 40px; height: 40px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
@@ -40,32 +41,54 @@
         .voice-btn { background: #ff4757; color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 10px 25px rgba(255, 71, 87, 0.5); border: none; animation: pulse-red 2s infinite; }
         @keyframes pulse-red { 0% { transform: scale(0.95); } 70% { transform: scale(1.05); } 100% { transform: scale(0.95); } }
 
-        .flash-news { background: #0f172a; color: #fbbf24; padding: 10px 0; font-size: 13px; font-weight: 600; }
+        .flash-news { background: #0f172a; color: #fbbf24; padding: 10px 0; font-size: 13px; font-weight: 600; text-align: center; }
 
+        /* Branding */
         .header { padding: 20px; text-align: center; }
         .profile-img { width: 110px; height: 110px; border-radius: 30px; border: 4px solid #fff; margin-bottom: 15px; object-fit: cover; }
         .shop-title { font-size: 22px; font-weight: 800; }
         .social-links { display: flex; justify-content: center; gap: 20px; margin-top: 15px; }
         .social-links a { color: var(--primary); font-size: 22px; }
 
+        /* Buttons & Tabs */
         .contact-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 25px 25px; }
         .btn { text-decoration: none; padding: 15px; border-radius: 15px; font-weight: 700; color: #fff; display: flex; justify-content: center; align-items: center; gap: 8px; }
         .btn-call { background: #2193b0; } .btn-wa { background: #11998e; }
 
-        .section-label { font-size: 15px; font-weight: 800; color: var(--primary); padding: 20px 25px 10px; text-transform: uppercase; display: flex; align-items: center; gap: 8px; }
+        .section-label { font-size: 15px; font-weight: 800; color: var(--primary); padding: 20px 25px 10px; text-transform: uppercase; display: block; }
 
+        /* Gallery Section */
         .gallery-wrapper { padding: 0 20px 20px; }
         .gallery-scroll { display: flex; gap: 15px; overflow-x: auto; padding-bottom: 10px; }
         .gallery-item { min-width: 280px; height: 180px; border-radius: 20px; overflow: hidden; border: 3px solid #fff; box-shadow: 0 8px 20px rgba(0,0,0,0.1); flex-shrink: 0; }
         .gallery-item img { width: 100%; height: 100%; object-fit: cover; }
 
+        /* EXCLUSIVE ALERTS GRID - మీరు కోరిన డిజైన్ */
+        .tabs-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 0 25px 25px; }
+        .tab-btn { 
+            background: #fff; padding: 20px 10px; border-radius: 25px; text-align: center;
+            text-decoration: none; border: 1px solid #e2e8f0; transition: 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.03); color: var(--text);
+        }
+        .tab-btn:hover { border-color: var(--primary); transform: translateY(-5px); background: #f8fafc; }
+        .tab-btn i { font-size: 26px; color: var(--primary); margin-bottom: 10px; display: block; }
+        .tab-btn span { font-size: 13px; font-weight: 700; color: #475569; }
+
+		/* STATUS CHECKER SECTION */
+        .status-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 10px 25px 25px; padding: 20px; border-radius: 25px; color: white;
+            box-shadow: 0 10px 20px rgba(118, 75, 162, 0.3); text-align: center;
+        }
+        .status-box h3 { font-size: 16px; margin-bottom: 8px; }
+        .status-box p { font-size: 12px; opacity: 0.9; margin-bottom: 15px; }
+        .status-link {
+            background: white; color: #764ba2; text-decoration: none; padding: 10px 20px;
+            border-radius: 12px; display: inline-block; font-weight: 800; font-size: 13px;
+        }
+        /* Payment & Docs */
         .payment-card { background: rgba(255,255,255,0.1); margin: 15px 25px; padding: 20px; border-radius: 20px; border: 2px dashed var(--primary); text-align: center; }
         .qr-code { width: 140px; margin: 10px auto; border: 5px solid #fff; border-radius: 10px; }
-
-        .tabs-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 0 25px 20px; }
-        .tab-btn { background: rgba(255,255,255,0.05); padding: 18px 10px; border-radius: 20px; text-align: center; text-decoration: none; border: 1px solid rgba(0,0,0,0.05); color: var(--text); }
-        .tab-btn i { font-size: 22px; color: var(--primary); margin-bottom: 8px; display: block; }
-        .tab-btn span { font-size: 12px; font-weight: 700; }
 
         .doc-item { background: rgba(255,255,255,0.05); margin: 0 25px 10px; border-radius: 15px; border: 1px solid rgba(0,0,0,0.05); }
         .doc-header { padding: 15px 20px; display: flex; justify-content: space-between; cursor: pointer; font-weight: 700; font-size: 14px; }
@@ -91,7 +114,7 @@
     </div>
 
     <div class="flash-news">
-        <marquee>🔥 తాజా వార్తలు: అన్ని రకాల మీసేవ అప్లికేషన్లు మా దగ్గర చేయబడతాయి. | కొత్త అప్‌డేట్స్ కోసం కింద చూడండి.</marquee>
+        <marquee scrollamount="5">🔥 తాజా వార్తలు: అన్ని రకాల మీసేవ అప్లికేషన్లు మా దగ్గర చేయబడతాయి. | కొత్త నోటిఫికేషన్ల వివరాల కోసం కింద ఉన్న అలర్ట్ ట్యాబ్స్ చూడండి.</marquee>
     </div>
 
     <div class="header">
@@ -111,107 +134,134 @@
         <a href="https://wa.me/919948770651" class="btn btn-wa"><i class="fab fa-whatsapp"></i> WHATSAPP</a>
     </div>
 
-    <span class="section-label"><i class="fas fa-images"></i> Shop Gallery</span>
+    <span class="section-label">Exclusive Alerts</span>
+    <div class="tabs-grid" id="live-alerts">
+        <a href="#" class="tab-btn"><i class="fas fa-briefcase"></i><span>Jobs</span></a>
+        <a href="#" class="tab-btn"><i class="fas fa-graduation-cap"></i><span>Admissions</span></a>
+        <a href="#" class="tab-btn"><i class="fas fa-file-alt"></i><span>Exams</span></a>
+        <a href="#" class="tab-btn"><i class="fas fa-bullhorn"></i><span>Alerts</span></a>
+    </div>
+
+    <span class="section-label">Shop Gallery</span>
     <div class="gallery-wrapper">
         <div class="gallery-scroll">
             <div class="gallery-item"><img src="images/p1.jpg" alt="Gallery 1"></div>
             <div class="gallery-item"><img src="images/p2.jpg" alt="Gallery 2"></div>
-            <div class="gallery-item"><img src="images/p3.jpg" alt="Gallery 3"></div>
+			<div class="gallery-item"><img src="images/p3.jpg" alt="Gallery 2"></div>
+			<div class="gallery-item"><img src="images/p4.jpg" alt="Gallery 2"></div>
         </div>
     </div>
 
-    <span class="section-label"><i class="fas fa-qrcode"></i> Scan to Pay (PhonePe / G-Pay)</span>
+    <span class="section-label">Scan to Pay</span>
     <div class="payment-card">
         <img src="images/qr.jpg" class="qr-code" alt="QR Code">
-        <div style="display:flex; justify-content:center; gap:15px; font-size:20px; margin-top:5px;">
-            <i class="fab fa-google-pay"></i> <i class="fas fa-mobile-alt"></i>
-        </div>
-        <p style="font-size: 11px; margin-top:5px;">UPI ID: 9948770651@ybl</p>
+        <p style="font-size: 11px;">UPI ID: 9948770651@ybl</p>
     </div>
-
-    <span class="section-label"><i class="fas fa-bullhorn"></i> Exclusive Alerts (Live)</span>
-    <div class="tabs-grid" id="live-alerts">
-        <p style="grid-column: 1/3; font-size:12px; text-align:center;">Loading updates...</p>
+	<div class="status-box">
+        <h3><i class="fas fa-tasks"></i> అప్లికేషన్ స్టేటస్</h3>
+        <p>మీరు దరఖాస్తు చేసుకున్న అప్లికేషన్ స్టేటస్‌ను ఇక్కడ చెక్ చేసుకోగలరు.</p>
+        <a href="https://meeseva.telangana.gov.in/meeseva/home.htm" target="_blank" class="status-link">CHECK STATUS NOW</a>
     </div>
-
     <span class="section-label">Documents Required</span>
     <div class="doc-item" onclick="toggleDoc(this)">
         <div class="doc-header"><span>Income Certificate</span><i class="fas fa-chevron-down"></i></div>
         <div class="doc-content">ఆధార్ కార్డ్, రేషన్ కార్డ్, ఫోటో, సంతకం చేసిన అప్లికేషన్.</div>
     </div>
-    <div class="doc-item" onclick="toggleDoc(this)">
+<div class="doc-item" onclick="toggleDoc(this)">
         <div class="doc-header"><span>Caste Certificate</span><i class="fas fa-chevron-down"></i></div>
-        <div class="doc-content">ఆధార్ కార్డ్, స్కూల్ బోనఫైడ్, రేషన్ కార్డ్.</div>
+        <div class="doc-content">ఆధార్ కార్డ్, రేషన్ కార్డ్, ఫోటో, సంతకం చేసిన అప్లికేషన్.</div>
     </div>
+	<div class="doc-item" onclick="toggleDoc(this)">
+        <div class="doc-header"><span>Residence Certificate</span><i class="fas fa-chevron-down"></i></div>
+        <div class="doc-content">ఆధార్ కార్డ్, రేషన్ కార్డ్, ఫోటో, సంతకం చేసిన అప్లికేషన్.</div>
+    </div>
+	<div class="doc-item" onclick="toggleDoc(this)">
+        <div class="doc-header"><span>Family Member Certificate</span><i class="fas fa-chevron-down"></i></div>
+        <div class="doc-content">ఆధార్ కార్డ్, రేషన్ కార్డ్, ఫోటో, సంతకం చేసిన అప్లికేషన్.</div>
+    </div>
+	<div class="doc-item" onclick="toggleDoc(this)">
+        <div class="doc-header"><span>Aadhaar Card New</span><i class="fas fa-chevron-down"></i></div>
+        <div class="doc-content">ఆధార్ కార్డ్, రేషన్ కార్డ్, ఫోటో, సంతకం చేసిన అప్లికేషన్.</div>
+    </div>
+	<div class="doc-item" onclick="toggleDoc(this)">
+        <div class="doc-header"><span>Income Certificate</span><i class="fas fa-chevron-down"></i></div>
+        <div class="doc-content">ఆధార్ కార్డ్, రేషన్ కార్డ్, ఫోటో, సంతకం చేసిన అప్లికేషన్.</div>
+    </div>
+	<div class="doc-item" onclick="toggleDoc(this)">
+        <div class="doc-header"><span>Kalayana Laxmi Application</span><i class="fas fa-chevron-down"></i></div>
+        <div class="doc-content">వధువు ఆధార్ కార్డ్
 
-    <span class="section-label">Location (Google Maps)</span>
+వధువు బ్యాంక్ పాస్‌బుక్ (Bride name మీద account ఉండాలి)
+
+వధువు పాస్‌పోర్ట్ సైజ్ ఫోటో
+
+వరుడు ఆధార్ కార్డ్
+
+పెళ్లి ఫోటో / Wedding Card
+
+కుల ధృవీకరణ పత్రం (Caste Certificate)
+
+ఆదాయ ధృవీకరణ పత్రం (Income Certificate)
+
+నివాస ధృవీకరణ / Residence Proof
+
+వధువు వయస్సు నిర్ధారణ పత్రం
+
+SSC Memo / Birth Certificate
+
+పెళ్లి జరిగిన ధృవీకరణ
+
+Marriage Photo / Temple Receipt / Marriage Certificate
+
+మొబైల్ నంబర్
+
+రేషన్ కార్డ్ (అవసరమైతే).</div>
+    </div>
+    <span class="section-label">Our Location</span>
     <div class="map-section">
-        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3810.024345241477!2d78.9868!3d17.252!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTfCsDE1JDA3LjIiTiA3OMKwNTknMTIuNSJF!5e0!3m2!1sen!2sin!4v1650000000000!5m2!1sen!2sin" allowfullscreen="" loading="lazy"></iframe>
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18..." allowfullscreen="" loading="lazy"></iframe>
     </div>
 
     <div class="footer">POWERED BY DIGICUBES TECH SOLUTIONS</div>
 </div>
 
 <script>
-    // 1. Google Sheet Data Fetching with Error Handling
-    const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTxf7j2WaegAOKA5aa_jExiLHpGps4s6B4-27ZGx7pKCQ2OMYxxGwbt-MQF3HRQCWDg2oavox5kFxXF/pub?output=csv';
+    const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTHKl_lCWxq7k1pIQa85pTSoG_vO6QsyKWzzpfFSd6IOHtutocF2OgVZC1NOzBxWrRDMKLOxQrUbYBm/pub?output=csv';
 
     async function loadAlerts() {
         const container = document.getElementById('live-alerts');
         try {
             const res = await fetch(sheetURL + '&cache=' + Date.now());
-            if (!res.ok) throw new Error();
             const data = await res.text();
+            const rows = data.split('\n').filter(r => r.trim() !== '').slice(1);
             
-            // Split rows and filter empty ones
-            const rows = data.split('\n').map(r => r.trim()).filter(r => r !== '').slice(1);
-            
-            if (rows.length === 0) {
-                container.innerHTML = '<p style="grid-column: 1/3; text-align:center;">ప్రస్తుతానికి అప్‌డేట్స్ లేవు.</p>';
-                return;
+            if (rows.length > 0) {
+                container.innerHTML = '';
+                rows.forEach(row => {
+                    const cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                    if(cols.length >= 2) {
+                        const title = cols[0].replace(/"/g, '').trim();
+                        const link = cols[1].replace(/"/g, '').trim() || '#';
+                        const icon = cols[2] ? cols[2].replace(/"/g, '').trim() : 'fa-bell';
+                        
+                        container.innerHTML += `
+                            <a href="${link}" target="_blank" class="tab-btn">
+                                <i class="fas ${icon}"></i>
+                                <span>${title}</span>
+                            </a>`;
+                    }
+                });
             }
-
-            container.innerHTML = '';
-            rows.forEach(row => {
-                // Regex to handle commas inside quotes if any
-                const cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-                if(cols.length >= 1) {
-                    const title = cols[0].replace(/"/g, '').trim();
-                    const link = cols[1] ? cols[1].replace(/"/g, '').trim() : '#';
-                    const icon = cols[2] ? cols[2].replace(/"/g, '').trim() : 'fa-bell';
-                    
-                    container.innerHTML += `
-                        <a href="${link}" target="_blank" class="tab-btn">
-                            <i class="fas ${icon}"></i>
-                            <span>${title}</span>
-                        </a>`;
-                }
-            });
-        } catch (e) { 
-            container.innerHTML = '<p style="grid-column: 1/3; text-align:center; color:red;">డేటా అప్‌డేట్ కాలేదు. ఇంటర్నెట్ సరిచూసుకోండి.</p>'; 
-        }
+        } catch (e) { console.log("Sheet load error, showing default tabs."); }
     }
 
-    // 2. UI Control Functions
     window.onload = loadAlerts;
-
     function toggleDarkMode() { document.body.classList.toggle('dark-mode'); }
-    
-    function toggleDoc(el) { 
-        const items = document.querySelectorAll('.doc-item');
-        items.forEach(item => { if(item !== el) item.classList.remove('active'); });
-        el.classList.toggle('active'); 
-    }
-    
-    function saveToDevice() { 
-        alert("మొబైల్ హోమ్ స్క్రీన్ పై సేవ్ చేయడానికి:\n1. బ్రౌజర్ మెనూ (3 చుక్కలు) నొక్కండి.\n2. 'Add to Home Screen' సెలెక్ట్ చేయండి."); 
-    }
-    
+    function toggleDoc(el) { el.classList.toggle('active'); }
+    function saveToDevice() { alert("Use 'Add to Home Screen' in browser menu."); }
     function playVoiceAlert() {
-        const text = "నమస్కారం, సిటిజెన్ డిజిటల్ సేవా మరియు మీసేవకు స్వాగతం. అన్ని రకాల మీసేవ సర్వీసులు, జాబ్ అప్డేట్స్ కోసం మమ్మల్ని సంప్రదించండి.";
-        const msg = new SpeechSynthesisUtterance(text);
-        msg.lang = 'te-IN';
-        window.speechSynthesis.speak(msg);
+        const msg = new SpeechSynthesisUtterance("సిటిజెన్ డిజిటల్ సేవా మరియు మీసేవకు స్వాగతం.");
+        msg.lang = 'te-IN'; window.speechSynthesis.speak(msg);
     }
 </script>
 </body>
