@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="te">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mohin Digitals | Ultimate Smart Card</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #6366f1;
+            --secondary: #4f46e5;
+            --bg-grad: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            --card-bg: rgba(255, 255, 255, 0.96);
+            --text-color: #0f172a;
+        }
+
+        body.dark-mode {
+            --card-bg: rgba(15, 23, 42, 0.96);
+            --text-color: #f8fafc;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; transition: 0.3s; }
+
+        body {
+            background: var(--bg-grad);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            display: flex; justify-content: center; min-height: 100vh;
+        }
+
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+        .main-card {
+            width: 100%; max-width: 480px; background: var(--card-bg);
+            color: var(--text-color); min-height: 100vh; backdrop-filter: blur(15px);
+            position: relative; box-shadow: 0 25px 50px rgba(0,0,0,0.3); padding-bottom: 60px;
+        }
+
+        /* Flash News */
+        .flash-news { background: #0f172a; color: #fbbf24; padding: 10px 0; font-size: 13px; font-weight: 600; }
+        .dark-mode .flash-news { background: #000; }
+
+        /* Top Controls */
+        .top-controls { position: absolute; top: 50px; width: 100%; display: flex; justify-content: space-between; padding: 0 20px; z-index: 100; }
+        .icon-btn { background: rgba(255,255,255,0.3); border: none; width: 45px; height: 45px; border-radius: 50%; color: #fff; cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+
+        /* Festival Banner */
+        .festival-banner { width: 100%; height: auto; border-radius: 0 0 30px 30px; margin-bottom: 10px; }
+
+        /* Branding */
+        .header { padding: 20px; text-align: center; }
+        .profile-img { width: 110px; height: 110px; border-radius: 35px; border: 4px solid #fff; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .visitor-count { font-size: 11px; font-weight: 800; color: var(--primary); margin-top: 10px; }
+
+        /* Voice Button */
+        .voice-box { position: fixed; bottom: 30px; right: 20px; z-index: 1000; }
+        .voice-btn { background: #ff4757; color: white; width: 60px; height: 60px; border-radius: 50%; border: none; font-size: 24px; cursor: pointer; box-shadow: 0 10px 20px rgba(255, 71, 87, 0.4); animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+
+        /* Alert Tabs */
+        .section-label { font-size: 15px; font-weight: 800; padding: 25px 25px 15px; display: block; border-left: 5px solid var(--primary); margin-left: 20px; }
+        .tabs-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 0 20px 25px; }
+        .tab-btn { background: rgba(255,255,255,0.5); padding: 15px 5px; border-radius: 15px; text-align: center; text-decoration: none; color: inherit; border: 1px solid #e2e8f0; }
+        .dark-mode .tab-btn { background: rgba(255,255,255,0.05); border-color: #334155; }
+        .tab-btn i { font-size: 20px; color: var(--primary); display: block; margin-bottom: 5px; }
+        .tab-btn span { font-size: 10px; font-weight: 700; }
+
+        /* Gallery */
+        .gallery-scroll { padding: 0 20px 25px; overflow-x: auto; display: flex; gap: 15px; }
+        .gallery-item { flex-shrink: 0; text-align: center; }
+        .gallery-item img { width: 240px; height: 140px; border-radius: 20px; object-fit: cover; border: 4px solid #fff; box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
+        .gallery-item p { margin-top: 5px; font-size: 11px; font-weight: 600; }
+
+        /* Quick Downloads */
+        .download-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 20px 25px; }
+        .dl-btn { background: var(--primary); color: #fff; padding: 12px; border-radius: 12px; text-decoration: none; font-size: 12px; font-weight: 700; text-align: center; }
+
+        /* Contact Grid */
+        .contact-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 0 20px 30px; }
+        .c-btn { text-decoration: none; padding: 16px; border-radius: 18px; color: #fff; font-weight: 700; text-align: center; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .btn-tel { background: #4facfe; }
+        .btn-wa { background: #43e97b; }
+
+        /* Accordion Documents */
+        .doc-box { background: rgba(255,255,255,0.5); margin: 0 20px 10px; border-radius: 18px; border: 1px solid #e2e8f0; overflow: hidden; }
+        .dark-mode .doc-box { background: rgba(255,255,255,0.05); }
+        .doc-head { padding: 18px; cursor: pointer; display: flex; justify-content: space-between; font-weight: 600; font-size: 14px; }
+        .doc-body { padding: 0 18px; max-height: 0; overflow: hidden; transition: 0.3s; }
+        .doc-body ul { padding: 15px; font-size: 13px; color: inherit; opacity: 0.8; }
+        .doc-box.active .doc-body { max-height: 300px; padding-bottom: 10px; }
+        .doc-box.active .fa-chevron-down { transform: rotate(180deg); }
+
+        /* Google Map */
+        .map-section { padding: 0 20px 20px; }
+        .map-section iframe { width: 100%; height: 200px; border-radius: 25px; border: 4px solid #fff; }
+
+        .footer { text-align: center; padding: 30px; font-size: 10px; font-weight: 700; opacity: 0.6; letter-spacing: 1px; }
+    </style>
+</head>
+<body>
+
+<!-- Floating Voice Notification -->
+<div class="voice-box">
+    <button class="voice-btn" onclick="playVoice()"><i class="fas fa-microphone-alt"></i></button>
+</div>
+
+<div class="main-card">
+    <!-- Flash News -->
+    <div class="flash-news">
+        <marquee>🔥 తాజా జాబ్ నోటిఫికేషన్ల కోసం పైన ఉన్న అలర్ట్ ట్యాబ్స్ క్లిక్ చేయండి. | మీసేవ అన్ని సేవలు మా దగ్గర అందుబాటులో ఉన్నాయి.</marquee>
+    </div>
+
+    <!-- Top Controls -->
+    <div class="top-controls">
+        <button class="icon-btn" onclick="toggleDarkMode()"><i class="fas fa-moon"></i></button>
+        <button class="icon-btn" onclick="shareToWhatsApp()"><i class="fas fa-share-alt"></i></button>
+    </div>
+
+    <!-- Festival Banner -->
+    <img src="https://via.placeholder.com/500x200?text=Welcome+to+Sri+Laxmi+Narasimha+Swamy+Digitals" class="festival-banner" alt="Festival Banner">
+
+    <!-- Header -->
+    <div class="header">
+        <img src="https://via.placeholder.com/150" class="profile-img" alt="Shop Logo">
+        <div class="visitor-count">TOTAL VISITORS: 1,542</div>
+        <h1 style="font-size: 22px; margin-top: 10px;">శ్రీ లక్ష్మి నరసింహ స్వామి డిజిటల్స్</h1>
+        <p style="font-size: 13px; opacity: 0.8;">ప్రో|| మొహమ్మద్ మోహిన్ | చౌటుప్పల్</p>
+    </div>
+
+    <!-- Exclusive Alerts Tabs -->
+    <span class="section-label">EXCLUSIVE ALERTS</span>
+    <div class="tabs-grid">
+        <a href="#" class="tab-btn"><i class="fas fa-briefcase"></i><span>Jobs</span></a>
+        <a href="#" class="tab-btn"><i class="fas fa-graduation-cap"></i><span>Admit</span></a>
+        <a href="#" class="tab-btn"><i class="fas fa-university"></i><span>Exam</span></a>
+        <a href="#" class="tab-btn"><i class="fas fa-bell"></i><span>Alerts</span></a>
+    </div>
+
+    <!-- Photo Gallery with Names -->
+    <span class="section-label">SHOP GALLERY</span>
+    <div class="gallery-scroll">
+        <div class="gallery-item">
+            <img src="https://via.placeholder.com/400x250?text=Shop+Front" alt="Front">
+            <p>షాప్ బయటి దృశ్యం</p>
+        </div>
+        <div class="gallery-item">
+            <img src="https://via.placeholder.com/400x250?text=Interior" alt="Interior">
+            <p>లోపలి భాగం</p>
+        </div>
+    </div>
+
+    <!-- Contact Actions -->
+    <div class="contact-row">
+        <a href="tel:91XXXXXXXXXX" class="c-btn btn-tel"><i class="fas fa-phone-alt"></i> CALL</a>
+        <a href="https://wa.me/91XXXXXXXXXX" class="c-btn btn-wa"><i class="fab fa-whatsapp"></i> WHATSAPP</a>
+    </div>
+
+    <!-- Quick Downloads -->
+    <span class="section-label">QUICK DOWNLOADS (PDF)</span>
+    <div class="download-row">
+        <a href="#" class="dl-btn"><i class="fas fa-download"></i> Income Form</a>
+        <a href="#" class="dl-btn"><i class="fas fa-download"></i> Caste Form</a>
+    </div>
+
+    <!-- Expandable Doc List -->
+    <span class="section-label">DOCUMENTS REQUIRED</span>
+    <div class="doc-box" onclick="this.classList.toggle('active')">
+        <div class="doc-head"><span>Income Certificate</span><i class="fas fa-chevron-down"></i></div>
+        <div class="doc-body"><ul><li>ఆధార్ కార్డ్</li><li>రేషన్ కార్డ్</li><li>పాస్‌పోర్ట్ సైజ్ ఫోటో</li></ul></div>
+    </div>
+    <div class="doc-box" onclick="this.classList.toggle('active')">
+        <div class="doc-head"><span>Caste Certificate</span><i class="fas fa-chevron-down"></i></div>
+        <div class="doc-body"><ul><li>ఆధార్ కార్డ్</li><li>పాత కుల ధృవీకరణ పత్రం</li><li>బోనఫైడ్ సర్టిఫికేట్</li></ul></div>
+    </div>
+
+    <!-- Google Map -->
+    <span class="section-label">OUR LOCATION</span>
+    <div class="map-section">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3810.000!2d78.900!3d17.250!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTfCsDE1JzAwLjAiTiA3OMKwNTQnMDAuMCJF!5e0!3m2!1sen!2sin!4v1620000000000!5m2!1sen!2sin"></iframe>
+    </div>
+
+    <div class="footer">POWERED BY MOHIN DIGITAL TECH</div>
+</div>
+
+<script>
+    // Dark Mode Logic
+    function toggleDarkMode() {
+        document.body.classList.toggle('dark-mode');
+        const icon = document.querySelector('.top-controls i');
+        icon.classList.toggle('fa-moon');
+        icon.classList.toggle('fa-sun');
+    }
+
+    // Share to WhatsApp
+    function shareToWhatsApp() {
+        const text = "శ్రీ లక్ష్మి నరసింహ స్వామి డిజిటల్స్ వారి స్మార్ట్ కార్డును ఇక్కడ చూడండి: " + window.location.href;
+        window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+    }
+
+    // Voice Notification
+    function playVoice() {
+        const msg = new SpeechSynthesisUtterance("శ్రీ లక్ష్మి నరసింహ స్వామి డిజిటల్స్ కు స్వాగతం. అన్ని రకాల మీసేవ సర్వీసులు మరియు జాబ్ అప్డేట్స్ కోసం మా కార్డును ఫాలో అవ్వండి.");
+        msg.lang = 'te-IN';
+        window.speechSynthesis.speak(msg);
+    }
+</script>
+
+</body>
+</html>
