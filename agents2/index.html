@@ -1,211 +1,1000 @@
 <!DOCTYPE html>
 <html lang="te">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mohin Digitals | Ultimate Smart Card</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <style>
-        :root {
-            --primary: #6366f1;
-            --secondary: #4f46e5;
-            --bg-grad: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-            --card-bg: rgba(255, 255, 255, 0.96);
-            --text-color: #0f172a;
-        }
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Citizen Digital Seva</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+/* ═══════════════════════════════════════
+   CONFIGURATION — Edit ONLY these 2 lines
+   ═══════════════════════════════════════ */
 
-        body.dark-mode {
-            --card-bg: rgba(15, 23, 42, 0.96);
-            --text-color: #f8fafc;
-        }
+/* ═══════════════════════════════════════
+   DESIGN TOKENS
+   ═══════════════════════════════════════ */
+:root {
+  --accent: #4fffb0;
+  --accent-dim: #1adb7a;
+  --bg: #0a0f1a;
+  --bg2: #111827;
+  --bg3: #1a2235;
+  --card: #141e2e;
+  --border: rgba(255,255,255,0.08);
+  --text: #e8edf5;
+  --text2: #8899aa;
+  --radius: 14px;
+  --shadow: 0 4px 24px rgba(0,0,0,0.4);
+  --font-te: 'Noto Sans Telugu', sans-serif;
+  --font: 'Inter', sans-serif;
+  --trans: 0.25s cubic-bezier(0.19,1,0.22,1);
+}
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; transition: 0.3s; }
+/* ═══════════════════════════════════════
+   COLOR PALETTE FOR SERVICE CARDS
+   ═══════════════════════════════════════ */
+.gi-blue   { --ci: #60a5fa; --cb: rgba(96,165,250,0.12); }
+.gi-green  { --ci: #34d399; --cb: rgba(52,211,153,0.12); }
+.gi-orange { --ci: #fb923c; --cb: rgba(251,146,60,0.12); }
+.gi-purple { --ci: #a78bfa; --cb: rgba(167,139,250,0.12); }
+.gi-red    { --ci: #f87171; --cb: rgba(248,113,113,0.12); }
+.gi-yellow { --ci: #fbbf24; --cb: rgba(251,191,36,0.12); }
+.gi-pink   { --ci: #f472b6; --cb: rgba(244,114,182,0.12); }
+.gi-teal   { --ci: #2dd4bf; --cb: rgba(45,212,191,0.12); }
 
-        body {
-            background: var(--bg-grad);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
-            display: flex; justify-content: center; min-height: 100vh;
-        }
+/* ═══════════════════════════════════════
+   RESET & BASE
+   ═══════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+a { text-decoration: none; color: inherit; }
+button { border: none; cursor: pointer; font-family: var(--font); }
 
-        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+/* ═══════════════════════════════════════
+   LOADING SCREEN
+   ═══════════════════════════════════════ */
+#loading-screen {
+  position: fixed; inset: 0; z-index: 9999;
+  background: var(--bg);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 20px; transition: opacity 0.5s ease;
+}
+#loading-screen.hide { opacity: 0; pointer-events: none; }
+.loader-ring {
+  width: 52px; height: 52px;
+  border: 3px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+.loader-text { color: var(--text2); font-size: 14px; }
+@keyframes spin { to { transform: rotate(360deg); } }
 
-        .main-card {
-            width: 100%; max-width: 480px; background: var(--card-bg);
-            color: var(--text-color); min-height: 100vh; backdrop-filter: blur(15px);
-            position: relative; box-shadow: 0 25px 50px rgba(0,0,0,0.3); padding-bottom: 60px;
-        }
+/* ═══════════════════════════════════════
+   POPUP / MODAL
+   ═══════════════════════════════════════ */
+#popup-overlay {
+  position: fixed; inset: 0; z-index: 1000;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 16px;
+  animation: fadeIn 0.3s ease;
+}
+#popup-overlay.hidden { display: none; }
+#popup-box {
+  background: var(--bg2);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  max-width: 440px; width: 100%;
+  box-shadow: 0 0 40px rgba(79,255,176,0.2);
+  overflow: hidden;
+  animation: slideUp 0.35s cubic-bezier(0.19,1,0.22,1);
+}
+#popup-img { width: 100%; max-height: 200px; object-fit: cover; display: none; }
+#popup-img.show { display: block; }
+.popup-body {
+  padding: 24px;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.popup-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(79,255,176,0.12);
+  color: var(--accent);
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 12px; font-weight: 600;
+  width: fit-content;
+}
+.popup-badge i { font-size: 10px; }
+#popup-title {
+  font-size: 18px; font-weight: 700;
+  line-height: 1.4;
+  font-family: var(--font-te);
+}
+#popup-subtitle {
+  font-size: 14px; color: var(--text2);
+  line-height: 1.6;
+  font-family: var(--font-te);
+}
+#popup-close {
+  background: var(--accent);
+  color: #0a0f1a;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-weight: 700; font-size: 14px;
+  margin-top: 4px;
+  transition: var(--trans);
+}
+#popup-close:hover { opacity: 0.85; transform: scale(0.98); }
 
-        /* Flash News */
-        .flash-news { background: #0f172a; color: #fbbf24; padding: 10px 0; font-size: 13px; font-weight: 600; }
-        .dark-mode .flash-news { background: #000; }
+/* ═══════════════════════════════════════
+   TICKER BAR
+   ═══════════════════════════════════════ */
+#ticker-bar {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  padding: 0 16px;
+  display: flex; align-items: center; gap: 12px;
+  height: 38px; overflow: hidden;
+  position: sticky; top: 0; z-index: 50;
+}
+.ticker-label {
+  background: var(--accent);
+  color: #0a0f1a;
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-size: 11px; font-weight: 700;
+  white-space: nowrap; flex-shrink: 0;
+  letter-spacing: 0.5px;
+}
+.ticker-track {
+  flex: 1; overflow: hidden; position: relative;
+}
+.ticker-inner {
+  display: flex; gap: 48px;
+  animation: tickerScroll 22s linear infinite;
+  white-space: nowrap;
+}
+.ticker-inner:hover { animation-play-state: paused; }
+.ticker-item {
+  font-size: 13px; color: var(--text2);
+  flex-shrink: 0; cursor: pointer;
+  font-family: var(--font-te);
+  transition: color var(--trans);
+}
+.ticker-item:hover { color: var(--accent); }
+@keyframes tickerScroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
 
-        /* Top Controls */
-        .top-controls { position: absolute; top: 50px; width: 100%; display: flex; justify-content: space-between; padding: 0 20px; z-index: 100; }
-        .icon-btn { background: rgba(255,255,255,0.3); border: none; width: 45px; height: 45px; border-radius: 50%; color: #fff; cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+/* ═══════════════════════════════════════
+   HEADER
+   ═══════════════════════════════════════ */
+#app-header {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  padding: 0 20px;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 64px;
+}
+.header-brand {
+  display: flex; align-items: center; gap: 12px;
+}
+.header-logo {
+  width: 42px; height: 42px;
+  background: rgba(79,255,176,0.12);
+  border: 1.5px solid var(--accent);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--accent); font-size: 18px;
+}
+.header-name { font-size: 16px; font-weight: 700; font-family: var(--font-te); }
+.header-tag  { font-size: 11px; color: var(--text2); margin-top: 1px; }
+.header-actions { display: flex; gap: 8px; }
+.hbtn {
+  width: 38px; height: 38px;
+  border-radius: 10px;
+  background: var(--bg3);
+  color: var(--text2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px;
+  transition: var(--trans);
+}
+.hbtn:hover { background: var(--card); color: var(--text); }
+.hbtn.active { background: rgba(79,255,176,0.12); color: var(--accent); }
 
-        /* Festival Banner */
-        .festival-banner { width: 100%; height: auto; border-radius: 0 0 30px 30px; margin-bottom: 10px; }
+/* ═══════════════════════════════════════
+   PAGE ROUTER
+   ═══════════════════════════════════════ */
+.page { display: none; }
+.page.active { display: block; }
 
-        /* Branding */
-        .header { padding: 20px; text-align: center; }
-        .profile-img { width: 110px; height: 110px; border-radius: 35px; border: 4px solid #fff; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-        .visitor-count { font-size: 11px; font-weight: 800; color: var(--primary); margin-top: 10px; }
+/* ═══════════════════════════════════════
+   HOME PAGE
+   ═══════════════════════════════════════ */
+#home { padding: 20px 16px 100px; max-width: 600px; margin: 0 auto; }
 
-        /* Voice Button */
-        .voice-box { position: fixed; bottom: 30px; right: 20px; z-index: 1000; }
-        .voice-btn { background: #ff4757; color: white; width: 60px; height: 60px; border-radius: 50%; border: none; font-size: 24px; cursor: pointer; box-shadow: 0 10px 20px rgba(255, 71, 87, 0.4); animation: pulse 2s infinite; }
-        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+/* Hero */
+.hero-card {
+  background: linear-gradient(135deg, var(--bg3) 0%, var(--card) 100%);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 24px;
+  position: relative; overflow: hidden;
+}
+.hero-card::before {
+  content: '';
+  position: absolute; top: -60px; right: -60px;
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
+  opacity: 0.06; pointer-events: none;
+}
+.hero-greeting { font-size: 12px; color: var(--text2); margin-bottom: 6px; letter-spacing: 0.5px; }
+.hero-name { font-size: 22px; font-weight: 700; font-family: var(--font-te); }
+.hero-city { font-size: 13px; color: var(--accent); margin-top: 4px; }
+.hero-actions { display: flex; gap: 10px; margin-top: 18px; }
+.hero-btn {
+  flex: 1; padding: 11px 16px;
+  border-radius: 10px;
+  font-size: 13px; font-weight: 600;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  transition: var(--trans);
+}
+.hero-btn.primary {
+  background: var(--accent); color: #0a0f1a;
+}
+.hero-btn.primary:hover { opacity: 0.88; transform: scale(0.98); }
+.hero-btn.secondary {
+  background: var(--bg3); color: var(--text);
+  border: 1px solid var(--border);
+}
+.hero-btn.secondary:hover { border-color: var(--accent); color: var(--accent); }
 
-        /* Alert Tabs */
-        .section-label { font-size: 15px; font-weight: 800; padding: 25px 25px 15px; display: block; border-left: 5px solid var(--primary); margin-left: 20px; }
-        .tabs-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 0 20px 25px; }
-        .tab-btn { background: rgba(255,255,255,0.5); padding: 15px 5px; border-radius: 15px; text-align: center; text-decoration: none; color: inherit; border: 1px solid #e2e8f0; }
-        .dark-mode .tab-btn { background: rgba(255,255,255,0.05); border-color: #334155; }
-        .tab-btn i { font-size: 20px; color: var(--primary); display: block; margin-bottom: 5px; }
-        .tab-btn span { font-size: 10px; font-weight: 700; }
+/* Section headings */
+.section-head {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 14px;
+}
+.section-head h2 {
+  font-size: 15px; font-weight: 700;
+  font-family: var(--font-te);
+}
+.section-line {
+  flex: 1; height: 1px;
+  background: linear-gradient(90deg, var(--border) 0%, transparent 100%);
+}
 
-        /* Gallery */
-        .gallery-scroll { padding: 0 20px 25px; overflow-x: auto; display: flex; gap: 15px; }
-        .gallery-item { flex-shrink: 0; text-align: center; }
-        .gallery-item img { width: 240px; height: 140px; border-radius: 20px; object-fit: cover; border: 4px solid #fff; box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
-        .gallery-item p { margin-top: 5px; font-size: 11px; font-weight: 600; }
+/* Update cards */
+.updates-section { margin-bottom: 24px; }
+.update-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  display: flex; align-items: center; gap: 14px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: var(--trans);
+}
+.update-card:hover { border-color: var(--accent); transform: translateY(-1px); }
+.update-dot {
+  width: 8px; height: 8px;
+  background: var(--accent);
+  border-radius: 50%; flex-shrink: 0;
+  box-shadow: 0 0 6px var(--accent);
+}
+.update-title {
+  flex: 1; font-size: 13px;
+  font-family: var(--font-te);
+  line-height: 1.5;
+}
+.update-arrow { color: var(--text2); font-size: 12px; }
 
-        /* Quick Downloads */
-        .download-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 20px 25px; }
-        .dl-btn { background: var(--primary); color: #fff; padding: 12px; border-radius: 12px; text-decoration: none; font-size: 12px; font-weight: 700; text-align: center; }
+/* Services grid */
+.services-section { margin-bottom: 24px; }
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.service-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 12px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 10px; text-align: center;
+  cursor: pointer;
+  transition: var(--trans);
+  min-height: 90px;
+}
+.service-card:hover {
+  border-color: var(--ci, var(--accent));
+  background: var(--cb, rgba(79,255,176,0.06));
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+}
+.service-icon {
+  width: 38px; height: 38px;
+  border-radius: 10px;
+  background: var(--cb, rgba(79,255,176,0.12));
+  color: var(--ci, var(--accent));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+}
+.service-name { font-size: 11px; color: var(--text2); font-family: var(--font-te); line-height: 1.3; }
 
-        /* Contact Grid */
-        .contact-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 0 20px 30px; }
-        .c-btn { text-decoration: none; padding: 16px; border-radius: 18px; color: #fff; font-weight: 700; text-align: center; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .btn-tel { background: #4facfe; }
-        .btn-wa { background: #43e97b; }
+/* ═══════════════════════════════════════
+   DOCS PAGE
+   ═══════════════════════════════════════ */
+#docs-page { padding: 20px 16px 100px; max-width: 600px; margin: 0 auto; }
 
-        /* Accordion Documents */
-        .doc-box { background: rgba(255,255,255,0.5); margin: 0 20px 10px; border-radius: 18px; border: 1px solid #e2e8f0; overflow: hidden; }
-        .dark-mode .doc-box { background: rgba(255,255,255,0.05); }
-        .doc-head { padding: 18px; cursor: pointer; display: flex; justify-content: space-between; font-weight: 600; font-size: 14px; }
-        .doc-body { padding: 0 18px; max-height: 0; overflow: hidden; transition: 0.3s; }
-        .doc-body ul { padding: 15px; font-size: 13px; color: inherit; opacity: 0.8; }
-        .doc-box.active .doc-body { max-height: 300px; padding-bottom: 10px; }
-        .doc-box.active .fa-chevron-down { transform: rotate(180deg); }
+/* PDF list */
+.pdf-section { margin-bottom: 24px; }
+.pdf-item {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  display: flex; align-items: center; gap: 14px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: var(--trans);
+}
+.pdf-item:hover { border-color: #f87171; }
+.pdf-icon-wrap {
+  width: 36px; height: 36px;
+  background: rgba(248,113,113,0.12);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  color: #f87171; font-size: 16px; flex-shrink: 0;
+}
+.pdf-name { flex: 1; font-size: 13px; font-family: var(--font-te); }
+.pdf-dl { color: var(--text2); font-size: 13px; }
 
-        /* Google Map */
-        .map-section { padding: 0 20px 20px; }
-        .map-section iframe { width: 100%; height: 200px; border-radius: 25px; border: 4px solid #fff; }
+/* Docs accordion */
+.docs-list { display: flex; flex-direction: column; gap: 8px; }
+.doc-item {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 13px 16px;
+  display: flex; align-items: center; gap: 12px;
+  font-family: var(--font-te);
+  font-size: 13px;
+}
+.doc-check {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: rgba(79,255,176,0.12);
+  border: 1.5px solid var(--accent);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--accent); font-size: 10px; flex-shrink: 0;
+}
 
-        .footer { text-align: center; padding: 30px; font-size: 10px; font-weight: 700; opacity: 0.6; letter-spacing: 1px; }
-    </style>
+/* ═══════════════════════════════════════
+   CONTACT PAGE
+   ═══════════════════════════════════════ */
+#contact-page { padding: 20px 16px 100px; max-width: 600px; margin: 0 auto; }
+
+.contact-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+.contact-row {
+  padding: 16px 20px;
+  display: flex; align-items: center; gap: 14px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: var(--trans);
+}
+.contact-row:last-child { border-bottom: none; }
+.contact-row:hover { background: var(--bg3); }
+.contact-icon-wrap {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+}
+.contact-label { font-size: 11px; color: var(--text2); }
+.contact-value { font-size: 14px; font-weight: 600; margin-top: 2px; }
+
+.map-wrap {
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  height: 240px;
+  margin-bottom: 16px;
+}
+.map-wrap iframe { width: 100%; height: 100%; border: none; }
+.map-placeholder {
+  width: 100%; height: 100%;
+  background: var(--card);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 10px; color: var(--text2);
+}
+
+/* ═══════════════════════════════════════
+   BOTTOM NAV
+   ═══════════════════════════════════════ */
+#bottom-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  display: flex;
+  padding: 0 0 env(safe-area-inset-bottom);
+}
+.nav-btn {
+  flex: 1; padding: 10px 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 4px; color: var(--text2);
+  background: transparent;
+  font-size: 10px; font-weight: 600;
+  font-family: var(--font-te);
+  transition: var(--trans);
+  letter-spacing: 0.3px;
+}
+.nav-btn i { font-size: 18px; }
+.nav-btn.active { color: var(--accent); }
+.nav-btn.active i { filter: drop-shadow(0 0 4px var(--accent)); }
+
+/* ═══════════════════════════════════════
+   FAB
+   ═══════════════════════════════════════ */
+#fab {
+  position: fixed; bottom: 80px; right: 20px; z-index: 200;
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #0a0f1a;
+  font-size: 20px;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 20px rgba(79,255,176,0.4);
+  transition: var(--trans);
+}
+#fab:hover { transform: scale(1.08); box-shadow: 0 6px 28px rgba(79,255,176,0.5); }
+
+/* ═══════════════════════════════════════
+   FOOTER
+   ═══════════════════════════════════════ */
+.page-footer {
+  text-align: center;
+  padding: 20px 16px;
+  color: var(--text2);
+  font-size: 12px;
+  border-top: 1px solid var(--border);
+  margin-top: 16px;
+}
+
+/* ═══════════════════════════════════════
+   ANIMATIONS
+   ═══════════════════════════════════════ */
+@keyframes fadeIn  { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ═══════════════════════════════════════
+   ERROR BANNER
+   ═══════════════════════════════════════ */
+#error-banner {
+  display: none;
+  background: rgba(248,113,113,0.12);
+  border: 1px solid rgba(248,113,113,0.3);
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin: 16px;
+  color: #f87171;
+  font-size: 13px;
+  font-family: var(--font-te);
+}
+#error-banner.show { display: block; }
+
+/* ═══════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════ */
+@media(min-width:640px) {
+  .services-grid { grid-template-columns: repeat(4, 1fr); }
+}
+</style>
 </head>
 <body>
 
-<!-- Floating Voice Notification -->
-<div class="voice-box">
-    <button class="voice-btn" onclick="playVoice()"><i class="fas fa-microphone-alt"></i></button>
+<!-- ════════════════════ LOADING ════════════════════ -->
+<div id="loading-screen">
+  <div class="loader-ring"></div>
+  <span class="loader-text">లోడ్ అవుతోంది…</span>
 </div>
 
-<div class="main-card">
-    <!-- Flash News -->
-    <div class="flash-news">
-        <marquee>🔥 తాజా జాబ్ నోటిఫికేషన్ల కోసం పైన ఉన్న అలర్ట్ ట్యాబ్స్ క్లిక్ చేయండి. | మీసేవ అన్ని సేవలు మా దగ్గర అందుబాటులో ఉన్నాయి.</marquee>
+<!-- ════════════════════ POPUP ════════════════════ -->
+<div id="popup-overlay" class="hidden">
+  <div id="popup-box">
+    <img id="popup-img" src="" alt="popup"/>
+    <div class="popup-body">
+      <span class="popup-badge"><i class="fas fa-bell"></i> ప్రకటన</span>
+      <div id="popup-title"></div>
+      <div id="popup-subtitle"></div>
+      <button id="popup-close">అర్థమైంది ✓</button>
     </div>
-
-    <!-- Top Controls -->
-    <div class="top-controls">
-        <button class="icon-btn" onclick="toggleDarkMode()"><i class="fas fa-moon"></i></button>
-        <button class="icon-btn" onclick="shareToWhatsApp()"><i class="fas fa-share-alt"></i></button>
-    </div>
-
-    <!-- Festival Banner -->
-    <img src="https://via.placeholder.com/500x200?text=Welcome+to+Sri+Laxmi+Narasimha+Swamy+Digitals" class="festival-banner" alt="Festival Banner">
-
-    <!-- Header -->
-    <div class="header">
-        <img src="https://via.placeholder.com/150" class="profile-img" alt="Shop Logo">
-        <div class="visitor-count">TOTAL VISITORS: 1,542</div>
-        <h1 style="font-size: 22px; margin-top: 10px;">శ్రీ లక్ష్మి నరసింహ స్వామి డిజిటల్స్</h1>
-        <p style="font-size: 13px; opacity: 0.8;">ప్రో|| మొహమ్మద్ మోహిన్ | చౌటుప్పల్</p>
-    </div>
-
-    <!-- Exclusive Alerts Tabs -->
-    <span class="section-label">EXCLUSIVE ALERTS</span>
-    <div class="tabs-grid">
-        <a href="#" class="tab-btn"><i class="fas fa-briefcase"></i><span>Jobs</span></a>
-        <a href="#" class="tab-btn"><i class="fas fa-graduation-cap"></i><span>Admit</span></a>
-        <a href="#" class="tab-btn"><i class="fas fa-university"></i><span>Exam</span></a>
-        <a href="#" class="tab-btn"><i class="fas fa-bell"></i><span>Alerts</span></a>
-    </div>
-
-    <!-- Photo Gallery with Names -->
-    <span class="section-label">SHOP GALLERY</span>
-    <div class="gallery-scroll">
-        <div class="gallery-item">
-            <img src="https://via.placeholder.com/400x250?text=Shop+Front" alt="Front">
-            <p>షాప్ బయటి దృశ్యం</p>
-        </div>
-        <div class="gallery-item">
-            <img src="https://via.placeholder.com/400x250?text=Interior" alt="Interior">
-            <p>లోపలి భాగం</p>
-        </div>
-    </div>
-
-    <!-- Contact Actions -->
-    <div class="contact-row">
-        <a href="tel:91XXXXXXXXXX" class="c-btn btn-tel"><i class="fas fa-phone-alt"></i> CALL</a>
-        <a href="https://wa.me/91XXXXXXXXXX" class="c-btn btn-wa"><i class="fab fa-whatsapp"></i> WHATSAPP</a>
-    </div>
-
-    <!-- Quick Downloads -->
-    <span class="section-label">QUICK DOWNLOADS (PDF)</span>
-    <div class="download-row">
-        <a href="#" class="dl-btn"><i class="fas fa-download"></i> Income Form</a>
-        <a href="#" class="dl-btn"><i class="fas fa-download"></i> Caste Form</a>
-    </div>
-
-    <!-- Expandable Doc List -->
-    <span class="section-label">DOCUMENTS REQUIRED</span>
-    <div class="doc-box" onclick="this.classList.toggle('active')">
-        <div class="doc-head"><span>Income Certificate</span><i class="fas fa-chevron-down"></i></div>
-        <div class="doc-body"><ul><li>ఆధార్ కార్డ్</li><li>రేషన్ కార్డ్</li><li>పాస్‌పోర్ట్ సైజ్ ఫోటో</li></ul></div>
-    </div>
-    <div class="doc-box" onclick="this.classList.toggle('active')">
-        <div class="doc-head"><span>Caste Certificate</span><i class="fas fa-chevron-down"></i></div>
-        <div class="doc-body"><ul><li>ఆధార్ కార్డ్</li><li>పాత కుల ధృవీకరణ పత్రం</li><li>బోనఫైడ్ సర్టిఫికేట్</li></ul></div>
-    </div>
-
-    <!-- Google Map -->
-    <span class="section-label">OUR LOCATION</span>
-    <div class="map-section">
-        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3810.000!2d78.900!3d17.250!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTfCsDE1JzAwLjAiTiA3OMKwNTQnMDAuMCJF!5e0!3m2!1sen!2sin!4v1620000000000!5m2!1sen!2sin"></iframe>
-    </div>
-
-    <div class="footer">POWERED BY MOHIN DIGITAL TECH</div>
+  </div>
 </div>
 
+<!-- ════════════════════ TICKER ════════════════════ -->
+<div id="ticker-bar">
+  <span class="ticker-label">📢 LIVE</span>
+  <div class="ticker-track">
+    <div class="ticker-inner" id="ticker-inner">
+      <span class="ticker-item">లోడ్ అవుతోంది…</span>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════ HEADER ════════════════════ -->
+<header id="app-header">
+  <div class="header-brand">
+    <div class="header-logo"><i id="hdr-icon" class="fas fa-landmark"></i></div>
+    <div>
+      <div class="header-name" id="hdr-name">లోడ్…</div>
+      <div class="header-tag" id="hdr-tag">—</div>
+    </div>
+  </div>
+  <div class="header-actions">
+    <a id="fab-call" href="#" class="hbtn"><i class="fas fa-phone"></i></a>
+    <a id="fab-wa" href="#" target="_blank" class="hbtn" style="color:#25d366"><i class="fab fa-whatsapp"></i></a>
+  </div>
+</header>
+
+<!-- ════════════════════ ERROR BANNER ════════════════════ -->
+<div id="error-banner">
+  ⚠️ Data లోడ్ కాలేదు. Sheet URL సరిగా ఉందా? Internet connection చెక్ చేయండి.
+</div>
+
+<!-- ════════════════════ PAGES ════════════════════ -->
+
+<!-- HOME -->
+<div id="home" class="page active">
+  <div class="hero-card">
+    <div class="hero-greeting">నమస్కారం 🙏</div>
+    <div class="hero-name" id="hero-shop-name">—</div>
+    <div class="hero-city" id="hero-city">—</div>
+    <div class="hero-actions">
+      <button class="hero-btn primary" onclick="callPhone()">
+        <i class="fas fa-phone"></i> కాల్ చేయండి
+      </button>
+      <button class="hero-btn secondary" onclick="openWA()">
+        <i class="fab fa-whatsapp"></i> WhatsApp
+      </button>
+    </div>
+  </div>
+
+  <div class="updates-section">
+    <div class="section-head">
+      <h2>🔔 తాజా అప్‌డేట్లు</h2>
+      <div class="section-line"></div>
+    </div>
+    <div id="updates-list"></div>
+  </div>
+
+  <div class="services-section">
+    <div class="section-head">
+      <h2>🛎️ మా సేవలు</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="services-grid" id="services-grid"></div>
+  </div>
+
+  <div class="page-footer" id="footer-text"></div>
+</div>
+
+<!-- DOCS -->
+<div id="docs-page" class="page">
+  <div class="pdf-section">
+    <div class="section-head">
+      <h2>📄 PDF ఫారాలు</h2>
+      <div class="section-line"></div>
+    </div>
+    <div id="pdf-list"></div>
+  </div>
+
+  <div>
+    <div class="section-head">
+      <h2>📋 అవసరమైన పత్రాలు</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="docs-list" id="docs-list"></div>
+  </div>
+</div>
+
+<!-- CONTACT -->
+<div id="contact-page" class="page">
+  <div class="contact-card" id="contact-card"></div>
+  <div class="map-wrap" id="map-wrap">
+    <div class="map-placeholder"><i class="fas fa-map-marker-alt" style="font-size:28px"></i><span>మ్యాప్ లోడ్ అవుతోంది…</span></div>
+  </div>
+</div>
+
+<!-- ════════════════════ BOTTOM NAV ════════════════════ -->
+<nav id="bottom-nav">
+  <button class="nav-btn active" onclick="showPage('home',this)">
+    <i class="fas fa-home"></i>హోమ్
+  </button>
+  <button class="nav-btn" onclick="showPage('docs-page',this)">
+    <i class="fas fa-file-alt"></i>పత్రాలు
+  </button>
+  <button class="nav-btn" onclick="showPage('contact-page',this)">
+    <i class="fas fa-map-marker-alt"></i>చిరునామా
+  </button>
+</nav>
+
+<!-- ════════════════════ FAB (WhatsApp) ════════════════════ -->
+<a id="fab" href="#" target="_blank"><i class="fab fa-whatsapp"></i></a>
+
+<!-- ════════════════════ SCRIPT ════════════════════ -->
 <script>
-    // Dark Mode Logic
-    function toggleDarkMode() {
-        document.body.classList.toggle('dark-mode');
-        const icon = document.querySelector('.top-controls i');
-        icon.classList.toggle('fa-moon');
-        icon.classList.toggle('fa-sun');
-    }
+/* ═══════════════════════════════════════════════════
+   ⚙️  CONFIGURATION — ONLY THIS 1 LINE TO CHANGE
+   ═══════════════════════════════════════════════════
+   SHEET_URL → మీ Google Sheet లో ఆ agent Tab యొక్క
+               published CSV URL పెట్టండి.
 
-    // Share to WhatsApp
-    function shareToWhatsApp() {
-        const text = "శ్రీ లక్ష్మి నరసింహ స్వామి డిజిటల్స్ వారి స్మార్ట్ కార్డును ఇక్కడ చూడండి: " + window.location.href;
-        window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
-    }
+   ఎలా తీయాలి:
+   Sheet → File → Share → Publish to web
+   → ఆ agent tab select చేయండి → CSV → Publish
+   → ఆ URL ఇక్కడ పెట్టండి.
 
-    // Voice Notification
-    function playVoice() {
-        const msg = new SpeechSynthesisUtterance("శ్రీ లక్ష్మి నరసింహ స్వామి డిజిటల్స్ కు స్వాగతం. అన్ని రకాల మీసేవ సర్వీసులు మరియు జాబ్ అప్డేట్స్ కోసం మా కార్డును ఫాలో అవ్వండి.");
-        msg.lang = 'te-IN';
-        window.speechSynthesis.speak(msg);
+   కొత్త client కి: ఆ client tab URL మాత్రమే మార్చండి.
+   ═══════════════════════════════════════════════════ */
+const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQgCCtcdcRdQYX3Zdhdc_BDmZPU2tw6tKUaUmuH8w_LobsbEOXq1LK0kbNSiPSNu0Lst1J_gKX-_GPl/pub?gid=592606110&single=true&output=csv';
+
+/* ═══════════════════════════════════════════════════
+   GLOBAL STATE
+   ═══════════════════════════════════════════════════ */
+let CLIENT = null;
+
+/* ═══════════════════════════════════════════════════
+   CSV PARSER
+   ═══════════════════════════════════════════════════ */
+function parseCSV(text) {
+  const lines = text.trim().split('\n');
+  const headers = splitCSVLine(lines[0]);
+  const rows = [];
+  for (let i = 1; i < lines.length; i++) {
+    if (!lines[i].trim()) continue;
+    const vals = splitCSVLine(lines[i]);
+    const row = {};
+    headers.forEach((h, idx) => { row[h.trim()] = (vals[idx] || '').trim(); });
+    rows.push(row);
+  }
+  return rows;
+}
+
+function splitCSVLine(line) {
+  const result = [];
+  let cur = '', inQ = false;
+  for (let i = 0; i < line.length; i++) {
+    const c = line[i];
+    if (c === '"') { inQ = !inQ; continue; }
+    if (c === ',' && !inQ) { result.push(cur); cur = ''; continue; }
+    cur += c;
+  }
+  result.push(cur);
+  return result;
+}
+
+/* ═══════════════════════════════════════════════════
+   BUILD CLIENT OBJECT FROM CSV ROWS
+   (Tab లో అన్ని rows ఆ agent వే — filter అక్కర్లేదు)
+   ═══════════════════════════════════════════════════ */
+function buildClient(rows) {
+  if (!rows.length) return null;
+
+  const kv = {};
+  const updates  = [];
+  const services = [];
+  const pdfs     = [];
+  const docs     = [];
+
+  rows.forEach(r => {
+    const key = (r.key || '').trim();
+    if (!key) return;
+
+    if (key === 'update') {
+      updates.push({ title: r.title || r.value, link: r.link || '#' });
+    } else if (key === 'service') {
+      services.push({
+        title: r.title || r.value,
+        page:  r.link  || '#',
+        icon:  r.icon  || 'fas fa-star',
+        color: r.extra || 'gi-blue',
+      });
+    } else if (key === 'pdf') {
+      pdfs.push({ title: r.title || r.value, link: r.link || '#' });
+    } else if (key === 'doc') {
+      docs.push(r.value || r.title);
+    } else {
+      kv[key] = r.value;
     }
+  });
+
+  return {
+    shopName:    kv.shopName    || 'Seva Kendra',
+    tagline:     kv.tagline     || '',
+    logoIcon:    kv.logoIcon    || 'fas fa-landmark',
+    accentColor: kv.accentColor || '#4fffb0',
+    city:        kv.city        || '',
+    phone:       kv.phone       || '',
+    whatsapp:    kv.whatsapp    || '',
+    mapEmbedUrl: kv.mapEmbedUrl || '',
+    footerText:  kv.footerText  || '',
+    popup: {
+      show:     kv.popup_show === 'true',
+      title:    kv.popup_title    || '',
+      subtitle: kv.popup_subtitle || '',
+      imageUrl: kv.popup_imageUrl || '',
+    },
+    updates,
+    services,
+    pdfs,
+    docs,
+  };
+}
+
+/* ═══════════════════════════════════════════════════
+   FETCH DATA FROM GOOGLE SHEET (UTF-8 Telugu fix)
+   ═══════════════════════════════════════════════════ */
+async function loadData() {
+  try {
+    const res = await fetch(SHEET_URL);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+
+    // Telugu UTF-8 సరిగ్గా చదవడానికి ArrayBuffer decode
+    const buf     = await res.arrayBuffer();
+    const decoder = new TextDecoder('utf-8');
+    let text      = decoder.decode(buf);
+
+    // BOM తీసేయండి (Excel export చేస్తే వస్తుంది)
+    if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
+
+    const rows = parseCSV(text);
+    CLIENT = buildClient(rows);
+    if (!CLIENT) throw new Error('No data in sheet');
+    renderAll();
+  } catch (e) {
+    console.error('Sheet fetch error:', e);
+    document.getElementById('error-banner').classList.add('show');
+    document.getElementById('loading-screen').classList.add('hide');
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+   RENDER FUNCTIONS
+   ═══════════════════════════════════════════════════ */
+function renderAll() {
+  applyTheme();
+  renderHeader();
+  renderTicker();
+  renderHero();
+  renderUpdates();
+  renderServices();
+  renderPDFs();
+  renderDocs();
+  renderContact();
+  renderFooter();
+  showPopup();
+  hideLoader();
+}
+
+function applyTheme() {
+  document.documentElement.style.setProperty('--accent', CLIENT.accentColor);
+  // Derive dim accent (darken 15%)
+  document.documentElement.style.setProperty('--accent-dim', CLIENT.accentColor);
+}
+
+function renderHeader() {
+  document.getElementById('hdr-icon').className = CLIENT.logoIcon;
+  document.getElementById('hdr-name').textContent = CLIENT.shopName;
+  document.getElementById('hdr-tag').textContent  = CLIENT.tagline;
+  document.getElementById('fab-call').href = `tel:${CLIENT.phone}`;
+  document.getElementById('fab-wa').href   = `https://wa.me/${CLIENT.whatsapp}`;
+  document.getElementById('fab').href      = `https://wa.me/${CLIENT.whatsapp}`;
+  document.title = CLIENT.shopName;
+}
+
+function renderTicker() {
+  const inner = document.getElementById('ticker-inner');
+  if (!CLIENT.updates.length) {
+    inner.innerHTML = `<span class="ticker-item">స్వాగతం — ${CLIENT.shopName}</span>`;
+    return;
+  }
+  const items = CLIENT.updates.map(u =>
+    `<span class="ticker-item" onclick="safeOpen('${u.link}')">🔔 ${u.title}</span>`
+  );
+  // Duplicate for seamless scroll
+  inner.innerHTML = [...items, ...items].join('');
+}
+
+function renderHero() {
+  document.getElementById('hero-shop-name').textContent = CLIENT.shopName;
+  document.getElementById('hero-city').textContent      = CLIENT.city ? `📍 ${CLIENT.city}` : '';
+}
+
+function renderUpdates() {
+  const list = document.getElementById('updates-list');
+  if (!CLIENT.updates.length) {
+    list.innerHTML = `<div style="color:var(--text2);font-size:13px;padding:12px 0;font-family:var(--font-te)">తాజా అప్‌డేట్లు లేవు</div>`;
+    return;
+  }
+  list.innerHTML = CLIENT.updates.map(u => `
+    <div class="update-card" onclick="safeOpen('${u.link}')">
+      <div class="update-dot"></div>
+      <div class="update-title">${u.title}</div>
+      <i class="fas fa-chevron-right update-arrow"></i>
+    </div>
+  `).join('');
+}
+
+function renderServices() {
+  const grid = document.getElementById('services-grid');
+  if (!CLIENT.services.length) {
+    grid.innerHTML = `<div style="color:var(--text2);font-size:13px;padding:12px 0;font-family:var(--font-te);grid-column:1/-1">సేవలు లేవు</div>`;
+    return;
+  }
+  grid.innerHTML = CLIENT.services.map(s => `
+    <div class="service-card ${s.color}" onclick="safeOpen('${s.page}')">
+      <div class="service-icon"><i class="${s.icon}"></i></div>
+      <div class="service-name">${s.title}</div>
+    </div>
+  `).join('');
+}
+
+function renderPDFs() {
+  const list = document.getElementById('pdf-list');
+  if (!CLIENT.pdfs.length) {
+    list.innerHTML = `<div style="color:var(--text2);font-size:13px;font-family:var(--font-te)">PDF ఫారాలు లేవు</div>`;
+    return;
+  }
+  list.innerHTML = CLIENT.pdfs.map(p => `
+    <div class="pdf-item" onclick="safeOpen('${p.link}')">
+      <div class="pdf-icon-wrap"><i class="fas fa-file-pdf"></i></div>
+      <div class="pdf-name">${p.title}</div>
+      <i class="fas fa-download pdf-dl"></i>
+    </div>
+  `).join('');
+}
+
+function renderDocs() {
+  const list = document.getElementById('docs-list');
+  if (!CLIENT.docs.length) {
+    list.innerHTML = `<div style="color:var(--text2);font-size:13px;font-family:var(--font-te)">పత్రాలు లేవు</div>`;
+    return;
+  }
+  list.innerHTML = CLIENT.docs.map(d => `
+    <div class="doc-item">
+      <div class="doc-check"><i class="fas fa-check"></i></div>
+      <span>${d}</span>
+    </div>
+  `).join('');
+}
+
+function renderContact() {
+  const card = document.getElementById('contact-card');
+  card.innerHTML = `
+    <div class="contact-row" onclick="callPhone()">
+      <div class="contact-icon-wrap" style="background:rgba(96,165,250,0.12);color:#60a5fa">
+        <i class="fas fa-phone"></i>
+      </div>
+      <div>
+        <div class="contact-label">ఫోన్</div>
+        <div class="contact-value">${CLIENT.phone}</div>
+      </div>
+    </div>
+    <div class="contact-row" onclick="openWA()">
+      <div class="contact-icon-wrap" style="background:rgba(37,211,102,0.12);color:#25d366">
+        <i class="fab fa-whatsapp"></i>
+      </div>
+      <div>
+        <div class="contact-label">WhatsApp</div>
+        <div class="contact-value">+${CLIENT.whatsapp}</div>
+      </div>
+    </div>
+    ${CLIENT.city ? `
+    <div class="contact-row">
+      <div class="contact-icon-wrap" style="background:rgba(251,146,60,0.12);color:#fb923c">
+        <i class="fas fa-map-marker-alt"></i>
+      </div>
+      <div>
+        <div class="contact-label">స్థానం</div>
+        <div class="contact-value">${CLIENT.city}</div>
+      </div>
+    </div>` : ''}
+  `;
+
+  const mapWrap = document.getElementById('map-wrap');
+  if (CLIENT.mapEmbedUrl) {
+    mapWrap.innerHTML = `<iframe src="${CLIENT.mapEmbedUrl}" allowfullscreen loading="lazy"></iframe>`;
+  }
+}
+
+function renderFooter() {
+  document.getElementById('footer-text').textContent = CLIENT.footerText || `© ${new Date().getFullYear()} ${CLIENT.shopName}`;
+}
+
+function showPopup() {
+  if (!CLIENT.popup.show) return;
+  const overlay = document.getElementById('popup-overlay');
+  const img     = document.getElementById('popup-img');
+  document.getElementById('popup-title').textContent    = CLIENT.popup.title;
+  document.getElementById('popup-subtitle').textContent = CLIENT.popup.subtitle;
+  if (CLIENT.popup.imageUrl) {
+    img.src = CLIENT.popup.imageUrl;
+    img.classList.add('show');
+  }
+  overlay.classList.remove('hidden');
+}
+
+function hideLoader() {
+  document.getElementById('loading-screen').classList.add('hide');
+  setTimeout(() => {
+    document.getElementById('loading-screen').style.display = 'none';
+  }, 500);
+}
+
+/* ═══════════════════════════════════════════════════
+   NAVIGATION
+   ═══════════════════════════════════════════════════ */
+function showPage(id, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if (btn) btn.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ═══════════════════════════════════════════════════
+   HELPERS
+   ═══════════════════════════════════════════════════ */
+function safeOpen(url) {
+  if (url && url !== '#') window.open(url, '_blank');
+}
+function callPhone() {
+  if (CLIENT && CLIENT.phone) window.location.href = `tel:${CLIENT.phone}`;
+}
+function openWA() {
+  if (CLIENT && CLIENT.whatsapp) window.open(`https://wa.me/${CLIENT.whatsapp}`, '_blank');
+}
+
+/* ═══════════════════════════════════════════════════
+   POPUP CLOSE
+   ═══════════════════════════════════════════════════ */
+document.getElementById('popup-close').onclick = () => {
+  document.getElementById('popup-overlay').classList.add('hidden');
+};
+document.getElementById('popup-overlay').onclick = (e) => {
+  if (e.target === document.getElementById('popup-overlay'))
+    document.getElementById('popup-overlay').classList.add('hidden');
+};
+
+/* ═══════════════════════════════════════════════════
+   BOOT
+   ═══════════════════════════════════════════════════ */
+loadData();
 </script>
-
 </body>
 </html>
