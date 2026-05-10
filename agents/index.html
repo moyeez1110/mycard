@@ -1,929 +1,1000 @@
 <!DOCTYPE html>
-<html lang="te" data-theme="dark">
+<html lang="te">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Citizen Digital Seva</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
-/* ── THEMES ── */
-[data-theme="dark"]{
-  --bg:#08090c;--surface:#111318;--surface2:#181c24;
-  --border:rgba(255,255,255,0.07);--border-bright:rgba(255,255,255,0.14);
-  --accent:#4fffb0;--accent-dim:rgba(79,255,176,0.12);--accent-glow:rgba(79,255,176,0.28);
-  --text:#eef0f5;--muted:#6b7280;--muted2:#9ca3af;--shadow:none;--toggle-bg:#1e2330;
-  --ticker-bg:#0d1117;--ticker-text:#4fffb0;
-}
-[data-theme="light"]{
-  --bg:#f0f4f8;--surface:#fff;--surface2:#e8edf4;
-  --border:rgba(0,0,0,0.08);--border-bright:rgba(0,0,0,0.13);
-  --accent:#0a8f5c;--accent-dim:rgba(10,143,92,0.1);--accent-glow:rgba(10,143,92,0.22);
-  --text:#111418;--muted:#6b7280;--muted2:#4b5563;--shadow:0 1px 4px rgba(0,0,0,0.06);--toggle-bg:#dde3ec;
-  --ticker-bg:#e2f5ec;--ticker-text:#0a8f5c;
-}
-*{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;justify-content:center;transition:background .3s,color .3s;}
+/* ═══════════════════════════════════════
+   CONFIGURATION — Edit ONLY these 2 lines
+   ═══════════════════════════════════════ */
 
-/* ── PAGE SYSTEM ── */
-.page{width:100%;max-width:430px;min-height:100vh;display:none;}
-.page.active{display:block;}
+/* ═══════════════════════════════════════
+   DESIGN TOKENS
+   ═══════════════════════════════════════ */
+:root {
+  --accent: #4fffb0;
+  --accent-dim: #1adb7a;
+  --bg: #0a0f1a;
+  --bg2: #111827;
+  --bg3: #1a2235;
+  --card: #141e2e;
+  --border: rgba(255,255,255,0.08);
+  --text: #e8edf5;
+  --text2: #8899aa;
+  --radius: 14px;
+  --shadow: 0 4px 24px rgba(0,0,0,0.4);
+  --font-te: 'Noto Sans Telugu', sans-serif;
+  --font: 'Inter', sans-serif;
+  --trans: 0.25s cubic-bezier(0.19,1,0.22,1);
+}
 
-/* ══════════════════════════════════
-   NEWS TICKER
-══════════════════════════════════ */
-.ticker-wrap{
-  background:var(--ticker-bg);
-  border-bottom:1px solid var(--border-bright);
-  padding:0;
-  overflow:hidden;
-  display:flex;
-  align-items:stretch;
-}
-.ticker-label{
-  display:flex;align-items:center;gap:7px;
-  background:var(--accent);
-  color:#04100a;
-  font-family:'Syne',sans-serif;
-  font-size:10px;font-weight:700;
-  letter-spacing:.08em;text-transform:uppercase;
-  padding:9px 14px;
-  flex-shrink:0;white-space:nowrap;
-  z-index:1;
-}
-[data-theme="light"] .ticker-label{color:#fff;}
-.ticker-label i{font-size:11px;animation:tickfire .8s ease-in-out infinite alternate;}
-@keyframes tickfire{from{transform:scale(1)}to{transform:scale(1.3)}}
-.ticker-body{
-  flex:1;overflow:hidden;
-  display:flex;align-items:center;
-}
-.ticker-inner{
-  display:flex;
-  animation:tickscroll 28s linear infinite;
-  white-space:nowrap;
-  will-change:transform;
-}
-.ticker-inner:hover{animation-play-state:paused;}
-.ticker-inner span{
-  font-size:12.5px;
-  color:var(--ticker-text);
-  font-weight:500;
-  padding:9px 32px 9px 0;
-  letter-spacing:.01em;
-}
-.ticker-sep{color:var(--accent);padding:9px 8px 9px 0;font-size:14px;}
-@keyframes tickscroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+/* ═══════════════════════════════════════
+   COLOR PALETTE FOR SERVICE CARDS
+   ═══════════════════════════════════════ */
+.gi-blue   { --ci: #60a5fa; --cb: rgba(96,165,250,0.12); }
+.gi-green  { --ci: #34d399; --cb: rgba(52,211,153,0.12); }
+.gi-orange { --ci: #fb923c; --cb: rgba(251,146,60,0.12); }
+.gi-purple { --ci: #a78bfa; --cb: rgba(167,139,250,0.12); }
+.gi-red    { --ci: #f87171; --cb: rgba(248,113,113,0.12); }
+.gi-yellow { --ci: #fbbf24; --cb: rgba(251,191,36,0.12); }
+.gi-pink   { --ci: #f472b6; --cb: rgba(244,114,182,0.12); }
+.gi-teal   { --ci: #2dd4bf; --cb: rgba(45,212,191,0.12); }
 
-/* ══════════════════════════════════
+/* ═══════════════════════════════════════
+   RESET & BASE
+   ═══════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+a { text-decoration: none; color: inherit; }
+button { border: none; cursor: pointer; font-family: var(--font); }
+
+/* ═══════════════════════════════════════
+   LOADING SCREEN
+   ═══════════════════════════════════════ */
+#loading-screen {
+  position: fixed; inset: 0; z-index: 9999;
+  background: var(--bg);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 20px; transition: opacity 0.5s ease;
+}
+#loading-screen.hide { opacity: 0; pointer-events: none; }
+.loader-ring {
+  width: 52px; height: 52px;
+  border: 3px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+.loader-text { color: var(--text2); font-size: 14px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ═══════════════════════════════════════
+   POPUP / MODAL
+   ═══════════════════════════════════════ */
+#popup-overlay {
+  position: fixed; inset: 0; z-index: 1000;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 16px;
+  animation: fadeIn 0.3s ease;
+}
+#popup-overlay.hidden { display: none; }
+#popup-box {
+  background: var(--bg2);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  max-width: 440px; width: 100%;
+  box-shadow: 0 0 40px rgba(79,255,176,0.2);
+  overflow: hidden;
+  animation: slideUp 0.35s cubic-bezier(0.19,1,0.22,1);
+}
+#popup-img { width: 100%; max-height: 200px; object-fit: cover; display: none; }
+#popup-img.show { display: block; }
+.popup-body {
+  padding: 24px;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.popup-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(79,255,176,0.12);
+  color: var(--accent);
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 12px; font-weight: 600;
+  width: fit-content;
+}
+.popup-badge i { font-size: 10px; }
+#popup-title {
+  font-size: 18px; font-weight: 700;
+  line-height: 1.4;
+  font-family: var(--font-te);
+}
+#popup-subtitle {
+  font-size: 14px; color: var(--text2);
+  line-height: 1.6;
+  font-family: var(--font-te);
+}
+#popup-close {
+  background: var(--accent);
+  color: #0a0f1a;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-weight: 700; font-size: 14px;
+  margin-top: 4px;
+  transition: var(--trans);
+}
+#popup-close:hover { opacity: 0.85; transform: scale(0.98); }
+
+/* ═══════════════════════════════════════
+   TICKER BAR
+   ═══════════════════════════════════════ */
+#ticker-bar {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  padding: 0 16px;
+  display: flex; align-items: center; gap: 12px;
+  height: 38px; overflow: hidden;
+  position: sticky; top: 0; z-index: 50;
+}
+.ticker-label {
+  background: var(--accent);
+  color: #0a0f1a;
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-size: 11px; font-weight: 700;
+  white-space: nowrap; flex-shrink: 0;
+  letter-spacing: 0.5px;
+}
+.ticker-track {
+  flex: 1; overflow: hidden; position: relative;
+}
+.ticker-inner {
+  display: flex; gap: 48px;
+  animation: tickerScroll 22s linear infinite;
+  white-space: nowrap;
+}
+.ticker-inner:hover { animation-play-state: paused; }
+.ticker-item {
+  font-size: 13px; color: var(--text2);
+  flex-shrink: 0; cursor: pointer;
+  font-family: var(--font-te);
+  transition: color var(--trans);
+}
+.ticker-item:hover { color: var(--accent); }
+@keyframes tickerScroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* ═══════════════════════════════════════
    HEADER
-══════════════════════════════════ */
-.header{padding:30px 20px 22px;border-bottom:1px solid var(--border);}
-.top-bar{display:flex;align-items:center;justify-content:space-between;}
-.brand-row{display:flex;align-items:center;gap:13px;}
-.logo-ring{width:48px;height:48px;border-radius:14px;border:1.5px solid var(--accent-dim);background:var(--accent-dim);display:flex;align-items:center;justify-content:center;font-size:19px;color:var(--accent);flex-shrink:0;}
-.brand-text .bname{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--text);line-height:1.2;}
-.brand-text .btag{font-size:10.5px;color:var(--muted);font-weight:300;letter-spacing:.07em;text-transform:uppercase;margin-top:2px;}
-.hdr-actions{display:flex;align-items:center;gap:9px;}
-/* voice alert button in header */
-.voice-btn{
-  width:36px;height:36px;border-radius:10px;
-  border:1px solid var(--border-bright);
-  background:var(--surface2);
-  display:flex;align-items:center;justify-content:center;
-  font-size:14px;color:var(--muted2);
-  cursor:pointer;transition:all .18s;
+   ═══════════════════════════════════════ */
+#app-header {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  padding: 0 20px;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 64px;
 }
-.voice-btn:hover{background:var(--accent-dim);color:var(--accent);}
-.voice-btn.speaking{background:var(--accent-dim);color:var(--accent);animation:voicepulse 1s ease-in-out infinite;}
-@keyframes voicepulse{0%,100%{box-shadow:0 0 0 0 var(--accent-glow)}50%{box-shadow:0 0 0 6px transparent}}
-.theme-toggle{width:52px;height:28px;border-radius:14px;background:var(--toggle-bg);border:1px solid var(--border-bright);cursor:pointer;display:flex;align-items:center;padding:3px;transition:background .3s;flex-shrink:0;}
-.toggle-thumb{width:22px;height:22px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:10px;color:#04100a;transition:transform .3s cubic-bezier(.4,0,.2,1);}
-[data-theme="light"] .toggle-thumb{transform:translateX(24px);color:#fff;}
-
-/* ══════════════════════════════════
-   QUICK ACTIONS
-══════════════════════════════════ */
-.quick{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
-.quick-btn{background:var(--surface);padding:16px 8px;text-align:center;text-decoration:none;color:var(--text);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;border:none;width:100%;transition:background .18s;}
-.quick-btn:hover,.quick-btn:active{background:var(--surface2);}
-.quick-btn:hover .qi{color:var(--accent);}
-.qi{width:40px;height:40px;border-radius:11px;border:1px solid var(--border-bright);display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--muted2);transition:color .18s;}
-.quick-btn span{font-size:9.5px;font-weight:500;color:var(--muted);letter-spacing:.04em;text-transform:uppercase;}
-
-/* ══════════════════════════════════
-   LIVE ALERTS TABS (from sheet col 3)
-══════════════════════════════════ */
-.alerts-row{
-  display:flex;gap:8px;
-  overflow-x:auto;padding:14px 20px;
-  scrollbar-width:none;-ms-overflow-style:none;
-  background:var(--surface);
-  border-bottom:1px solid var(--border);
+.header-brand {
+  display: flex; align-items: center; gap: 12px;
 }
-.alerts-row::-webkit-scrollbar{display:none;}
-.tab-btn{
-  display:flex;align-items:center;gap:7px;
-  flex-shrink:0;
-  text-decoration:none;
-  background:var(--surface2);
-  border:1px solid var(--border-bright);
-  border-radius:20px;
-  padding:7px 14px;
-  font-size:12px;font-weight:500;
-  color:var(--text);
-  white-space:nowrap;
-  transition:all .18s;
+.header-logo {
+  width: 42px; height: 42px;
+  background: rgba(79,255,176,0.12);
+  border: 1.5px solid var(--accent);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--accent); font-size: 18px;
 }
-.tab-btn:hover{background:var(--accent-dim);border-color:var(--accent);color:var(--accent);}
-.tab-btn i{font-size:12px;color:var(--accent);}
-
-/* ══════════════════════════════════
-   SECTION
-══════════════════════════════════ */
-.section{padding:0 20px;margin-top:24px;}
-.sec-label{font-family:'Syne',sans-serif;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:11px;display:flex;align-items:center;gap:10px;}
-.sec-label::after{content:'';flex:1;height:1px;background:var(--border);}
-
-/* ── GALLERY ── */
-.hscroll{display:flex;gap:13px;overflow-x:auto;padding-bottom:8px;scrollbar-width:none;-ms-overflow-style:none;}
-.hscroll::-webkit-scrollbar{display:none;}
-.gcard{flex-shrink:0;width:142px;background:var(--surface);border:1px solid var(--border);border-radius:15px;overflow:hidden;box-shadow:var(--shadow);cursor:pointer;transition:border-color .18s,transform .18s;}
-.gcard:hover{border-color:var(--accent);transform:translateY(-2px);}
-.gimg{width:100%;height:90px;display:flex;align-items:center;justify-content:center;}
-.gi-blue{background:linear-gradient(135deg,#1a2744,#0f172a);}
-.gi-indigo{background:linear-gradient(135deg,#1e1a44,#130e2e);}
-.gi-green{background:linear-gradient(135deg,#0f2018,#081410);}
-.gi-amber{background:linear-gradient(135deg,#2a1e08,#1a1205);}
-.gi-pink{background:linear-gradient(135deg,#2a0f1a,#1a080f);}
-.gi-teal{background:linear-gradient(135deg,#082a24,#041a16);}
-[data-theme="light"] .gi-blue{background:linear-gradient(135deg,#dbeafe,#bfdbfe);}
-[data-theme="light"] .gi-indigo{background:linear-gradient(135deg,#e0e7ff,#c7d2fe);}
-[data-theme="light"] .gi-green{background:linear-gradient(135deg,#dcfce7,#bbf7d0);}
-[data-theme="light"] .gi-amber{background:linear-gradient(135deg,#fef9c3,#fde68a);}
-[data-theme="light"] .gi-pink{background:linear-gradient(135deg,#fce7f3,#fbcfe8);}
-[data-theme="light"] .gi-teal{background:linear-gradient(135deg,#ccfbf1,#99f6e4);}
-.ginfo{padding:9px 11px 12px;}
-.gtitle{font-size:12px;font-weight:600;color:var(--text);line-height:1.3;margin-bottom:2px;}
-.gsub{font-size:10px;color:var(--muted);line-height:1.3;}
-.add-gcard{flex-shrink:0;width:142px;background:var(--surface);border:1.5px dashed var(--border-bright);border-radius:15px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;cursor:pointer;min-height:152px;transition:border-color .18s,background .18s;}
-.add-gcard:hover{border-color:var(--accent);background:var(--accent-dim);}
-.add-gcard i{font-size:20px;color:var(--muted);}
-.add-gcard span{font-size:10.5px;color:var(--muted);text-align:center;padding:0 10px;}
-.add-gcard:hover i,.add-gcard:hover span{color:var(--accent);}
-
-/* ── UPDATES (horizontal scroll cards) ── */
-.ucard{flex-shrink:0;width:215px;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 15px;text-decoration:none;color:var(--text);display:flex;flex-direction:column;gap:10px;box-shadow:var(--shadow);transition:border-color .18s;}
-.ucard:hover{border-color:var(--accent-dim);}
-.ucard-title{font-size:13px;font-weight:500;line-height:1.4;color:var(--text);}
-.ucard-footer{display:flex;align-items:center;justify-content:space-between;}
-.live-dot{display:flex;align-items:center;gap:5px;font-size:9.5px;font-weight:600;letter-spacing:.06em;color:var(--accent);text-transform:uppercase;}
-.live-dot::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite;}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-.ucard-arr{font-size:12px;color:var(--muted);}
-
-/* ── PDF ── */
-.pdf-grid{display:flex;flex-direction:column;gap:8px;}
-.pdf-item{background:var(--surface);border:1px solid var(--border);border-radius:13px;padding:12px 15px;display:flex;align-items:center;justify-content:space-between;text-decoration:none;color:var(--text);font-size:13px;transition:all .18s;box-shadow:var(--shadow);}
-.pdf-item:hover{border-color:var(--accent-dim);background:var(--surface2);}
-.pdf-left{display:flex;align-items:center;gap:11px;}
-.pdf-icon{width:32px;height:32px;border-radius:9px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.15);display:flex;align-items:center;justify-content:center;font-size:13px;color:#ef4444;}
-.dl-btn{width:28px;height:28px;border-radius:7px;background:var(--accent-dim);display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--accent);}
-
-/* ── ACCORDION ── */
-.acc-wrap{display:flex;flex-direction:column;gap:8px;}
-.acc-item{background:var(--surface);border:1px solid var(--border);border-radius:13px;overflow:hidden;box-shadow:var(--shadow);}
-.acc-head{padding:13px 16px;display:flex;align-items:center;gap:11px;cursor:pointer;user-select:none;transition:background .18s;}
-.acc-head:hover{background:var(--surface2);}
-.acc-cat-icon{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
-.acc-head-text{flex:1;font-size:13.5px;font-weight:500;color:var(--text);}
-.acc-sub{font-size:10.5px;color:var(--muted);margin-top:1px;}
-.acc-toggle{color:var(--muted);font-size:13px;transition:transform .25s;flex-shrink:0;}
-.acc-item.open .acc-toggle{transform:rotate(45deg);color:var(--accent);}
-.acc-body{max-height:0;overflow:hidden;font-size:13px;color:var(--muted2);line-height:1.7;transition:max-height .3s ease,padding .3s;padding:0 16px;}
-.acc-item.open .acc-body{max-height:300px;padding-bottom:15px;}
-.doc-list{list-style:none;display:flex;flex-direction:column;gap:6px;margin-top:4px;}
-.doc-list li{display:flex;align-items:center;gap:8px;font-size:12.5px;}
-.doc-list li::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--accent);flex-shrink:0;}
-.ic-blue{background:rgba(59,130,246,.12);color:#60a5fa;}
-.ic-orange{background:rgba(249,115,22,.12);color:#fb923c;}
-.ic-green{background:rgba(34,197,94,.12);color:#4ade80;}
-.ic-pink{background:rgba(236,72,153,.12);color:#f472b6;}
-.ic-yellow{background:rgba(234,179,8,.12);color:#facc15;}
-.ic-teal{background:rgba(20,184,166,.12);color:#2dd4bf;}
-.ic-purple{background:rgba(139,92,246,.12);color:#a78bfa;}
-.ic-red{background:rgba(239,68,68,.12);color:#f87171;}
-
-/* ── CONTACT ── */
-.contact-strip{margin:24px 20px 0;background:var(--accent-dim);border:1px solid var(--accent-dim);border-radius:18px;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;}
-.cs-label{font-size:11.5px;color:var(--muted);margin-bottom:3px;}
-.cs-num{font-family:'Syne',sans-serif;font-size:19px;font-weight:700;color:var(--accent);letter-spacing:.04em;}
-.ca-row{display:flex;gap:9px;}
-.ca-btn{width:40px;height:40px;border-radius:11px;border:1px solid var(--border-bright);background:var(--surface);display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--muted2);cursor:pointer;text-decoration:none;transition:all .18s;}
-.ca-btn:hover{background:var(--accent-dim);color:var(--accent);}
-
-/* ── MAP ── */
-.map-wrap{border-radius:16px;overflow:hidden;border:1px solid var(--border);}
-iframe.map{width:100%;height:185px;border:none;filter:grayscale(1) contrast(.8) brightness(.4);}
-[data-theme="light"] iframe.map{filter:grayscale(.2) contrast(.9) brightness(.95);}
-
-/* ── FAB (voice) ── */
-.fab{position:fixed;bottom:24px;right:20px;width:54px;height:54px;border-radius:15px;background:var(--accent);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:19px;color:#04100a;box-shadow:0 8px 20px var(--accent-glow);transition:transform .2s;z-index:100;}
-[data-theme="light"] .fab{color:#fff;}
-.fab:hover{transform:scale(1.07);}
-.fab.speaking{animation:fabpulse 1s ease-in-out infinite;}
-@keyframes fabpulse{0%,100%{box-shadow:0 8px 20px var(--accent-glow)}50%{box-shadow:0 8px 32px var(--accent-glow),0 0 0 8px var(--accent-dim)}}
-
-/* ══════════════════════════════════
-   POPUP MODAL (image from sheet col D)
-══════════════════════════════════ */
-.modal-overlay{
-  display:none;position:fixed;inset:0;
-  background:rgba(0,0,0,0.82);
-  backdrop-filter:blur(14px);
-  z-index:900;
-  align-items:center;justify-content:center;
+.header-name { font-size: 16px; font-weight: 700; font-family: var(--font-te); }
+.header-tag  { font-size: 11px; color: var(--text2); margin-top: 1px; }
+.header-actions { display: flex; gap: 8px; }
+.hbtn {
+  width: 38px; height: 38px;
+  border-radius: 10px;
+  background: var(--bg3);
+  color: var(--text2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px;
+  transition: var(--trans);
 }
-.modal-overlay.show{display:flex;}
-.modal-box{
-  background:var(--surface);
-  border:1px solid var(--border-bright);
-  border-radius:24px;
-  max-width:360px;width:90%;
-  overflow:hidden;
-  animation:popIn .35s cubic-bezier(.4,0,.2,1);
-}
-@keyframes popIn{from{transform:scale(.88);opacity:0}to{transform:scale(1);opacity:1}}
-.modal-img-wrap img{width:100%;display:block;max-height:260px;object-fit:cover;}
-.modal-img-placeholder{width:100%;height:180px;background:var(--surface2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--muted);}
-.modal-img-placeholder i{font-size:36px;color:var(--accent);}
-.modal-body{padding:20px;}
-.modal-title{font-family:'Syne',sans-serif;font-size:17px;font-weight:700;color:var(--text);margin-bottom:6px;}
-.modal-sub{font-size:13px;color:var(--muted2);line-height:1.55;margin-bottom:18px;}
-.modal-close{
-  width:100%;padding:12px;
-  background:var(--accent);color:#04100a;
-  border:none;border-radius:12px;
-  font-family:'Syne',sans-serif;font-size:14px;font-weight:700;
-  cursor:pointer;transition:opacity .18s;
-}
-[data-theme="light"] .modal-close{color:#fff;}
-.modal-close:hover{opacity:.88;}
+.hbtn:hover { background: var(--card); color: var(--text); }
+.hbtn.active { background: rgba(79,255,176,0.12); color: var(--accent); }
 
-/* ══════════════════════════════════
-   RESUME PAGE
-══════════════════════════════════ */
-.rpage-header{padding:32px 20px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:14px;}
-.back-btn{width:40px;height:40px;border-radius:12px;border:1px solid var(--border-bright);background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--text);cursor:pointer;flex-shrink:0;transition:background .18s;}
-.back-btn:hover{background:var(--accent-dim);color:var(--accent);}
-.rpage-title{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--text);}
-.rpage-sub{font-size:12px;color:var(--muted);margin-top:2px;}
-.rform{padding:20px;display:flex;flex-direction:column;gap:16px;}
-.r-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-.r-field{display:flex;flex-direction:column;gap:6px;}
-.r-label{font-size:10.5px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:6px;}
-.r-label i{font-size:12px;color:var(--accent);}
-.r-input{width:100%;background:var(--surface2);border:1px solid var(--border-bright);border-radius:11px;padding:12px 14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:border-color .18s,box-shadow .18s;resize:none;}
-.r-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-dim);}
-.r-input::placeholder{color:var(--muted);}
-.step-card{background:var(--surface);border:1px solid var(--border);border-radius:15px;padding:16px;display:flex;flex-direction:column;gap:14px;}
-.step-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--accent);display:flex;align-items:center;gap:8px;}
-.step-num{width:22px;height:22px;border-radius:50%;background:var(--accent-dim);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--accent);}
-.r-btn{width:100%;padding:15px;background:var(--accent);color:#04100a;border:none;border-radius:13px;font-family:'Syne',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:opacity .18s;display:flex;align-items:center;justify-content:center;gap:9px;}
-[data-theme="light"] .r-btn{color:#fff;}
-.r-btn:hover{opacity:.88;}
-.r-btn:active{opacity:.75;}
-.preview-box{background:var(--surface2);border:1px solid var(--border-bright);border-radius:11px;padding:14px;font-size:12px;line-height:1.8;color:var(--muted2);white-space:pre-wrap;font-family:monospace;display:none;max-height:260px;overflow-y:auto;}
-.preview-box.show{display:block;}
-.r-btn-sec{width:100%;padding:13px;background:transparent;color:var(--muted2);border:1px solid var(--border-bright);border-radius:13px;font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;transition:all .18s;display:flex;align-items:center;justify-content:center;gap:8px;}
-.r-btn-sec:hover{border-color:var(--accent);color:var(--accent);}
+/* ═══════════════════════════════════════
+   PAGE ROUTER
+   ═══════════════════════════════════════ */
+.page { display: none; }
+.page.active { display: block; }
 
-.footer{text-align:center;padding:32px 20px 76px;font-size:11px;color:var(--muted);letter-spacing:.04em;}
+/* ═══════════════════════════════════════
+   HOME PAGE
+   ═══════════════════════════════════════ */
+#home { padding: 20px 16px 100px; max-width: 600px; margin: 0 auto; }
+
+/* Hero */
+.hero-card {
+  background: linear-gradient(135deg, var(--bg3) 0%, var(--card) 100%);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 24px;
+  position: relative; overflow: hidden;
+}
+.hero-card::before {
+  content: '';
+  position: absolute; top: -60px; right: -60px;
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
+  opacity: 0.06; pointer-events: none;
+}
+.hero-greeting { font-size: 12px; color: var(--text2); margin-bottom: 6px; letter-spacing: 0.5px; }
+.hero-name { font-size: 22px; font-weight: 700; font-family: var(--font-te); }
+.hero-city { font-size: 13px; color: var(--accent); margin-top: 4px; }
+.hero-actions { display: flex; gap: 10px; margin-top: 18px; }
+.hero-btn {
+  flex: 1; padding: 11px 16px;
+  border-radius: 10px;
+  font-size: 13px; font-weight: 600;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  transition: var(--trans);
+}
+.hero-btn.primary {
+  background: var(--accent); color: #0a0f1a;
+}
+.hero-btn.primary:hover { opacity: 0.88; transform: scale(0.98); }
+.hero-btn.secondary {
+  background: var(--bg3); color: var(--text);
+  border: 1px solid var(--border);
+}
+.hero-btn.secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+/* Section headings */
+.section-head {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 14px;
+}
+.section-head h2 {
+  font-size: 15px; font-weight: 700;
+  font-family: var(--font-te);
+}
+.section-line {
+  flex: 1; height: 1px;
+  background: linear-gradient(90deg, var(--border) 0%, transparent 100%);
+}
+
+/* Update cards */
+.updates-section { margin-bottom: 24px; }
+.update-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  display: flex; align-items: center; gap: 14px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: var(--trans);
+}
+.update-card:hover { border-color: var(--accent); transform: translateY(-1px); }
+.update-dot {
+  width: 8px; height: 8px;
+  background: var(--accent);
+  border-radius: 50%; flex-shrink: 0;
+  box-shadow: 0 0 6px var(--accent);
+}
+.update-title {
+  flex: 1; font-size: 13px;
+  font-family: var(--font-te);
+  line-height: 1.5;
+}
+.update-arrow { color: var(--text2); font-size: 12px; }
+
+/* Services grid */
+.services-section { margin-bottom: 24px; }
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.service-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 12px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 10px; text-align: center;
+  cursor: pointer;
+  transition: var(--trans);
+  min-height: 90px;
+}
+.service-card:hover {
+  border-color: var(--ci, var(--accent));
+  background: var(--cb, rgba(79,255,176,0.06));
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+}
+.service-icon {
+  width: 38px; height: 38px;
+  border-radius: 10px;
+  background: var(--cb, rgba(79,255,176,0.12));
+  color: var(--ci, var(--accent));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+}
+.service-name { font-size: 11px; color: var(--text2); font-family: var(--font-te); line-height: 1.3; }
+
+/* ═══════════════════════════════════════
+   DOCS PAGE
+   ═══════════════════════════════════════ */
+#docs-page { padding: 20px 16px 100px; max-width: 600px; margin: 0 auto; }
+
+/* PDF list */
+.pdf-section { margin-bottom: 24px; }
+.pdf-item {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  display: flex; align-items: center; gap: 14px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: var(--trans);
+}
+.pdf-item:hover { border-color: #f87171; }
+.pdf-icon-wrap {
+  width: 36px; height: 36px;
+  background: rgba(248,113,113,0.12);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  color: #f87171; font-size: 16px; flex-shrink: 0;
+}
+.pdf-name { flex: 1; font-size: 13px; font-family: var(--font-te); }
+.pdf-dl { color: var(--text2); font-size: 13px; }
+
+/* Docs accordion */
+.docs-list { display: flex; flex-direction: column; gap: 8px; }
+.doc-item {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 13px 16px;
+  display: flex; align-items: center; gap: 12px;
+  font-family: var(--font-te);
+  font-size: 13px;
+}
+.doc-check {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: rgba(79,255,176,0.12);
+  border: 1.5px solid var(--accent);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--accent); font-size: 10px; flex-shrink: 0;
+}
+
+/* ═══════════════════════════════════════
+   CONTACT PAGE
+   ═══════════════════════════════════════ */
+#contact-page { padding: 20px 16px 100px; max-width: 600px; margin: 0 auto; }
+
+.contact-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+.contact-row {
+  padding: 16px 20px;
+  display: flex; align-items: center; gap: 14px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: var(--trans);
+}
+.contact-row:last-child { border-bottom: none; }
+.contact-row:hover { background: var(--bg3); }
+.contact-icon-wrap {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+}
+.contact-label { font-size: 11px; color: var(--text2); }
+.contact-value { font-size: 14px; font-weight: 600; margin-top: 2px; }
+
+.map-wrap {
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  height: 240px;
+  margin-bottom: 16px;
+}
+.map-wrap iframe { width: 100%; height: 100%; border: none; }
+.map-placeholder {
+  width: 100%; height: 100%;
+  background: var(--card);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 10px; color: var(--text2);
+}
+
+/* ═══════════════════════════════════════
+   BOTTOM NAV
+   ═══════════════════════════════════════ */
+#bottom-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  display: flex;
+  padding: 0 0 env(safe-area-inset-bottom);
+}
+.nav-btn {
+  flex: 1; padding: 10px 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 4px; color: var(--text2);
+  background: transparent;
+  font-size: 10px; font-weight: 600;
+  font-family: var(--font-te);
+  transition: var(--trans);
+  letter-spacing: 0.3px;
+}
+.nav-btn i { font-size: 18px; }
+.nav-btn.active { color: var(--accent); }
+.nav-btn.active i { filter: drop-shadow(0 0 4px var(--accent)); }
+
+/* ═══════════════════════════════════════
+   FAB
+   ═══════════════════════════════════════ */
+#fab {
+  position: fixed; bottom: 80px; right: 20px; z-index: 200;
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #0a0f1a;
+  font-size: 20px;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 20px rgba(79,255,176,0.4);
+  transition: var(--trans);
+}
+#fab:hover { transform: scale(1.08); box-shadow: 0 6px 28px rgba(79,255,176,0.5); }
+
+/* ═══════════════════════════════════════
+   FOOTER
+   ═══════════════════════════════════════ */
+.page-footer {
+  text-align: center;
+  padding: 20px 16px;
+  color: var(--text2);
+  font-size: 12px;
+  border-top: 1px solid var(--border);
+  margin-top: 16px;
+}
+
+/* ═══════════════════════════════════════
+   ANIMATIONS
+   ═══════════════════════════════════════ */
+@keyframes fadeIn  { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ═══════════════════════════════════════
+   ERROR BANNER
+   ═══════════════════════════════════════ */
+#error-banner {
+  display: none;
+  background: rgba(248,113,113,0.12);
+  border: 1px solid rgba(248,113,113,0.3);
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin: 16px;
+  color: #f87171;
+  font-size: 13px;
+  font-family: var(--font-te);
+}
+#error-banner.show { display: block; }
+
+/* ═══════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════ */
+@media(min-width:640px) {
+  .services-grid { grid-template-columns: repeat(4, 1fr); }
+}
 </style>
 </head>
 <body>
 
-<!-- ══════════════════════════════════════════
-     POPUP MODAL
-══════════════════════════════════════════ -->
-<div class="modal-overlay" id="specialModal">
-  <div class="modal-box">
-    <div class="modal-img-wrap" id="popup-image-container">
-      <div class="modal-img-placeholder">
-        <i class="fas fa-bell"></i>
-        <span style="font-size:13px;">Special Announcement</span>
-      </div>
+<!-- ════════════════════ LOADING ════════════════════ -->
+<div id="loading-screen">
+  <div class="loader-ring"></div>
+  <span class="loader-text">లోడ్ అవుతోంది…</span>
+</div>
+
+<!-- ════════════════════ POPUP ════════════════════ -->
+<div id="popup-overlay" class="hidden">
+  <div id="popup-box">
+    <img id="popup-img" src="" alt="popup"/>
+    <div class="popup-body">
+      <span class="popup-badge"><i class="fas fa-bell"></i> ప్రకటన</span>
+      <div id="popup-title"></div>
+      <div id="popup-subtitle"></div>
+      <button id="popup-close">అర్థమైంది ✓</button>
     </div>
-    <div class="modal-body">
-      <div class="modal-title" id="popupTitle">ప్రత్యేక ప్రకటన</div>
-      <div class="modal-sub" id="popupSub">Citizen Digital Seva నుండి ముఖ్యమైన సమాచారం.</div>
-      <button class="modal-close" onclick="closePopup()">
-        <i class="fas fa-check"></i> సరే, అర్థమైంది
+  </div>
+</div>
+
+<!-- ════════════════════ TICKER ════════════════════ -->
+<div id="ticker-bar">
+  <span class="ticker-label">📢 LIVE</span>
+  <div class="ticker-track">
+    <div class="ticker-inner" id="ticker-inner">
+      <span class="ticker-item">లోడ్ అవుతోంది…</span>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════ HEADER ════════════════════ -->
+<header id="app-header">
+  <div class="header-brand">
+    <div class="header-logo"><i id="hdr-icon" class="fas fa-landmark"></i></div>
+    <div>
+      <div class="header-name" id="hdr-name">లోడ్…</div>
+      <div class="header-tag" id="hdr-tag">—</div>
+    </div>
+  </div>
+  <div class="header-actions">
+    <a id="fab-call" href="#" class="hbtn"><i class="fas fa-phone"></i></a>
+    <a id="fab-wa" href="#" target="_blank" class="hbtn" style="color:#25d366"><i class="fab fa-whatsapp"></i></a>
+  </div>
+</header>
+
+<!-- ════════════════════ ERROR BANNER ════════════════════ -->
+<div id="error-banner">
+  ⚠️ Data లోడ్ కాలేదు. Sheet URL సరిగా ఉందా? Internet connection చెక్ చేయండి.
+</div>
+
+<!-- ════════════════════ PAGES ════════════════════ -->
+
+<!-- HOME -->
+<div id="home" class="page active">
+  <div class="hero-card">
+    <div class="hero-greeting">నమస్కారం 🙏</div>
+    <div class="hero-name" id="hero-shop-name">—</div>
+    <div class="hero-city" id="hero-city">—</div>
+    <div class="hero-actions">
+      <button class="hero-btn primary" onclick="callPhone()">
+        <i class="fas fa-phone"></i> కాల్ చేయండి
+      </button>
+      <button class="hero-btn secondary" onclick="openWA()">
+        <i class="fab fa-whatsapp"></i> WhatsApp
       </button>
     </div>
   </div>
-</div>
 
-
-<!-- ══════════════════════════════════════════
-     HOME PAGE
-══════════════════════════════════════════ -->
-<div class="page active" id="homePage">
-
-<!-- FAB voice -->
-<button class="fab" id="fabVoice" onclick="playVoiceAlert()" title="Voice Alert"><i class="fas fa-microphone-lines"></i></button>
-
-<!-- NEWS TICKER -->
-<div class="ticker-wrap">
-  <div class="ticker-label"><i class="fas fa-fire"></i> LIVE</div>
-  <div class="ticker-body">
-    <div class="ticker-inner" id="tickerInner">
-      <!-- filled by JS, duplicated for seamless loop -->
+  <div class="updates-section">
+    <div class="section-head">
+      <h2>🔔 తాజా అప్‌డేట్లు</h2>
+      <div class="section-line"></div>
     </div>
+    <div id="updates-list"></div>
   </div>
-</div>
 
-<!-- HEADER -->
-<div class="header">
-  <div class="top-bar">
-    <div class="brand-row">
-      <div class="logo-ring"><i class="fas fa-landmark"></i></div>
-      <div class="brand-text">
-        <div class="bname">Citizen Digital Seva</div>
-        <div class="btag">Choutuppal · Premium</div>
-      </div>
+  <div class="services-section">
+    <div class="section-head">
+      <h2>🛎️ మా సేవలు</h2>
+      <div class="section-line"></div>
     </div>
-    <div class="hdr-actions">
-      <button class="voice-btn" id="hdrVoice" onclick="playVoiceAlert()" title="Voice Alert">
-        <i class="fas fa-volume-high"></i>
-      </button>
-      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
-        <div class="toggle-thumb"><i id="themeIcon" class="fas fa-moon"></i></div>
-      </button>
-    </div>
+    <div class="services-grid" id="services-grid"></div>
   </div>
+
+  <div class="page-footer" id="footer-text"></div>
 </div>
 
-<!-- QUICK ACTIONS -->
-<div class="quick">
-  <a href="tel:9948770651" class="quick-btn">
-    <div class="qi"><i class="fas fa-phone"></i></div><span>Call</span>
-  </a>
-  <a href="https://wa.me/919948770651" class="quick-btn">
-    <div class="qi" style="background:#25d366;border-color:#25d366;"><i class="fab fa-whatsapp" style="color:#fff;font-size:18px;"></i></div><span>WhatsApp</span>
-  </a>
-  <a href="https://meeseva.telangana.gov.in/meeseva/home.htm" class="quick-btn">
-    <div class="qi"><i class="fas fa-magnifying-glass"></i></div><span>Status</span>
-  </a>
-  <button class="quick-btn" onclick="gotoPage('resumePage')">
-    <div class="qi"><i class="fas fa-file-lines"></i></div><span>Resume</span>
-  </button>
-</div>
-
-<!-- live-alerts hidden, still populated by JS for ticker use -->
-<div id="live-alerts" style="display:none;"></div>
-
-<!-- GALLERY -->
-<div class="section">
-  <div class="sec-label">మా సేవలు — Gallery</div>
-  <div class="hscroll" id="gallery">
-    <div class="gcard">
-      <div class="gimg gi-blue"><i class="fas fa-file-invoice" style="color:#60a5fa;font-size:28px;"></i></div>
-      <div class="ginfo"><div class="gtitle">Income Certificate</div><div class="gsub">ఆదాయ ధృవీకరణ</div></div>
+<!-- DOCS -->
+<div id="docs-page" class="page">
+  <div class="pdf-section">
+    <div class="section-head">
+      <h2>📄 PDF ఫారాలు</h2>
+      <div class="section-line"></div>
     </div>
-    <div class="gcard">
-      <div class="gimg gi-indigo"><i class="fas fa-id-card" style="color:#a78bfa;font-size:28px;"></i></div>
-      <div class="ginfo"><div class="gtitle">Caste Certificate</div><div class="gsub">కులం ధృవీకరణ</div></div>
-    </div>
-    <div class="gcard">
-      <div class="gimg gi-green"><i class="fas fa-wheat-awn" style="color:#4ade80;font-size:28px;"></i></div>
-      <div class="ginfo"><div class="gtitle">Ration Card</div><div class="gsub">రేషన్ కార్డ్ సేవలు</div></div>
-    </div>
-    <div class="gcard">
-      <div class="gimg gi-pink"><i class="fas fa-rings-wedding" style="color:#f472b6;font-size:28px;"></i></div>
-      <div class="ginfo"><div class="gtitle">Kalyana Laxmi</div><div class="gsub">పెళ్లి సహాయం</div></div>
-    </div>
-    <div class="gcard">
-      <div class="gimg gi-amber"><i class="fas fa-fingerprint" style="color:#facc15;font-size:28px;"></i></div>
-      <div class="ginfo"><div class="gtitle">Aadhar Services</div><div class="gsub">ఆధార్ సేవలు</div></div>
-    </div>
-    <div class="gcard" onclick="gotoPage('resumePage')">
-      <div class="gimg gi-teal"><i class="fas fa-file-lines" style="color:#2dd4bf;font-size:28px;"></i></div>
-      <div class="ginfo"><div class="gtitle">Resume Build</div><div class="gsub">ఉచిత రెజ్యూమ్</div></div>
-    </div>
-    <div class="gcard">
-      <div class="gimg gi-blue"><i class="fas fa-passport" style="color:#93c5fd;font-size:28px;"></i></div>
-      <div class="ginfo"><div class="gtitle">Passport Help</div><div class="gsub">పాస్‌పోర్ట్ సేవ</div></div>
-    </div>
-    <div class="add-gcard" onclick="addGalleryItem()">
-      <i class="fas fa-plus-circle"></i><span>Add Service</span>
-    </div>
+    <div id="pdf-list"></div>
   </div>
-</div>
 
-<!-- UPDATES — HORIZONTAL SCROLL -->
-<div class="section">
-  <div class="sec-label"><i class="fas fa-bolt" style="color:var(--accent);font-size:11px;"></i> తాజా అప్డేట్స్</div>
-  <div class="hscroll" id="update-list">
-    <div class="ucard" style="color:var(--muted);align-items:center;justify-content:center;gap:8px;">
-      <i class="fas fa-circle-notch fa-spin" style="font-size:18px;color:var(--accent);"></i>
-      <span style="font-size:12px;">Loading…</span>
+  <div>
+    <div class="section-head">
+      <h2>📋 అవసరమైన పత్రాలు</h2>
+      <div class="section-line"></div>
     </div>
-  </div>
-</div>
-
-<!-- PDF APPLICATIONS -->
-<div class="section">
-  <div class="sec-label"><i class="fas fa-download" style="color:var(--accent);font-size:11px;"></i> PDF దరఖాస్తులు</div>
-  <div class="pdf-grid">
-    <a href="#" class="pdf-item"><div class="pdf-left"><div class="pdf-icon"><i class="fas fa-file-pdf"></i></div><span>Income Certificate Form</span></div><div class="dl-btn"><i class="fas fa-arrow-down"></i></div></a>
-    <a href="#" class="pdf-item"><div class="pdf-left"><div class="pdf-icon"><i class="fas fa-file-pdf"></i></div><span>Caste Certificate Form</span></div><div class="dl-btn"><i class="fas fa-arrow-down"></i></div></a>
-    <a href="#" class="pdf-item"><div class="pdf-left"><div class="pdf-icon"><i class="fas fa-file-pdf"></i></div><span>Ration Card Correction</span></div><div class="dl-btn"><i class="fas fa-arrow-down"></i></div></a>
-    <a href="#" class="pdf-item"><div class="pdf-left"><div class="pdf-icon"><i class="fas fa-file-pdf"></i></div><span>Kalyana Laxmi Form</span></div><div class="dl-btn"><i class="fas fa-arrow-down"></i></div></a>
-  </div>
-</div>
-
-<!-- REQUIRED DOCS ACCORDION -->
-<div class="section">
-  <div class="sec-label"><i class="fas fa-folder-open" style="color:var(--accent);font-size:11px;"></i> కావలసిన పత్రాలు</div>
-  <div class="acc-wrap">
-
-    <div class="acc-item">
-      <div class="acc-head" onclick="toggleAcc(this.parentElement)">
-        <div class="acc-cat-icon ic-blue"><i class="fas fa-file-invoice"></i></div>
-        <div class="acc-head-text"><div>Income Certificate</div><div class="acc-sub">ఆదాయ ధృవీకరణ పత్రం</div></div>
-        <i class="fas fa-plus acc-toggle"></i>
-      </div>
-      <div class="acc-body"><ul class="doc-list">
-        <li>Aadhar Card (ఆధార్ కార్డ్)</li><li>Ration Card (రేషన్ కార్డ్)</li>
-        <li>Passport Size Photo</li><li>Filled Application Form</li>
-      </ul></div>
-    </div>
-
-    <div class="acc-item">
-      <div class="acc-head" onclick="toggleAcc(this.parentElement)">
-        <div class="acc-cat-icon ic-orange"><i class="fas fa-id-card"></i></div>
-        <div class="acc-head-text"><div>Caste Certificate</div><div class="acc-sub">కులం ధృవీకరణ పత్రం</div></div>
-        <i class="fas fa-plus acc-toggle"></i>
-      </div>
-      <div class="acc-body"><ul class="doc-list">
-        <li>Aadhar Card</li><li>Ration Card</li>
-        <li>School TC / SSC Certificate</li><li>Application Form</li>
-      </ul></div>
-    </div>
-
-    <div class="acc-item">
-      <div class="acc-head" onclick="toggleAcc(this.parentElement)">
-        <div class="acc-cat-icon ic-green"><i class="fas fa-wheat-awn"></i></div>
-        <div class="acc-head-text"><div>Ration Card</div><div class="acc-sub">రేషన్ కార్డ్ దరఖాస్తు</div></div>
-        <i class="fas fa-plus acc-toggle"></i>
-      </div>
-      <div class="acc-body"><ul class="doc-list">
-        <li>Aadhar Card (All family members)</li><li>Residence Proof</li>
-        <li>Electricity Bill / Rent Agreement</li><li>Passport Photos</li>
-      </ul></div>
-    </div>
-
-    <div class="acc-item">
-      <div class="acc-head" onclick="toggleAcc(this.parentElement)">
-        <div class="acc-cat-icon ic-pink"><i class="fas fa-rings-wedding"></i></div>
-        <div class="acc-head-text"><div>Kalyana Laxmi</div><div class="acc-sub">పెళ్లి సహాయం పథకం</div></div>
-        <i class="fas fa-plus acc-toggle"></i>
-      </div>
-      <div class="acc-body"><ul class="doc-list">
-        <li>Wedding Invitation Card</li><li>Bride &amp; Groom Aadhar</li>
-        <li>Bank Passbook (Bride)</li><li>Caste &amp; Income Certificates</li>
-      </ul></div>
-    </div>
-
-    <div class="acc-item">
-      <div class="acc-head" onclick="toggleAcc(this.parentElement)">
-        <div class="acc-cat-icon ic-yellow"><i class="fas fa-fingerprint"></i></div>
-        <div class="acc-head-text"><div>Aadhar Update</div><div class="acc-sub">ఆధార్ సవరణ</div></div>
-        <i class="fas fa-plus acc-toggle"></i>
-      </div>
-      <div class="acc-body"><ul class="doc-list">
-        <li>Original Aadhar Card</li><li>Address Proof</li><li>Linked Mobile Number</li>
-      </ul></div>
-    </div>
-
-    <div class="acc-item">
-      <div class="acc-head" onclick="toggleAcc(this.parentElement)">
-        <div class="acc-cat-icon ic-teal"><i class="fas fa-passport"></i></div>
-        <div class="acc-head-text"><div>Passport Services</div><div class="acc-sub">పాస్‌పోర్ట్ సహాయం</div></div>
-        <i class="fas fa-plus acc-toggle"></i>
-      </div>
-      <div class="acc-body"><ul class="doc-list">
-        <li>Aadhar Card</li><li>10th Certificate</li>
-        <li>Passport Size Photos (white bg)</li><li>Online Application Fee Paid</li>
-      </ul></div>
-    </div>
-
-    <div class="acc-item">
-      <div class="acc-head" onclick="toggleAcc(this.parentElement)">
-        <div class="acc-cat-icon ic-purple"><i class="fas fa-file-lines"></i></div>
-        <div class="acc-head-text"><div>Resume Build</div><div class="acc-sub">ఉచిత రెజ్యూమ్ తయారీ</div></div>
-        <i class="fas fa-plus acc-toggle"></i>
-      </div>
-      <div class="acc-body">
-        <ul class="doc-list">
-          <li>Name, Age, Address details</li><li>Education qualifications</li><li>Skills &amp; work experience</li>
-        </ul>
-        <button onclick="gotoPage('resumePage')" style="margin-top:10px;padding:9px 16px;background:var(--accent);color:#04100a;border:none;border-radius:9px;font-size:12.5px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:7px;">
-          <i class="fas fa-arrow-right"></i> Build Resume Now
-        </button>
-      </div>
-    </div>
-
-    <div class="acc-item">
-      <div class="acc-head" onclick="toggleAcc(this.parentElement)">
-        <div class="acc-cat-icon ic-red"><i class="fas fa-house-medical"></i></div>
-        <div class="acc-head-text"><div>Residence Certificate</div><div class="acc-sub">నివాస ధృవీకరణ</div></div>
-        <i class="fas fa-plus acc-toggle"></i>
-      </div>
-      <div class="acc-body"><ul class="doc-list">
-        <li>Aadhar Card</li><li>Ration Card</li>
-        <li>Electricity / Water Bill</li><li>Application Form</li>
-      </ul></div>
-    </div>
-
+    <div class="docs-list" id="docs-list"></div>
   </div>
 </div>
 
 <!-- CONTACT -->
-<div class="contact-strip">
-  <div><div class="cs-label">Direct line</div><div class="cs-num">9948770651</div></div>
-  <div class="ca-row">
-    <a href="tel:9948770651" class="ca-btn"><i class="fas fa-phone"></i></a>
-    <a href="https://wa.me/919948770651" class="ca-btn"><i class="fab fa-whatsapp"></i></a>
+<div id="contact-page" class="page">
+  <div class="contact-card" id="contact-card"></div>
+  <div class="map-wrap" id="map-wrap">
+    <div class="map-placeholder"><i class="fas fa-map-marker-alt" style="font-size:28px"></i><span>మ్యాప్ లోడ్ అవుతోంది…</span></div>
   </div>
 </div>
 
-<!-- MAP -->
-<div class="section" style="margin-bottom:0;">
-  <div class="sec-label"><i class="fas fa-location-dot" style="color:var(--accent);font-size:11px;"></i> మా లొకేషన్</div>
-  <div class="map-wrap">
-    <iframe class="map" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3809.84!2d78.9!3d17.3!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTfCsDE4JzAwLjAiTiA3OMKwNTQnMDAuMCJF!5e0!3m2!1sen!2sin!4v1000000000000!5m2!1sen!2sin" allowfullscreen loading="lazy"></iframe>
-  </div>
-</div>
+<!-- ════════════════════ BOTTOM NAV ════════════════════ -->
+<nav id="bottom-nav">
+  <button class="nav-btn active" onclick="showPage('home',this)">
+    <i class="fas fa-home"></i>హోమ్
+  </button>
+  <button class="nav-btn" onclick="showPage('docs-page',this)">
+    <i class="fas fa-file-alt"></i>పత్రాలు
+  </button>
+  <button class="nav-btn" onclick="showPage('contact-page',this)">
+    <i class="fas fa-map-marker-alt"></i>చిరునామా
+  </button>
+</nav>
 
-<div class="footer">© 2026 Citizen Digital Seva · Choutuppal, Telangana</div>
-</div><!-- /homePage -->
+<!-- ════════════════════ FAB (WhatsApp) ════════════════════ -->
+<a id="fab" href="#" target="_blank"><i class="fab fa-whatsapp"></i></a>
 
-
-<!-- ══════════════════════════════════════════
-     RESUME PAGE
-══════════════════════════════════════════ -->
-<div class="page" id="resumePage">
-
-<div class="rpage-header">
-  <button class="back-btn" onclick="gotoPage('homePage')"><i class="fas fa-arrow-left"></i></button>
-  <div>
-    <div class="rpage-title">Resume Builder</div>
-    <div class="rpage-sub">ఉచిత రెజ్యూమ్ తయారీ సేవ · Citizen Digital Seva</div>
-  </div>
-</div>
-
-<div class="rform">
-
-  <div class="step-card">
-    <div class="step-title"><span class="step-num">1</span> Personal Details · వ్యక్తిగత వివరాలు</div>
-    <div class="r-row">
-      <div class="r-field"><div class="r-label"><i class="fas fa-user"></i>పేరు (Name)</div><input id="rName" class="r-input" type="text" placeholder="Full name"></div>
-      <div class="r-field"><div class="r-label"><i class="fas fa-phone"></i>ఫోన్ (Phone)</div><input id="rPhone" class="r-input" type="tel" placeholder="10-digit"></div>
-    </div>
-    <div class="r-row">
-      <div class="r-field"><div class="r-label"><i class="fas fa-calendar"></i>వయస్సు (Age)</div><input id="rAge" class="r-input" type="number" placeholder="e.g. 24"></div>
-      <div class="r-field"><div class="r-label"><i class="fas fa-venus-mars"></i>లింగం (Gender)</div>
-        <select id="rGender" class="r-input"><option value="" disabled selected>Select</option><option>Male · పురుషుడు</option><option>Female · స్త్రీ</option><option>Other</option></select>
-      </div>
-    </div>
-    <div class="r-field"><div class="r-label"><i class="fas fa-location-dot"></i>చిరునామా (Address)</div><input id="rAddr" class="r-input" type="text" placeholder="Village / Mandal / District"></div>
-    <div class="r-field"><div class="r-label"><i class="fas fa-envelope"></i>Email (optional)</div><input id="rEmail" class="r-input" type="email" placeholder="yourname@email.com"></div>
-  </div>
-
-  <div class="step-card">
-    <div class="step-title"><span class="step-num">2</span> Education · విద్యార్హతలు</div>
-    <div class="r-row">
-      <div class="r-field"><div class="r-label"><i class="fas fa-graduation-cap"></i>చదువు (Qualification)</div><input id="rEdu" class="r-input" type="text" placeholder="e.g. B.A., Inter"></div>
-      <div class="r-field"><div class="r-label"><i class="fas fa-school"></i>సంవత్సరం (Year)</div><input id="rYear" class="r-input" type="text" placeholder="e.g. 2022"></div>
-    </div>
-    <div class="r-field"><div class="r-label"><i class="fas fa-university"></i>పాఠశాల / కళాశాల</div><input id="rSchool" class="r-input" type="text" placeholder="School / College name"></div>
-  </div>
-
-  <div class="step-card">
-    <div class="step-title"><span class="step-num">3</span> Skills &amp; Experience · నైపుణ్యాలు</div>
-    <div class="r-field"><div class="r-label"><i class="fas fa-star"></i>నైపుణ్యాలు (Skills)</div><textarea id="rSkills" class="r-input" rows="3" placeholder="e.g. Computer, Typing, English, Telugu, Driving…"></textarea></div>
-    <div class="r-field"><div class="r-label"><i class="fas fa-briefcase"></i>అనుభవం (Experience)</div><textarea id="rExp" class="r-input" rows="3" placeholder="Previous work details (if any)…"></textarea></div>
-    <div class="r-field"><div class="r-label"><i class="fas fa-bullseye"></i>లక్ష్యం (Career Objective)</div><textarea id="rObj" class="r-input" rows="2" placeholder="What kind of job are you looking for?"></textarea></div>
-  </div>
-
-  <div id="previewBox" class="preview-box"></div>
-  <button class="r-btn-sec" onclick="previewResume()"><i class="fas fa-eye"></i> Preview Resume</button>
-  <button class="r-btn" onclick="genResume()"><i class="fas fa-download"></i> Download Resume (.txt)</button>
-
-</div>
-<div class="footer">Citizen Digital Seva · Choutuppal, Telangana</div>
-</div><!-- /resumePage -->
-
-
+<!-- ════════════════════ SCRIPT ════════════════════ -->
 <script>
-/* ═══════════════════════════════════════
-   CONFIG
-═══════════════════════════════════════ */
-const sheetURL='https://docs.google.com/spreadsheets/d/e/2PACX-1vTeWeqTJ--Hc7-c7t-n2fSCVaZpgy5B-QROLUFm6nYWjijfja5GOW9EJ3__rKiqeWN-gtARzgH7j5s8/pub?output=csv';
+/* ═══════════════════════════════════════════════════
+   ⚙️  CONFIGURATION — ONLY THIS 1 LINE TO CHANGE
+   ═══════════════════════════════════════════════════
+   SHEET_URL → మీ Google Sheet లో ఆ agent Tab యొక్క
+               published CSV URL పెట్టండి.
 
-/* ═══════════════════════════════════════
-   PARSE CSV ROW
-═══════════════════════════════════════ */
-function parseCSV(text){
-  /* Properly parse full CSV — handles quoted fields with commas/newlines */
-  const rows=[];
-  let cur='', inQ=false, row=[];
-  for(let i=0;i<text.length;i++){
-    const ch=text[i], nx=text[i+1];
-    if(inQ){
-      if(ch==='"'&&nx==='"'){cur+='"';i++;}
-      else if(ch==='"'){inQ=false;}
-      else{cur+=ch;}
-    } else {
-      if(ch==='"'){inQ=true;}
-      else if(ch===','){row.push(cur.trim());cur='';}
-      else if(ch==='
-'||(ch==='
-'&&nx==='
-')){
-        if(ch==='
-')i++;
-        row.push(cur.trim());cur='';
-        rows.push(row);row=[];
-      } else {cur+=ch;}
-    }
+   ఎలా తీయాలి:
+   Sheet → File → Share → Publish to web
+   → ఆ agent tab select చేయండి → CSV → Publish
+   → ఆ URL ఇక్కడ పెట్టండి.
+
+   కొత్త client కి: ఆ client tab URL మాత్రమే మార్చండి.
+   ═══════════════════════════════════════════════════ */
+const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQgCCtcdcRdQYX3Zdhdc_BDmZPU2tw6tKUaUmuH8w_LobsbEOXq1LK0kbNSiPSNu0Lst1J_gKX-_GPl/pub?gid=0&single=true&output=csv';
+
+/* ═══════════════════════════════════════════════════
+   GLOBAL STATE
+   ═══════════════════════════════════════════════════ */
+let CLIENT = null;
+
+/* ═══════════════════════════════════════════════════
+   CSV PARSER
+   ═══════════════════════════════════════════════════ */
+function parseCSV(text) {
+  const lines = text.trim().split('\n');
+  const headers = splitCSVLine(lines[0]);
+  const rows = [];
+  for (let i = 1; i < lines.length; i++) {
+    if (!lines[i].trim()) continue;
+    const vals = splitCSVLine(lines[i]);
+    const row = {};
+    headers.forEach((h, idx) => { row[h.trim()] = (vals[idx] || '').trim(); });
+    rows.push(row);
   }
-  if(cur||row.length){row.push(cur.trim());rows.push(row);}
   return rows;
 }
-function parseCsvRow(row){
-  return row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(c=>c.replace(/"/g,'').trim());
-}
 
-/* ═══════════════════════════════════════
-   MAIN SHEET LOADER
-═══════════════════════════════════════ */
-async function loadAlerts(){
-  /* 1. Show cache instantly — zero delay */
-  const cached=localStorage.getItem('cds-sheet-cache');
-  if(cached){ try{ processRows(cached); }catch(e){} }
-
-  /* 2. Fetch via Google Visualization API — no CORS, no proxy, works everywhere */
-  const sheetId='2PACX-1vTeWeqTJ--Hc7-c7t-n2fSCVaZpgy5B-QROLUFm6nYWjijfja5GOW9EJ3__rKiqeWN-gtARzgH7j5s8';
-  const gvizURL=`https://docs.google.com/spreadsheets/d/e/${sheetId}/pub?output=csv&t=${Date.now()}`;
-
-  /* try direct first (works on GitHub Pages / hosted sites) */
-  let data='';
-  try{
-    const r=await fetch(gvizURL,{cache:'no-store'});
-    if(r.ok) data=await r.text();
-  }catch(e){}
-
-  /* if direct blocked (local/PC), use lightweight CORS proxy */
-  if(!data||data.length<10){
-    try{
-      const r=await fetch('https://corsproxy.io/?'+encodeURIComponent(gvizURL),{cache:'no-store'});
-      if(r.ok) data=await r.text();
-    }catch(e){}
+function splitCSVLine(line) {
+  const result = [];
+  let cur = '', inQ = false;
+  for (let i = 0; i < line.length; i++) {
+    const c = line[i];
+    if (c === '"') { inQ = !inQ; continue; }
+    if (c === ',' && !inQ) { result.push(cur); cur = ''; continue; }
+    cur += c;
   }
+  result.push(cur);
+  return result;
+}
 
-  if(data&&data.length>10){
-    localStorage.setItem('cds-sheet-cache',data);
-    processRows(data);
-  } else if(!cached){
-    /* nothing loaded and no cache — show message */
-    const ul=document.getElementById('update-list');
-    if(ul) ul.innerHTML='<div class="ucard" style="color:var(--muted);font-size:12.5px;flex-direction:column;align-items:center;gap:6px;"><i class="fas fa-triangle-exclamation" style="color:#f87171;font-size:20px;"></i><span>Updates load కాలేదు. Refresh try చేయండి.</span></div>';
-    buildTicker(['గ్రూప్-4 ఫలితాలు విడుదలయ్యాయి','కొత్త రేషన్ కార్డుల దరఖాస్తులు ప్రారంభం','మీసేవ అన్ని సర్వీసులు అందుబాటులో ఉన్నాయి']);
+/* ═══════════════════════════════════════════════════
+   BUILD CLIENT OBJECT FROM CSV ROWS
+   (Tab లో అన్ని rows ఆ agent వే — filter అక్కర్లేదు)
+   ═══════════════════════════════════════════════════ */
+function buildClient(rows) {
+  if (!rows.length) return null;
+
+  const kv = {};
+  const updates  = [];
+  const services = [];
+  const pdfs     = [];
+  const docs     = [];
+
+  rows.forEach(r => {
+    const key = (r.key || '').trim();
+    if (!key) return;
+
+    if (key === 'update') {
+      updates.push({ title: r.title || r.value, link: r.link || '#' });
+    } else if (key === 'service') {
+      services.push({
+        title: r.title || r.value,
+        page:  r.link  || '#',
+        icon:  r.icon  || 'fas fa-star',
+        color: r.extra || 'gi-blue',
+      });
+    } else if (key === 'pdf') {
+      pdfs.push({ title: r.title || r.value, link: r.link || '#' });
+    } else if (key === 'doc') {
+      docs.push(r.value || r.title);
+    } else {
+      kv[key] = r.value;
+    }
+  });
+
+  return {
+    shopName:    kv.shopName    || 'Seva Kendra',
+    tagline:     kv.tagline     || '',
+    logoIcon:    kv.logoIcon    || 'fas fa-landmark',
+    accentColor: kv.accentColor || '#4fffb0',
+    city:        kv.city        || '',
+    phone:       kv.phone       || '',
+    whatsapp:    kv.whatsapp    || '',
+    mapEmbedUrl: kv.mapEmbedUrl || '',
+    footerText:  kv.footerText  || '',
+    popup: {
+      show:     kv.popup_show === 'true',
+      title:    kv.popup_title    || '',
+      subtitle: kv.popup_subtitle || '',
+      imageUrl: kv.popup_imageUrl || '',
+    },
+    updates,
+    services,
+    pdfs,
+    docs,
+  };
+}
+
+/* ═══════════════════════════════════════════════════
+   FETCH DATA FROM GOOGLE SHEET (UTF-8 Telugu fix)
+   ═══════════════════════════════════════════════════ */
+async function loadData() {
+  try {
+    const res = await fetch(SHEET_URL);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+
+    // Telugu UTF-8 సరిగ్గా చదవడానికి ArrayBuffer decode
+    const buf     = await res.arrayBuffer();
+    const decoder = new TextDecoder('utf-8');
+    let text      = decoder.decode(buf);
+
+    // BOM తీసేయండి (Excel export చేస్తే వస్తుంది)
+    if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
+
+    const rows = parseCSV(text);
+    CLIENT = buildClient(rows);
+    if (!CLIENT) throw new Error('No data in sheet');
+    renderAll();
+  } catch (e) {
+    console.error('Sheet fetch error:', e);
+    document.getElementById('error-banner').classList.add('show');
+    document.getElementById('loading-screen').classList.add('hide');
   }
 }
 
-function processRows(data){
-    /* Use full CSV parser — handles quoted fields, Telugu text, etc. */
-    const allRows=parseCSV(data);
-    if(allRows.length<2) return;
-    const rows=allRows.slice(1); /* skip header row */
-
-    /* ── POPUP: col D (index 3) of first row = image URL ── */
-    const firstCols=rows[0];
-    const popupImg=(firstCols[3]||'').trim();
-    const popupTitle=(firstCols[4]||'ప్రత్యేక ప్రకటన').trim();
-    const popupSub=(firstCols[5]||'Citizen Digital Seva నుండి ముఖ్యమైన సమాచారం.').trim();
-    if(popupImg){
-      document.getElementById('popup-image-container').innerHTML=`<img src="${popupImg}" alt="Announcement">`;
-    }
-    if(popupTitle) document.getElementById('popupTitle').textContent=popupTitle;
-    if(popupSub)   document.getElementById('popupSub').textContent=popupSub;
-    if(popupImg||popupTitle!=='ప్రత్యేక ప్రకటన'){
-      document.getElementById('specialModal').classList.add('show');
-    }
-
-    /* ── SAME SHEET → TICKER + UPDATE CARDS ── */
-    const tickerTexts=[];
-    const alertContainer=document.getElementById('live-alerts');
-    alertContainer.innerHTML='';
-    const updateList=document.getElementById('update-list');
-    updateList.innerHTML='';
-
-    rows.forEach(cols=>{
-      const title=(cols[0]||'').trim();
-      if(!title) return; /* skip only if title is empty */
-      const link=(cols[1]||'#').trim();
-      const icon=(cols[2]||'fa-bell').trim();
-      const safeLink=link&&link!=='#'?encodeURI(link):'#';
-      const targetAttr=link&&link!=='#'?' target="_blank"':'';
-
-      /* 1. Ticker */
-      tickerTexts.push(title);
-
-      /* 2. Update cards */
-      updateList.innerHTML+=`<a href="${safeLink}"${targetAttr} class="ucard">
-        <div class="ucard-title">${title}</div>
-        <div class="ucard-footer"><span class="live-dot">Live</span><i class="fas fa-arrow-up-right-from-square ucard-arr"></i></div>
-      </a>`;
-    });
-
-    if(!updateList.innerHTML){
-      updateList.innerHTML='<div class="ucard" style="color:var(--muted);font-size:12.5px;align-items:center;"><i class="fas fa-circle-info" style="color:var(--accent);margin-bottom:4px;font-size:18px;"></i><span>No updates yet</span></div>';
-    }
-
-    /* Build ticker */
-    buildTicker(tickerTexts);
-
-    /* ── VOICE: auto-speak first title on load ── */
-    if(tickerTexts.length>0){
-      window._voiceTexts=tickerTexts;
-    }
-
+/* ═══════════════════════════════════════════════════
+   RENDER FUNCTIONS
+   ═══════════════════════════════════════════════════ */
+function renderAll() {
+  applyTheme();
+  renderHeader();
+  renderTicker();
+  renderHero();
+  renderUpdates();
+  renderServices();
+  renderPDFs();
+  renderDocs();
+  renderContact();
+  renderFooter();
+  showPopup();
+  hideLoader();
 }
 
-/* ═══════════════════════════════════════
-   TICKER BUILD
-═══════════════════════════════════════ */
-function buildTicker(items){
-  if(!items||!items.length) return;
-  const inner=document.getElementById('tickerInner');
-  // build one pass then duplicate for seamless scroll
-  const makeItems=()=>items.map(t=>`<span>🔥 ${t}</span><span class="ticker-sep">|</span>`).join('');
-  inner.innerHTML=makeItems()+makeItems();
-  // adjust animation speed based on content width
-  const totalWidth=inner.scrollWidth/2;
-  const duration=Math.max(20,totalWidth/60);
-  inner.style.animation=`tickscroll ${duration}s linear infinite`;
+function applyTheme() {
+  document.documentElement.style.setProperty('--accent', CLIENT.accentColor);
+  // Derive dim accent (darken 15%)
+  document.documentElement.style.setProperty('--accent-dim', CLIENT.accentColor);
 }
 
-/* ═══════════════════════════════════════
-   POPUP
-═══════════════════════════════════════ */
-function closePopup(){
-  document.getElementById('specialModal').classList.remove('show');
+function renderHeader() {
+  document.getElementById('hdr-icon').className = CLIENT.logoIcon;
+  document.getElementById('hdr-name').textContent = CLIENT.shopName;
+  document.getElementById('hdr-tag').textContent  = CLIENT.tagline;
+  document.getElementById('fab-call').href = `tel:${CLIENT.phone}`;
+  document.getElementById('fab-wa').href   = `https://wa.me/${CLIENT.whatsapp}`;
+  document.getElementById('fab').href      = `https://wa.me/${CLIENT.whatsapp}`;
+  document.title = CLIENT.shopName;
 }
 
-/* ═══════════════════════════════════════
-   VOICE ALERT
-═══════════════════════════════════════ */
-let voiceIdx=0;
-function playVoiceAlert(){
-  if(window.speechSynthesis.speaking){
-    window.speechSynthesis.cancel();
-    setVoiceSpeaking(false);
+function renderTicker() {
+  const inner = document.getElementById('ticker-inner');
+  if (!CLIENT.updates.length) {
+    inner.innerHTML = `<span class="ticker-item">స్వాగతం — ${CLIENT.shopName}</span>`;
     return;
   }
-  const texts=window._voiceTexts&&window._voiceTexts.length>0
-    ? window._voiceTexts
-    : ['సిటిజెన్ డిజిటల్ సేవా కేంద్రానికి స్వాగతం. మీసేవ సర్వీసులు అందుబాటులో ఉన్నాయి.'];
+  const items = CLIENT.updates.map(u =>
+    `<span class="ticker-item" onclick="safeOpen('${u.link}')">🔔 ${u.title}</span>`
+  );
+  // Duplicate for seamless scroll
+  inner.innerHTML = [...items, ...items].join('');
+}
 
-  // Speak all items one by one
-  let idx=0;
-  function speakNext(){
-    if(idx>=texts.length){setVoiceSpeaking(false);return;}
-    const u=new SpeechSynthesisUtterance(texts[idx]);
-    u.lang='te-IN';
-    u.rate=0.92;
-    u.onend=()=>{idx++;speakNext();};
-    u.onerror=()=>setVoiceSpeaking(false);
-    window.speechSynthesis.speak(u);
+function renderHero() {
+  document.getElementById('hero-shop-name').textContent = CLIENT.shopName;
+  document.getElementById('hero-city').textContent      = CLIENT.city ? `📍 ${CLIENT.city}` : '';
+}
+
+function renderUpdates() {
+  const list = document.getElementById('updates-list');
+  if (!CLIENT.updates.length) {
+    list.innerHTML = `<div style="color:var(--text2);font-size:13px;padding:12px 0;font-family:var(--font-te)">తాజా అప్‌డేట్లు లేవు</div>`;
+    return;
   }
-  setVoiceSpeaking(true);
-  speakNext();
+  list.innerHTML = CLIENT.updates.map(u => `
+    <div class="update-card" onclick="safeOpen('${u.link}')">
+      <div class="update-dot"></div>
+      <div class="update-title">${u.title}</div>
+      <i class="fas fa-chevron-right update-arrow"></i>
+    </div>
+  `).join('');
 }
 
-function setVoiceSpeaking(on){
-  document.getElementById('fabVoice').classList.toggle('speaking',on);
-  document.getElementById('hdrVoice').classList.toggle('speaking',on);
-}
-
-/* ═══════════════════════════════════════
-   THEME
-═══════════════════════════════════════ */
-function toggleTheme(){
-  const h=document.documentElement;
-  const next=h.getAttribute('data-theme')==='dark'?'light':'dark';
-  h.setAttribute('data-theme',next);
-  document.getElementById('themeIcon').className=next==='light'?'fas fa-sun':'fas fa-moon';
-  localStorage.setItem('cds-theme',next);
-}
-(function(){
-  const s=localStorage.getItem('cds-theme');
-  if(s){
-    document.documentElement.setAttribute('data-theme',s);
-    document.getElementById('themeIcon').className=s==='light'?'fas fa-sun':'fas fa-moon';
+function renderServices() {
+  const grid = document.getElementById('services-grid');
+  if (!CLIENT.services.length) {
+    grid.innerHTML = `<div style="color:var(--text2);font-size:13px;padding:12px 0;font-family:var(--font-te);grid-column:1/-1">సేవలు లేవు</div>`;
+    return;
   }
-})();
+  grid.innerHTML = CLIENT.services.map(s => `
+    <div class="service-card ${s.color}" onclick="safeOpen('${s.page}')">
+      <div class="service-icon"><i class="${s.icon}"></i></div>
+      <div class="service-name">${s.title}</div>
+    </div>
+  `).join('');
+}
 
-/* ═══════════════════════════════════════
-   PAGE NAV
-═══════════════════════════════════════ */
-function gotoPage(id){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+function renderPDFs() {
+  const list = document.getElementById('pdf-list');
+  if (!CLIENT.pdfs.length) {
+    list.innerHTML = `<div style="color:var(--text2);font-size:13px;font-family:var(--font-te)">PDF ఫారాలు లేవు</div>`;
+    return;
+  }
+  list.innerHTML = CLIENT.pdfs.map(p => `
+    <div class="pdf-item" onclick="safeOpen('${p.link}')">
+      <div class="pdf-icon-wrap"><i class="fas fa-file-pdf"></i></div>
+      <div class="pdf-name">${p.title}</div>
+      <i class="fas fa-download pdf-dl"></i>
+    </div>
+  `).join('');
+}
+
+function renderDocs() {
+  const list = document.getElementById('docs-list');
+  if (!CLIENT.docs.length) {
+    list.innerHTML = `<div style="color:var(--text2);font-size:13px;font-family:var(--font-te)">పత్రాలు లేవు</div>`;
+    return;
+  }
+  list.innerHTML = CLIENT.docs.map(d => `
+    <div class="doc-item">
+      <div class="doc-check"><i class="fas fa-check"></i></div>
+      <span>${d}</span>
+    </div>
+  `).join('');
+}
+
+function renderContact() {
+  const card = document.getElementById('contact-card');
+  card.innerHTML = `
+    <div class="contact-row" onclick="callPhone()">
+      <div class="contact-icon-wrap" style="background:rgba(96,165,250,0.12);color:#60a5fa">
+        <i class="fas fa-phone"></i>
+      </div>
+      <div>
+        <div class="contact-label">ఫోన్</div>
+        <div class="contact-value">${CLIENT.phone}</div>
+      </div>
+    </div>
+    <div class="contact-row" onclick="openWA()">
+      <div class="contact-icon-wrap" style="background:rgba(37,211,102,0.12);color:#25d366">
+        <i class="fab fa-whatsapp"></i>
+      </div>
+      <div>
+        <div class="contact-label">WhatsApp</div>
+        <div class="contact-value">+${CLIENT.whatsapp}</div>
+      </div>
+    </div>
+    ${CLIENT.city ? `
+    <div class="contact-row">
+      <div class="contact-icon-wrap" style="background:rgba(251,146,60,0.12);color:#fb923c">
+        <i class="fas fa-map-marker-alt"></i>
+      </div>
+      <div>
+        <div class="contact-label">స్థానం</div>
+        <div class="contact-value">${CLIENT.city}</div>
+      </div>
+    </div>` : ''}
+  `;
+
+  const mapWrap = document.getElementById('map-wrap');
+  if (CLIENT.mapEmbedUrl) {
+    mapWrap.innerHTML = `<iframe src="${CLIENT.mapEmbedUrl}" allowfullscreen loading="lazy"></iframe>`;
+  }
+}
+
+function renderFooter() {
+  document.getElementById('footer-text').textContent = CLIENT.footerText || `© ${new Date().getFullYear()} ${CLIENT.shopName}`;
+}
+
+function showPopup() {
+  if (!CLIENT.popup.show) return;
+  const overlay = document.getElementById('popup-overlay');
+  const img     = document.getElementById('popup-img');
+  document.getElementById('popup-title').textContent    = CLIENT.popup.title;
+  document.getElementById('popup-subtitle').textContent = CLIENT.popup.subtitle;
+  if (CLIENT.popup.imageUrl) {
+    img.src = CLIENT.popup.imageUrl;
+    img.classList.add('show');
+  }
+  overlay.classList.remove('hidden');
+}
+
+function hideLoader() {
+  document.getElementById('loading-screen').classList.add('hide');
+  setTimeout(() => {
+    document.getElementById('loading-screen').style.display = 'none';
+  }, 500);
+}
+
+/* ═══════════════════════════════════════════════════
+   NAVIGATION
+   ═══════════════════════════════════════════════════ */
+function showPage(id, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  window.scrollTo(0,0);
+  if (btn) btn.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-/* ═══════════════════════════════════════
-   ACCORDION
-═══════════════════════════════════════ */
-function toggleAcc(el){el.classList.toggle('open');}
-
-/* ═══════════════════════════════════════
-   GALLERY ADD
-═══════════════════════════════════════ */
-function addGalleryItem(){
-  const name=prompt('Service name:'); if(!name) return;
-  const icons=['fas fa-star','fas fa-certificate','fas fa-stamp','fas fa-file-shield','fas fa-building-columns'];
-  const clrs=['gi-blue','gi-indigo','gi-green','gi-amber','gi-pink','gi-teal'];
-  const ic=icons[Math.floor(Math.random()*icons.length)];
-  const cl=clrs[Math.floor(Math.random()*clrs.length)];
-  const sub=prompt('Telugu subtitle (optional):') || '';
-  const card=document.createElement('div');
-  card.className='gcard';
-  card.innerHTML=`<div class="gimg ${cl}"><i class="${ic}" style="font-size:28px;color:#60a5fa;"></i></div><div class="ginfo"><div class="gtitle">${name}</div><div class="gsub">${sub}</div></div>`;
-  document.getElementById('gallery').insertBefore(card,document.querySelector('.add-gcard'));
+/* ═══════════════════════════════════════════════════
+   HELPERS
+   ═══════════════════════════════════════════════════ */
+function safeOpen(url) {
+  if (url && url !== '#') window.open(url, '_blank');
+}
+function callPhone() {
+  if (CLIENT && CLIENT.phone) window.location.href = `tel:${CLIENT.phone}`;
+}
+function openWA() {
+  if (CLIENT && CLIENT.whatsapp) window.open(`https://wa.me/${CLIENT.whatsapp}`, '_blank');
 }
 
-/* ═══════════════════════════════════════
-   RESUME
-═══════════════════════════════════════ */
-function buildResumeText(){
-  const n=(document.getElementById('rName').value||'Applicant').trim();
-  const p=document.getElementById('rPhone').value.trim();
-  const ag=document.getElementById('rAge').value.trim();
-  const gn=document.getElementById('rGender').value.trim();
-  const em=document.getElementById('rEmail').value.trim();
-  const ad=document.getElementById('rAddr').value.trim();
-  const ed=document.getElementById('rEdu').value.trim();
-  const yr=document.getElementById('rYear').value.trim();
-  const sc=document.getElementById('rSchool').value.trim();
-  const sk=document.getElementById('rSkills').value.trim();
-  const ex=document.getElementById('rExp').value.trim();
-  const ob=document.getElementById('rObj').value.trim();
-  const L='═'.repeat(38);
-  let t=`${L}\n        CITIZEN DIGITAL SEVA\n        Resume · రెజ్యూమ్\n${L}\n\n`;
-  t+=`▌ PERSONAL DETAILS\n${'─'.repeat(30)}\n`;
-  t+=`Name         : ${n}\n`;
-  if(p)  t+=`Phone        : ${p}\n`;
-  if(em) t+=`Email        : ${em}\n`;
-  if(ag) t+=`Age          : ${ag}\n`;
-  if(gn) t+=`Gender       : ${gn}\n`;
-  if(ad) t+=`Address      : ${ad}\n`;
-  if(ed||sc){
-    t+=`\n▌ EDUCATION · విద్యార్హతలు\n${'─'.repeat(30)}\n`;
-    if(ed) t+=`Qualification: ${ed}${yr?' ('+yr+')':''}\n`;
-    if(sc) t+=`Institution  : ${sc}\n`;
-  }
-  if(sk) t+=`\n▌ SKILLS · నైపుణ్యాలు\n${'─'.repeat(30)}\n${sk}\n`;
-  if(ex) t+=`\n▌ EXPERIENCE · అనుభవం\n${'─'.repeat(30)}\n${ex}\n`;
-  if(ob) t+=`\n▌ CAREER OBJECTIVE · లక్ష్యం\n${'─'.repeat(30)}\n${ob}\n`;
-  t+=`\n${L}\nGenerated by Citizen Digital Seva, Choutuppal\n© 2026 | Ph: 9948770651\n${L}`;
-  return {n,t};
-}
-function previewResume(){
-  const {t}=buildResumeText();
-  const box=document.getElementById('previewBox');
-  box.textContent=t;box.classList.add('show');
-  box.scrollIntoView({behavior:'smooth',block:'nearest'});
-}
-function genResume(){
-  const {n,t}=buildResumeText();
-  const b=new Blob([t],{type:'text/plain'});
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(b);
-  a.download=n.replace(/\s+/g,'_')+'_Resume.txt';
-  a.click();
-}
-
-/* ── INIT ── */
-window.onload=function(){
-  localStorage.removeItem('cds-sheet-cache'); /* clear old cache so all rows load fresh */
-  loadAlerts();
+/* ═══════════════════════════════════════════════════
+   POPUP CLOSE
+   ═══════════════════════════════════════════════════ */
+document.getElementById('popup-close').onclick = () => {
+  document.getElementById('popup-overlay').classList.add('hidden');
 };
+document.getElementById('popup-overlay').onclick = (e) => {
+  if (e.target === document.getElementById('popup-overlay'))
+    document.getElementById('popup-overlay').classList.add('hidden');
+};
+
+/* ═══════════════════════════════════════════════════
+   BOOT
+   ═══════════════════════════════════════════════════ */
+loadData();
 </script>
 </body>
 </html>
