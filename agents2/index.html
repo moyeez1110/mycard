@@ -513,6 +513,155 @@ button { border: none; cursor: pointer; font-family: var(--font); }
 @media(min-width:640px) {
   .services-grid { grid-template-columns: repeat(4, 1fr); }
 }
+
+/* ═══════════════════════════════════════
+   VOICE PAGE — WhatsApp chat style
+   ═══════════════════════════════════════ */
+#voice-page { padding: 16px 16px 100px; max-width: 600px; margin: 0 auto; }
+
+.voice-chat { display: flex; flex-direction: column; gap: 14px; }
+
+/* Incoming bubble — Audio file (left) */
+.vc-in { display: flex; flex-direction: column; align-items: flex-start; max-width: 88%; }
+.vc-in .vbubble {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 4px 14px 14px 14px;
+  padding: 10px 14px;
+  width: 100%;
+}
+
+/* Outgoing bubble — TTS text (right) */
+.vc-out {
+  display: flex; flex-direction: column;
+  align-items: flex-end; max-width: 88%;
+  align-self: flex-end;
+}
+.vc-out .vbubble {
+  background: rgba(79,255,176,0.08);
+  border: 1px solid rgba(79,255,176,0.2);
+  border-radius: 14px 4px 14px 14px;
+  padding: 12px 14px;
+  width: 100%;
+}
+
+.vc-sender { font-size: 11px; color: var(--accent); font-weight: 700; margin-bottom: 6px; }
+.vc-title { font-size: 12px; color: var(--text2); font-family: var(--font-te); margin-bottom: 8px; }
+
+/* Audio player */
+.vc-controls { display: flex; align-items: center; gap: 10px; }
+.vc-play-btn {
+  width: 38px; height: 38px; border-radius: 50%;
+  background: var(--accent); color: #0a0f1a;
+  font-size: 13px; display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: var(--trans);
+}
+.vc-play-btn:hover { opacity: 0.85; }
+.vc-play-btn.playing {
+  background: transparent;
+  color: var(--accent);
+  border: 1.5px solid var(--accent);
+}
+
+.vc-wave { flex: 1; height: 28px; display: flex; align-items: center; gap: 2.5px; }
+.wbar { width: 3px; border-radius: 3px; background: var(--text2); }
+.wbar.on { background: var(--accent); animation: wPulse 0.65s ease-in-out infinite alternate; }
+@keyframes wPulse { from { height: 4px; } to { height: 22px; } }
+
+.vc-dur { font-size: 11px; color: var(--text2); min-width: 34px; text-align: right; }
+
+/* TTS text bubble */
+.tts-body { font-size: 13px; font-family: var(--font-te); line-height: 1.65; color: var(--text); margin-bottom: 10px; }
+.tts-speak-btn {
+  background: var(--bg3); border: 1px solid rgba(79,255,176,0.4);
+  color: var(--accent); border-radius: 20px; padding: 5px 14px;
+  font-size: 12px; font-family: var(--font-te);
+  display: inline-flex; align-items: center; gap: 6px;
+  transition: var(--trans);
+}
+.tts-speak-btn:hover { background: rgba(79,255,176,0.08); }
+.tts-speak-btn.speaking { background: rgba(79,255,176,0.15); border-color: var(--accent); }
+
+.vc-time { font-size: 10px; color: var(--text2); margin-top: 6px; text-align: right; }
+
+.vc-empty { text-align: center; color: var(--text2); font-size: 13px;
+  font-family: var(--font-te); padding: 50px 20px; }
+.vc-empty i { font-size: 34px; margin-bottom: 12px; display: block; opacity: 0.35; }
+
+/* Poster / Image bubble */
+.vc-poster-img {
+  width: 100%; border-radius: 10px;
+  display: block; max-height: 280px;
+  object-fit: cover; cursor: pointer;
+}
+.vc-poster-cap {
+  font-size: 12px; color: var(--text2);
+  font-family: var(--font-te);
+  margin-top: 7px; line-height: 1.5;
+}
+
+/* PDF notice card */
+.vc-pdf-card {
+  display: flex; align-items: center; gap: 12px;
+  background: var(--bg3);
+  border: 1px solid rgba(248,113,113,0.2);
+  border-radius: 10px; padding: 12px 14px;
+  text-decoration: none; color: var(--text);
+  transition: var(--trans);
+}
+.vc-pdf-card:hover { border-color: #f87171; background: rgba(248,113,113,0.06); }
+.vc-pdf-icon {
+  width: 44px; height: 44px;
+  background: rgba(248,113,113,0.14);
+  border-radius: 10px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  color: #f87171; font-size: 22px;
+}
+.vc-pdf-info { flex: 1; min-width: 0; }
+.vc-pdf-name { font-size: 13px; font-weight: 600; font-family: var(--font-te);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.vc-pdf-sub  { font-size: 11px; color: var(--text2); margin-top: 3px; }
+.vc-pdf-dl   { color: var(--text2); font-size: 15px; flex-shrink: 0; }
+
+/* Canva template card */
+.vc-canva-card {
+  display: flex; align-items: center; gap: 12px;
+  background: var(--bg3);
+  border: 1px solid rgba(167,139,250,0.25);
+  border-radius: 10px; padding: 12px 14px;
+  text-decoration: none; color: var(--text);
+  transition: var(--trans);
+}
+.vc-canva-card:hover { border-color: #a78bfa; background: rgba(167,139,250,0.06); }
+.vc-canva-icon {
+  width: 44px; height: 44px;
+  background: rgba(167,139,250,0.14);
+  border-radius: 10px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  color: #a78bfa; font-size: 20px;
+}
+.vc-canva-info { flex: 1; min-width: 0; }
+.vc-canva-name { font-size: 13px; font-weight: 600; font-family: var(--font-te); }
+.vc-canva-desc { font-size: 11px; color: var(--text2); margin-top: 3px; }
+.vc-canva-open { font-size: 11px; color: #a78bfa; display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+
+/* Image lightbox */
+#vc-lightbox {
+  display: none; position: fixed; inset: 0; z-index: 2000;
+  background: rgba(0,0,0,0.9);
+  align-items: center; justify-content: center;
+  padding: 16px;
+}
+#vc-lightbox.on { display: flex; }
+#vc-lightbox img { max-width: 100%; max-height: 90vh; border-radius: 10px; }
+#vc-lightbox-close {
+  position: absolute; top: 16px; right: 16px;
+  background: var(--bg3); border: 1px solid var(--border);
+  color: var(--text); width: 36px; height: 36px;
+  border-radius: 50%; font-size: 16px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+}
 </style>
 </head>
 <body>
@@ -630,6 +779,25 @@ button { border: none; cursor: pointer; font-family: var(--font); }
   </div>
 </div>
 
+<!-- VOICE PAGE -->
+<div id="voice-page" class="page">
+  <div class="section-head" style="margin:4px 0 16px">
+    <h2>🎙️ వాయిస్ అనౌన్స్‌మెంట్స్</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="voice-chat" id="voice-chat">
+    <div class="vc-empty"><i class="fas fa-microphone-slash"></i>వాయిస్ అనౌన్స్‌మెంట్లు లేవు</div>
+  </div>
+</div>
+
+<!-- Image Lightbox -->
+<div id="vc-lightbox">
+  <button id="vc-lightbox-close" onclick="document.getElementById('vc-lightbox').classList.remove('on')">
+    <i class="fas fa-times"></i>
+  </button>
+  <img id="vc-lightbox-img" src="" alt="poster"/>
+</div>
+
 <!-- ════════════════════ BOTTOM NAV ════════════════════ -->
 <nav id="bottom-nav">
   <button class="nav-btn active" onclick="showPage('home',this)">
@@ -637,6 +805,9 @@ button { border: none; cursor: pointer; font-family: var(--font); }
   </button>
   <button class="nav-btn" onclick="showPage('docs-page',this)">
     <i class="fas fa-file-alt"></i>పత్రాలు
+  </button>
+  <button class="nav-btn" onclick="showPage('voice-page',this)">
+    <i class="fas fa-bullhorn"></i>నోటీసులు
   </button>
   <button class="nav-btn" onclick="showPage('contact-page',this)">
     <i class="fas fa-map-marker-alt"></i>చిరునామా
@@ -661,7 +832,7 @@ button { border: none; cursor: pointer; font-family: var(--font); }
 
    కొత్త client కి: ఆ client tab URL మాత్రమే మార్చండి.
    ═══════════════════════════════════════════════════ */
-const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQgCCtcdcRdQYX3Zdhdc_BDmZPU2tw6tKUaUmuH8w_LobsbEOXq1LK0kbNSiPSNu0Lst1J_gKX-_GPl/pub?gid=592606110&single=true&output=csv';
+const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQgCCtcdcRdQYX3Zdhdc_BDmZPU2tw6tKUaUmuH8w_LobsbEOXq1LK0kbNSiPSNu0Lst1J_gKX-_GPl/pub?gid=0&single=true&output=csv';
 
 /* ═══════════════════════════════════════════════════
    GLOBAL STATE
@@ -710,6 +881,8 @@ function buildClient(rows) {
   const services = [];
   const pdfs     = [];
   const docs     = [];
+  const tickers      = [];   // ticker scroll items
+  const announcements = []; // ← unified ordered list: voice/tts/poster/pdf_notice/canva
 
   rows.forEach(r => {
     const key = (r.key || '').trim();
@@ -728,6 +901,23 @@ function buildClient(rows) {
       pdfs.push({ title: r.title || r.value, link: r.link || '#' });
     } else if (key === 'doc') {
       docs.push(r.value || r.title);
+    } else if (key === 'ticker') {
+      tickers.push(r.value || r.title);
+    } else if (key === 'voice') {
+      // Audio file — link = mp3 URL, title = caption, extra = date
+      announcements.push({ type:'voice', title: r.title || r.value, link: r.link || '', date: r.extra || '' });
+    } else if (key === 'tts') {
+      // Text-to-speech — value = text, extra = date
+      announcements.push({ type:'tts', text: r.value || r.title, date: r.extra || '' });
+    } else if (key === 'poster') {
+      // Image/poster — link = image URL, title = caption, extra = date
+      announcements.push({ type:'poster', title: r.title || '', link: r.link || '', date: r.extra || '' });
+    } else if (key === 'pdf_notice') {
+      // PDF notification — link = PDF URL, title = PDF name, value = description, extra = date
+      announcements.push({ type:'pdf', title: r.title || r.value, desc: r.value || 'PDF డౌన్‌లోడ్ చేయండి', link: r.link || '#', date: r.extra || '' });
+    } else if (key === 'canva') {
+      // Canva template — link = Canva URL, title = template name, value = description, extra = date
+      announcements.push({ type:'canva', title: r.title || 'Canva Template', desc: r.value || 'Template తెరవండి', link: r.link || '#', date: r.extra || '' });
     } else {
       kv[key] = r.value;
     }
@@ -753,6 +943,8 @@ function buildClient(rows) {
     services,
     pdfs,
     docs,
+    tickers,
+    announcements,
   };
 }
 
@@ -797,6 +989,7 @@ function renderAll() {
   renderDocs();
   renderContact();
   renderFooter();
+  renderVoice();   // ← NEW
   showPopup();
   hideLoader();
 }
@@ -819,12 +1012,13 @@ function renderHeader() {
 
 function renderTicker() {
   const inner = document.getElementById('ticker-inner');
-  if (!CLIENT.updates.length) {
+  // ← Ticker now uses 'ticker' key — independent of updates section
+  if (!CLIENT.tickers || !CLIENT.tickers.length) {
     inner.innerHTML = `<span class="ticker-item">స్వాగతం — ${CLIENT.shopName}</span>`;
     return;
   }
-  const items = CLIENT.updates.map(u =>
-    `<span class="ticker-item" onclick="safeOpen('${u.link}')">🔔 ${u.title}</span>`
+  const items = CLIENT.tickers.map(t =>
+    `<span class="ticker-item">📢 ${t}</span>`
   );
   // Duplicate for seamless scroll
   inner.innerHTML = [...items, ...items].join('');
@@ -954,6 +1148,189 @@ function hideLoader() {
   setTimeout(() => {
     document.getElementById('loading-screen').style.display = 'none';
   }, 500);
+}
+
+/* ═══════════════════════════════════════════════════
+   VOICE — WhatsApp style chat bubbles
+   ═══════════════════════════════════════════════════ */
+function renderVoice() {
+  const chat  = document.getElementById('voice-chat');
+  const items = CLIENT.announcements || [];
+  if (!items.length) return; // keep placeholder
+
+  const today = new Date().toLocaleDateString('te-IN', { day:'2-digit', month:'short' });
+  const bars  = Array.from({length:14}, (_, b) =>
+    `<div class="wbar" style="height:${4+[6,12,18,8,20,10,16,5,14,9,17,7,13,11][b]}px;animation-delay:${b*0.055}s"></div>`
+  ).join('');
+
+  let audioIdx = 0;
+  let html = '';
+
+  items.forEach((item) => {
+    const dt = `${item.date || today} <i class="fas fa-check-double" style="color:var(--accent);margin-left:4px"></i>`;
+
+    if (item.type === 'voice') {
+      // ── Audio file bubble (left / incoming) ──────────────────
+      const id = 'vc_' + audioIdx++;
+      html += `
+        <div class="vc-in">
+          <div class="vc-sender"><i class="fas fa-headphones" style="margin-right:5px"></i>వాయిస్ అనౌన్స్‌మెంట్</div>
+          <div class="vbubble">
+            <div class="vc-title">${item.title || 'Audio Message'}</div>
+            <div class="vc-controls">
+              <button class="vc-play-btn" id="pb_${id}" onclick="vcToggle('${id}',this)">
+                <i class="fas fa-play"></i>
+              </button>
+              <div class="vc-wave" id="wv_${id}">${bars}</div>
+              <span class="vc-dur" id="du_${id}">0:00</span>
+            </div>
+            <audio id="${id}" src="${item.link}" preload="metadata"></audio>
+            <div class="vc-time">${dt}</div>
+          </div>
+        </div>`;
+
+    } else if (item.type === 'tts') {
+      // ── TTS bubble (right / outgoing) ────────────────────────
+      const safe = item.text.replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+      html += `
+        <div class="vc-out">
+          <div class="vbubble">
+            <div class="tts-body">${item.text}</div>
+            <button class="tts-speak-btn" onclick="vcSpeak(this,'${safe}')">
+              <i class="fas fa-volume-up"></i> వినండి
+            </button>
+            <div class="vc-time">${dt}</div>
+          </div>
+        </div>`;
+
+    } else if (item.type === 'poster') {
+      // ── Poster / Image bubble (left) ─────────────────────────
+      html += `
+        <div class="vc-in" style="max-width:92%">
+          <div class="vc-sender"><i class="fas fa-image" style="margin-right:5px"></i>పోస్టర్</div>
+          <div class="vbubble" style="padding:8px">
+            <img class="vc-poster-img" src="${item.link}" alt="poster"
+              onclick="vcLightbox('${item.link}')"
+              onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+            <div style="display:none;align-items:center;justify-content:center;height:80px;
+              color:var(--text2);font-size:13px;font-family:var(--font-te)">
+              <i class="fas fa-image" style="margin-right:6px;opacity:.4"></i>Image లోడ్ కాలేదు
+            </div>
+            ${item.title ? `<div class="vc-poster-cap">${item.title}</div>` : ''}
+            <div class="vc-time">${dt}</div>
+          </div>
+        </div>`;
+
+    } else if (item.type === 'pdf') {
+      // ── PDF notice card (left) ───────────────────────────────
+      html += `
+        <div class="vc-in" style="max-width:92%">
+          <div class="vc-sender"><i class="fas fa-file-pdf" style="margin-right:5px"></i>PDF నోటీసు</div>
+          <div class="vbubble" style="padding:10px">
+            <a class="vc-pdf-card" href="${item.link}" target="_blank" rel="noopener">
+              <div class="vc-pdf-icon"><i class="fas fa-file-pdf"></i></div>
+              <div class="vc-pdf-info">
+                <div class="vc-pdf-name">${item.title}</div>
+                <div class="vc-pdf-sub">${item.desc}</div>
+              </div>
+              <i class="fas fa-download vc-pdf-dl"></i>
+            </a>
+            <div class="vc-time">${dt}</div>
+          </div>
+        </div>`;
+
+    } else if (item.type === 'canva') {
+      // ── Canva template card (left) ───────────────────────────
+      html += `
+        <div class="vc-in" style="max-width:92%">
+          <div class="vc-sender"><i class="fas fa-palette" style="margin-right:5px"></i>Canva Template</div>
+          <div class="vbubble" style="padding:10px">
+            <a class="vc-canva-card" href="${item.link}" target="_blank" rel="noopener">
+              <div class="vc-canva-icon"><i class="fas fa-object-group"></i></div>
+              <div class="vc-canva-info">
+                <div class="vc-canva-name">${item.title}</div>
+                <div class="vc-canva-desc">${item.desc}</div>
+              </div>
+              <span class="vc-canva-open"><i class="fas fa-external-link-alt"></i> తెరవండి</span>
+            </a>
+            <div class="vc-time">${dt}</div>
+          </div>
+        </div>`;
+    }
+  });
+
+  chat.innerHTML = html;
+
+  // Wire up audio duration / time events
+  let ai = 0;
+  items.forEach(item => {
+    if (item.type !== 'voice') return;
+    const id  = 'vc_' + ai++;
+    const aud = document.getElementById(id);
+    const dur = document.getElementById('du_' + id);
+    if (!aud || !dur) return;
+    const fmt = s => `${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`;
+    aud.addEventListener('loadedmetadata', () => { if (aud.duration) dur.textContent = fmt(aud.duration); });
+    aud.addEventListener('timeupdate', () => { dur.textContent = fmt(aud.currentTime); });
+    aud.addEventListener('ended', () => vcReset(id));
+  });
+}
+
+/* Image lightbox */
+function vcLightbox(src) {
+  document.getElementById('vc-lightbox-img').src = src;
+  document.getElementById('vc-lightbox').classList.add('on');
+}
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') document.getElementById('vc-lightbox').classList.remove('on');
+});
+
+/* Audio player controls */
+let _vcAud = null, _vcAudId = null;
+
+function vcToggle(id, btn) {
+  const aud  = document.getElementById(id);
+  const wave = document.getElementById('wv_' + id);
+  if (_vcAud && _vcAud !== aud) { _vcAud.pause(); _vcAud.currentTime = 0; vcReset(_vcAudId); }
+  if (aud.paused) {
+    aud.play().catch(()=>{});
+    btn.innerHTML = '<i class="fas fa-pause"></i>';
+    btn.classList.add('playing');
+    wave.querySelectorAll('.wbar').forEach(b => b.classList.add('on'));
+    _vcAud = aud; _vcAudId = id;
+  } else {
+    aud.pause();
+    vcReset(id);
+  }
+}
+function vcReset(id) {
+  const btn  = document.getElementById('pb_' + id);
+  const wave = document.getElementById('wv_' + id);
+  if (btn)  { btn.innerHTML = '<i class="fas fa-play"></i>'; btn.classList.remove('playing'); }
+  if (wave) wave.querySelectorAll('.wbar').forEach(b => b.classList.remove('on'));
+}
+
+/* TTS controls */
+let _ttsU = null;
+function vcSpeak(btn, text) {
+  if (_ttsU) {
+    speechSynthesis.cancel();
+    _ttsU = null;
+    btn.innerHTML = '<i class="fas fa-volume-up"></i> వినండి';
+    btn.classList.remove('speaking');
+    return;
+  }
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'te-IN'; u.rate = 0.88; u.pitch = 1;
+  u.onend = () => {
+    _ttsU = null;
+    btn.innerHTML = '<i class="fas fa-volume-up"></i> వినండి';
+    btn.classList.remove('speaking');
+  };
+  speechSynthesis.speak(u);
+  _ttsU = u;
+  btn.innerHTML = '<i class="fas fa-stop"></i> ఆపు';
+  btn.classList.add('speaking');
 }
 
 /* ═══════════════════════════════════════════════════
