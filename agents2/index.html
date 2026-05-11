@@ -1044,7 +1044,7 @@ function buildClient(rows) {
     mapEmbedUrl: kv.mapEmbedUrl || '',
     footerText:  kv.footerText  || '',
     popup: {
-      show:     kv.popup_show === 'true',
+      show: (kv.popup_show || '').toLowerCase().trim() === 'true',
       title:    kv.popup_title    || '',
       subtitle: kv.popup_subtitle || '',
       imageUrl: kv.popup_imageUrl || '',
