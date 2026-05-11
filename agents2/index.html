@@ -163,7 +163,7 @@ button { border: none; cursor: pointer; font-family: var(--font); }
 }
 .ticker-inner {
   display: flex; gap: 48px;
-  animation: tickerScroll 10s linear infinite;
+  animation: tickerScroll 22s linear infinite;
   white-space: nowrap;
 }
 .ticker-inner:hover { animation-play-state: paused; }
@@ -342,6 +342,98 @@ button { border: none; cursor: pointer; font-family: var(--font); }
    DOCS PAGE
    ═══════════════════════════════════════ */
 #docs-page { padding: 20px 16px 100px; max-width: 600px; margin: 0 auto; }
+
+/* ── Required Docs Accordion ── */
+.req-section { margin-top: 24px; }
+
+.acc-item {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin-bottom: 10px;
+  overflow: hidden;
+  transition: border-color 0.25s;
+}
+.acc-item.open { border-color: rgba(79,255,176,0.3); }
+
+.acc-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.acc-icon {
+  width: 38px; height: 38px;
+  border-radius: 10px;
+  background: rgba(79,255,176,0.1);
+  border: 1px solid rgba(79,255,176,0.2);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--accent); font-size: 16px;
+  flex-shrink: 0;
+  transition: background 0.25s;
+}
+.acc-item.open .acc-icon { background: rgba(79,255,176,0.18); }
+
+.acc-label {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: var(--font-te);
+  color: var(--text);
+  line-height: 1.4;
+}
+.acc-count {
+  font-size: 11px;
+  color: var(--text2);
+  background: var(--bg3);
+  border-radius: 20px;
+  padding: 2px 8px;
+  flex-shrink: 0;
+}
+.acc-arrow {
+  color: var(--text2);
+  font-size: 13px;
+  flex-shrink: 0;
+  transition: transform 0.3s cubic-bezier(0.19,1,0.22,1);
+}
+.acc-item.open .acc-arrow { transform: rotate(180deg); color: var(--accent); }
+
+.acc-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s cubic-bezier(0.19,1,0.22,1);
+}
+.acc-item.open .acc-body { max-height: 600px; }
+
+.acc-inner {
+  padding: 4px 16px 14px 16px;
+  border-top: 1px solid var(--border);
+}
+
+.req-doc-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--border);
+  font-family: var(--font-te);
+  font-size: 13.5px;
+  color: var(--text);
+  line-height: 1.45;
+}
+.req-doc-item:last-child { border-bottom: none; }
+.req-doc-bullet {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: rgba(79,255,176,0.1);
+  border: 1px solid rgba(79,255,176,0.25);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--accent); font-size: 9px;
+  flex-shrink: 0; margin-top: 1px;
+}
 
 /* PDF list */
 .pdf-section { margin-bottom: 24px; }
@@ -762,7 +854,16 @@ button { border: none; cursor: pointer; font-family: var(--font); }
     <div id="pdf-list"></div>
   </div>
 
-  <div>
+  <!-- Required docs accordion section -->
+  <div class="req-section" id="req-docs-section" style="display:none">
+    <div class="section-head">
+      <h2>📋 అవసరమైన పత్రాలు</h2>
+      <div class="section-line"></div>
+    </div>
+    <div id="req-docs-list"></div>
+  </div>
+
+  <div id="old-docs-section">
     <div class="section-head">
       <h2>📋 అవసరమైన పత్రాలు</h2>
       <div class="section-line"></div>
@@ -883,6 +984,7 @@ function buildClient(rows) {
   const docs     = [];
   const tickers      = [];   // ticker scroll items
   const announcements = []; // ← unified ordered list: voice/tts/poster/pdf_notice/canva
+  const reqServices   = []; // ← accordion: [{name, icon, docs:[]}]
 
   rows.forEach(r => {
     const key = (r.key || '').trim();
@@ -918,6 +1020,14 @@ function buildClient(rows) {
     } else if (key === 'canva') {
       // Canva template — link = Canva URL, title = template name, value = description, extra = date
       announcements.push({ type:'canva', title: r.title || 'Canva Template', desc: r.value || 'Template తెరవండి', link: r.link || '#', date: r.extra || '' });
+    } else if (key === 'req_service') {
+      // Accordion header — value = service name, icon = icon class (optional)
+      reqServices.push({ name: r.value || r.title, icon: r.icon || 'fas fa-file-alt', docs: [] });
+    } else if (key === 'req_doc') {
+      // Accordion doc item — value = document name (belongs to last req_service)
+      if (reqServices.length > 0) {
+        reqServices[reqServices.length - 1].docs.push(r.value || r.title);
+      }
     } else {
       kv[key] = r.value;
     }
@@ -945,6 +1055,7 @@ function buildClient(rows) {
     docs,
     tickers,
     announcements,
+    reqServices,
   };
 }
 
@@ -987,6 +1098,7 @@ function renderAll() {
   renderServices();
   renderPDFs();
   renderDocs();
+  renderReqDocs();
   renderContact();
   renderFooter();
   renderVoice();   // ← NEW
@@ -1085,6 +1197,50 @@ function renderDocs() {
       <span>${d}</span>
     </div>
   `).join('');
+}
+
+function renderReqDocs() {
+  const services = CLIENT.reqServices || [];
+  if (!services.length) return;
+
+  // Hide old generic docs section, show accordion section
+  const oldSec = document.getElementById('old-docs-section');
+  const newSec = document.getElementById('req-docs-section');
+  if (oldSec) oldSec.style.display = 'none';
+  if (newSec) newSec.style.display = 'block';
+
+  const list = document.getElementById('req-docs-list');
+
+  list.innerHTML = services.map((srv, i) => {
+    const docsHTML = srv.docs.map(d => `
+      <div class="req-doc-item">
+        <div class="req-doc-bullet"><i class="fas fa-check"></i></div>
+        <span>${d}</span>
+      </div>`).join('');
+
+    return `
+      <div class="acc-item" id="acc_${i}">
+        <div class="acc-header" onclick="accToggle(${i})">
+          <div class="acc-icon"><i class="${srv.icon}"></i></div>
+          <div class="acc-label">${srv.name}</div>
+          <span class="acc-count">${srv.docs.length} పత్రాలు</span>
+          <i class="fas fa-chevron-down acc-arrow"></i>
+        </div>
+        <div class="acc-body">
+          <div class="acc-inner">${docsHTML || '<div class="req-doc-item" style="color:var(--text2)">పత్రాలు add చేయబడలేదు</div>'}</div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function accToggle(i) {
+  const item = document.getElementById('acc_' + i);
+  if (!item) return;
+  const isOpen = item.classList.contains('open');
+  // Close all first
+  document.querySelectorAll('.acc-item.open').forEach(el => el.classList.remove('open'));
+  // Open clicked if it was closed
+  if (!isOpen) item.classList.add('open');
 }
 
 function renderContact() {
