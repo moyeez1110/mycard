@@ -162,21 +162,20 @@ button { border: none; cursor: pointer; font-family: var(--font); }
   flex: 1; overflow: hidden; position: relative;
 }
 .ticker-inner {
-  display: flex; gap: 48px;
-  animation: tickerScroll 22s linear infinite;
+  display: inline-flex; gap: 40px;
   white-space: nowrap;
+  will-change: transform;
+  /* fallback — overridden by JS */
+  animation: tickerFallback 20s linear infinite;
 }
-.ticker-inner:hover { animation-play-state: paused; }
 .ticker-item {
   font-size: 13px; color: var(--text2);
-  flex-shrink: 0; cursor: pointer;
+  flex-shrink: 0;
   font-family: var(--font-te);
-  transition: color var(--trans);
 }
-.ticker-item:hover { color: var(--accent); }
-@keyframes tickerScroll {
-  0%   { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+@keyframes tickerFallback {
+  0%   { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
 }
 
 /* ═══════════════════════════════════════
@@ -1354,16 +1353,40 @@ function renderHeader() {
 
 function renderTicker() {
   const inner = document.getElementById('ticker-inner');
-  // ← Ticker now uses 'ticker' key — independent of updates section
-  if (!CLIENT.tickers || !CLIENT.tickers.length) {
-    inner.innerHTML = `<span class="ticker-item">స్వాగతం — ${CLIENT.shopName}</span>`;
-    return;
-  }
-  const items = CLIENT.tickers.map(t =>
-    `<span class="ticker-item">📢 ${t}</span>`
-  );
-  // Duplicate for seamless scroll
-  inner.innerHTML = [...items, ...items].join('');
+  const track = document.querySelector('.ticker-track');
+
+  const rawItems = (CLIENT.tickers && CLIENT.tickers.length)
+    ? CLIENT.tickers
+    : [`స్వాగతం — ${CLIENT.shopName}`];
+
+  // Separator dot between items
+  const itemsHTML = rawItems.map(t =>
+    `<span class="ticker-item">📢 ${t}</span>` +
+    `<span class="ticker-item" style="opacity:.3;padding:0 8px">⬥</span>`
+  ).join('');
+
+  // 3 copies — ensures seamless loop on any screen width
+  inner.innerHTML = itemsHTML + itemsHTML + itemsHTML;
+
+  // After paint: measure real widths, inject precise @keyframes
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    const trackW  = track.offsetWidth || 320;
+    const oneSetW = inner.scrollWidth / 3;
+    const PPS     = 90; // pixels per second — increase = faster
+    const dur     = ((oneSetW + trackW) / PPS).toFixed(1);
+
+    let s = document.getElementById('ticker-dyn-style');
+    if (!s) {
+      s = document.createElement('style');
+      s.id = 'ticker-dyn-style';
+      document.head.appendChild(s);
+    }
+    s.textContent = `@keyframes tickerDyn {
+      0%   { transform: translateX(${trackW}px); }
+      100% { transform: translateX(-${oneSetW}px); }
+    }`;
+    inner.style.animation = `tickerDyn ${dur}s linear infinite`;
+  }));
 }
 
 function renderHero() {
