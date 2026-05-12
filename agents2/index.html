@@ -9,6 +9,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
 /* ═══════════════════════════════════════
+   CONFIGURATION — Edit ONLY these 2 lines
+   ═══════════════════════════════════════ */
+
+/* ═══════════════════════════════════════
    DESIGN TOKENS
    ═══════════════════════════════════════ */
 :root {
@@ -97,17 +101,8 @@ button { border: none; cursor: pointer; font-family: var(--font); }
   overflow: hidden;
   animation: slideUp 0.35s cubic-bezier(0.19,1,0.22,1);
 }
-
-/* ── Popup image: full, no crop ── */
-#popup-img {
-  width: 100%;
-  max-height: none;
-  object-fit: contain;
-  display: none;
-  background: #000;
-}
+#popup-img { width: 100%; max-height: 200px; object-fit: cover; display: none; }
 #popup-img.show { display: block; }
-
 .popup-body {
   padding: 24px;
   display: flex; flex-direction: column; gap: 12px;
@@ -122,19 +117,6 @@ button { border: none; cursor: pointer; font-family: var(--font); }
   width: fit-content;
 }
 .popup-badge i { font-size: 10px; }
-
-/* Popup counter badge */
-.popup-counter {
-  display: inline-flex; align-items: center; gap: 6px;
-  background: rgba(255,255,255,0.06);
-  color: var(--text2);
-  border-radius: 20px;
-  padding: 3px 10px;
-  font-size: 11px;
-  width: fit-content;
-  margin-left: 8px;
-}
-
 #popup-title {
   font-size: 18px; font-weight: 700;
   line-height: 1.4;
@@ -153,7 +135,6 @@ button { border: none; cursor: pointer; font-family: var(--font); }
   font-weight: 700; font-size: 14px;
   margin-top: 4px;
   transition: var(--trans);
-  font-family: var(--font-te);
 }
 #popup-close:hover { opacity: 0.85; transform: scale(0.98); }
 
@@ -181,21 +162,20 @@ button { border: none; cursor: pointer; font-family: var(--font); }
   flex: 1; overflow: hidden; position: relative;
 }
 .ticker-inner {
-  display: flex; gap: 48px;
-  animation: tickerScroll 1s linear infinite;
+  display: inline-flex; gap: 40px;
   white-space: nowrap;
+  will-change: transform;
+  /* fallback — overridden by JS */
+  animation: tickerFallback 20s linear infinite;
 }
-.ticker-inner:hover { animation-play-state: paused; }
 .ticker-item {
   font-size: 13px; color: var(--text2);
-  flex-shrink: 0; cursor: pointer;
+  flex-shrink: 0;
   font-family: var(--font-te);
-  transition: color var(--trans);
 }
-.ticker-item:hover { color: var(--accent); }
-@keyframes tickerScroll {
-  0%   { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+@keyframes tickerFallback {
+  0%   { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
 }
 
 /* ═══════════════════════════════════════
@@ -632,6 +612,237 @@ button { border: none; cursor: pointer; font-family: var(--font); }
 
 .voice-chat { display: flex; flex-direction: column; gap: 14px; }
 
+/* ═══════════════════════════════════════
+   HORIZONTAL SCROLL ROWS — Netflix style
+   ═══════════════════════════════════════ */
+.notice-cat { margin-bottom: 26px; }
+.notice-cat-head {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 10px;
+}
+.notice-cat-title {
+  font-size: 13.5px; font-weight: 700; color: var(--text);
+  display: flex; align-items: center; gap: 7px;
+}
+.notice-cat-count {
+  font-size: 11px; color: var(--accent);
+  background: rgba(79,255,176,0.1);
+  border: 1px solid rgba(79,255,176,0.2);
+  border-radius: 20px; padding: 1px 9px;
+}
+.h-scroll {
+  display: flex; gap: 12px;
+  overflow-x: auto;
+  padding: 4px 2px 12px;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+.h-scroll::-webkit-scrollbar { height: 3px; }
+.h-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+/* ── Voice audio card (horizontal) ── */
+.hv-card {
+  min-width: 230px; flex-shrink: 0;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px; padding: 14px;
+  scroll-snap-align: start;
+}
+.hv-title {
+  font-size: 12.5px; font-weight: 600;
+  font-family: var(--font-te); color: var(--text);
+  margin-bottom: 10px; line-height: 1.4;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.hv-player { display: flex; align-items: center; gap: 8px; }
+.hv-play {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: var(--accent); color: #0a0f1a;
+  font-size: 12px; display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: var(--trans); cursor: pointer; border: none;
+}
+.hv-play:hover { opacity: 0.8; }
+.hv-play.playing { background: transparent; color: var(--accent); border: 1.5px solid var(--accent); }
+.hv-wave { flex: 1; height: 24px; display: flex; align-items: center; gap: 2px; }
+.hv-dur { font-size: 10px; color: var(--text2); min-width: 30px; text-align: right; }
+.hv-date { font-size: 10px; color: var(--text2); margin-top: 8px; text-align: right; }
+
+/* ── TTS card (horizontal) ── */
+.ht-card {
+  min-width: 230px; flex-shrink: 0;
+  background: rgba(79,255,176,0.05);
+  border: 1px solid rgba(79,255,176,0.2);
+  border-radius: 14px; padding: 14px;
+  scroll-snap-align: start;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.ht-text {
+  font-size: 12.5px; font-family: var(--font-te);
+  color: var(--text); line-height: 1.55;
+  display: -webkit-box; -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical; overflow: hidden;
+}
+.ht-speak {
+  background: var(--bg3); border: 1px solid rgba(79,255,176,0.35);
+  color: var(--accent); border-radius: 20px; padding: 5px 12px;
+  font-size: 11.5px; font-family: var(--font-te);
+  display: inline-flex; align-items: center; gap: 5px;
+  cursor: pointer; transition: var(--trans); align-self: flex-start;
+}
+.ht-speak:hover { background: rgba(79,255,176,0.1); }
+
+/* ── Poster/Image card (horizontal) ── */
+.hp-card {
+  min-width: 165px; flex-shrink: 0;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px; overflow: hidden;
+  scroll-snap-align: start; cursor: pointer;
+  transition: var(--trans);
+}
+.hp-card:hover { border-color: rgba(79,255,176,0.3); transform: translateY(-2px); }
+.hp-img {
+  width: 100%; height: 200px;
+  object-fit: cover; display: block;
+}
+.hp-cap {
+  padding: 8px 10px;
+  font-size: 11.5px; color: var(--text2);
+  font-family: var(--font-te); line-height: 1.4;
+}
+.hp-date { padding: 0 10px 8px; font-size: 10px; color: var(--text2); opacity: 0.7; }
+
+/* ── PDF card (horizontal) ── */
+.hd-card {
+  min-width: 200px; flex-shrink: 0;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px; padding: 14px;
+  scroll-snap-align: start;
+  text-decoration: none; color: var(--text);
+  display: flex; flex-direction: column; gap: 10px;
+  transition: var(--trans);
+}
+.hd-card:hover { border-color: rgba(248,113,113,0.35); }
+.hd-icon {
+  width: 42px; height: 42px; border-radius: 10px;
+  background: rgba(248,113,113,0.12);
+  display: flex; align-items: center; justify-content: center;
+  color: #f87171; font-size: 20px;
+}
+.hd-name {
+  font-size: 12.5px; font-weight: 600; font-family: var(--font-te);
+  line-height: 1.4;
+}
+.hd-desc { font-size: 11px; color: var(--text2); }
+.hd-dl {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 11px; color: #f87171; margin-top: auto;
+}
+
+/* ── Canva card (horizontal) ── */
+.hc-card {
+  min-width: 200px; flex-shrink: 0;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px; padding: 14px;
+  scroll-snap-align: start;
+  text-decoration: none; color: var(--text);
+  display: flex; flex-direction: column; gap: 10px;
+  transition: var(--trans);
+}
+.hc-card:hover { border-color: rgba(167,139,250,0.35); }
+.hc-icon {
+  width: 42px; height: 42px; border-radius: 10px;
+  background: rgba(167,139,250,0.12);
+  display: flex; align-items: center; justify-content: center;
+  color: #a78bfa; font-size: 18px;
+}
+.hc-name { font-size: 12.5px; font-weight: 600; font-family: var(--font-te); line-height: 1.4; }
+.hc-desc { font-size: 11px; color: var(--text2); }
+.hc-open { font-size: 11px; color: #a78bfa; display: flex; align-items: center; gap: 4px; margin-top: auto; }
+
+/* ══════════════════════════════════════
+   UPDATES — 10 items scroll
+   ══════════════════════════════════════ */
+.updates-scroll {
+  max-height: 548px; /* ~10 cards */
+  overflow-y: auto;
+  padding-right: 2px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+.updates-scroll::-webkit-scrollbar { width: 4px; }
+.updates-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+.scroll-more-hint {
+  text-align: center; font-size: 11px; color: var(--text2);
+  padding: 6px 0 2px; font-family: var(--font-te);
+  display: flex; align-items: center; justify-content: center; gap: 4px;
+}
+
+/* ══════════════════════════════════════
+   RESPONSIVE — DESKTOP (≥768px)
+   ══════════════════════════════════════ */
+@media (min-width: 768px) {
+  /* Layout */
+  #home, #docs-page, #contact-page {
+    max-width: 860px !important;
+    margin: 0 auto;
+    padding: 28px 32px 100px !important;
+  }
+  #voice-page {
+    max-width: 860px !important;
+    margin: 0 auto;
+    padding: 24px 32px 100px !important;
+  }
+
+  /* Services: more columns */
+  .services-grid { grid-template-columns: repeat(5, 1fr) !important; gap: 16px; }
+
+  /* Horizontal cards — bigger on desktop */
+  .hv-card { min-width: 270px; }
+  .ht-card { min-width: 270px; }
+  .hp-card { min-width: 200px; }
+  .hp-img  { height: 240px; }
+  .hd-card { min-width: 240px; }
+  .hc-card { min-width: 240px; }
+
+  /* Update cards */
+  .update-card { padding: 15px 18px; font-size: 14px; }
+
+  /* Hero card */
+  .hero-card { padding: 28px 32px; }
+  .hero-name { font-size: 1.5rem !important; }
+
+  /* Header */
+  #app-header { padding: 14px 32px; }
+
+  /* Ticker */
+  #ticker-bar { font-size: 14px; }
+
+  /* Bottom nav */
+  #bottom-nav {
+    max-width: 860px;
+    left: 50%; transform: translateX(-50%);
+    border-radius: 14px 14px 0 0;
+    padding: 10px 24px;
+  }
+  .nav-btn { font-size: 12px; padding: 8px 20px; gap: 6px; }
+  .nav-btn i { font-size: 16px; }
+}
+
+@media (min-width: 1100px) {
+  #home, #docs-page, #contact-page, #voice-page {
+    max-width: 1000px !important;
+    padding: 32px 40px 100px !important;
+  }
+  .services-grid { grid-template-columns: repeat(6, 1fr) !important; }
+  #bottom-nav { max-width: 1000px; }
+}
+
+/* Incoming bubble — Audio file (left) */
 .vc-in { display: flex; flex-direction: column; align-items: flex-start; max-width: 88%; }
 .vc-in .vbubble {
   background: var(--card);
@@ -641,6 +852,7 @@ button { border: none; cursor: pointer; font-family: var(--font); }
   width: 100%;
 }
 
+/* Outgoing bubble — TTS text (right) */
 .vc-out {
   display: flex; flex-direction: column;
   align-items: flex-end; max-width: 88%;
@@ -657,6 +869,7 @@ button { border: none; cursor: pointer; font-family: var(--font); }
 .vc-sender { font-size: 11px; color: var(--accent); font-weight: 700; margin-bottom: 6px; }
 .vc-title { font-size: 12px; color: var(--text2); font-family: var(--font-te); margin-bottom: 8px; }
 
+/* Audio player */
 .vc-controls { display: flex; align-items: center; gap: 10px; }
 .vc-play-btn {
   width: 38px; height: 38px; border-radius: 50%;
@@ -678,6 +891,7 @@ button { border: none; cursor: pointer; font-family: var(--font); }
 
 .vc-dur { font-size: 11px; color: var(--text2); min-width: 34px; text-align: right; }
 
+/* TTS text bubble */
 .tts-body { font-size: 13px; font-family: var(--font-te); line-height: 1.65; color: var(--text); margin-bottom: 10px; }
 .tts-speak-btn {
   background: var(--bg3); border: 1px solid rgba(79,255,176,0.4);
@@ -695,6 +909,7 @@ button { border: none; cursor: pointer; font-family: var(--font); }
   font-family: var(--font-te); padding: 50px 20px; }
 .vc-empty i { font-size: 34px; margin-bottom: 12px; display: block; opacity: 0.35; }
 
+/* Poster / Image bubble */
 .vc-poster-img {
   width: 100%; border-radius: 10px;
   display: block; max-height: 280px;
@@ -706,6 +921,7 @@ button { border: none; cursor: pointer; font-family: var(--font); }
   margin-top: 7px; line-height: 1.5;
 }
 
+/* PDF notice card */
 .vc-pdf-card {
   display: flex; align-items: center; gap: 12px;
   background: var(--bg3);
@@ -728,6 +944,7 @@ button { border: none; cursor: pointer; font-family: var(--font); }
 .vc-pdf-sub  { font-size: 11px; color: var(--text2); margin-top: 3px; }
 .vc-pdf-dl   { color: var(--text2); font-size: 15px; flex-shrink: 0; }
 
+/* Canva template card */
 .vc-canva-card {
   display: flex; align-items: center; gap: 12px;
   background: var(--bg3);
@@ -749,6 +966,7 @@ button { border: none; cursor: pointer; font-family: var(--font); }
 .vc-canva-desc { font-size: 11px; color: var(--text2); margin-top: 3px; }
 .vc-canva-open { font-size: 11px; color: #a78bfa; display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
 
+/* Image lightbox */
 #vc-lightbox {
   display: none; position: fixed; inset: 0; z-index: 2000;
   background: rgba(0,0,0,0.9);
@@ -780,10 +998,7 @@ button { border: none; cursor: pointer; font-family: var(--font); }
   <div id="popup-box">
     <img id="popup-img" src="" alt="popup"/>
     <div class="popup-body">
-      <div style="display:flex;align-items:center;flex-wrap:wrap;gap:6px">
-        <span class="popup-badge"><i class="fas fa-bell"></i> ప్రకటన</span>
-        <span class="popup-counter" id="popup-counter"></span>
-      </div>
+      <span class="popup-badge"><i class="fas fa-bell"></i> ప్రకటన</span>
       <div id="popup-title"></div>
       <div id="popup-subtitle"></div>
       <button id="popup-close">అర్థమైంది ✓</button>
@@ -844,7 +1059,7 @@ button { border: none; cursor: pointer; font-family: var(--font); }
       <h2>🔔 తాజా అప్‌డేట్లు</h2>
       <div class="section-line"></div>
     </div>
-    <div id="updates-list"></div>
+    <div class="updates-scroll" id="updates-list"></div>
   </div>
 
   <div class="services-section">
@@ -868,6 +1083,7 @@ button { border: none; cursor: pointer; font-family: var(--font); }
     <div id="pdf-list"></div>
   </div>
 
+  <!-- Required docs accordion section -->
   <div class="req-section" id="req-docs-section" style="display:none">
     <div class="section-head">
       <h2>📋 అవసరమైన పత్రాలు</h2>
@@ -935,6 +1151,16 @@ button { border: none; cursor: pointer; font-family: var(--font); }
 <script>
 /* ═══════════════════════════════════════════════════
    ⚙️  CONFIGURATION — ONLY THIS 1 LINE TO CHANGE
+   ═══════════════════════════════════════════════════
+   SHEET_URL → మీ Google Sheet లో ఆ agent Tab యొక్క
+               published CSV URL పెట్టండి.
+
+   ఎలా తీయాలి:
+   Sheet → File → Share → Publish to web
+   → ఆ agent tab select చేయండి → CSV → Publish
+   → ఆ URL ఇక్కడ పెట్టండి.
+
+   కొత్త client కి: ఆ client tab URL మాత్రమే మార్చండి.
    ═══════════════════════════════════════════════════ */
 const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQgCCtcdcRdQYX3Zdhdc_BDmZPU2tw6tKUaUmuH8w_LobsbEOXq1LK0kbNSiPSNu0Lst1J_gKX-_GPl/pub?gid=0&single=true&output=csv';
 
@@ -975,19 +1201,19 @@ function splitCSVLine(line) {
 
 /* ═══════════════════════════════════════════════════
    BUILD CLIENT OBJECT FROM CSV ROWS
+   (Tab లో అన్ని rows ఆ agent వే — filter అక్కర్లేదు)
    ═══════════════════════════════════════════════════ */
 function buildClient(rows) {
   if (!rows.length) return null;
 
-  const kv            = {};
-  const updates       = [];
-  const services      = [];
-  const pdfs          = [];
-  const docs          = [];
-  const tickers       = [];
-  const announcements = [];
-  const reqServices   = [];
-  const popups        = [];   // ← dynamic multi-popup array
+  const kv = {};
+  const updates  = [];
+  const services = [];
+  const pdfs     = [];
+  const docs     = [];
+  const tickers      = [];   // ticker scroll items
+  const announcements = []; // ← unified ordered list: voice/tts/poster/pdf_notice/canva
+  const reqServices   = []; // ← accordion: [{name, icon, docs:[]}]
 
   rows.forEach(r => {
     const key = (r.key || '').trim();
@@ -995,7 +1221,6 @@ function buildClient(rows) {
 
     if (key === 'update') {
       updates.push({ title: r.title || r.value, link: r.link || '#' });
-
     } else if (key === 'service') {
       services.push({
         title: r.title || r.value,
@@ -1003,52 +1228,35 @@ function buildClient(rows) {
         icon:  r.icon  || 'fas fa-star',
         color: r.extra || 'gi-blue',
       });
-
     } else if (key === 'pdf') {
       pdfs.push({ title: r.title || r.value, link: r.link || '#' });
-
     } else if (key === 'doc') {
       docs.push(r.value || r.title);
-
     } else if (key === 'ticker') {
       tickers.push(r.value || r.title);
-
     } else if (key === 'voice') {
+      // Audio file — link = mp3 URL, title = caption, extra = date
       announcements.push({ type:'voice', title: r.title || r.value, link: r.link || '', date: r.extra || '' });
-
     } else if (key === 'tts') {
+      // Text-to-speech — value = text, extra = date
       announcements.push({ type:'tts', text: r.value || r.title, date: r.extra || '' });
-
     } else if (key === 'poster') {
+      // Image/poster — link = image URL, title = caption, extra = date
       announcements.push({ type:'poster', title: r.title || '', link: r.link || '', date: r.extra || '' });
-
     } else if (key === 'pdf_notice') {
+      // PDF notification — link = PDF URL, title = PDF name, value = description, extra = date
       announcements.push({ type:'pdf', title: r.title || r.value, desc: r.value || 'PDF డౌన్‌లోడ్ చేయండి', link: r.link || '#', date: r.extra || '' });
-
     } else if (key === 'canva') {
+      // Canva template — link = Canva URL, title = template name, value = description, extra = date
       announcements.push({ type:'canva', title: r.title || 'Canva Template', desc: r.value || 'Template తెరవండి', link: r.link || '#', date: r.extra || '' });
-
     } else if (key === 'req_service') {
+      // Accordion header — value = service name, icon = icon class (optional)
       reqServices.push({ name: r.value || r.title, icon: r.icon || 'fas fa-file-alt', docs: [] });
-
     } else if (key === 'req_doc') {
+      // Accordion doc item — value = document name (belongs to last req_service)
       if (reqServices.length > 0) {
         reqServices[reqServices.length - 1].docs.push(r.value || r.title);
       }
-
-    } else if (key === 'popup') {
-      /* ── Dynamic popup row ──────────────────────────────
-         title   → r.title  (popup heading)
-         value   → r.value  (subtitle / body text)
-         link    → r.link   (image URL — optional)
-         Sheet లో ఎన్ని 'popup' rows అయినా add చేయవచ్చు.
-      ─────────────────────────────────────────────────── */
-      popups.push({
-        title:    r.title || r.value || '',
-        subtitle: r.value || '',
-        imageUrl: r.link  || '',
-      });
-
     } else {
       kv[key] = r.value;
     }
@@ -1064,7 +1272,12 @@ function buildClient(rows) {
     whatsapp:    kv.whatsapp    || '',
     mapEmbedUrl: kv.mapEmbedUrl || '',
     footerText:  kv.footerText  || '',
-    popups,        // ← dynamic array (replaces old single popup object)
+    popup: {
+      show:     kv.popup_show === 'true',
+      title:    kv.popup_title    || '',
+      subtitle: kv.popup_subtitle || '',
+      imageUrl: kv.popup_imageUrl || '',
+    },
     updates,
     services,
     pdfs,
@@ -1076,50 +1289,30 @@ function buildClient(rows) {
 }
 
 /* ═══════════════════════════════════════════════════
-   FETCH DATA
+   FETCH DATA FROM GOOGLE SHEET (UTF-8 Telugu fix)
    ═══════════════════════════════════════════════════ */
 async function loadData() {
-  /* Multiple fetch strategies — first one that works will be used */
-  const proxies = [
-    url => url,                                                        // 1. Direct fetch
-    url => `https://corsproxy.io/?${encodeURIComponent(url)}`,        // 2. corsproxy.io
-    url => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`, // 3. allorigins
-  ];
+  try {
+    const res = await fetch(SHEET_URL);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
 
-  let lastErr = null;
+    // Telugu UTF-8 సరిగ్గా చదవడానికి ArrayBuffer decode
+    const buf     = await res.arrayBuffer();
+    const decoder = new TextDecoder('utf-8');
+    let text      = decoder.decode(buf);
 
-  for (const proxy of proxies) {
-    try {
-      const fetchUrl = proxy(SHEET_URL);
-      const res = await fetch(fetchUrl, { cache: 'no-store' });
-      if (!res.ok) throw new Error('HTTP ' + res.status);
+    // BOM తీసేయండి (Excel export చేస్తే వస్తుంది)
+    if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
 
-      const buf     = await res.arrayBuffer();
-      const decoder = new TextDecoder('utf-8');
-      let text      = decoder.decode(buf);
-
-      // Remove BOM if present
-      if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
-
-      // Validate it looks like CSV (has comma or tab)
-      if (!text.includes(',') && !text.includes('\t')) throw new Error('Not CSV');
-
-      const rows = parseCSV(text);
-      CLIENT = buildClient(rows);
-      if (!CLIENT) throw new Error('No data in sheet');
-
-      renderAll();
-      return; // ✅ success — stop trying other proxies
-    } catch (e) {
-      lastErr = e;
-      console.warn('Fetch attempt failed:', proxy.toString(), e.message);
-    }
+    const rows = parseCSV(text);
+    CLIENT = buildClient(rows);
+    if (!CLIENT) throw new Error('No data in sheet');
+    renderAll();
+  } catch (e) {
+    console.error('Sheet fetch error:', e);
+    document.getElementById('error-banner').classList.add('show');
+    document.getElementById('loading-screen').classList.add('hide');
   }
-
-  // All proxies failed
-  console.error('All fetch strategies failed:', lastErr);
-  document.getElementById('error-banner').classList.add('show');
-  document.getElementById('loading-screen').classList.add('hide');
 }
 
 /* ═══════════════════════════════════════════════════
@@ -1137,13 +1330,14 @@ function renderAll() {
   renderReqDocs();
   renderContact();
   renderFooter();
-  renderVoice();
+  renderVoice();   // ← NEW
   showPopup();
   hideLoader();
 }
 
 function applyTheme() {
   document.documentElement.style.setProperty('--accent', CLIENT.accentColor);
+  // Derive dim accent (darken 15%)
   document.documentElement.style.setProperty('--accent-dim', CLIENT.accentColor);
 }
 
@@ -1159,12 +1353,40 @@ function renderHeader() {
 
 function renderTicker() {
   const inner = document.getElementById('ticker-inner');
-  if (!CLIENT.tickers || !CLIENT.tickers.length) {
-    inner.innerHTML = `<span class="ticker-item">స్వాగతం — ${CLIENT.shopName}</span>`;
-    return;
-  }
-  const items = CLIENT.tickers.map(t => `<span class="ticker-item">📢 ${t}</span>`);
-  inner.innerHTML = [...items, ...items].join('');
+  const track = document.querySelector('.ticker-track');
+
+  const rawItems = (CLIENT.tickers && CLIENT.tickers.length)
+    ? CLIENT.tickers
+    : [`స్వాగతం — ${CLIENT.shopName}`];
+
+  // Separator dot between items
+  const itemsHTML = rawItems.map(t =>
+    `<span class="ticker-item">📢 ${t}</span>` +
+    `<span class="ticker-item" style="opacity:.3;padding:0 8px">⬥</span>`
+  ).join('');
+
+  // 3 copies — ensures seamless loop on any screen width
+  inner.innerHTML = itemsHTML + itemsHTML + itemsHTML;
+
+  // After paint: measure real widths, inject precise @keyframes
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    const trackW  = track.offsetWidth || 320;
+    const oneSetW = inner.scrollWidth / 3;
+    const PPS     = 90; // pixels per second — increase = faster
+    const dur     = ((oneSetW + trackW) / PPS).toFixed(1);
+
+    let s = document.getElementById('ticker-dyn-style');
+    if (!s) {
+      s = document.createElement('style');
+      s.id = 'ticker-dyn-style';
+      document.head.appendChild(s);
+    }
+    s.textContent = `@keyframes tickerDyn {
+      0%   { transform: translateX(${trackW}px); }
+      100% { transform: translateX(-${oneSetW}px); }
+    }`;
+    inner.style.animation = `tickerDyn ${dur}s linear infinite`;
+  }));
 }
 
 function renderHero() {
@@ -1178,13 +1400,19 @@ function renderUpdates() {
     list.innerHTML = `<div style="color:var(--text2);font-size:13px;padding:12px 0;font-family:var(--font-te)">తాజా అప్‌డేట్లు లేవు</div>`;
     return;
   }
-  list.innerHTML = CLIENT.updates.map(u => `
+  const LIMIT = 10;
+  const cards = CLIENT.updates.map(u => `
     <div class="update-card" onclick="safeOpen('${u.link}')">
       <div class="update-dot"></div>
       <div class="update-title">${u.title}</div>
       <i class="fas fa-chevron-right update-arrow"></i>
     </div>
   `).join('');
+
+  const hint = CLIENT.updates.length > LIMIT
+    ? `<div class="scroll-more-hint"><i class="fas fa-chevron-down" style="font-size:10px"></i> ${CLIENT.updates.length - LIMIT} మరిన్ని అప్‌డేట్లు స్క్రోల్ చేయండి</div>`
+    : '';
+  list.innerHTML = cards + hint;
 }
 
 function renderServices() {
@@ -1233,17 +1461,22 @@ function renderDocs() {
 function renderReqDocs() {
   const services = CLIENT.reqServices || [];
   if (!services.length) return;
+
+  // Hide old generic docs section, show accordion section
   const oldSec = document.getElementById('old-docs-section');
   const newSec = document.getElementById('req-docs-section');
   if (oldSec) oldSec.style.display = 'none';
   if (newSec) newSec.style.display = 'block';
+
   const list = document.getElementById('req-docs-list');
+
   list.innerHTML = services.map((srv, i) => {
     const docsHTML = srv.docs.map(d => `
       <div class="req-doc-item">
         <div class="req-doc-bullet"><i class="fas fa-check"></i></div>
         <span>${d}</span>
       </div>`).join('');
+
     return `
       <div class="acc-item" id="acc_${i}">
         <div class="acc-header" onclick="accToggle(${i})">
@@ -1263,7 +1496,9 @@ function accToggle(i) {
   const item = document.getElementById('acc_' + i);
   if (!item) return;
   const isOpen = item.classList.contains('open');
+  // Close all first
   document.querySelectorAll('.acc-item.open').forEach(el => el.classList.remove('open'));
+  // Open clicked if it was closed
   if (!isOpen) item.classList.add('open');
 }
 
@@ -1299,6 +1534,7 @@ function renderContact() {
       </div>
     </div>` : ''}
   `;
+
   const mapWrap = document.getElementById('map-wrap');
   if (CLIENT.mapEmbedUrl) {
     mapWrap.innerHTML = `<iframe src="${CLIENT.mapEmbedUrl}" allowfullscreen loading="lazy"></iframe>`;
@@ -1309,67 +1545,24 @@ function renderFooter() {
   document.getElementById('footer-text').textContent = CLIENT.footerText || `© ${new Date().getFullYear()} ${CLIENT.shopName}`;
 }
 
-/* ═══════════════════════════════════════════════════
-   POPUP — Dynamic multi-popup from Sheet
-   Sheet లో key='popup' rows ఎన్ని అయినా add చేయండి.
-   ఒకటి close చేస్తే తదుపరి automatically వస్తుంది.
-   ═══════════════════════════════════════════════════ */
 function showPopup() {
-  const popups = CLIENT.popups || [];
-  if (!popups.length) return;
-
-  let current = 0;
-  const total = popups.length;
-
-  function renderPopup(p) {
-    const img = document.getElementById('popup-img');
-
-    // Title & subtitle
-    document.getElementById('popup-title').textContent    = p.title;
-    document.getElementById('popup-subtitle').textContent = p.subtitle;
-
-    // Image
-    if (p.imageUrl) {
-      img.src = p.imageUrl;
-      img.classList.add('show');
-    } else {
-      img.src = '';
-      img.classList.remove('show');
-    }
-
-    // Counter — "1 / 3" style (only show if more than 1 popup)
-    const counter = document.getElementById('popup-counter');
-    if (total > 1) {
-      counter.textContent = `${current} / ${total}`;
-      counter.style.display = 'inline-flex';
-    } else {
-      counter.style.display = 'none';
-    }
-
-    // Button label
-    const isLast = current === total;
-    document.getElementById('popup-close').textContent =
-      isLast ? 'అర్థమైంది ✓' : `తదుపరి → (${current}/${total})`;
-
-    // Show overlay
-    document.getElementById('popup-overlay').classList.remove('hidden');
+  if (!CLIENT.popup.show) return;
+  const overlay = document.getElementById('popup-overlay');
+  const img     = document.getElementById('popup-img');
+  document.getElementById('popup-title').textContent    = CLIENT.popup.title;
+  document.getElementById('popup-subtitle').textContent = CLIENT.popup.subtitle;
+  if (CLIENT.popup.imageUrl) {
+    img.src = CLIENT.popup.imageUrl;
+    img.classList.add('show');
   }
+  overlay.classList.remove('hidden');
+}
 
-  function nextPopup() {
-    document.getElementById('popup-overlay').classList.add('hidden');
-    if (current < total) {
-      setTimeout(() => renderPopup(popups[current++]), 350);
-    }
-  }
-
-  // Wire close button & overlay click → advance to next popup
-  document.getElementById('popup-close').onclick = nextPopup;
-  document.getElementById('popup-overlay').onclick = (e) => {
-    if (e.target === document.getElementById('popup-overlay')) nextPopup();
-  };
-
-  // Show first popup
-  renderPopup(popups[current++]);
+function hideLoader() {
+  document.getElementById('loading-screen').classList.add('hide');
+  setTimeout(() => {
+    document.getElementById('loading-screen').style.display = 'none';
+  }, 500);
 }
 
 /* ═══════════════════════════════════════════════════
@@ -1377,112 +1570,110 @@ function showPopup() {
    ═══════════════════════════════════════════════════ */
 function renderVoice() {
   const chat  = document.getElementById('voice-chat');
-  const items = CLIENT.announcements || [];
-  if (!items.length) return;
+  const all   = CLIENT.announcements || [];
+  if (!all.length) return;
 
   const today = new Date().toLocaleDateString('te-IN', { day:'2-digit', month:'short' });
-  const bars  = Array.from({length:14}, (_, b) =>
-    `<div class="wbar" style="height:${4+[6,12,18,8,20,10,16,5,14,9,17,7,13,11][b]}px;animation-delay:${b*0.055}s"></div>`
+  const bars  = Array.from({length:12}, (_,b) =>
+    `<div class="wbar" style="height:${4+[6,12,18,8,20,10,16,5,14,9,11,7][b]}px;animation-delay:${b*0.06}s"></div>`
   ).join('');
 
-  let audioIdx = 0;
+  // ── Group by type ──────────────────────────────────────
+  const groups = { voice:[], tts:[], poster:[], pdf:[], canva:[] };
+  all.forEach(item => { if (groups[item.type]) groups[item.type].push(item); });
+
   let html = '';
+  let audioIdx = 0;
 
-  items.forEach((item) => {
-    const dt = `${item.date || today} <i class="fas fa-check-double" style="color:var(--accent);margin-left:4px"></i>`;
+  // helper: category section wrapper
+  const cat = (icon, label, count, innerHTML) => `
+    <div class="notice-cat">
+      <div class="notice-cat-head">
+        <span class="notice-cat-title"><i class="${icon}"></i>${label}</span>
+        <span class="notice-cat-count">${count}</span>
+      </div>
+      <div class="h-scroll">${innerHTML}</div>
+    </div>`;
 
-    if (item.type === 'voice') {
-      const id = 'vc_' + audioIdx++;
-      html += `
-        <div class="vc-in">
-          <div class="vc-sender"><i class="fas fa-headphones" style="margin-right:5px"></i>వాయిస్ అనౌన్స్‌మెంట్</div>
-          <div class="vbubble">
-            <div class="vc-title">${item.title || 'Audio Message'}</div>
-            <div class="vc-controls">
-              <button class="vc-play-btn" id="pb_${id}" onclick="vcToggle('${id}',this)">
-                <i class="fas fa-play"></i>
-              </button>
-              <div class="vc-wave" id="wv_${id}">${bars}</div>
-              <span class="vc-dur" id="du_${id}">0:00</span>
-            </div>
-            <audio id="${id}" src="${item.link}" preload="metadata"></audio>
-            <div class="vc-time">${dt}</div>
-          </div>
-        </div>`;
-
-    } else if (item.type === 'tts') {
-      const safe = item.text.replace(/"/g,'&quot;').replace(/'/g,'&#39;');
-      html += `
-        <div class="vc-out">
-          <div class="vbubble">
-            <div class="tts-body">${item.text}</div>
-            <button class="tts-speak-btn" onclick="vcSpeak(this,'${safe}')">
-              <i class="fas fa-volume-up"></i> వినండి
+  // ── 1. Voice audio (horizontal cards) ─────────────────
+  if (groups.voice.length) {
+    const inner = groups.voice.map(v => {
+      const id = 'hv_' + audioIdx++;
+      return `
+        <div class="hv-card">
+          <div class="hv-title">${v.title || 'వాయిస్ మెసేజ్'}</div>
+          <div class="hv-player">
+            <button class="hv-play" id="pb_${id}" onclick="vcToggle('${id}',this)">
+              <i class="fas fa-play"></i>
             </button>
-            <div class="vc-time">${dt}</div>
+            <div class="hv-wave" id="wv_${id}">${bars}</div>
+            <span class="hv-dur" id="du_${id}">0:00</span>
           </div>
+          <audio id="${id}" src="${v.link}" preload="metadata"></audio>
+          <div class="hv-date">${v.date || today} <i class="fas fa-check-double" style="color:var(--accent);margin-left:3px"></i></div>
         </div>`;
+    }).join('');
+    html += cat('fas fa-headphones', 'వాయిస్ మెసేజ్‌లు', groups.voice.length, inner);
+  }
 
-    } else if (item.type === 'poster') {
-      html += `
-        <div class="vc-in" style="max-width:92%">
-          <div class="vc-sender"><i class="fas fa-image" style="margin-right:5px"></i>పోస్టర్</div>
-          <div class="vbubble" style="padding:8px">
-            <img class="vc-poster-img" src="${item.link}" alt="poster"
-              onclick="vcLightbox('${item.link}')"
-              onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
-            <div style="display:none;align-items:center;justify-content:center;height:80px;
-              color:var(--text2);font-size:13px;font-family:var(--font-te)">
-              <i class="fas fa-image" style="margin-right:6px;opacity:.4"></i>Image లోడ్ కాలేదు
-            </div>
-            ${item.title ? `<div class="vc-poster-cap">${item.title}</div>` : ''}
-            <div class="vc-time">${dt}</div>
-          </div>
+  // ── 2. TTS (horizontal cards) ─────────────────────────
+  if (groups.tts.length) {
+    const inner = groups.tts.map((t, i) => {
+      const safe = t.text.replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+      return `
+        <div class="ht-card">
+          <div class="ht-text">${t.text}</div>
+          <button class="ht-speak" onclick="vcSpeak(this,'${safe}')">
+            <i class="fas fa-volume-up"></i> వినండి
+          </button>
+          <div class="hv-date">${t.date || today}</div>
         </div>`;
+    }).join('');
+    html += cat('fas fa-comment-dots', 'టెక్స్ట్ మెసేజ్‌లు', groups.tts.length, inner);
+  }
 
-    } else if (item.type === 'pdf') {
-      html += `
-        <div class="vc-in" style="max-width:92%">
-          <div class="vc-sender"><i class="fas fa-file-pdf" style="margin-right:5px"></i>PDF నోటీసు</div>
-          <div class="vbubble" style="padding:10px">
-            <a class="vc-pdf-card" href="${item.link}" target="_blank" rel="noopener">
-              <div class="vc-pdf-icon"><i class="fas fa-file-pdf"></i></div>
-              <div class="vc-pdf-info">
-                <div class="vc-pdf-name">${item.title}</div>
-                <div class="vc-pdf-sub">${item.desc}</div>
-              </div>
-              <i class="fas fa-download vc-pdf-dl"></i>
-            </a>
-            <div class="vc-time">${dt}</div>
-          </div>
-        </div>`;
+  // ── 3. Posters / Images (horizontal cards) ────────────
+  if (groups.poster.length) {
+    const inner = groups.poster.map(p => `
+      <div class="hp-card" onclick="vcLightbox('${p.link}')">
+        <img class="hp-img" src="${p.link}" alt="poster"
+          onerror="this.style.background='var(--bg3)';this.style.height='120px'"/>
+        ${p.title ? `<div class="hp-cap">${p.title}</div>` : ''}
+        <div class="hp-date">${p.date || today}</div>
+      </div>`).join('');
+    html += cat('fas fa-images', 'పోస్టర్లు', groups.poster.length, inner);
+  }
 
-    } else if (item.type === 'canva') {
-      html += `
-        <div class="vc-in" style="max-width:92%">
-          <div class="vc-sender"><i class="fas fa-palette" style="margin-right:5px"></i>Canva Template</div>
-          <div class="vbubble" style="padding:10px">
-            <a class="vc-canva-card" href="${item.link}" target="_blank" rel="noopener">
-              <div class="vc-canva-icon"><i class="fas fa-object-group"></i></div>
-              <div class="vc-canva-info">
-                <div class="vc-canva-name">${item.title}</div>
-                <div class="vc-canva-desc">${item.desc}</div>
-              </div>
-              <span class="vc-canva-open"><i class="fas fa-external-link-alt"></i> తెరవండి</span>
-            </a>
-            <div class="vc-time">${dt}</div>
-          </div>
-        </div>`;
-    }
-  });
+  // ── 4. PDF notices (horizontal cards) ─────────────────
+  if (groups.pdf.length) {
+    const inner = groups.pdf.map(p => `
+      <a class="hd-card" href="${p.link}" target="_blank" rel="noopener">
+        <div class="hd-icon"><i class="fas fa-file-pdf"></i></div>
+        <div class="hd-name">${p.title}</div>
+        <div class="hd-desc">${p.desc}</div>
+        <div class="hd-dl"><i class="fas fa-download"></i> డౌన్‌లోడ్</div>
+      </a>`).join('');
+    html += cat('fas fa-file-pdf', 'PDF నోటీసులు', groups.pdf.length, inner);
+  }
 
-  chat.innerHTML = html;
+  // ── 5. Canva templates (horizontal cards) ─────────────
+  if (groups.canva.length) {
+    const inner = groups.canva.map(c => `
+      <a class="hc-card" href="${c.link}" target="_blank" rel="noopener">
+        <div class="hc-icon"><i class="fas fa-object-group"></i></div>
+        <div class="hc-name">${c.title}</div>
+        <div class="hc-desc">${c.desc}</div>
+        <div class="hc-open"><i class="fas fa-external-link-alt"></i> Canva లో తెరవండి</div>
+      </a>`).join('');
+    html += cat('fas fa-palette', 'Canva Templates', groups.canva.length, inner);
+  }
 
-  // Wire audio events
+  chat.innerHTML = html || `<div class="vc-empty"><i class="fas fa-microphone-slash"></i>నోటీసులు లేవు</div>`;
+
+  // ── Wire up audio events ───────────────────────────────
   let ai = 0;
-  items.forEach(item => {
-    if (item.type !== 'voice') return;
-    const id  = 'vc_' + ai++;
+  groups.voice.forEach(() => {
+    const id  = 'hv_' + ai++;
     const aud = document.getElementById(id);
     const dur = document.getElementById('du_' + id);
     if (!aud || !dur) return;
@@ -1573,6 +1764,17 @@ function callPhone() {
 function openWA() {
   if (CLIENT && CLIENT.whatsapp) window.open(`https://wa.me/${CLIENT.whatsapp}`, '_blank');
 }
+
+/* ═══════════════════════════════════════════════════
+   POPUP CLOSE
+   ═══════════════════════════════════════════════════ */
+document.getElementById('popup-close').onclick = () => {
+  document.getElementById('popup-overlay').classList.add('hidden');
+};
+document.getElementById('popup-overlay').onclick = (e) => {
+  if (e.target === document.getElementById('popup-overlay'))
+    document.getElementById('popup-overlay').classList.add('hidden');
+};
 
 /* ═══════════════════════════════════════════════════
    BOOT
