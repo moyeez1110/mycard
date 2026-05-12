@@ -182,7 +182,7 @@ button { border: none; cursor: pointer; font-family: var(--font); }
 }
 .ticker-inner {
   display: flex; gap: 48px;
-  animation: tickerScroll 90s linear infinite;
+  animation: tickerScroll 1s linear infinite;
   white-space: nowrap;
 }
 .ticker-inner:hover { animation-play-state: paused; }
@@ -1079,22 +1079,47 @@ function buildClient(rows) {
    FETCH DATA
    ═══════════════════════════════════════════════════ */
 async function loadData() {
-  try {
-    const res = await fetch(SHEET_URL);
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    const buf     = await res.arrayBuffer();
-    const decoder = new TextDecoder('utf-8');
-    let text      = decoder.decode(buf);
-    if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
-    const rows = parseCSV(text);
-    CLIENT = buildClient(rows);
-    if (!CLIENT) throw new Error('No data in sheet');
-    renderAll();
-  } catch (e) {
-    console.error('Sheet fetch error:', e);
-    document.getElementById('error-banner').classList.add('show');
-    document.getElementById('loading-screen').classList.add('hide');
+  /* Multiple fetch strategies — first one that works will be used */
+  const proxies = [
+    url => url,                                                        // 1. Direct fetch
+    url => `https://corsproxy.io/?${encodeURIComponent(url)}`,        // 2. corsproxy.io
+    url => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`, // 3. allorigins
+  ];
+
+  let lastErr = null;
+
+  for (const proxy of proxies) {
+    try {
+      const fetchUrl = proxy(SHEET_URL);
+      const res = await fetch(fetchUrl, { cache: 'no-store' });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+
+      const buf     = await res.arrayBuffer();
+      const decoder = new TextDecoder('utf-8');
+      let text      = decoder.decode(buf);
+
+      // Remove BOM if present
+      if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
+
+      // Validate it looks like CSV (has comma or tab)
+      if (!text.includes(',') && !text.includes('\t')) throw new Error('Not CSV');
+
+      const rows = parseCSV(text);
+      CLIENT = buildClient(rows);
+      if (!CLIENT) throw new Error('No data in sheet');
+
+      renderAll();
+      return; // ✅ success — stop trying other proxies
+    } catch (e) {
+      lastErr = e;
+      console.warn('Fetch attempt failed:', proxy.toString(), e.message);
+    }
   }
+
+  // All proxies failed
+  console.error('All fetch strategies failed:', lastErr);
+  document.getElementById('error-banner').classList.add('show');
+  document.getElementById('loading-screen').classList.add('hide');
 }
 
 /* ═══════════════════════════════════════════════════
