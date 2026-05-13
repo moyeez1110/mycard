@@ -207,6 +207,70 @@ button{border:none;cursor:pointer;font-family:var(--font)}
 .hero-btn.secondary{background:var(--bg3);color:var(--text);border:1px solid var(--border)}
 .hero-btn.secondary:hover{border-color:var(--accent);color:var(--accent)}
 
+/* ═══════════════════════════════════════
+   BANNER CAROUSEL
+   ═══════════════════════════════════════ */
+#banner-section{display:none;margin:0 0 20px;position:relative}
+.banner-track{
+  border-radius:var(--radius);overflow:hidden;
+  border:1px solid var(--border);
+  background:var(--card);position:relative
+}
+.banner-slides{
+  display:flex;
+  transition:transform 0.5s cubic-bezier(0.19,1,0.22,1);
+  will-change:transform
+}
+.banner-slide{
+  min-width:100%;position:relative;
+  aspect-ratio:16/6.5;cursor:pointer;flex-shrink:0;
+  background:var(--bg3)
+}
+.banner-slide img{
+  width:100%;height:100%;object-fit:cover;display:block;
+  transition:opacity 0.3s
+}
+.banner-slide-fallback{
+  width:100%;height:100%;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  gap:8px;color:var(--text2)
+}
+.banner-caption{
+  position:absolute;bottom:0;left:0;right:0;
+  background:linear-gradient(transparent,rgba(0,0,0,0.75));
+  padding:28px 14px 10px;
+  font-size:13px;font-family:var(--font-te);
+  color:#fff;line-height:1.4;
+  pointer-events:none
+}
+/* Dot indicators */
+.banner-dots{
+  position:absolute;bottom:10px;right:12px;
+  display:flex;gap:5px;align-items:center;z-index:2
+}
+.bdot{
+  height:6px;border-radius:3px;
+  background:rgba(255,255,255,0.35);
+  cursor:pointer;transition:all 0.35s;
+  border:none;padding:0
+}
+.bdot.on{background:var(--accent);width:18px}
+.bdot:not(.on){width:6px}
+/* Prev / Next arrows */
+.banner-arrow{
+  position:absolute;top:50%;transform:translateY(-50%);
+  width:30px;height:30px;border-radius:50%;
+  background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);
+  border:1px solid rgba(255,255,255,0.15);
+  color:#fff;font-size:12px;z-index:2;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:var(--trans)
+}
+.banner-arrow:hover{background:rgba(0,0,0,0.75);border-color:var(--accent)}
+.banner-arrow.prev{left:10px}
+.banner-arrow.next{right:10px}
+
 .section-head{display:flex;align-items:center;gap:10px;margin-bottom:14px}
 .section-head h2{font-size:15px;font-weight:700;font-family:var(--font-te)}
 .section-line{flex:1;height:1px;background:linear-gradient(90deg,var(--border) 0%,transparent 100%)}
@@ -624,6 +688,21 @@ button{border:none;cursor:pointer;font-family:var(--font)}
   </div>
 
   <div style="padding:0 16px">
+
+    <!-- BANNER CAROUSEL -->
+    <div id="banner-section">
+      <div class="banner-track">
+        <div class="banner-slides" id="banner-slides"></div>
+        <button class="banner-arrow prev" id="banner-prev" onclick="bannerGo(_bannerCur-1)">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        <button class="banner-arrow next" id="banner-next" onclick="bannerGo(_bannerCur+1)">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+        <div class="banner-dots" id="banner-dots"></div>
+      </div>
+    </div>
+
     <div class="updates-section">
       <div class="section-head"><h2>🔔 తాజా అప్‌డేట్లు</h2><div class="section-line"></div></div>
       <div id="updates-list"></div>
@@ -724,7 +803,7 @@ function splitCSVLine(line) {
 function buildClient(rows) {
   if (!rows.length) return null;
   const kv={}, updates=[], services=[], pdfs=[], docs=[];
-  const tickers=[], announcements=[], reqServices=[], popups=[];
+  const tickers=[], announcements=[], reqServices=[], popups=[], banners=[];
 
   rows.forEach(r => {
     const key = (r.key||'').trim();
@@ -742,6 +821,12 @@ function buildClient(rows) {
     else if (key==='req_service') reqServices.push({name:r.value||r.title, icon:r.icon||'fas fa-file-alt', docs:[]});
     else if (key==='req_doc')     { if (reqServices.length) reqServices[reqServices.length-1].docs.push(r.value||r.title); }
     else if (key==='popup')       popups.push({title:r.title||'', subtitle:r.value||'', imageUrl:r.link||''});
+    else if (key==='banner')      banners.push({
+      imgUrl:   r.link  || '',           // image URL
+      caption:  r.title || r.value || '', // caption text
+      clickUrl: r.value && r.value.startsWith('http') ? r.value : '',  // click-through URL
+      duration: parseInt(r.extra) || 4000 // slide duration ms
+    });
     else                          kv[key]=r.value;
   });
 
@@ -750,7 +835,7 @@ function buildClient(rows) {
     logoIcon:kv.logoIcon||'fas fa-landmark', accentColor:kv.accentColor||'#4fffb0',
     city:kv.city||'', phone:kv.phone||'', whatsapp:kv.whatsapp||'',
     mapEmbedUrl:kv.mapEmbedUrl||'', footerText:kv.footerText||'',
-    popups, updates, services, pdfs, docs, tickers, announcements, reqServices,
+    popups, updates, services, pdfs, docs, tickers, announcements, reqServices, banners,
     coverUrl: kv.coverUrl || '',
   };
 }
@@ -784,7 +869,7 @@ async function loadData() {
 /* RENDER ALL */
 function renderAll() {
   applyTheme(); renderHeader(); renderTicker();
-  renderHero(); renderUpdates(); renderServices();
+  renderHero(); renderBanner(); renderUpdates(); renderServices();
   renderPDFs(); renderDocs(); renderReqDocs();
   renderVoice(); renderContact(); renderFooter();
   showPopup(); hideLoader();
@@ -826,17 +911,83 @@ function renderTicker() {
 function renderHero() {
   document.getElementById('hero-shop-name').textContent = CLIENT.shopName;
   document.getElementById('hero-city').textContent = CLIENT.city ? '📍 '+CLIENT.city : '';
-  // Cover photo
   const coverImg = document.getElementById('hero-cover-img');
-  if (CLIENT.coverUrl) {
-    coverImg.src = CLIENT.coverUrl;
-    coverImg.style.display = 'block';
-  }
-  // Avatar icon update
-  document.getElementById('hero-avatar-icon').className = CLIENT.logoIcon || 'fas fa-landmark';
-  // Accent color border on avatar
+  if (CLIENT.coverUrl) { coverImg.src=CLIENT.coverUrl; coverImg.style.display='block'; }
+  document.getElementById('hero-avatar-icon').className = CLIENT.logoIcon||'fas fa-landmark';
   document.getElementById('hero-avatar').style.boxShadow = '0 0 0 3px var(--bg)';
 }
+
+/* ═══════════════════════════════════════════════════
+   BANNER CAROUSEL
+   Sheet key: 'banner'
+   link  = image URL
+   title = caption text (optional)
+   value = click-through URL (optional, must start with http)
+   extra = slide duration ms (optional, default 4000)
+   ═══════════════════════════════════════════════════ */
+let _bannerCur = 0, _bannerTimer = null;
+
+function renderBanner() {
+  const banners = CLIENT.banners || [];
+  if (!banners.length) return;
+
+  const sec    = document.getElementById('banner-section');
+  const slides = document.getElementById('banner-slides');
+  const dots   = document.getElementById('banner-dots');
+  const prev   = document.getElementById('banner-prev');
+  const next   = document.getElementById('banner-next');
+
+  sec.style.display = 'block';
+
+  // Build slides
+  slides.innerHTML = banners.map((b, i) => `
+    <div class="banner-slide" ${b.clickUrl ? `onclick="safeOpen('${b.clickUrl}')" style="cursor:pointer"` : ''}>
+      <img src="${b.imgUrl}" alt="${b.caption}"
+        onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+      <div class="banner-slide-fallback" style="display:none">
+        <i class="fas fa-image" style="font-size:28px;opacity:.3"></i>
+        <span style="font-size:12px;font-family:var(--font-te)">${b.caption||'Image'}</span>
+      </div>
+      ${b.caption ? `<div class="banner-caption">${b.caption}</div>` : ''}
+    </div>`).join('');
+
+  // Build dots
+  if (banners.length > 1) {
+    dots.innerHTML = banners.map((_,i) =>
+      `<button class="bdot${i===0?' on':''}" onclick="bannerGo(${i})"></button>`
+    ).join('');
+    prev.style.display = next.style.display = 'flex';
+  } else {
+    prev.style.display = next.style.display = 'none';
+  }
+
+  // Add touch/swipe support
+  let touchX = 0;
+  slides.addEventListener('touchstart', e => { touchX = e.touches[0].clientX; }, {passive:true});
+  slides.addEventListener('touchend',   e => {
+    const dx = e.changedTouches[0].clientX - touchX;
+    if (Math.abs(dx) > 40) bannerGo(_bannerCur + (dx < 0 ? 1 : -1));
+  }, {passive:true});
+
+  // Start auto-slide
+  bannerGo(0);
+}
+
+window.bannerGo = function(n) {
+  const banners = CLIENT.banners || [];
+  if (!banners.length) return;
+  _bannerCur = ((n % banners.length) + banners.length) % banners.length;
+  document.getElementById('banner-slides').style.transform =
+    `translateX(-${_bannerCur * 100}%)`;
+  document.querySelectorAll('.bdot').forEach((d,i) =>
+    d.classList.toggle('on', i === _bannerCur));
+  // Reset auto-slide timer
+  clearInterval(_bannerTimer);
+  if (banners.length > 1) {
+    const dur = banners[_bannerCur].duration || 4000;
+    _bannerTimer = setInterval(() => bannerGo(_bannerCur + 1), dur);
+  }
+};
 
 function renderUpdates() {
   const list = document.getElementById('updates-list');
