@@ -162,7 +162,7 @@ button { border: none; cursor: pointer; font-family: var(--font); }
   flex: 1; overflow: hidden; position: relative;
 }
 .ticker-inner {
-  display: flex; gap: 60px;
+  display: flex; gap: 48px;
   white-space: nowrap;
   will-change: transform;
 }
@@ -297,14 +297,14 @@ button { border: none; cursor: pointer; font-family: var(--font); }
   line-height: 1.5;
 }
 .update-arrow { color: var(--text2); font-size: 12px; }
-.updates-show-more{
-  width:100%;padding:10px;border-radius:10px;
-  background:var(--bg3);border:1px solid var(--border);
-  color:var(--text2);font-size:13px;font-family:var(--font-te);
-  display:flex;align-items:center;justify-content:center;gap:6px;
-  cursor:pointer;transition:var(--trans);margin-top:4px
+.updates-show-more {
+  width:100%; padding:10px; border-radius:10px;
+  background:var(--bg3); border:1px solid var(--border);
+  color:var(--text2); font-size:13px; font-family:var(--font-te);
+  display:flex; align-items:center; justify-content:center; gap:6px;
+  cursor:pointer; transition:var(--trans); margin-top:4px;
 }
-.updates-show-more:hover{border-color:var(--accent);color:var(--accent)}
+.updates-show-more:hover { border-color:var(--accent); color:var(--accent); }
 
 /* Services grid */
 .services-section { margin-bottom: 24px; }
@@ -921,23 +921,18 @@ function renderHeader() {
   document.title = CLIENT.shopName;
 }
 
-/* ══ TICKER — JS requestAnimationFrame ══
-   • అన్ని sheet items scroll అవుతాయి (mobile తో సహా)
-   • Speed: PX_PER_SEC మార్చండి (80=default, 120=fast, 50=slow)
-   • Hover/touch చేస్తే pause అవుతుంది
-*/
 let _tickerRAF = null, _tickerX = 0, _tickerPaused = false;
 
 function renderTicker() {
   const inner = document.getElementById('ticker-inner');
   const track = inner.parentElement;
-  const PX_PER_SEC = 80; // ← ఇక్కడ speed మార్చండి
+  const PX_PER_SEC = 80; // ← speed మార్చాలంటే ఇక్కడ (80=default, 120=fast, 50=slow)
 
   const src = (CLIENT.tickers && CLIENT.tickers.length)
     ? CLIENT.tickers
     : [`స్వాగతం — ${CLIENT.shopName}`];
 
-  // 4 copies — mobile లో కూడా seamless loop అవుతుంది
+  // 4 copies — mobile లో కూడా seamless loop
   const copies = [...src, ...src, ...src, ...src];
   inner.innerHTML = copies.map(t =>
     `<span class="ticker-item">📢 ${t}</span>`
@@ -948,7 +943,6 @@ function renderTicker() {
     let last = null;
     _tickerX = 0;
     if (_tickerRAF) cancelAnimationFrame(_tickerRAF);
-
     function step(ts) {
       if (last !== null && !_tickerPaused) {
         _tickerX += PX_PER_SEC * (ts - last) / 1000;
@@ -972,7 +966,6 @@ function renderHero() {
   document.getElementById('hero-city').textContent      = CLIENT.city ? `📍 ${CLIENT.city}` : '';
 }
 
-/* ══ UPDATES — మొదటి 10 normal, 11+ vertical scroll box ══ */
 function renderUpdates() {
   const list    = document.getElementById('updates-list');
   const updates = CLIENT.updates || [];
@@ -992,7 +985,6 @@ function renderUpdates() {
     list.innerHTML = updates.map(card).join('');
     return;
   }
-
   const visible = updates.slice(0, LIMIT);
   const extra   = updates.slice(LIMIT);
   list.innerHTML = visible.map(card).join('') + `
