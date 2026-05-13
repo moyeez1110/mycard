@@ -649,7 +649,10 @@ button{border:none;cursor:pointer;font-family:var(--font)}
 
 <header id="app-header">
   <div class="header-brand">
-    <div class="header-logo"><i id="hdr-icon" class="fas fa-landmark"></i></div>
+    <div class="header-logo">
+      <img id="hdr-logo-img" style="display:none;width:100%;height:100%;object-fit:cover;border-radius:8px" onerror="this.style.display='none';document.getElementById('hdr-icon').style.display='flex'"/>
+      <i id="hdr-icon" class="fas fa-landmark"></i>
+    </div>
     <div>
       <div class="header-name" id="hdr-name">లోడ్…</div>
       <div class="header-tag" id="hdr-tag">—</div>
@@ -674,6 +677,7 @@ button{border:none;cursor:pointer;font-family:var(--font)}
     </div>
     <div class="hero-profile-row">
       <div class="hero-avatar" id="hero-avatar">
+        <img id="hero-logo-img" style="display:none;width:100%;height:100%;object-fit:cover;border-radius:50%;position:absolute;inset:0" onerror="this.style.display='none';document.getElementById('hero-avatar-icon').style.display='flex'"/>
         <div class="hero-avatar-icon"><i id="hero-avatar-icon" class="fas fa-landmark"></i></div>
       </div>
       <div class="hero-info">
@@ -833,6 +837,7 @@ function buildClient(rows) {
   return {
     shopName:kv.shopName||'Seva Kendra', tagline:kv.tagline||'',
     logoIcon:kv.logoIcon||'fas fa-landmark', accentColor:kv.accentColor||'#4fffb0',
+    logoUrl: kv.logoUrl || '',
     city:kv.city||'', phone:kv.phone||'', whatsapp:kv.whatsapp||'',
     mapEmbedUrl:kv.mapEmbedUrl||'', footerText:kv.footerText||'',
     popups, updates, services, pdfs, docs, tickers, announcements, reqServices, banners,
@@ -887,13 +892,23 @@ function applyTheme() {
 }
 
 function renderHeader() {
-  document.getElementById('hdr-icon').className = CLIENT.logoIcon;
   document.getElementById('hdr-name').textContent = CLIENT.shopName;
   document.getElementById('hdr-tag').textContent  = CLIENT.tagline;
   document.getElementById('fab-call').href = 'tel:'+CLIENT.phone;
   document.getElementById('fab-wa').href   = 'https://wa.me/'+CLIENT.whatsapp;
   document.getElementById('fab').href      = 'https://wa.me/'+CLIENT.whatsapp;
   document.title = CLIENT.shopName;
+
+  const hdrImg  = document.getElementById('hdr-logo-img');
+  const hdrIcon = document.getElementById('hdr-icon');
+  if (CLIENT.logoUrl) {
+    hdrImg.src          = CLIENT.logoUrl;
+    hdrImg.style.display = 'block';
+    hdrIcon.style.display = 'none';
+  } else {
+    hdrIcon.className    = CLIENT.logoIcon;
+    hdrIcon.style.display = 'flex';
+  }
 }
 
 /* ── FIX 6: ticker uses plain strings (not objects) — render correctly ── */
@@ -913,8 +928,18 @@ function renderHero() {
   document.getElementById('hero-city').textContent = CLIENT.city ? '📍 '+CLIENT.city : '';
   const coverImg = document.getElementById('hero-cover-img');
   if (CLIENT.coverUrl) { coverImg.src=CLIENT.coverUrl; coverImg.style.display='block'; }
-  document.getElementById('hero-avatar-icon').className = CLIENT.logoIcon||'fas fa-landmark';
   document.getElementById('hero-avatar').style.boxShadow = '0 0 0 3px var(--bg)';
+
+  const avatarImg  = document.getElementById('hero-logo-img');
+  const avatarIcon = document.getElementById('hero-avatar-icon');
+  if (CLIENT.logoUrl) {
+    avatarImg.src           = CLIENT.logoUrl;
+    avatarImg.style.display = 'block';
+    avatarIcon.style.display = 'none';
+  } else {
+    avatarIcon.className    = CLIENT.logoIcon || 'fas fa-landmark';
+    avatarIcon.style.display = 'flex';
+  }
 }
 
 /* ═══════════════════════════════════════════════════
