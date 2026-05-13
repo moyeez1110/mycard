@@ -611,6 +611,63 @@ button{border:none;cursor:pointer;font-family:var(--font)}
   border:1px solid var(--border);color:var(--text);width:36px;height:36px;
   border-radius:50%;font-size:16px;display:flex;align-items:center;justify-content:center;cursor:pointer
 }
+/* ═══════════════════════════════════════
+   MOBILE FRIENDLY GALLERY CAROUSEL
+   ═══════════════════════════════════════ */
+#gallery-section{
+  padding:18px 14px;
+}
+.gallery-head{
+  margin-bottom:14px;
+}
+.gallery-head h2{
+  font-size:20px;
+  font-weight:700;
+  color:var(--text,#fff);
+}
+.gallery-slider{
+  overflow-x:auto;
+  scroll-snap-type:x mandatory;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+}
+.gallery-slider::-webkit-scrollbar{
+  display:none;
+}
+.gallery-track{
+  display:flex;
+  gap:14px;
+}
+.gallery-card{
+  min-width:85%;
+  max-width:85%;
+  height:220px;
+  border-radius:18px;
+  overflow:hidden;
+  background:#111827;
+  scroll-snap-align:center;
+  flex-shrink:0;
+  border:1px solid rgba(255,255,255,0.08);
+  box-shadow:0 4px 18px rgba(0,0,0,0.25);
+  position:relative;
+}
+.gallery-card img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+  transition:transform .4s ease;
+}
+.gallery-card:hover img{
+  transform:scale(1.05);
+}
+@media(min-width:768px){
+  .gallery-card{
+    min-width:320px;
+    max-width:320px;
+    height:240px;
+  }
+}
 </style>
 </head>
 <body>
@@ -712,6 +769,28 @@ button{border:none;cursor:pointer;font-family:var(--font)}
       <div class="section-head"><h2>🛎️ మా సేవలు</h2><div class="section-line"></div></div>
       <div class="services-grid" id="services-grid"></div>
     </div>
+    <!-- ════════════════════ GALLERY SECTION ════════════════════ -->
+    <section id="gallery-section">
+      <div class="gallery-head">
+        <h2>📸 Gallery</h2>
+      </div>
+      <div class="gallery-slider">
+        <div class="gallery-track">
+          <div class="gallery-card">
+            <img src="https://picsum.photos/id/1015/600/400" alt="">
+          </div>
+          <div class="gallery-card">
+            <img src="https://picsum.photos/id/1025/600/400" alt="">
+          </div>
+          <div class="gallery-card">
+            <img src="https://picsum.photos/id/1035/600/400" alt="">
+          </div>
+          <div class="gallery-card">
+            <img src="https://picsum.photos/id/1045/600/400" alt="">
+          </div>
+        </div>
+      </div>
+    </section>
     <div class="page-footer" id="footer-text"></div>
   </div>
 </div>
@@ -1387,6 +1466,28 @@ function showPage(id,btn) {
 function safeOpen(url) { if(url&&url!=='#') window.open(url,'_blank'); }
 function callPhone() { if(CLIENT&&CLIENT.phone) window.location.href='tel:'+CLIENT.phone; }
 function openWA()    { if(CLIENT&&CLIENT.whatsapp) window.open('https://wa.me/'+CLIENT.whatsapp,'_blank'); }
+
+/* ═══════════════════════════════════════
+   GALLERY AUTO SCROLL
+   ═══════════════════════════════════════ */
+const gallerySlider = document.querySelector('.gallery-slider');
+let galleryAuto;
+function startGalleryAuto(){
+  galleryAuto = setInterval(() => {
+    gallerySlider.scrollBy({ left:320, behavior:'smooth' });
+    if(
+      gallerySlider.scrollLeft + gallerySlider.clientWidth >=
+      gallerySlider.scrollWidth - 10
+    ){
+      setTimeout(() => {
+        gallerySlider.scrollTo({ left:0, behavior:'smooth' });
+      }, 1000);
+    }
+  }, 3000);
+}
+startGalleryAuto();
+gallerySlider.addEventListener('touchstart', () => { clearInterval(galleryAuto); });
+gallerySlider.addEventListener('touchend',   () => { startGalleryAuto(); });
 
 loadData();
 </script>
