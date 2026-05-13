@@ -135,25 +135,72 @@ button{border:none;cursor:pointer;font-family:var(--font)}
 .page.active{display:block}
 
 /* HOME */
-#home{padding:20px 16px 100px;max-width:600px;margin:0 auto}
+#home{padding:0 0 100px;max-width:600px;margin:0 auto}
+/* ── Facebook Profile Banner Hero ── */
 .hero-card{
-  background:linear-gradient(135deg,var(--bg3) 0%,var(--card) 100%);
   border:1px solid var(--border);border-radius:var(--radius);
-  padding:24px;margin-bottom:24px;position:relative;overflow:hidden
+  margin-bottom:24px;overflow:hidden;background:var(--card)
 }
-.hero-card::before{
-  content:'';position:absolute;top:-60px;right:-60px;
-  width:200px;height:200px;
-  background:radial-gradient(circle,var(--accent) 0%,transparent 70%);
-  opacity:0.06;pointer-events:none
+.hero-cover{
+  width:100%;height:160px;position:relative;
+  background:linear-gradient(135deg,#0d2137 0%,#1a3a5c 50%,#0d2137 100%);
+  overflow:hidden
 }
-.hero-greeting{font-size:12px;color:var(--text2);margin-bottom:6px;letter-spacing:0.5px}
-.hero-name{font-size:22px;font-weight:700;font-family:var(--font-te)}
-.hero-city{font-size:13px;color:var(--accent);margin-top:4px}
-.hero-actions{display:flex;gap:10px;margin-top:18px}
+.hero-cover-img{
+  width:100%;height:100%;object-fit:cover;display:block;
+  transition:opacity 0.4s ease
+}
+.hero-cover-gradient{
+  position:absolute;inset:0;
+  background:linear-gradient(180deg,transparent 40%,rgba(10,15,26,0.85) 100%);
+  pointer-events:none
+}
+.hero-cover-pattern{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse at 20% 50%,rgba(79,255,176,0.08) 0%,transparent 60%),
+    radial-gradient(ellipse at 80% 20%,rgba(96,165,250,0.06) 0%,transparent 50%);
+  pointer-events:none
+}
+/* Add cover button */
+.hero-add-cover{
+  position:absolute;bottom:10px;right:10px;
+  background:rgba(0,0,0,0.55);backdrop-filter:blur(6px);
+  border:1px solid rgba(255,255,255,0.15);
+  color:#fff;border-radius:8px;padding:5px 10px;
+  font-size:11px;display:flex;align-items:center;gap:5px;
+  cursor:pointer;transition:var(--trans)
+}
+.hero-add-cover:hover{background:rgba(0,0,0,0.75)}
+
+.hero-profile-row{
+  display:flex;align-items:flex-end;gap:14px;
+  padding:0 16px;margin-top:-36px;position:relative;z-index:2
+}
+.hero-avatar{
+  width:72px;height:72px;border-radius:50%;
+  border:3px solid var(--bg);
+  background:rgba(79,255,176,0.12);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--accent);font-size:28px;flex-shrink:0;
+  overflow:hidden;position:relative
+}
+.hero-avatar img{width:100%;height:100%;object-fit:cover}
+.hero-avatar-icon{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.hero-info{flex:1;padding-bottom:6px;min-width:0}
+.hero-name{
+  font-size:18px;font-weight:700;font-family:var(--font-te);
+  line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis
+}
+.hero-city{font-size:12px;color:var(--text2);margin-top:3px;font-family:var(--font-te)}
+.hero-stats{display:flex;gap:12px;margin-top:4px}
+.hero-stat{font-size:11px;color:var(--text2);display:flex;align-items:center;gap:4px}
+.hero-stat i{font-size:10px;color:var(--accent)}
+
+.hero-actions{display:flex;gap:8px;padding:12px 16px 16px}
 .hero-btn{
-  flex:1;padding:11px 16px;border-radius:10px;font-size:13px;font-weight:600;
-  display:flex;align-items:center;justify-content:center;gap:8px;transition:var(--trans)
+  flex:1;padding:9px 14px;border-radius:9px;font-size:13px;font-weight:600;
+  display:flex;align-items:center;justify-content:center;gap:7px;transition:var(--trans)
 }
 .hero-btn.primary{background:var(--accent);color:#0a0f1a}
 .hero-btn.primary:hover{opacity:0.88;transform:scale(0.98)}
@@ -165,6 +212,13 @@ button{border:none;cursor:pointer;font-family:var(--font)}
 .section-line{flex:1;height:1px;background:linear-gradient(90deg,var(--border) 0%,transparent 100%)}
 
 .updates-section{margin-bottom:24px}
+.updates-scroll-wrap{
+  max-height:500px;overflow-y:auto;
+  scrollbar-width:thin;scrollbar-color:var(--border) transparent
+}
+.updates-scroll-wrap::-webkit-scrollbar{width:4px}
+.updates-scroll-wrap::-webkit-scrollbar-track{background:transparent}
+.updates-scroll-wrap::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
 .update-card{
   background:var(--card);border:1px solid var(--border);border-radius:10px;
   padding:14px 16px;display:flex;align-items:center;gap:14px;
@@ -174,6 +228,14 @@ button{border:none;cursor:pointer;font-family:var(--font)}
 .update-dot{width:8px;height:8px;background:var(--accent);border-radius:50%;flex-shrink:0;box-shadow:0 0 6px var(--accent)}
 .update-title{flex:1;font-size:13px;font-family:var(--font-te);line-height:1.5}
 .update-arrow{color:var(--text2);font-size:12px}
+.updates-show-more{
+  width:100%;padding:10px;border-radius:10px;
+  background:var(--bg3);border:1px solid var(--border);
+  color:var(--text2);font-size:13px;font-family:var(--font-te);
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  cursor:pointer;transition:var(--trans);margin-top:4px
+}
+.updates-show-more:hover{border-color:var(--accent);color:var(--accent)}
 
 .services-section{margin-bottom:24px}
 .services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
@@ -317,24 +379,118 @@ button{border:none;cursor:pointer;font-family:var(--font)}
 
 @media(min-width:640px){.services-grid{grid-template-columns:repeat(4,1fr)}}
 
-/* VOICE PAGE */
-#voice-page{padding:16px 16px 100px;max-width:600px;margin:0 auto}
-.voice-chat{display:flex;flex-direction:column;gap:14px}
-.vc-in{display:flex;flex-direction:column;align-items:flex-start;max-width:88%}
-.vc-in .vbubble{background:var(--card);border:1px solid var(--border);border-radius:4px 14px 14px 14px;padding:10px 14px;width:100%}
-.vc-out{display:flex;flex-direction:column;align-items:flex-end;max-width:88%;align-self:flex-end}
-.vc-out .vbubble{background:rgba(79,255,176,0.08);border:1px solid rgba(79,255,176,0.2);border-radius:14px 4px 14px 14px;padding:12px 14px;width:100%}
-.vc-sender{font-size:11px;color:var(--accent);font-weight:700;margin-bottom:6px}
-.vc-title{font-size:12px;color:var(--text2);font-family:var(--font-te);margin-bottom:8px}
+/* VOICE PAGE — horizontal scroll sections */
+#voice-page{padding:16px 0 100px;max-width:100%}
+.vc-section{margin-bottom:28px}
+.vc-section-head{
+  display:flex;align-items:center;gap:10px;
+  padding:0 16px;margin-bottom:12px
+}
+.vc-section-head h3{font-size:14px;font-weight:700;font-family:var(--font-te)}
+.vc-section-count{
+  font-size:11px;color:var(--text2);background:var(--bg3);
+  border-radius:20px;padding:2px 8px
+}
+.vc-hscroll{
+  display:flex;gap:12px;overflow-x:auto;
+  padding:4px 16px 10px;
+  scrollbar-width:none;-ms-overflow-style:none;
+  scroll-snap-type:x mandatory
+}
+.vc-hscroll::-webkit-scrollbar{display:none}
+
+/* AUDIO card */
+.vc-audio-card{
+  flex-shrink:0;width:260px;scroll-snap-align:start;
+  background:var(--card);border:1px solid var(--border);
+  border-radius:14px;padding:14px;
+}
+.vc-audio-card:hover{border-color:rgba(79,255,176,0.3)}
+.vc-sender{font-size:11px;color:var(--accent);font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:5px}
+.vc-title{font-size:13px;color:var(--text);font-family:var(--font-te);margin-bottom:10px;line-height:1.4;font-weight:500}
 .vc-controls{display:flex;align-items:center;gap:10px}
 .vc-play-btn{
   width:38px;height:38px;border-radius:50%;background:var(--accent);color:#0a0f1a;
   font-size:13px;display:flex;align-items:center;justify-content:center;
-  flex-shrink:0;transition:var(--trans)
+  flex-shrink:0;transition:var(--trans);border:none;cursor:pointer
 }
 .vc-play-btn:hover{opacity:0.85}
 .vc-play-btn.playing{background:transparent;color:var(--accent);border:1.5px solid var(--accent)}
 .vc-wave{flex:1;height:28px;display:flex;align-items:center;gap:2.5px}
+
+/* POSTER card */
+.vc-poster-card{
+  flex-shrink:0;width:200px;scroll-snap-align:start;
+  background:var(--card);border:1px solid var(--border);
+  border-radius:14px;overflow:hidden;cursor:pointer;
+  transition:var(--trans)
+}
+.vc-poster-card:hover{border-color:rgba(79,255,176,0.3);transform:translateY(-2px)}
+.vc-poster-card img{
+  width:100%;height:160px;object-fit:cover;display:block
+}
+.vc-poster-card .vc-cap{
+  padding:8px 10px;font-size:11px;color:var(--text2);
+  font-family:var(--font-te);line-height:1.4
+}
+
+/* PDF card */
+.vc-pdf-hcard{
+  flex-shrink:0;width:200px;scroll-snap-align:start;
+  background:var(--card);border:1px solid rgba(248,113,113,0.2);
+  border-radius:14px;padding:14px;
+  display:flex;flex-direction:column;gap:10px;
+  text-decoration:none;color:var(--text);transition:var(--trans)
+}
+.vc-pdf-hcard:hover{border-color:#f87171;transform:translateY(-2px)}
+.vc-pdf-hcard .ico{
+  width:44px;height:44px;background:rgba(248,113,113,0.14);
+  border-radius:10px;display:flex;align-items:center;justify-content:center;
+  color:#f87171;font-size:22px
+}
+.vc-pdf-hcard .nm{font-size:13px;font-weight:600;font-family:var(--font-te);line-height:1.4}
+.vc-pdf-hcard .sub{font-size:11px;color:var(--text2);margin-top:2px}
+.vc-pdf-hcard .dl{font-size:11px;color:#f87171;display:flex;align-items:center;gap:4px;margin-top:auto}
+
+/* Canva card */
+.vc-canva-hcard{
+  flex-shrink:0;width:200px;scroll-snap-align:start;
+  background:var(--card);border:1px solid rgba(167,139,250,0.25);
+  border-radius:14px;padding:14px;
+  display:flex;flex-direction:column;gap:10px;
+  text-decoration:none;color:var(--text);transition:var(--trans)
+}
+.vc-canva-hcard:hover{border-color:#a78bfa;transform:translateY(-2px)}
+.vc-canva-hcard .ico{
+  width:44px;height:44px;background:rgba(167,139,250,0.14);
+  border-radius:10px;display:flex;align-items:center;justify-content:center;
+  color:#a78bfa;font-size:20px
+}
+.vc-canva-hcard .nm{font-size:13px;font-weight:600;font-family:var(--font-te);line-height:1.4}
+.vc-canva-hcard .sub{font-size:11px;color:var(--text2);margin-top:2px}
+.vc-canva-hcard .open{font-size:11px;color:#a78bfa;display:flex;align-items:center;gap:4px;margin-top:auto}
+
+/* TTS card */
+.vc-tts-card{
+  flex-shrink:0;width:240px;scroll-snap-align:start;
+  background:rgba(79,255,176,0.05);border:1px solid rgba(79,255,176,0.15);
+  border-radius:14px;padding:14px;
+  display:flex;flex-direction:column;gap:10px
+}
+.tts-body{font-size:13px;font-family:var(--font-te);line-height:1.65;color:var(--text)}
+.tts-speak-btn{
+  background:var(--bg3);border:1px solid rgba(79,255,176,0.4);
+  color:var(--accent);border-radius:20px;padding:6px 14px;
+  font-size:12px;font-family:var(--font-te);
+  display:inline-flex;align-items:center;gap:6px;transition:var(--trans);
+  width:fit-content
+}
+.tts-speak-btn:hover{background:rgba(79,255,176,0.08)}
+.tts-speak-btn.speaking{background:rgba(79,255,176,0.15);border-color:var(--accent)}
+
+.vc-time{font-size:10px;color:var(--text2);text-align:right;margin-top:6px}
+.vc-empty{text-align:center;color:var(--text2);font-size:13px;font-family:var(--font-te);padding:50px 20px}
+.vc-empty i{font-size:34px;margin-bottom:12px;display:block;opacity:0.35}
 
 /* ── FIX 3: wbar animation-delay via CSS custom property ──
    shorthand animation overrides inline animation-delay.
@@ -445,24 +601,39 @@ button{border:none;cursor:pointer;font-family:var(--font)}
 
 <!-- HOME -->
 <div id="home" class="page active">
+  <!-- Facebook-style profile banner -->
   <div class="hero-card">
-    <div class="hero-greeting">నమస్కారం 🙏</div>
-    <div class="hero-name" id="hero-shop-name">—</div>
-    <div class="hero-city" id="hero-city">—</div>
+    <div class="hero-cover">
+      <img id="hero-cover-img" class="hero-cover-img" src="" alt="" style="display:none"/>
+      <div class="hero-cover-gradient"></div>
+      <div class="hero-cover-pattern"></div>
+    </div>
+    <div class="hero-profile-row">
+      <div class="hero-avatar" id="hero-avatar">
+        <div class="hero-avatar-icon"><i id="hero-avatar-icon" class="fas fa-landmark"></i></div>
+      </div>
+      <div class="hero-info">
+        <div class="hero-name" id="hero-shop-name">—</div>
+        <div class="hero-city" id="hero-city">—</div>
+      </div>
+    </div>
     <div class="hero-actions">
       <button class="hero-btn primary" onclick="callPhone()"><i class="fas fa-phone"></i> కాల్ చేయండి</button>
       <button class="hero-btn secondary" onclick="openWA()"><i class="fab fa-whatsapp"></i> WhatsApp</button>
     </div>
   </div>
-  <div class="updates-section">
-    <div class="section-head"><h2>🔔 తాజా అప్‌డేట్లు</h2><div class="section-line"></div></div>
-    <div id="updates-list"></div>
+
+  <div style="padding:0 16px">
+    <div class="updates-section">
+      <div class="section-head"><h2>🔔 తాజా అప్‌డేట్లు</h2><div class="section-line"></div></div>
+      <div id="updates-list"></div>
+    </div>
+    <div class="services-section">
+      <div class="section-head"><h2>🛎️ మా సేవలు</h2><div class="section-line"></div></div>
+      <div class="services-grid" id="services-grid"></div>
+    </div>
+    <div class="page-footer" id="footer-text"></div>
   </div>
-  <div class="services-section">
-    <div class="section-head"><h2>🛎️ మా సేవలు</h2><div class="section-line"></div></div>
-    <div class="services-grid" id="services-grid"></div>
-  </div>
-  <div class="page-footer" id="footer-text"></div>
 </div>
 
 <!-- DOCS -->
@@ -490,13 +661,12 @@ button{border:none;cursor:pointer;font-family:var(--font)}
   </div>
 </div>
 
-<!-- VOICE -->
+<!-- VOICE — section-wise horizontal scroll -->
 <div id="voice-page" class="page">
-  <div class="section-head" style="margin:4px 0 16px">
-    <h2>🎙️ వాయిస్ అనౌన్స్‌మెంట్స్</h2><div class="section-line"></div>
-  </div>
-  <div class="voice-chat" id="voice-chat">
-    <div class="vc-empty"><i class="fas fa-microphone-slash"></i>వాయిస్ అనౌన్స్‌మెంట్లు లేవు</div>
+  <div id="voice-sections">
+    <div class="vc-empty" style="padding:60px 20px">
+      <i class="fas fa-microphone-slash"></i>నోటీసులు లేవు
+    </div>
   </div>
 </div>
 
@@ -581,6 +751,7 @@ function buildClient(rows) {
     city:kv.city||'', phone:kv.phone||'', whatsapp:kv.whatsapp||'',
     mapEmbedUrl:kv.mapEmbedUrl||'', footerText:kv.footerText||'',
     popups, updates, services, pdfs, docs, tickers, announcements, reqServices,
+    coverUrl: kv.coverUrl || '',
   };
 }
 
@@ -655,17 +826,56 @@ function renderTicker() {
 function renderHero() {
   document.getElementById('hero-shop-name').textContent = CLIENT.shopName;
   document.getElementById('hero-city').textContent = CLIENT.city ? '📍 '+CLIENT.city : '';
+  // Cover photo
+  const coverImg = document.getElementById('hero-cover-img');
+  if (CLIENT.coverUrl) {
+    coverImg.src = CLIENT.coverUrl;
+    coverImg.style.display = 'block';
+  }
+  // Avatar icon update
+  document.getElementById('hero-avatar-icon').className = CLIENT.logoIcon || 'fas fa-landmark';
+  // Accent color border on avatar
+  document.getElementById('hero-avatar').style.boxShadow = '0 0 0 3px var(--bg)';
 }
 
 function renderUpdates() {
   const list = document.getElementById('updates-list');
-  if (!CLIENT.updates.length) { list.innerHTML=`<div style="color:var(--text2);font-size:13px;padding:12px 0;font-family:var(--font-te)">తాజా అప్‌డేట్లు లేవు</div>`; return; }
-  list.innerHTML = CLIENT.updates.map(u => `
+  const updates = CLIENT.updates || [];
+  if (!updates.length) {
+    list.innerHTML = `<div style="color:var(--text2);font-size:13px;padding:12px 0;font-family:var(--font-te)">తాజా అప్‌డేట్లు లేవు</div>`;
+    return;
+  }
+  const LIMIT = 10;
+  const cardsHTML = u => `
     <div class="update-card" onclick="safeOpen('${u.link}')">
       <div class="update-dot"></div>
       <div class="update-title">${u.title}</div>
       <i class="fas fa-chevron-right update-arrow"></i>
-    </div>`).join('');
+    </div>`;
+
+  if (updates.length <= LIMIT) {
+    // ≤10: show all without scroll container
+    list.innerHTML = updates.map(cardsHTML).join('');
+  } else {
+    // >10: show first 10 visible, rest in scrollable area
+    const visible  = updates.slice(0, LIMIT);
+    const rest     = updates.slice(LIMIT);
+    const restHTML = rest.map(cardsHTML).join('');
+    list.innerHTML = visible.map(cardsHTML).join('') + `
+      <div id="updates-more" class="updates-scroll-wrap" style="display:none">${restHTML}</div>
+      <button class="updates-show-more" onclick="toggleMoreUpdates(this,${rest.length})">
+        <i class="fas fa-chevron-down"></i> మరింత చూడండి (${rest.length} అప్‌డేట్లు)
+      </button>`;
+  }
+}
+
+function toggleMoreUpdates(btn, count) {
+  const more = document.getElementById('updates-more');
+  const open = more.style.display === 'block';
+  more.style.display = open ? 'none' : 'block';
+  btn.innerHTML = open
+    ? `<i class="fas fa-chevron-down"></i> మరింత చూడండి (${count} అప్‌డేట్లు)`
+    : `<i class="fas fa-chevron-up"></i> తక్కువ చూడండి`;
 }
 
 function renderServices() {
@@ -800,28 +1010,46 @@ function showPopup() {
   show();
 }
 
-/* VOICE */
+/* VOICE — horizontal scroll sections by type */
 function renderVoice() {
-  const chat  = document.getElementById('voice-chat');
+  const wrap = document.getElementById('voice-sections');
   const items = CLIENT.announcements||[];
   if (!items.length) return;
 
   const today = new Date().toLocaleDateString('te-IN',{day:'2-digit',month:'short'});
-
-  /* ── FIX 9: wbar delay via CSS --wd custom property (not inline animation-delay) ── */
   const DELAYS = [0,0.055,0.11,0.165,0.22,0.275,0.33,0.385,0.44,0.495,0.55,0.605,0.66,0.715];
   const HEIGHTS= [6,12,18,8,20,10,16,5,14,9,17,7,13,11];
   const bars = HEIGHTS.map((h,b)=>
     `<div class="wbar" style="height:${4+h}px;--wd:${DELAYS[b]}s"></div>`).join('');
 
-  let ai=0, html='';
-  items.forEach(item => {
-    const dt = `${item.date||today} <i class="fas fa-check-double" style="color:var(--accent);margin-left:4px"></i>`;
-    if (item.type==='voice') {
-      const id='vc_'+ai++;
-      html+=`<div class="vc-in">
-        <div class="vc-sender"><i class="fas fa-headphones" style="margin-right:5px"></i>వాయిస్ అనౌన్స్‌మెంట్</div>
-        <div class="vbubble">
+  // Group by type preserving order
+  const groups = { voice:[], poster:[], pdf:[], canva:[], tts:[] };
+  const ORDER  = ['voice','poster','pdf','canva','tts'];
+  const LABELS = {
+    voice:  ['🎙️ వాయిస్ అనౌన్స్‌మెంట్స్', 'fas fa-headphones'],
+    poster: ['🖼️ పోస్టర్లు',                'fas fa-image'],
+    pdf:    ['📄 PDF నోటీసులు',             'fas fa-file-pdf'],
+    canva:  ['🎨 Canva Templates',          'fas fa-palette'],
+    tts:    ['📢 టెక్స్ట్ నోటీసులు',        'fas fa-volume-up'],
+  };
+
+  let ai = 0;
+  items.forEach(item => { if (groups[item.type]) groups[item.type].push({...item, _ai: item.type==='voice'?ai++:0}); });
+
+  let html = '';
+  ORDER.forEach(type => {
+    const list = groups[type];
+    if (!list.length) return;
+    const [label] = LABELS[type];
+    let cardsHTML = '';
+
+    if (type === 'voice') {
+      let vi = 0;
+      list.forEach(item => {
+        const id = 'vc_'+vi++;
+        const dt = item.date||today;
+        cardsHTML += `<div class="vc-audio-card">
+          <div class="vc-sender"><i class="fas fa-headphones"></i> ${dt}</div>
           <div class="vc-title">${item.title||'Audio Message'}</div>
           <div class="vc-controls">
             <button class="vc-play-btn" id="pb_${id}" onclick="vcToggle('${id}',this)"><i class="fas fa-play"></i></button>
@@ -829,60 +1057,66 @@ function renderVoice() {
             <span class="vc-dur" id="du_${id}">0:00</span>
           </div>
           <audio id="${id}" src="${item.link}" preload="metadata"></audio>
-          <div class="vc-time">${dt}</div>
-        </div></div>`;
-    } else if (item.type==='tts') {
-      const safe=item.text.replace(/"/g,'&quot;').replace(/'/g,'&#39;');
-      html+=`<div class="vc-out"><div class="vbubble">
-        <div class="tts-body">${item.text}</div>
-        <button class="tts-speak-btn" onclick="vcSpeak(this,'${safe}')"><i class="fas fa-volume-up"></i> వినండి</button>
-        <div class="vc-time">${dt}</div>
-      </div></div>`;
-    } else if (item.type==='poster') {
-      html+=`<div class="vc-in" style="max-width:92%">
-        <div class="vc-sender"><i class="fas fa-image" style="margin-right:5px"></i>పోస్టర్</div>
-        <div class="vbubble" style="padding:8px">
-          <img class="vc-poster-img" src="${item.link}" alt="poster" onclick="vcLightbox('${item.link}')"
-            onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
-          <div style="display:none;align-items:center;justify-content:center;height:80px;color:var(--text2);font-size:13px;font-family:var(--font-te)">
-            <i class="fas fa-image" style="margin-right:6px;opacity:.4"></i>Image లోడ్ కాలేదు
+        </div>`;
+      });
+    } else if (type === 'poster') {
+      list.forEach(item => {
+        const dt = item.date||today;
+        cardsHTML += `<div class="vc-poster-card" onclick="vcLightbox('${item.link}')">
+          <img src="${item.link}" alt="poster"
+            onerror="this.style.background='var(--bg3)';this.style.height='160px'"/>
+          ${item.title?`<div class="vc-cap">${item.title}<br><span style="color:var(--accent);font-size:10px">${dt}</span></div>`:`<div class="vc-cap" style="color:var(--accent);font-size:10px">${dt}</div>`}
+        </div>`;
+      });
+    } else if (type === 'pdf') {
+      list.forEach(item => {
+        const dt = item.date||today;
+        cardsHTML += `<a class="vc-pdf-hcard" href="${item.link}" target="_blank" rel="noopener">
+          <div class="ico"><i class="fas fa-file-pdf"></i></div>
+          <div>
+            <div class="nm">${item.title}</div>
+            <div class="sub">${item.desc||'PDF డౌన్‌లోడ్'}</div>
           </div>
-          ${item.title?`<div class="vc-poster-cap">${item.title}</div>`:''}
-          <div class="vc-time">${dt}</div>
-        </div></div>`;
-    } else if (item.type==='pdf') {
-      html+=`<div class="vc-in" style="max-width:92%">
-        <div class="vc-sender"><i class="fas fa-file-pdf" style="margin-right:5px"></i>PDF నోటీసు</div>
-        <div class="vbubble" style="padding:10px">
-          <a class="vc-pdf-card" href="${item.link}" target="_blank" rel="noopener">
-            <div class="vc-pdf-icon"><i class="fas fa-file-pdf"></i></div>
-            <div class="vc-pdf-info">
-              <div class="vc-pdf-name">${item.title}</div>
-              <div class="vc-pdf-sub">${item.desc}</div>
-            </div>
-            <i class="fas fa-download vc-pdf-dl"></i>
-          </a>
-          <div class="vc-time">${dt}</div>
-        </div></div>`;
-    } else if (item.type==='canva') {
-      html+=`<div class="vc-in" style="max-width:92%">
-        <div class="vc-sender"><i class="fas fa-palette" style="margin-right:5px"></i>Canva Template</div>
-        <div class="vbubble" style="padding:10px">
-          <a class="vc-canva-card" href="${item.link}" target="_blank" rel="noopener">
-            <div class="vc-canva-icon"><i class="fas fa-object-group"></i></div>
-            <div class="vc-canva-info">
-              <div class="vc-canva-name">${item.title}</div>
-              <div class="vc-canva-desc">${item.desc}</div>
-            </div>
-            <span class="vc-canva-open"><i class="fas fa-external-link-alt"></i> తెరవండి</span>
-          </a>
-          <div class="vc-time">${dt}</div>
-        </div></div>`;
+          <div class="dl"><i class="fas fa-download"></i> Download &nbsp;<span style="color:var(--text2)">${dt}</span></div>
+        </a>`;
+      });
+    } else if (type === 'canva') {
+      list.forEach(item => {
+        const dt = item.date||today;
+        cardsHTML += `<a class="vc-canva-hcard" href="${item.link}" target="_blank" rel="noopener">
+          <div class="ico"><i class="fas fa-object-group"></i></div>
+          <div>
+            <div class="nm">${item.title}</div>
+            <div class="sub">${item.desc}</div>
+          </div>
+          <div class="open"><i class="fas fa-external-link-alt"></i> తెరవండి &nbsp;<span style="color:var(--text2);font-size:10px">${dt}</span></div>
+        </a>`;
+      });
+    } else if (type === 'tts') {
+      list.forEach(item => {
+        const safe = (item.text||'').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+        const dt = item.date||today;
+        cardsHTML += `<div class="vc-tts-card">
+          <div style="font-size:10px;color:var(--accent)">${dt}</div>
+          <div class="tts-body">${item.text}</div>
+          <button class="tts-speak-btn" onclick="vcSpeak(this,'${safe}')"><i class="fas fa-volume-up"></i> వినండి</button>
+        </div>`;
+      });
     }
-  });
-  chat.innerHTML = html;
 
-  /* Wire audio events */
+    html += `<div class="vc-section">
+      <div class="vc-section-head">
+        <h3>${label}</h3>
+        <span class="vc-section-count">${list.length}</span>
+        <div class="section-line"></div>
+      </div>
+      <div class="vc-hscroll">${cardsHTML}</div>
+    </div>`;
+  });
+
+  wrap.innerHTML = html || `<div class="vc-empty"><i class="fas fa-microphone-slash"></i>నోటీసులు లేవు</div>`;
+
+  // Wire audio events
   let wi=0;
   items.forEach(item => {
     if (item.type!=='voice') return;
