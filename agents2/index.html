@@ -84,30 +84,70 @@ button{border:none;cursor:pointer;font-family:var(--font)}
 }
 #popup-close:hover{opacity:0.85;transform:scale(0.98)}
 
-animation:tickerScroll 12s linear infinite;
 #ticker-bar{
-  background:var(--bg2);border-bottom:1px solid var(--border);
-  padding:0 16px;display:flex;align-items:center;gap:12px;
-  height:38px;overflow:hidden;position:sticky;top:0;z-index:50
+  background:var(--bg2);
+  border-bottom:1px solid var(--border);
+  padding:0 16px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  height:38px;
+  overflow:hidden;
+  position:sticky;
+  top:0;
+  z-index:50
 }
+
 .ticker-label{
-  background:var(--accent);color:#0a0f1a;border-radius:4px;
-  padding:2px 8px;font-size:11px;font-weight:700;
-  white-space:nowrap;flex-shrink:0;letter-spacing:0.5px
+  background:var(--accent);
+  color:#0a0f1a;
+  border-radius:4px;
+  padding:2px 8px;
+  font-size:11px;
+  font-weight:700;
+  white-space:nowrap;
+  flex-shrink:0;
+  letter-spacing:0.5px
 }
-.ticker-track{flex:1;overflow:hidden;position:relative}
+
+.ticker-track{
+  flex:1;
+  overflow:hidden;
+  position:relative
+}
+
 .ticker-inner{
-  display:flex;gap:48px;
-  animation:tickerScroll 12s linear infinite; /* FIX: was 1s */
+  display:flex;
+  gap:48px;
+  animation:tickerScroll 12s linear infinite;
   white-space:nowrap
 }
-.ticker-inner:hover{animation-play-state:paused}
-.ticker-item{
-  font-size:13px;color:var(--text2);flex-shrink:0;cursor:pointer;
-  font-family:var(--font-te);transition:color var(--trans)
+
+.ticker-inner:hover{
+  animation-play-state:paused
 }
-.ticker-item:hover{color:var(--accent)}
-@keyframes tickerScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+.ticker-item{
+  font-size:13px;
+  color:var(--text2);
+  flex-shrink:0;
+  cursor:pointer;
+  font-family:var(--font-te);
+  transition:color var(--trans)
+}
+
+.ticker-item:hover{
+  color:var(--accent)
+}
+
+@keyframes tickerScroll{
+  0%{
+    transform:translateX(0)
+  }
+  100%{
+    transform:translateX(-50%)
+  }
+}
 
 /* HEADER */
 #app-header{
