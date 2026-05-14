@@ -30,20 +30,124 @@ body.light-mode #loading-screen { background:var(--bg); }
 body.light-mode .update-card:hover { box-shadow:0 4px 12px rgba(0,0,0,0.1); }
 
 /* ═══ DESKTOP FULL WIDTH ═══ */
+/* ═══════════════════════════════════════════
+   DESKTOP — Eye-friendly full layout (768px+)
+   ═══════════════════════════════════════════ */
 @media(min-width:768px) {
+
+  /* ── Header ── */
+  #app-header { padding:0 48px; height:72px; }
+  .header-logo { width:48px; height:48px; font-size:20px; }
+  .header-name { font-size:18px; }
+  .header-tag  { font-size:12px; }
+  .hbtn        { width:42px; height:42px; font-size:17px; }
+
+  /* ── Ticker ── */
+  #ticker-bar  { height:42px; padding:0 48px; }
+  .ticker-item { font-size:14px; }
+  .ticker-label{ font-size:12px; padding:3px 10px; }
+
+  /* ── Pages wrapper — centered max 1400px ── */
   #home, #docs-page, #contact-page {
-    max-width:100% !important;
-    padding-left:40px !important;
-    padding-right:40px !important;
+    max-width:1400px !important;
+    margin:0 auto !important;
+    padding:0 48px 100px !important;
   }
-  #voice-page { padding-left:20px; padding-right:20px; }
-  .services-grid { grid-template-columns:repeat(5,1fr) !important; }
-  .hero-card { border-radius:16px; }
-  #banner-section { margin:0 0 24px; }
-  .banner-slide { height:280px !important; }
-  #app-header { padding:0 40px; }
-  #bottom-nav { padding-left:40px; padding-right:40px; }
-  .vc-hscroll { padding-left:20px; }
+
+  /* ── HOME — 2 column layout ── */
+  #home .hero-card { margin-bottom:28px; }
+  .hero-cover      { height:220px; }
+  .hero-avatar     { width:96px; height:96px; font-size:38px; }
+  .hero-name       { font-size:22px; }
+  .hero-city       { font-size:14px; }
+  .hero-btn        { font-size:14px; padding:11px 18px; }
+
+  /* Banner */
+  #banner-section   { margin:0 0 28px; }
+  .banner-slide     { height:320px !important; }
+  .banner-caption   { font-size:15px; padding:36px 20px 14px; }
+
+  /* Home 2-col: updates left, services right */
+  #home-2col {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:28px;
+    align-items:start;
+  }
+
+  /* Updates */
+  .update-card  { padding:16px 20px; }
+  .update-title { font-size:14px; }
+
+  /* Services grid */
+  .services-grid {
+    grid-template-columns:repeat(4,1fr) !important;
+    gap:14px;
+  }
+  .service-card { min-height:110px; padding:20px 14px; }
+  .service-icon { width:46px; height:46px; font-size:20px; }
+  .service-name { font-size:13px; }
+
+  /* ── DOCS PAGE ── */
+  #docs-page { max-width:1400px !important; }
+  .pdf-item   { padding:16px 20px; }
+  .pdf-name   { font-size:14px; }
+  .acc-label  { font-size:15px; }
+  .req-doc-item { font-size:14px; }
+
+  /* Docs 2-col: PDF left, docs right */
+  #docs-2col {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:28px;
+    align-items:start;
+  }
+
+  /* ── VOICE PAGE ── */
+  #voice-page       { padding:24px 48px 100px; max-width:1400px; margin:0 auto; }
+  .vc-section-head h3 { font-size:16px; }
+  .vc-audio-card    { width:300px; }
+  .vc-tts-card      { width:280px; }
+  .vc-poster-card   { width:240px; }
+  .vc-pdf-hcard     { width:240px; }
+  .vc-canva-hcard   { width:240px; }
+  .vc-title         { font-size:14px; }
+  .tts-body         { font-size:14px; }
+  .vc-play-btn      { width:44px; height:44px; font-size:15px; }
+
+  /* ── CONTACT PAGE ── */
+  #contact-page { max-width:1400px !important; }
+  .contact-value { font-size:16px; }
+  .contact-label { font-size:12px; }
+  .map-wrap      { height:360px; }
+
+  /* Contact 2-col */
+  #contact-2col {
+    display:grid;
+    grid-template-columns:1fr 1.5fr;
+    gap:28px;
+    align-items:start;
+  }
+
+  /* ── Bottom nav ── */
+  #bottom-nav  { padding:0 48px env(safe-area-inset-bottom); height:64px; }
+  .nav-btn     { font-size:12px; gap:5px; }
+  .nav-btn i   { font-size:20px; }
+
+  /* ── FAB ── */
+  #fab { width:58px; height:58px; font-size:22px; bottom:90px; right:32px; }
+
+  /* ── Popup ── */
+  #popup-box   { max-width:520px; }
+  #popup-title { font-size:20px; }
+  #popup-subtitle { font-size:15px; }
+
+  /* ── Section headings ── */
+  .section-head h2 { font-size:17px; }
+  .vc-section-count { font-size:12px; }
+
+  /* ── Footer ── */
+  .page-footer { font-size:13px; padding:24px; }
 }
 .gi-blue   {--ci:#60a5fa;--cb:rgba(96,165,250,0.12)}
 .gi-green  {--ci:#34d399;--cb:rgba(52,211,153,0.12)}
@@ -735,13 +839,15 @@ button{border:none;cursor:pointer;font-family:var(--font)}
       </div>
     </div>
 
-    <div class="updates-section">
-      <div class="section-head"><h2>🔔 తాజా అప్‌డేట్లు</h2><div class="section-line"></div></div>
-      <div id="updates-list"></div>
-    </div>
-    <div class="services-section">
-      <div class="section-head"><h2>🛎️ మా సేవలు</h2><div class="section-line"></div></div>
-      <div class="services-grid" id="services-grid"></div>
+    <div id="home-2col">
+      <div class="updates-section">
+        <div class="section-head"><h2>🔔 తాజా అప్‌డేట్లు</h2><div class="section-line"></div></div>
+        <div id="updates-list"></div>
+      </div>
+      <div class="services-section">
+        <div class="section-head"><h2>🛎️ మా సేవలు</h2><div class="section-line"></div></div>
+        <div class="services-grid" id="services-grid"></div>
+      </div>
     </div>
     <div class="page-footer" id="footer-text"></div>
   </div>
@@ -749,26 +855,32 @@ button{border:none;cursor:pointer;font-family:var(--font)}
 
 <!-- DOCS -->
 <div id="docs-page" class="page">
-  <div class="pdf-section">
-    <div class="section-head"><h2>📄 PDF ఫారాలు</h2><div class="section-line"></div></div>
-    <div id="pdf-list"></div>
-  </div>
-  <div class="req-section" id="req-docs-section" style="display:none">
-    <div class="section-head"><h2>📋 అవసరమైన పత్రాలు</h2><div class="section-line"></div></div>
-    <div id="req-docs-list"></div>
-  </div>
-  <!-- ── FIX 4: old-docs-section hidden by default ── -->
-  <div id="old-docs-section" style="display:none">
-    <div class="section-head"><h2>📋 అవసరమైన పత్రాలు</h2><div class="section-line"></div></div>
-    <div class="docs-list" id="docs-list"></div>
+  <div id="docs-2col">
+    <div class="pdf-section">
+      <div class="section-head"><h2>📄 PDF ఫారాలు</h2><div class="section-line"></div></div>
+      <div id="pdf-list"></div>
+    </div>
+    <div>
+      <div class="req-section" id="req-docs-section" style="display:none">
+        <div class="section-head"><h2>📋 అవసరమైన పత్రాలు</h2><div class="section-line"></div></div>
+        <div id="req-docs-list"></div>
+      </div>
+      <!-- ── FIX 4: old-docs-section hidden by default ── -->
+      <div id="old-docs-section" style="display:none">
+        <div class="section-head"><h2>📋 అవసరమైన పత్రాలు</h2><div class="section-line"></div></div>
+        <div class="docs-list" id="docs-list"></div>
+      </div>
+    </div>
   </div>
 </div>
 
 <!-- CONTACT -->
 <div id="contact-page" class="page">
-  <div class="contact-card" id="contact-card"></div>
-  <div class="map-wrap" id="map-wrap">
-    <div class="map-placeholder"><i class="fas fa-map-marker-alt" style="font-size:28px"></i><span>మ్యాప్ లోడ్ అవుతోంది…</span></div>
+  <div id="contact-2col">
+    <div class="contact-card" id="contact-card"></div>
+    <div class="map-wrap" id="map-wrap">
+      <div class="map-placeholder"><i class="fas fa-map-marker-alt" style="font-size:28px"></i><span>మ్యాప్ లోడ్ అవుతోంది…</span></div>
+    </div>
   </div>
 </div>
 
