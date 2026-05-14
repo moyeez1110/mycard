@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="te">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Agent Login — Citizen Digital Seva</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --accent:#4fffb0;--accent2:#1adb7a;
+  --bg:#0a0f1a;--bg2:#111827;--bg3:#1a2235;
+  --border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.14);
+  --text:#e8edf5;--text2:#8899aa;--text3:#566474;
+  --red:#f87171;--green:#34d399;--blue:#60a5fa;
+  --radius:12px;--font:'Inter',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%;font-family:var(--font);background:var(--bg);color:var(--text)}
+.page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.card{background:var(--bg2);border:1px solid var(--border2);border-radius:20px;padding:40px;width:100%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,0.5)}
+.logo{width:60px;height:60px;border-radius:16px;background:rgba(79,255,176,0.12);border:1.5px solid var(--accent);display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:26px;margin:0 auto 20px}
+.title{font-size:22px;font-weight:700;text-align:center;margin-bottom:4px}
+.sub{font-size:13px;color:var(--text2);text-align:center;margin-bottom:28px}
+.label{font-size:12px;color:var(--text2);margin-bottom:6px;font-weight:500}
+.inp-wrap{position:relative;margin-bottom:16px}
+.inp{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:10px;padding:12px 42px 12px 14px;color:var(--text);font-size:14px;outline:none;transition:.2s}
+.inp:focus{border-color:var(--accent)}
+.inp-icon{position:absolute;right:13px;top:50%;transform:translateY(-50%);color:var(--text3);cursor:pointer;font-size:14px}
+.btn{width:100%;padding:13px;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;border:none;transition:.2s;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-primary{background:var(--accent);color:#0a0f1a}
+.btn-primary:hover{background:var(--accent2)}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed}
+.btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border2);margin-top:10px;font-size:13px}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+.err{background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.3);border-radius:8px;padding:10px 14px;font-size:13px;color:var(--red);margin-bottom:14px;display:none}
+.err.show{display:flex;align-items:center;gap:8px}
+.suc{background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.3);border-radius:8px;padding:10px 14px;font-size:13px;color:var(--green);margin-bottom:14px;display:none}
+.suc.show{display:flex;align-items:center;gap:8px}
+.step{display:none}
+.step.active{display:block}
+.otp-boxes{display:flex;gap:8px;justify-content:center;margin-bottom:16px}
+.otp-box{width:48px;height:56px;background:var(--bg3);border:1.5px solid var(--border2);border-radius:10px;text-align:center;font-size:22px;font-weight:700;color:var(--text);outline:none;transition:.2s}
+.otp-box:focus{border-color:var(--accent)}
+/* Dashboard */
+.dash-header{display:flex;align-items:center;gap:14px;margin-bottom:24px}
+.dash-avatar{width:52px;height:52px;border-radius:14px;background:rgba(79,255,176,0.12);border:1.5px solid var(--accent);display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:22px}
+.dash-name{font-size:18px;font-weight:700}
+.dash-tab{font-size:12px;color:var(--text2);margin-top:2px}
+.info-box{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:12px}
+.info-label{font-size:11px;color:var(--text3);margin-bottom:4px}
+.info-val{font-size:13px;color:var(--text);word-break:break-all}
+.copy-btn{background:none;border:none;color:var(--accent);cursor:pointer;font-size:12px;margin-left:6px}
+.divider{border:none;border-top:1px solid var(--border);margin:20px 0}
+.section-title{font-size:13px;font-weight:600;color:var(--text2);margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.logout-btn{background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.3);color:var(--red);border-radius:8px;padding:8px 14px;font-size:12px;cursor:pointer;width:100%;margin-top:8px}
+.logout-btn:hover{background:rgba(248,113,113,0.2)}
+</style>
+</head>
+<body>
+<div class="page">
+<div class="card">
+  <div class="logo"><i class="fas fa-user-shield"></i></div>
+
+  <!-- ══ STEP: LOGIN ══ -->
+  <div class="step active" id="step-login">
+    <div class="title">Agent Login</div>
+    <div class="sub">Citizen Digital Seva — Agent Portal</div>
+    <div class="err" id="login-err"><i class="fas fa-circle-xmark"></i><span id="login-err-msg"></span></div>
+    <div class="label">Username</div>
+    <div class="inp-wrap">
+      <input class="inp" id="l-username" type="text" placeholder="మీ username…" onkeydown="if(event.key==='Enter')doAgentLogin()"/>
+      <i class="inp-icon fas fa-user"></i>
+    </div>
+    <div class="label">Password</div>
+    <div class="inp-wrap">
+      <input class="inp" id="l-password" type="password" placeholder="Password…" onkeydown="if(event.key==='Enter')doAgentLogin()"/>
+      <i class="inp-icon fas fa-eye" id="l-eye" onclick="toggleVis('l-password','l-eye')"></i>
+    </div>
+    <button class="btn btn-primary" id="login-btn" onclick="doAgentLogin()">
+      <i class="fas fa-right-to-bracket"></i> Login
+    </button>
+    <button class="btn btn-ghost" onclick="showStep('step-forgot1')">
+      <i class="fas fa-key"></i> Forgot Password?
+    </button>
+  </div>
+
+  <!-- ══ STEP: FORGOT — Enter Email ══ -->
+  <div class="step" id="step-forgot1">
+    <div class="title">Forgot Password</div>
+    <div class="sub">Registered email enter చేయండి</div>
+    <div class="err" id="f1-err"><i class="fas fa-circle-xmark"></i><span id="f1-err-msg"></span></div>
+    <div class="suc" id="f1-suc"><i class="fas fa-circle-check"></i><span id="f1-suc-msg"></span></div>
+    <div class="label">Registered Email</div>
+    <div class="inp-wrap">
+      <input class="inp" id="f-email" type="email" placeholder="your@gmail.com" onkeydown="if(event.key==='Enter')doSendOtp()"/>
+      <i class="inp-icon fas fa-envelope"></i>
+    </div>
+    <button class="btn btn-primary" id="otp-btn" onclick="doSendOtp()">
+      <i class="fas fa-paper-plane"></i> Send OTP
+    </button>
+    <button class="btn btn-ghost" onclick="showStep('step-login')">
+      <i class="fas fa-arrow-left"></i> Back to Login
+    </button>
+  </div>
+
+  <!-- ══ STEP: FORGOT — Verify OTP ══ -->
+  <div class="step" id="step-forgot2">
+    <div class="title">Enter OTP</div>
+    <div class="sub" id="otp-sent-sub">OTP మీ email కి పంపబడింది</div>
+    <div class="err" id="f2-err"><i class="fas fa-circle-xmark"></i><span id="f2-err-msg"></span></div>
+    <div class="otp-boxes">
+      <input class="otp-box" id="otp0" maxlength="1" type="text" inputmode="numeric" oninput="otpNext(0)"/>
+      <input class="otp-box" id="otp1" maxlength="1" type="text" inputmode="numeric" oninput="otpNext(1)"/>
+      <input class="otp-box" id="otp2" maxlength="1" type="text" inputmode="numeric" oninput="otpNext(2)"/>
+      <input class="otp-box" id="otp3" maxlength="1" type="text" inputmode="numeric" oninput="otpNext(3)"/>
+      <input class="otp-box" id="otp4" maxlength="1" type="text" inputmode="numeric" oninput="otpNext(4)"/>
+      <input class="otp-box" id="otp5" maxlength="1" type="text" inputmode="numeric" oninput="otpNext(5)"/>
+    </div>
+    <div class="label">New Password</div>
+    <div class="inp-wrap">
+      <input class="inp" id="np-password" type="password" placeholder="New password (min 6)"/>
+      <i class="inp-icon fas fa-eye" id="np-eye" onclick="toggleVis('np-password','np-eye')"></i>
+    </div>
+    <div class="label">Confirm Password</div>
+    <div class="inp-wrap">
+      <input class="inp" id="cp-password" type="password" placeholder="Confirm new password"/>
+    </div>
+    <button class="btn btn-primary" id="reset-btn" onclick="doResetPassword()">
+      <i class="fas fa-unlock"></i> Reset Password
+    </button>
+    <button class="btn btn-ghost" onclick="showStep('step-forgot1')">
+      <i class="fas fa-rotate-left"></i> Resend OTP
+    </button>
+  </div>
+
+  <!-- ══ STEP: DASHBOARD ══ -->
+  <div class="step" id="step-dashboard">
+    <div class="dash-header">
+      <div class="dash-avatar"><i class="fas fa-user"></i></div>
+      <div>
+        <div class="dash-name" id="d-username">Agent</div>
+        <div class="dash-tab" id="d-tab">Tab: —</div>
+      </div>
+    </div>
+    <button class="btn btn-primary" id="open-dashboard-btn" onclick="openDashboard()" style="margin-bottom:16px">
+      <i class="fas fa-arrow-up-right-from-square"></i> నా Dashboard తెరవండి
+    </button>
+
+    <div class="info-box">
+      <div class="info-label">మీ Site URL</div>
+      <div class="info-val" id="d-siteurl">—</div>
+      <button class="copy-btn" onclick="copyUrl()"><i class="fas fa-copy"></i> Copy</button>
+    </div>
+    <div class="info-box">
+      <div class="info-label">Email</div>
+      <div class="info-val" id="d-email">—</div>
+    </div>
+
+    <hr class="divider"/>
+    <div class="err" id="cp-err"><i class="fas fa-circle-xmark"></i><span id="cp-err-msg"></span></div>
+    <div class="suc" id="cp-suc"><i class="fas fa-circle-check"></i><span id="cp-suc-msg"></span></div>
+    <button class="btn btn-ghost" id="chg-toggle-btn" onclick="toggleChangePassword()" style="margin-bottom:8px">
+      <i class="fas fa-key"></i> Password మార్చండి
+    </button>
+
+    <div id="chg-section" style="display:none">
+      <div class="label">Current Password</div>
+      <div class="inp-wrap">
+        <input class="inp" id="chg-old" type="password" placeholder="Current password"/>
+        <i class="inp-icon fas fa-lock"></i>
+      </div>
+      <div class="label">New Password</div>
+      <div class="inp-wrap">
+        <input class="inp" id="chg-new" type="password" placeholder="New password (min 6)"/>
+      </div>
+      <div class="label">Confirm</div>
+      <div class="inp-wrap">
+        <input class="inp" id="chg-conf" type="password" placeholder="Confirm new password"/>
+      </div>
+      <button class="btn btn-primary" onclick="doChangePassword()">
+        <i class="fas fa-floppy-disk"></i> Update Password
+      </button>
+    </div>
+
+    <button class="logout-btn" onclick="doLogout()">
+      <i class="fas fa-right-from-bracket"></i> Logout
+    </button>
+  </div>
+
+</div><!-- .card -->
+</div><!-- .page -->
+
+<script>
+/* ════════════ CONFIG ════════════ */
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwB5nH-jO1GalHvxQrfvLyIbCw1cYBQZN6vMmRYqEkAD4JE0ZspaeWuxvLX4SB8oddmZw/exec'; // ← మీ Apps Script URL ఇక్కడ పెట్టండి
+const INDEX_URL  = 'https://moyeez1110.github.io/mycard/agents2';   // ← మీ index.html URL (optional)
+/* ══════════════════════════════════ */
+
+let AGENT_TOKEN = localStorage.getItem('agent_token') || '';
+let AGENT_INFO  = null;
+
+async function apiPost(body) {
+  const res = await fetch(SCRIPT_URL, { method:'POST', body: JSON.stringify(body) });
+  return res.json();
+}
+async function apiGet(params) {
+  const url = SCRIPT_URL + '?' + new URLSearchParams(params);
+  const res = await fetch(url);
+  return res.json();
+}
+
+// ── Step routing ─────────────────────────────────────────
+function showStep(id) {
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  clearErrors();
+}
+
+function clearErrors() {
+  document.querySelectorAll('.err,.suc').forEach(el => el.classList.remove('show'));
+}
+
+function showErr(id, msg) {
+  const el = document.getElementById(id);
+  el.querySelector('span').textContent = msg;
+  el.classList.add('show');
+}
+function showSuc(id, msg) {
+  const el = document.getElementById(id);
+  el.querySelector('span').textContent = msg;
+  el.classList.add('show');
+}
+
+function toggleVis(inputId, iconId) {
+  const inp = document.getElementById(inputId);
+  const ico = document.getElementById(iconId);
+  if (inp.type === 'password') { inp.type='text'; ico.className='inp-icon fas fa-eye-slash'; }
+  else { inp.type='password'; ico.className='inp-icon fas fa-eye'; }
+}
+
+// ── OTP input auto-next ───────────────────────────────────
+function otpNext(i) {
+  const val = document.getElementById('otp'+i).value;
+  if (val && i < 5) document.getElementById('otp'+(i+1)).focus();
+}
+
+// ── Login ─────────────────────────────────────────────────
+async function doAgentLogin() {
+  const username = document.getElementById('l-username').value.trim();
+  const password = document.getElementById('l-password').value;
+  if (!username || !password) { showErr('login-err','Username & Password enter చేయండి'); return; }
+  const btn = document.getElementById('login-btn');
+  btn.disabled = true; btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Logging in…';
+  try {
+    const data = await apiPost({ action:'agentLogin', username, password });
+    if (data.ok) {
+      AGENT_TOKEN = data.token;
+      AGENT_INFO  = { username:data.username, agentTab:data.agentTab, email:data.email };
+      localStorage.setItem('agent_token', AGENT_TOKEN);
+      localStorage.setItem('agent_info', JSON.stringify(AGENT_INFO));
+      showDashboard();
+    } else {
+      showErr('login-err', data.error || 'Login failed');
+    }
+  } catch(e) {
+    showErr('login-err', 'Connection failed. Script URL సరిగా ఉందా?');
+  }
+  btn.disabled = false; btn.innerHTML = '<i class="fas fa-right-to-bracket"></i> Login';
+}
+
+// ── Forgot — Send OTP ────────────────────────────────────
+async function doSendOtp() {
+  const email = document.getElementById('f-email').value.trim();
+  if (!email) { showErr('f1-err','Email enter చేయండి'); return; }
+  const btn = document.getElementById('otp-btn');
+  btn.disabled = true; btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Sending…';
+  try {
+    const data = await apiPost({ action:'forgotPassword', email });
+    if (data.ok) {
+      document.getElementById('otp-sent-sub').textContent = 'OTP ' + email + ' కి పంపబడింది';
+      showStep('step-forgot2');
+    } else {
+      showErr('f1-err', data.error || 'OTP send failed');
+    }
+  } catch(e) {
+    showErr('f1-err','Connection failed');
+  }
+  btn.disabled = false; btn.innerHTML = '<i class="fas fa-paper-plane"></i> Send OTP';
+}
+
+// ── Forgot — Reset Password ──────────────────────────────
+async function doResetPassword() {
+  const email = document.getElementById('f-email').value.trim();
+  const otp   = [0,1,2,3,4,5].map(i => document.getElementById('otp'+i).value).join('');
+  const np    = document.getElementById('np-password').value;
+  const cp    = document.getElementById('cp-password').value;
+  if (otp.length < 6) { showErr('f2-err','OTP అన్ని 6 digits enter చేయండి'); return; }
+  if (!np || np.length < 6) { showErr('f2-err','Password minimum 6 characters'); return; }
+  if (np !== cp) { showErr('f2-err','Passwords match కావడం లేదు'); return; }
+  const btn = document.getElementById('reset-btn');
+  btn.disabled = true; btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Resetting…';
+  try {
+    const data = await apiPost({ action:'resetPassword', email, otp, newPassword:np });
+    if (data.ok) {
+      alert('Password reset అయింది! Login చేయండి.');
+      showStep('step-login');
+    } else {
+      showErr('f2-err', data.error || 'Reset failed');
+    }
+  } catch(e) {
+    showErr('f2-err','Connection failed');
+  }
+  btn.disabled = false; btn.innerHTML = '<i class="fas fa-unlock"></i> Reset Password';
+}
+
+// ── Dashboard ─────────────────────────────────────────────
+function showDashboard() {
+  const info = AGENT_INFO;
+  // Direct redirect to dashboard
+  if (INDEX_URL && INDEX_URL !== 'YOUR_INDEX_HTML_URL_HERE') {
+    window.location.href = INDEX_URL + '?tab=' + info.agentTab;
+    return;
+  }
+  // Fallback: show info card if INDEX_URL not configured
+  document.getElementById('d-username').textContent = info.username;
+  document.getElementById('d-tab').textContent = 'Tab: ' + info.agentTab;
+  document.getElementById('d-email').textContent = info.email || 'Email set కాలేదు';
+  document.getElementById('d-siteurl').textContent = '(INDEX_URL set చేయలేదు — agent-login.html లో పెట్టండి)';
+  showStep('step-dashboard');
+}
+
+function openDashboard() {
+  const url = document.getElementById('d-siteurl').textContent;
+  if (url && url !== '—' && !url.startsWith('(')) {
+    window.open(url, '_blank');
+  } else {
+    alert('Site URL set కాలేదు. Admin తో contact చేయండి.');
+  }
+}
+
+function copyUrl() {
+  const url = document.getElementById('d-siteurl').textContent;
+  navigator.clipboard.writeText(url).then(() => alert('Copied!'));
+}
+
+// ── Toggle Change Password section ───────────────────────
+function toggleChangePassword() {
+  const sec = document.getElementById('chg-section');
+  const btn = document.getElementById('chg-toggle-btn');
+  const open = sec.style.display !== 'none';
+  sec.style.display = open ? 'none' : 'block';
+  btn.innerHTML = open
+    ? '<i class="fas fa-key"></i> Password మార్చండి'
+    : '<i class="fas fa-chevron-up"></i> మూసివేయండి';
+  if (!open) {
+    // Clear fields & errors when opening
+    ['chg-old','chg-new','chg-conf'].forEach(id => document.getElementById(id).value = '');
+    clearErrors();
+  }
+}
+
+// ── Change Password ───────────────────────────────────────
+async function doChangePassword() {
+  const oldP  = document.getElementById('chg-old').value;
+  const newP  = document.getElementById('chg-new').value;
+  const confP = document.getElementById('chg-conf').value;
+  if (!oldP || !newP) { showErr('cp-err','అన్ని fields fill చేయండి'); return; }
+  if (newP.length < 6) { showErr('cp-err','Password minimum 6 characters'); return; }
+  if (newP !== confP) { showErr('cp-err','New passwords match కావడం లేదు'); return; }
+  try {
+    const data = await apiPost({ action:'agentChangePassword', agentToken:AGENT_TOKEN, oldPassword:oldP, newPassword:newP });
+    if (data.ok) {
+      // Clear fields and collapse the section after success
+      ['chg-old','chg-new','chg-conf'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('chg-section').style.display = 'none';
+      document.getElementById('chg-toggle-btn').innerHTML = '<i class="fas fa-key"></i> Password మార్చండి';
+      // Show a brief success message above the toggle button
+      showSuc('cp-suc','Password successfully మార్చబడింది!');
+      setTimeout(() => document.getElementById('cp-suc').classList.remove('show'), 3000);
+    } else {
+      showErr('cp-err', data.error || 'Change failed');
+    }
+  } catch(e) {
+    showErr('cp-err','Connection failed');
+  }
+}
+
+// ── Logout ────────────────────────────────────────────────
+function doLogout() {
+  localStorage.removeItem('agent_token');
+  localStorage.removeItem('agent_info');
+  AGENT_TOKEN = ''; AGENT_INFO = null;
+  showStep('step-login');
+}
+
+// ── Auto login if token exists ────────────────────────────
+window.addEventListener('DOMContentLoaded', async () => {
+  if (SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') {
+    showErr('login-err','SCRIPT_URL set చేయలేదు! agent-login.html లో పెట్టండి.');
+    return;
+  }
+  if (AGENT_TOKEN) {
+    const cached = localStorage.getItem('agent_info');
+    if (cached) {
+      AGENT_INFO = JSON.parse(cached);
+      showDashboard();
+      return;
+    }
+    const data = await apiGet({ action:'agentVerify', agentToken:AGENT_TOKEN }).catch(() => null);
+    if (data && data.ok) {
+      AGENT_INFO = { username:data.username, agentTab:data.agentTab, email:data.email };
+      showDashboard();
+    } else {
+      localStorage.removeItem('agent_token');
+      AGENT_TOKEN = '';
+    }
+  }
+});
+</script>
+</body>
+</html>
