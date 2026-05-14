@@ -84,6 +84,7 @@ button{border:none;cursor:pointer;font-family:var(--font)}
 }
 #popup-close:hover{opacity:0.85;transform:scale(0.98)}
 
+/* ── FIX 1: Ticker speed 22s (was 1s — unreadable) ── */
 #ticker-bar{
   background:var(--bg2);border-bottom:1px solid var(--border);
   padding:0 16px;display:flex;align-items:center;gap:12px;
@@ -611,63 +612,6 @@ button{border:none;cursor:pointer;font-family:var(--font)}
   border:1px solid var(--border);color:var(--text);width:36px;height:36px;
   border-radius:50%;font-size:16px;display:flex;align-items:center;justify-content:center;cursor:pointer
 }
-/* ═══════════════════════════════════════
-   MOBILE FRIENDLY GALLERY CAROUSEL
-   ═══════════════════════════════════════ */
-#gallery-section{
-  padding:18px 14px;
-}
-.gallery-head{
-  margin-bottom:14px;
-}
-.gallery-head h2{
-  font-size:20px;
-  font-weight:700;
-  color:var(--text,#fff);
-}
-.gallery-slider{
-  overflow-x:auto;
-  scroll-snap-type:x mandatory;
-  -webkit-overflow-scrolling:touch;
-  scrollbar-width:none;
-}
-.gallery-slider::-webkit-scrollbar{
-  display:none;
-}
-.gallery-track{
-  display:flex;
-  gap:14px;
-}
-.gallery-card{
-  min-width:85%;
-  max-width:85%;
-  height:220px;
-  border-radius:18px;
-  overflow:hidden;
-  background:#111827;
-  scroll-snap-align:center;
-  flex-shrink:0;
-  border:1px solid rgba(255,255,255,0.08);
-  box-shadow:0 4px 18px rgba(0,0,0,0.25);
-  position:relative;
-}
-.gallery-card img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  display:block;
-  transition:transform .4s ease;
-}
-.gallery-card:hover img{
-  transform:scale(1.05);
-}
-@media(min-width:768px){
-  .gallery-card{
-    min-width:320px;
-    max-width:320px;
-    height:240px;
-  }
-}
 </style>
 </head>
 <body>
@@ -769,28 +713,6 @@ button{border:none;cursor:pointer;font-family:var(--font)}
       <div class="section-head"><h2>🛎️ మా సేవలు</h2><div class="section-line"></div></div>
       <div class="services-grid" id="services-grid"></div>
     </div>
-    <!-- ════════════════════ GALLERY SECTION ════════════════════ -->
-    <section id="gallery-section">
-      <div class="gallery-head">
-        <h2>📸 Gallery</h2>
-      </div>
-      <div class="gallery-slider">
-        <div class="gallery-track">
-          <div class="gallery-card">
-            <img src="https://picsum.photos/id/1015/600/400" alt="">
-          </div>
-          <div class="gallery-card">
-            <img src="https://picsum.photos/id/1025/600/400" alt="">
-          </div>
-          <div class="gallery-card">
-            <img src="https://picsum.photos/id/1035/600/400" alt="">
-          </div>
-          <div class="gallery-card">
-            <img src="https://picsum.photos/id/1045/600/400" alt="">
-          </div>
-        </div>
-      </div>
-    </section>
     <div class="page-footer" id="footer-text"></div>
   </div>
 </div>
@@ -987,12 +909,13 @@ function renderHeader() {
   }
 }
 
+/* ── FIX 6: ticker uses plain strings (not objects) — render correctly ── */
 let _tickerRAF = null, _tickerX = 0, _tickerPaused = false;
 
 function renderTicker() {
   const inner = document.getElementById('ticker-inner');
   const track = inner.parentElement;
-  const PX_PER_SEC = 80; // speed మార్చాలంటే ఇక్కడ (80=default, 120=fast, 50=slow)
+  const PX_PER_SEC = 80; // ← speed: 50=slow, 80=default, 120=fast
 
   const src = (CLIENT.tickers && CLIENT.tickers.length)
     ? CLIENT.tickers
@@ -1126,7 +1049,7 @@ function renderUpdates() {
     return;
   }
   const LIMIT = 10;
-  const cardsHTML = u => `
+  const card = u => `
     <div class="update-card" onclick="safeOpen('${u.link}')">
       <div class="update-dot"></div>
       <div class="update-title">${u.title}</div>
@@ -1134,25 +1057,30 @@ function renderUpdates() {
     </div>`;
 
   if (updates.length <= LIMIT) {
-    // ≤10: show all without scroll container
-    list.innerHTML = updates.map(cardsHTML).join('');
-  } else {
-    // >10: show first 10 visible, rest in scrollable area
-    const visible  = updates.slice(0, LIMIT);
-    const rest     = updates.slice(LIMIT);
-    const restHTML = rest.map(cardsHTML).join('');
-    list.innerHTML = visible.map(cardsHTML).join('') + `
-      <div id="updates-more" class="updates-scroll-wrap" style="display:none">${restHTML}</div>
-      <button class="updates-show-more" onclick="toggleMoreUpdates(this,${rest.length})">
-        <i class="fas fa-chevron-down"></i> మరింత చూడండి (${rest.length} అప్‌డేట్లు)
-      </button>`;
+    list.innerHTML = updates.map(card).join('');
+    return;
   }
+  const visible = updates.slice(0, LIMIT);
+  const extra   = updates.slice(LIMIT);
+  list.innerHTML = visible.map(card).join('') + `
+    <div id="updates-more-wrap" style="display:none">
+      <div style="max-height:340px;overflow-y:auto;scrollbar-width:thin;
+        scrollbar-color:var(--border) transparent;border-radius:10px;
+        border:1px solid var(--border);margin-top:4px;padding:6px 0;">
+        ${extra.map(card).join('')}
+      </div>
+    </div>
+    <button class="updates-show-more" id="updates-toggle-btn"
+      onclick="toggleMoreUpdates(${extra.length})">
+      <i class="fas fa-chevron-down"></i> మరింత చూడండి (${extra.length} అప్‌డేట్లు)
+    </button>`;
 }
 
-function toggleMoreUpdates(btn, count) {
-  const more = document.getElementById('updates-more');
-  const open = more.style.display === 'block';
-  more.style.display = open ? 'none' : 'block';
+function toggleMoreUpdates(count) {
+  const wrap = document.getElementById('updates-more-wrap');
+  const btn  = document.getElementById('updates-toggle-btn');
+  const open = wrap.style.display === 'block';
+  wrap.style.display = open ? 'none' : 'block';
   btn.innerHTML = open
     ? `<i class="fas fa-chevron-down"></i> మరింత చూడండి (${count} అప్‌డేట్లు)`
     : `<i class="fas fa-chevron-up"></i> తక్కువ చూడండి`;
@@ -1466,28 +1394,6 @@ function showPage(id,btn) {
 function safeOpen(url) { if(url&&url!=='#') window.open(url,'_blank'); }
 function callPhone() { if(CLIENT&&CLIENT.phone) window.location.href='tel:'+CLIENT.phone; }
 function openWA()    { if(CLIENT&&CLIENT.whatsapp) window.open('https://wa.me/'+CLIENT.whatsapp,'_blank'); }
-
-/* ═══════════════════════════════════════
-   GALLERY AUTO SCROLL
-   ═══════════════════════════════════════ */
-const gallerySlider = document.querySelector('.gallery-slider');
-let galleryAuto;
-function startGalleryAuto(){
-  galleryAuto = setInterval(() => {
-    gallerySlider.scrollBy({ left:320, behavior:'smooth' });
-    if(
-      gallerySlider.scrollLeft + gallerySlider.clientWidth >=
-      gallerySlider.scrollWidth - 10
-    ){
-      setTimeout(() => {
-        gallerySlider.scrollTo({ left:0, behavior:'smooth' });
-      }, 1000);
-    }
-  }, 3000);
-}
-startGalleryAuto();
-gallerySlider.addEventListener('touchstart', () => { clearInterval(galleryAuto); });
-gallerySlider.addEventListener('touchend',   () => { startGalleryAuto(); });
 
 loadData();
 </script>
