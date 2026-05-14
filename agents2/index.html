@@ -18,6 +18,33 @@
   --font:'Inter',sans-serif;
   --trans:0.25s cubic-bezier(0.19,1,0.22,1);
 }
+
+/* ═══ LIGHT MODE ═══ */
+body.light-mode {
+  --bg:#f0f4f8; --bg2:#ffffff; --bg3:#e8edf5; --card:#ffffff;
+  --border:rgba(0,0,0,0.08);
+  --text:#1a2235; --text2:#5a6a7a;
+  --shadow:0 4px 24px rgba(0,0,0,0.1);
+}
+body.light-mode #loading-screen { background:var(--bg); }
+body.light-mode .update-card:hover { box-shadow:0 4px 12px rgba(0,0,0,0.1); }
+
+/* ═══ DESKTOP FULL WIDTH ═══ */
+@media(min-width:768px) {
+  #home, #docs-page, #contact-page {
+    max-width:100% !important;
+    padding-left:40px !important;
+    padding-right:40px !important;
+  }
+  #voice-page { padding-left:20px; padding-right:20px; }
+  .services-grid { grid-template-columns:repeat(5,1fr) !important; }
+  .hero-card { border-radius:16px; }
+  #banner-section { margin:0 0 24px; }
+  .banner-slide { height:280px !important; }
+  #app-header { padding:0 40px; }
+  #bottom-nav { padding-left:40px; padding-right:40px; }
+  .vc-hscroll { padding-left:20px; }
+}
 .gi-blue   {--ci:#60a5fa;--cb:rgba(96,165,250,0.12)}
 .gi-green  {--ci:#34d399;--cb:rgba(52,211,153,0.12)}
 .gi-orange {--ci:#fb923c;--cb:rgba(251,146,60,0.12)}
@@ -657,6 +684,9 @@ button{border:none;cursor:pointer;font-family:var(--font)}
     </div>
   </div>
   <div class="header-actions">
+    <button class="hbtn" id="theme-toggle-btn" onclick="toggleTheme()" title="Light/Dark Mode">
+      <i class="fas fa-moon" id="theme-icon"></i>
+    </button>
     <a id="fab-call" href="#" class="hbtn"><i class="fas fa-phone"></i></a>
     <a id="fab-wa" href="#" target="_blank" class="hbtn" style="color:#25d366"><i class="fab fa-whatsapp"></i></a>
   </div>
@@ -1394,6 +1424,26 @@ function showPage(id,btn) {
 function safeOpen(url) { if(url&&url!=='#') window.open(url,'_blank'); }
 function callPhone() { if(CLIENT&&CLIENT.phone) window.location.href='tel:'+CLIENT.phone; }
 function openWA()    { if(CLIENT&&CLIENT.whatsapp) window.open('https://wa.me/'+CLIENT.whatsapp,'_blank'); }
+
+/* ═══════════════════════════════════════
+   LIGHT / DARK MODE TOGGLE
+   ═══════════════════════════════════════ */
+function toggleTheme() {
+  const isLight = document.body.classList.toggle('light-mode');
+  const icon    = document.getElementById('theme-icon');
+  icon.className = isLight ? 'fas fa-sun' : 'fas fa-moon';
+  localStorage.setItem('cds_theme', isLight ? 'light' : 'dark');
+}
+
+// Page load లో saved theme apply చేయడం
+(function initTheme() {
+  const saved = localStorage.getItem('cds_theme');
+  if (saved === 'light') {
+    document.body.classList.add('light-mode');
+    const icon = document.getElementById('theme-icon');
+    if (icon) icon.className = 'fas fa-sun';
+  }
+})();
 
 loadData();
 </script>
