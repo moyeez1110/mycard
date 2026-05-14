@@ -3,1561 +3,1027 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Citizen Digital Seva</title>
+<title>Admin Dashboard</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
-:root {
-  --accent:#4fffb0; --accent-dim:#1adb7a;
-  --bg:#0a0f1a; --bg2:#111827; --bg3:#1a2235; --card:#141e2e;
-  --border:rgba(255,255,255,0.08);
-  --text:#e8edf5; --text2:#8899aa;
-  --radius:14px; --shadow:0 4px 24px rgba(0,0,0,0.4);
-  --font-te:'Noto Sans Telugu',sans-serif;
-  --font:'Inter',sans-serif;
-  --trans:0.25s cubic-bezier(0.19,1,0.22,1);
+/* ════════════════ TOKENS ════════════════ */
+:root{
+  --accent:#4fffb0;--accent2:#1adb7a;
+  --bg:#0a0f1a;--bg2:#111827;--bg3:#1a2235;--card:#141e2e;
+  --border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.14);
+  --text:#e8edf5;--text2:#8899aa;--text3:#566474;
+  --red:#f87171;--yellow:#fbbf24;--green:#34d399;--blue:#60a5fa;
+  --radius:12px;--font:'Inter',sans-serif;--font-te:'Noto Sans Telugu',sans-serif;
+  --trans:0.2s cubic-bezier(0.19,1,0.22,1);
+  --sidebar:260px;
 }
-
-/* ═══ LIGHT MODE ═══ */
-body.light-mode {
-  --bg:#f0f4f8; --bg2:#ffffff; --bg3:#e8edf5; --card:#ffffff;
-  --border:rgba(0,0,0,0.08);
-  --text:#1a2235; --text2:#5a6a7a;
-  --shadow:0 4px 24px rgba(0,0,0,0.1);
-}
-body.light-mode #loading-screen { background:var(--bg); }
-body.light-mode .update-card:hover { box-shadow:0 4px 12px rgba(0,0,0,0.1); }
-
-/* ═══ DESKTOP FULL WIDTH ═══ */
-/* ═══════════════════════════════════════════
-   DESKTOP — Eye-friendly full layout (768px+)
-   ═══════════════════════════════════════════ */
-@media(min-width:768px) {
-
-  /* ── Header ── */
-  #app-header { padding:0 48px; height:72px; }
-  .header-logo { width:48px; height:48px; font-size:20px; }
-  .header-name { font-size:18px; }
-  .header-tag  { font-size:12px; }
-  .hbtn        { width:42px; height:42px; font-size:17px; }
-
-  /* ── Ticker ── */
-  #ticker-bar  { height:42px; padding:0 48px; }
-  .ticker-item { font-size:14px; }
-  .ticker-label{ font-size:12px; padding:3px 10px; }
-
-  /* ── Pages wrapper — centered max 1400px ── */
-  #home, #docs-page, #contact-page {
-    max-width:1400px !important;
-    margin:0 auto !important;
-    padding:0 48px 100px !important;
-  }
-
-  /* ── HOME — 2 column layout ── */
-  #home .hero-card { margin-bottom:28px; }
-  .hero-cover      { height:220px; }
-  .hero-avatar     { width:96px; height:96px; font-size:38px; }
-  .hero-name       { font-size:22px; }
-  .hero-city       { font-size:14px; }
-  .hero-btn        { font-size:14px; padding:11px 18px; }
-
-  /* Banner */
-  #banner-section   { margin:0 0 28px; }
-  .banner-slide     { height:320px !important; }
-  .banner-caption   { font-size:15px; padding:36px 20px 14px; }
-
-  /* Home 2-col: updates left, services right */
-  #home-2col {
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:28px;
-    align-items:start;
-  }
-
-  /* Updates */
-  .update-card  { padding:16px 20px; }
-  .update-title { font-size:14px; }
-
-  /* Services grid */
-  .services-grid {
-    grid-template-columns:repeat(4,1fr) !important;
-    gap:14px;
-  }
-  .service-card { min-height:110px; padding:20px 14px; }
-  .service-icon { width:46px; height:46px; font-size:20px; }
-  .service-name { font-size:13px; }
-
-  /* ── DOCS PAGE ── */
-  #docs-page { max-width:1400px !important; }
-  .pdf-item   { padding:16px 20px; }
-  .pdf-name   { font-size:14px; }
-  .acc-label  { font-size:15px; }
-  .req-doc-item { font-size:14px; }
-
-  /* Docs 2-col: PDF left, docs right */
-  #docs-2col {
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:28px;
-    align-items:start;
-  }
-
-  /* ── VOICE PAGE ── */
-  #voice-page       { padding:24px 48px 100px; max-width:1400px; margin:0 auto; }
-  .vc-section-head h3 { font-size:16px; }
-  .vc-audio-card    { width:300px; }
-  .vc-tts-card      { width:280px; }
-  .vc-poster-card   { width:240px; }
-  .vc-pdf-hcard     { width:240px; }
-  .vc-canva-hcard   { width:240px; }
-  .vc-title         { font-size:14px; }
-  .tts-body         { font-size:14px; }
-  .vc-play-btn      { width:44px; height:44px; font-size:15px; }
-
-  /* ── CONTACT PAGE ── */
-  #contact-page { max-width:1400px !important; }
-  .contact-value { font-size:16px; }
-  .contact-label { font-size:12px; }
-  .map-wrap      { height:360px; }
-
-  /* Contact 2-col */
-  #contact-2col {
-    display:grid;
-    grid-template-columns:1fr 1.5fr;
-    gap:28px;
-    align-items:start;
-  }
-
-  /* ── Bottom nav ── */
-  #bottom-nav  { padding:0 48px env(safe-area-inset-bottom); height:64px; }
-  .nav-btn     { font-size:12px; gap:5px; }
-  .nav-btn i   { font-size:20px; }
-
-  /* ── FAB ── */
-  #fab { width:58px; height:58px; font-size:22px; bottom:90px; right:32px; }
-
-  /* ── Popup ── */
-  #popup-box   { max-width:520px; }
-  #popup-title { font-size:20px; }
-  #popup-subtitle { font-size:15px; }
-
-  /* ── Section headings ── */
-  .section-head h2 { font-size:17px; }
-  .vc-section-count { font-size:12px; }
-
-  /* ── Footer ── */
-  .page-footer { font-size:13px; padding:24px; }
-}
-.gi-blue   {--ci:#60a5fa;--cb:rgba(96,165,250,0.12)}
-.gi-green  {--ci:#34d399;--cb:rgba(52,211,153,0.12)}
-.gi-orange {--ci:#fb923c;--cb:rgba(251,146,60,0.12)}
-.gi-purple {--ci:#a78bfa;--cb:rgba(167,139,250,0.12)}
-.gi-red    {--ci:#f87171;--cb:rgba(248,113,113,0.12)}
-.gi-yellow {--ci:#fbbf24;--cb:rgba(251,191,36,0.12)}
-.gi-pink   {--ci:#f472b6;--cb:rgba(244,114,182,0.12)}
-.gi-teal   {--ci:#2dd4bf;--cb:rgba(45,212,191,0.12)}
-
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
-a{text-decoration:none;color:inherit}
+html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--text);overflow:hidden}
+a{color:inherit;text-decoration:none}
 button{border:none;cursor:pointer;font-family:var(--font)}
+input,textarea,select{font-family:var(--font);outline:none}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
 
-/* LOADING */
-#loading-screen{
-  position:fixed;inset:0;z-index:9999;background:var(--bg);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:20px;transition:opacity 0.5s ease
-}
-#loading-screen.hide{opacity:0;pointer-events:none}
-.loader-ring{
-  width:52px;height:52px;border:3px solid var(--border);
-  border-top-color:var(--accent);border-radius:50%;
-  animation:spin 0.8s linear infinite
-}
-.loader-text{color:var(--text2);font-size:14px}
-@keyframes spin{to{transform:rotate(360deg)}}
-
-/* POPUP */
-#popup-overlay{
-  position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0.7);
-  backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;
-  padding:16px;animation:fadeIn 0.3s ease
-}
-#popup-overlay.hidden{display:none}
-#popup-box{
-  background:var(--bg2);border:1px solid var(--accent);
-  border-radius:var(--radius);max-width:440px;width:100%;
-  box-shadow:0 0 40px rgba(79,255,176,0.2);overflow:hidden;
-  animation:slideUp 0.35s cubic-bezier(0.19,1,0.22,1)
-}
-#popup-img{width:100%;max-height:none;object-fit:contain;display:none;background:#000}
-#popup-img.show{display:block}
-.popup-body{padding:24px;display:flex;flex-direction:column;gap:12px}
-.popup-badge{
-  display:inline-flex;align-items:center;gap:6px;
-  background:rgba(79,255,176,0.12);color:var(--accent);
-  border-radius:20px;padding:4px 12px;font-size:12px;font-weight:600;width:fit-content
-}
-.popup-badge i{font-size:10px}
-.popup-counter{
-  display:inline-flex;align-items:center;gap:6px;
-  background:rgba(255,255,255,0.06);color:var(--text2);
-  border-radius:20px;padding:3px 10px;font-size:11px;width:fit-content;margin-left:8px
-}
-#popup-title{font-size:18px;font-weight:700;line-height:1.4;font-family:var(--font-te)}
-#popup-subtitle{font-size:14px;color:var(--text2);line-height:1.6;font-family:var(--font-te)}
-#popup-close{
-  background:var(--accent);color:#0a0f1a;border-radius:8px;
-  padding:10px 20px;font-weight:700;font-size:14px;margin-top:4px;
-  transition:var(--trans);font-family:var(--font-te)
-}
-#popup-close:hover{opacity:0.85;transform:scale(0.98)}
-
-/* ── FIX 1: Ticker speed 22s (was 1s — unreadable) ── */
-#ticker-bar{
-  background:var(--bg2);border-bottom:1px solid var(--border);
-  padding:0 16px;display:flex;align-items:center;gap:12px;
-  height:38px;overflow:hidden;position:sticky;top:0;z-index:50
-}
-.ticker-label{
-  background:var(--accent);color:#0a0f1a;border-radius:4px;
-  padding:2px 8px;font-size:11px;font-weight:700;
-  white-space:nowrap;flex-shrink:0;letter-spacing:0.5px
-}
-.ticker-track{flex:1;overflow:hidden;position:relative}
-.ticker-inner{
-  display:flex;gap:48px;
-  white-space:nowrap;
-  will-change:transform
-}
-.ticker-item{
-  font-size:13px;color:var(--text2);flex-shrink:0;cursor:pointer;
-  font-family:var(--font-te);transition:color var(--trans)
-}
-.ticker-item:hover{color:var(--accent)}
-
-/* HEADER */
-#app-header{
-  background:var(--bg2);border-bottom:1px solid var(--border);
-  padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:64px
-}
-.header-brand{display:flex;align-items:center;gap:12px}
-.header-logo{
-  width:42px;height:42px;background:rgba(79,255,176,0.12);
-  border:1.5px solid var(--accent);border-radius:10px;
+/* ════════════════ LOGIN ════════════════ */
+#login-screen{
+  position:fixed;inset:0;z-index:9999;
+  background:var(--bg);
   display:flex;align-items:center;justify-content:center;
-  color:var(--accent);font-size:18px
 }
-.header-name{font-size:16px;font-weight:700;font-family:var(--font-te)}
-.header-tag{font-size:11px;color:var(--text2);margin-top:1px}
-.header-actions{display:flex;gap:8px}
-.hbtn{
-  width:38px;height:38px;border-radius:10px;background:var(--bg3);
-  color:var(--text2);display:flex;align-items:center;justify-content:center;
-  font-size:15px;transition:var(--trans)
+#login-screen.hide{display:none}
+.login-box{
+  background:var(--bg2);border:1px solid var(--border2);
+  border-radius:20px;padding:40px;width:100%;max-width:380px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.5);
 }
-.hbtn:hover{background:var(--card);color:var(--text)}
-
-.page{display:none}
-.page.active{display:block}
-
-/* HOME */
-#home{padding:0 0 100px;max-width:600px;margin:0 auto}
-/* ── Facebook Profile Banner Hero ── */
-.hero-card{
-  border:1px solid var(--border);border-radius:var(--radius);
-  margin-bottom:24px;overflow:hidden;background:var(--card)
-}
-.hero-cover{
-  width:100%;height:160px;position:relative;
-  background:linear-gradient(135deg,#0d2137 0%,#1a3a5c 50%,#0d2137 100%);
-  overflow:hidden
-}
-.hero-cover-img{
-  width:100%;height:100%;object-fit:cover;display:block;
-  transition:opacity 0.4s ease
-}
-.hero-cover-gradient{
-  position:absolute;inset:0;
-  background:linear-gradient(180deg,transparent 40%,rgba(10,15,26,0.85) 100%);
-  pointer-events:none
-}
-.hero-cover-pattern{
-  position:absolute;inset:0;
-  background:
-    radial-gradient(ellipse at 20% 50%,rgba(79,255,176,0.08) 0%,transparent 60%),
-    radial-gradient(ellipse at 80% 20%,rgba(96,165,250,0.06) 0%,transparent 50%);
-  pointer-events:none
-}
-/* Add cover button */
-.hero-add-cover{
-  position:absolute;bottom:10px;right:10px;
-  background:rgba(0,0,0,0.55);backdrop-filter:blur(6px);
-  border:1px solid rgba(255,255,255,0.15);
-  color:#fff;border-radius:8px;padding:5px 10px;
-  font-size:11px;display:flex;align-items:center;gap:5px;
-  cursor:pointer;transition:var(--trans)
-}
-.hero-add-cover:hover{background:rgba(0,0,0,0.75)}
-
-.hero-profile-row{
-  display:flex;align-items:flex-end;gap:14px;
-  padding:0 16px;margin-top:-36px;position:relative;z-index:2
-}
-.hero-avatar{
-  width:72px;height:72px;border-radius:50%;
-  border:3px solid var(--bg);
-  background:rgba(79,255,176,0.12);
-  display:flex;align-items:center;justify-content:center;
-  color:var(--accent);font-size:28px;flex-shrink:0;
-  overflow:hidden;position:relative
-}
-.hero-avatar img{width:100%;height:100%;object-fit:cover}
-.hero-avatar-icon{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
-.hero-info{flex:1;padding-bottom:6px;min-width:0}
-.hero-name{
-  font-size:18px;font-weight:700;font-family:var(--font-te);
-  line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis
-}
-.hero-city{font-size:12px;color:var(--text2);margin-top:3px;font-family:var(--font-te)}
-.hero-stats{display:flex;gap:12px;margin-top:4px}
-.hero-stat{font-size:11px;color:var(--text2);display:flex;align-items:center;gap:4px}
-.hero-stat i{font-size:10px;color:var(--accent)}
-
-.hero-actions{display:flex;gap:8px;padding:12px 16px 16px}
-.hero-btn{
-  flex:1;padding:9px 14px;border-radius:9px;font-size:13px;font-weight:600;
-  display:flex;align-items:center;justify-content:center;gap:7px;transition:var(--trans)
-}
-.hero-btn.primary{background:var(--accent);color:#0a0f1a}
-.hero-btn.primary:hover{opacity:0.88;transform:scale(0.98)}
-.hero-btn.secondary{background:var(--bg3);color:var(--text);border:1px solid var(--border)}
-.hero-btn.secondary:hover{border-color:var(--accent);color:var(--accent)}
-
-/* ═══════════════════════════════════════
-   BANNER CAROUSEL
-   ═══════════════════════════════════════ */
-#banner-section{display:none;margin:0 0 20px;position:relative}
-.banner-track{
-  border-radius:var(--radius);overflow:hidden;
-  border:1px solid var(--border);
-  background:var(--card);position:relative
-}
-.banner-slides{
-  display:flex;
-  transition:transform 0.5s cubic-bezier(0.19,1,0.22,1);
-  will-change:transform
-}
-.banner-slide{
-  min-width:100%;position:relative;
-  aspect-ratio:16/6.5;cursor:pointer;flex-shrink:0;
-  background:var(--bg3)
-}
-.banner-slide img{
-  width:100%;height:100%;object-fit:cover;display:block;
-  transition:opacity 0.3s
-}
-.banner-slide-fallback{
-  width:100%;height:100%;
-  display:flex;flex-direction:column;
-  align-items:center;justify-content:center;
-  gap:8px;color:var(--text2)
-}
-.banner-caption{
-  position:absolute;bottom:0;left:0;right:0;
-  background:linear-gradient(transparent,rgba(0,0,0,0.75));
-  padding:28px 14px 10px;
-  font-size:13px;font-family:var(--font-te);
-  color:#fff;line-height:1.4;
-  pointer-events:none
-}
-/* Dot indicators */
-.banner-dots{
-  position:absolute;bottom:10px;right:12px;
-  display:flex;gap:5px;align-items:center;z-index:2
-}
-.bdot{
-  height:6px;border-radius:3px;
-  background:rgba(255,255,255,0.35);
-  cursor:pointer;transition:all 0.35s;
-  border:none;padding:0
-}
-.bdot.on{background:var(--accent);width:18px}
-.bdot:not(.on){width:6px}
-/* Prev / Next arrows */
-.banner-arrow{
-  position:absolute;top:50%;transform:translateY(-50%);
-  width:30px;height:30px;border-radius:50%;
-  background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);
-  border:1px solid rgba(255,255,255,0.15);
-  color:#fff;font-size:12px;z-index:2;
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;transition:var(--trans)
-}
-.banner-arrow:hover{background:rgba(0,0,0,0.75);border-color:var(--accent)}
-.banner-arrow.prev{left:10px}
-.banner-arrow.next{right:10px}
-
-.section-head{display:flex;align-items:center;gap:10px;margin-bottom:14px}
-.section-head h2{font-size:15px;font-weight:700;font-family:var(--font-te)}
-.section-line{flex:1;height:1px;background:linear-gradient(90deg,var(--border) 0%,transparent 100%)}
-
-.updates-section{margin-bottom:24px}
-.updates-scroll-wrap{
-  max-height:500px;overflow-y:auto;
-  scrollbar-width:thin;scrollbar-color:var(--border) transparent
-}
-.updates-scroll-wrap::-webkit-scrollbar{width:4px}
-.updates-scroll-wrap::-webkit-scrollbar-track{background:transparent}
-.updates-scroll-wrap::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
-.update-card{
-  background:var(--card);border:1px solid var(--border);border-radius:10px;
-  padding:14px 16px;display:flex;align-items:center;gap:14px;
-  margin-bottom:8px;cursor:pointer;transition:var(--trans)
-}
-.update-card:hover{border-color:var(--accent);transform:translateY(-1px)}
-.update-dot{width:8px;height:8px;background:var(--accent);border-radius:50%;flex-shrink:0;box-shadow:0 0 6px var(--accent)}
-.update-title{flex:1;font-size:13px;font-family:var(--font-te);line-height:1.5}
-.update-arrow{color:var(--text2);font-size:12px}
-.updates-show-more{
-  width:100%;padding:10px;border-radius:10px;
-  background:var(--bg3);border:1px solid var(--border);
-  color:var(--text2);font-size:13px;font-family:var(--font-te);
-  display:flex;align-items:center;justify-content:center;gap:6px;
-  cursor:pointer;transition:var(--trans);margin-top:4px
-}
-.updates-show-more:hover{border-color:var(--accent);color:var(--accent)}
-
-.services-section{margin-bottom:24px}
-.services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.service-card{
-  background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
-  padding:16px 12px;display:flex;flex-direction:column;align-items:center;
-  justify-content:center;gap:10px;text-align:center;cursor:pointer;
-  transition:var(--trans);min-height:90px
-}
-.service-card:hover{
-  border-color:var(--ci,var(--accent));background:var(--cb,rgba(79,255,176,0.06));
-  transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.3)
-}
-.service-icon{
-  width:38px;height:38px;border-radius:10px;
-  background:var(--cb,rgba(79,255,176,0.12));color:var(--ci,var(--accent));
-  display:flex;align-items:center;justify-content:center;font-size:16px
-}
-.service-name{font-size:11px;color:var(--text2);font-family:var(--font-te);line-height:1.3}
-
-/* DOCS */
-#docs-page{padding:20px 16px 100px;max-width:600px;margin:0 auto}
-.req-section{margin-top:24px}
-.acc-item{
-  background:var(--card);border:1px solid var(--border);
-  border-radius:12px;margin-bottom:10px;overflow:hidden;transition:border-color 0.25s
-}
-.acc-item.open{border-color:rgba(79,255,176,0.3)}
-.acc-header{
-  display:flex;align-items:center;gap:12px;padding:14px 16px;
-  cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent
-}
-.acc-icon{
-  width:38px;height:38px;border-radius:10px;
-  background:rgba(79,255,176,0.1);border:1px solid rgba(79,255,176,0.2);
-  display:flex;align-items:center;justify-content:center;
-  color:var(--accent);font-size:16px;flex-shrink:0;transition:background 0.25s
-}
-.acc-item.open .acc-icon{background:rgba(79,255,176,0.18)}
-.acc-label{flex:1;font-size:14px;font-weight:600;font-family:var(--font-te);color:var(--text);line-height:1.4}
-.acc-count{font-size:11px;color:var(--text2);background:var(--bg3);border-radius:20px;padding:2px 8px;flex-shrink:0}
-.acc-arrow{color:var(--text2);font-size:13px;flex-shrink:0;transition:transform 0.3s cubic-bezier(0.19,1,0.22,1)}
-.acc-item.open .acc-arrow{transform:rotate(180deg);color:var(--accent)}
-.acc-body{max-height:0;overflow:hidden;transition:max-height 0.35s cubic-bezier(0.19,1,0.22,1)}
-.acc-item.open .acc-body{max-height:600px}
-.acc-inner{padding:4px 16px 14px 16px;border-top:1px solid var(--border)}
-.req-doc-item{
-  display:flex;align-items:flex-start;gap:10px;padding:9px 0;
-  border-bottom:1px solid var(--border);font-family:var(--font-te);
-  font-size:13.5px;color:var(--text);line-height:1.45
-}
-.req-doc-item:last-child{border-bottom:none}
-.req-doc-bullet{
-  width:22px;height:22px;border-radius:50%;
-  background:rgba(79,255,176,0.1);border:1px solid rgba(79,255,176,0.25);
-  display:flex;align-items:center;justify-content:center;
-  color:var(--accent);font-size:9px;flex-shrink:0;margin-top:1px
-}
-
-.pdf-section{margin-bottom:24px}
-.pdf-item{
-  background:var(--card);border:1px solid var(--border);border-radius:10px;
-  padding:14px 16px;display:flex;align-items:center;gap:14px;
-  margin-bottom:8px;cursor:pointer;transition:var(--trans)
-}
-.pdf-item:hover{border-color:#f87171}
-.pdf-icon-wrap{
-  width:36px;height:36px;background:rgba(248,113,113,0.12);border-radius:8px;
-  display:flex;align-items:center;justify-content:center;
-  color:#f87171;font-size:16px;flex-shrink:0
-}
-.pdf-name{flex:1;font-size:13px;font-family:var(--font-te)}
-.pdf-dl{color:var(--text2);font-size:13px}
-
-.docs-list{display:flex;flex-direction:column;gap:8px}
-.doc-item{
-  background:var(--card);border:1px solid var(--border);border-radius:10px;
-  padding:13px 16px;display:flex;align-items:center;gap:12px;
-  font-family:var(--font-te);font-size:13px
-}
-.doc-check{
-  width:20px;height:20px;border-radius:50%;
+.login-logo{
+  width:56px;height:56px;border-radius:14px;
   background:rgba(79,255,176,0.12);border:1.5px solid var(--accent);
   display:flex;align-items:center;justify-content:center;
-  color:var(--accent);font-size:10px;flex-shrink:0
+  color:var(--accent);font-size:24px;margin:0 auto 20px;
 }
-
-/* CONTACT */
-#contact-page{padding:20px 16px 100px;max-width:600px;margin:0 auto}
-.contact-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:16px}
-.contact-row{
-  padding:16px 20px;display:flex;align-items:center;gap:14px;
-  border-bottom:1px solid var(--border);cursor:pointer;transition:var(--trans)
+.login-title{font-size:22px;font-weight:700;text-align:center;margin-bottom:4px}
+.login-sub{font-size:13px;color:var(--text2);text-align:center;margin-bottom:28px}
+.field-label{font-size:12px;color:var(--text2);margin-bottom:6px;font-weight:500}
+.field-wrap{position:relative;margin-bottom:16px}
+.field-input{
+  width:100%;background:var(--bg3);border:1px solid var(--border2);
+  border-radius:10px;padding:12px 14px;color:var(--text);font-size:14px;
+  transition:border-color var(--trans);
 }
-.contact-row:last-child{border-bottom:none}
-.contact-row:hover{background:var(--bg3)}
-.contact-icon-wrap{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
-.contact-label{font-size:11px;color:var(--text2)}
-.contact-value{font-size:14px;font-weight:600;margin-top:2px}
-.map-wrap{border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);height:240px;margin-bottom:16px}
-.map-wrap iframe{width:100%;height:100%;border:none}
-.map-placeholder{width:100%;height:100%;background:var(--card);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--text2)}
-
-/* BOTTOM NAV */
-#bottom-nav{
-  position:fixed;bottom:0;left:0;right:0;z-index:100;
-  background:var(--bg2);border-top:1px solid var(--border);
-  display:flex;padding:0 0 env(safe-area-inset-bottom)
+.field-input:focus{border-color:var(--accent)}
+.field-eye{
+  position:absolute;right:12px;top:50%;transform:translateY(-50%);
+  color:var(--text2);cursor:pointer;font-size:15px;
 }
-.nav-btn{
-  flex:1;padding:10px 0;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;gap:4px;color:var(--text2);
-  background:transparent;font-size:10px;font-weight:600;
-  font-family:var(--font-te);transition:var(--trans);letter-spacing:0.3px
+.login-btn{
+  width:100%;padding:13px;border-radius:10px;
+  background:var(--accent);color:#0a0f1a;
+  font-size:14px;font-weight:700;margin-top:4px;
+  transition:var(--trans);
 }
-.nav-btn i{font-size:18px}
-.nav-btn.active{color:var(--accent)}
-.nav-btn.active i{filter:drop-shadow(0 0 4px var(--accent))}
-
-#fab{
-  position:fixed;bottom:80px;right:20px;z-index:200;
-  width:52px;height:52px;border-radius:50%;background:var(--accent);
-  color:#0a0f1a;font-size:20px;display:flex;align-items:center;justify-content:center;
-  box-shadow:0 4px 20px rgba(79,255,176,0.4);transition:var(--trans)
+.login-btn:hover{opacity:0.88;transform:scale(0.99)}
+.login-btn:disabled{opacity:0.5;cursor:not-allowed}
+.login-err{
+  background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.3);
+  color:var(--red);border-radius:8px;padding:10px 14px;
+  font-size:13px;margin-bottom:16px;display:none
 }
-#fab:hover{transform:scale(1.08);box-shadow:0 6px 28px rgba(79,255,176,0.5)}
+.login-err.show{display:block}
 
-.page-footer{text-align:center;padding:20px 16px;color:var(--text2);font-size:12px;border-top:1px solid var(--border);margin-top:16px}
+/* ════════════════ APP SHELL ════════════════ */
+#app{display:flex;height:100vh;display:none}
+#app.show{display:flex}
 
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-@keyframes slideUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
-
-/* ── FIX 2: Error banner (was missing show class logic) ── */
-#error-banner{
-  display:none;background:rgba(248,113,113,0.12);
-  border:1px solid rgba(248,113,113,0.3);border-radius:10px;
-  padding:12px 16px;margin:16px;color:#f87171;
-  font-size:13px;font-family:var(--font-te)
+/* ── Sidebar ── */
+#sidebar{
+  width:var(--sidebar);flex-shrink:0;
+  background:var(--bg2);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;overflow:hidden;
 }
-#error-banner.show{display:block}
-
-@media(min-width:640px){.services-grid{grid-template-columns:repeat(4,1fr)}}
-
-/* VOICE PAGE — horizontal scroll sections */
-#voice-page{padding:16px 0 100px;max-width:100%}
-.vc-section{margin-bottom:28px}
-.vc-section-head{
+.sb-header{
+  padding:20px 16px 16px;border-bottom:1px solid var(--border);
   display:flex;align-items:center;gap:10px;
-  padding:0 16px;margin-bottom:12px
 }
-.vc-section-head h3{font-size:14px;font-weight:700;font-family:var(--font-te)}
-.vc-section-count{
-  font-size:11px;color:var(--text2);background:var(--bg3);
-  border-radius:20px;padding:2px 8px
+.sb-logo{
+  width:36px;height:36px;border-radius:9px;
+  background:rgba(79,255,176,0.12);border:1px solid var(--accent);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--accent);font-size:16px;flex-shrink:0;
 }
-.vc-hscroll{
-  display:flex;gap:12px;overflow-x:auto;
-  padding:4px 16px 10px;
-  scrollbar-width:none;-ms-overflow-style:none;
-  scroll-snap-type:x mandatory
+.sb-title{font-size:14px;font-weight:700}
+.sb-sub{font-size:11px;color:var(--text2)}
+.sb-logout{
+  margin-left:auto;width:30px;height:30px;border-radius:8px;
+  background:rgba(248,113,113,0.1);color:var(--red);
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;transition:var(--trans);
 }
-.vc-hscroll::-webkit-scrollbar{display:none}
+.sb-logout:hover{background:rgba(248,113,113,0.2)}
 
-/* AUDIO card */
-.vc-audio-card{
-  flex-shrink:0;width:260px;scroll-snap-align:start;
+.sb-section-label{
+  font-size:10px;font-weight:600;color:var(--text3);
+  letter-spacing:1px;padding:16px 16px 6px;text-transform:uppercase;
+}
+.sb-nav-btn{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 16px;border-radius:0;background:transparent;
+  color:var(--text2);font-size:13px;width:100%;text-align:left;
+  transition:var(--trans);border-left:2px solid transparent;
+}
+.sb-nav-btn i{font-size:15px;width:18px;text-align:center}
+.sb-nav-btn:hover{background:rgba(255,255,255,0.04);color:var(--text)}
+.sb-nav-btn.active{
+  background:rgba(79,255,176,0.07);color:var(--accent);
+  border-left-color:var(--accent);font-weight:600;
+}
+
+.sb-agents{flex:1;overflow-y:auto;padding:4px 0}
+.agent-item{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 16px;cursor:pointer;transition:var(--trans);
+  border-left:2px solid transparent;
+}
+.agent-item:hover{background:rgba(255,255,255,0.04)}
+.agent-item.active{
+  background:rgba(79,255,176,0.07);
+  border-left-color:var(--accent);
+}
+.agent-dot{
+  width:10px;height:10px;border-radius:50%;flex-shrink:0;
+  border:2px solid var(--bg2);
+}
+.agent-info{flex:1;min-width:0}
+.agent-name{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.agent-meta{font-size:11px;color:var(--text2)}
+
+.sb-footer{padding:12px 16px;border-top:1px solid var(--border)}
+.add-agent-btn{
+  width:100%;padding:9px;border-radius:9px;
+  background:rgba(79,255,176,0.1);border:1px solid rgba(79,255,176,0.2);
+  color:var(--accent);font-size:13px;font-weight:600;
+  display:flex;align-items:center;justify-content:center;gap:7px;
+  transition:var(--trans);
+}
+.add-agent-btn:hover{background:rgba(79,255,176,0.18)}
+
+/* ── Main area ── */
+#main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+
+/* Topbar */
+#topbar{
+  height:56px;background:var(--bg2);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;padding:0 24px;gap:14px;flex-shrink:0;
+}
+.topbar-title{font-size:15px;font-weight:700;flex:1}
+.topbar-badge{
+  font-size:11px;background:rgba(79,255,176,0.1);
+  color:var(--accent);border-radius:6px;padding:2px 8px;font-weight:600;
+}
+.topbar-btn{
+  padding:7px 14px;border-radius:8px;font-size:13px;font-weight:600;
+  display:flex;align-items:center;gap:6px;transition:var(--trans);
+}
+.topbar-btn.primary{background:var(--accent);color:#0a0f1a}
+.topbar-btn.primary:hover{opacity:0.88}
+.topbar-btn.danger{background:rgba(248,113,113,0.1);color:var(--red);border:1px solid rgba(248,113,113,0.2)}
+.topbar-btn.danger:hover{background:rgba(248,113,113,0.2)}
+.topbar-btn.secondary{background:var(--bg3);color:var(--text);border:1px solid var(--border2)}
+.topbar-btn.secondary:hover{border-color:var(--accent);color:var(--accent)}
+
+/* Content area */
+#content{flex:1;overflow-y:auto;padding:24px}
+
+/* ════════════════ DASHBOARD VIEWS ════════════════ */
+.view{display:none}
+.view.active{display:block}
+
+/* Welcome / overview */
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-bottom:24px}
+.stat-card{
   background:var(--card);border:1px solid var(--border);
-  border-radius:14px;padding:14px;
+  border-radius:var(--radius);padding:18px;
 }
-.vc-audio-card:hover{border-color:rgba(79,255,176,0.3)}
-.vc-sender{font-size:11px;color:var(--accent);font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:5px}
-.vc-title{font-size:13px;color:var(--text);font-family:var(--font-te);margin-bottom:10px;line-height:1.4;font-weight:500}
-.vc-controls{display:flex;align-items:center;gap:10px}
-.vc-play-btn{
-  width:38px;height:38px;border-radius:50%;background:var(--accent);color:#0a0f1a;
-  font-size:13px;display:flex;align-items:center;justify-content:center;
-  flex-shrink:0;transition:var(--trans);border:none;cursor:pointer
-}
-.vc-play-btn:hover{opacity:0.85}
-.vc-play-btn.playing{background:transparent;color:var(--accent);border:1.5px solid var(--accent)}
-.vc-wave{flex:1;height:28px;display:flex;align-items:center;gap:2.5px}
+.stat-val{font-size:28px;font-weight:700;margin-bottom:4px}
+.stat-label{font-size:12px;color:var(--text2)}
+.stat-icon{font-size:20px;margin-bottom:10px}
 
-/* POSTER card */
-.vc-poster-card{
-  flex-shrink:0;width:200px;scroll-snap-align:start;
+/* Section heading */
+.sec-head{font-size:13px;font-weight:700;color:var(--text2);
+  text-transform:uppercase;letter-spacing:0.8px;margin:24px 0 12px}
+
+/* ════════════════ AGENT EDITOR ════════════════ */
+.editor-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:900px){.editor-grid{grid-template-columns:1fr}}
+
+.editor-card{
   background:var(--card);border:1px solid var(--border);
-  border-radius:14px;overflow:hidden;cursor:pointer;
-  transition:var(--trans)
+  border-radius:var(--radius);padding:20px;
 }
-.vc-poster-card:hover{border-color:rgba(79,255,176,0.3);transform:translateY(-2px)}
-.vc-poster-card img{
-  width:100%;height:160px;object-fit:cover;display:block
+.editor-card-title{
+  font-size:13px;font-weight:700;margin-bottom:16px;
+  display:flex;align-items:center;gap:8px;color:var(--text2);
+  text-transform:uppercase;letter-spacing:0.6px;
 }
-.vc-poster-card .vc-cap{
-  padding:8px 10px;font-size:11px;color:var(--text2);
-  font-family:var(--font-te);line-height:1.4
+.editor-card-title i{font-size:14px}
+
+.field-row{margin-bottom:14px}
+.field-row label{display:block;font-size:11px;color:var(--text2);margin-bottom:5px;font-weight:500}
+.field-row input,.field-row select,.field-row textarea{
+  width:100%;background:var(--bg3);border:1px solid var(--border2);
+  border-radius:8px;padding:9px 12px;color:var(--text);font-size:13px;
+  transition:border-color var(--trans);resize:vertical;
+}
+.field-row input:focus,.field-row select:focus,.field-row textarea:focus{border-color:var(--accent)}
+.field-row select option{background:var(--bg2)}
+
+/* Color preview */
+.color-preview{
+  display:flex;align-items:center;gap:8px;
+}
+.color-swatch{
+  width:28px;height:28px;border-radius:6px;flex-shrink:0;
+  border:1.5px solid var(--border2);cursor:pointer;
 }
 
-/* PDF card */
-.vc-pdf-hcard{
-  flex-shrink:0;width:200px;scroll-snap-align:start;
-  background:var(--card);border:1px solid rgba(248,113,113,0.2);
-  border-radius:14px;padding:14px;
-  display:flex;flex-direction:column;gap:10px;
-  text-decoration:none;color:var(--text);transition:var(--trans)
+/* Rows table */
+.rows-table-wrap{overflow-x:auto}
+.rows-table{width:100%;border-collapse:collapse;font-size:12px}
+.rows-table th{
+  padding:8px 10px;text-align:left;font-size:10px;
+  color:var(--text3);text-transform:uppercase;letter-spacing:0.6px;
+  border-bottom:1px solid var(--border);font-weight:600;background:var(--bg2);
 }
-.vc-pdf-hcard:hover{border-color:#f87171;transform:translateY(-2px)}
-.vc-pdf-hcard .ico{
-  width:44px;height:44px;background:rgba(248,113,113,0.14);
-  border-radius:10px;display:flex;align-items:center;justify-content:center;
-  color:#f87171;font-size:22px
+.rows-table td{
+  padding:7px 10px;border-bottom:1px solid var(--border);
+  vertical-align:top;
 }
-.vc-pdf-hcard .nm{font-size:13px;font-weight:600;font-family:var(--font-te);line-height:1.4}
-.vc-pdf-hcard .sub{font-size:11px;color:var(--text2);margin-top:2px}
-.vc-pdf-hcard .dl{font-size:11px;color:#f87171;display:flex;align-items:center;gap:4px;margin-top:auto}
+.rows-table tr:hover td{background:rgba(255,255,255,0.02)}
+.rows-table td input{
+  background:transparent;border:none;color:var(--text);
+  font-size:12px;width:100%;padding:1px 2px;
+}
+.rows-table td input:focus{
+  background:var(--bg3);border-radius:4px;outline:1px solid var(--accent);
+  padding:2px 4px;
+}
+.key-badge{
+  display:inline-block;font-size:10px;padding:2px 7px;
+  border-radius:4px;font-weight:600;white-space:nowrap;
+}
+.kb-update{background:rgba(251,191,36,0.12);color:var(--yellow)}
+.kb-service{background:rgba(96,165,250,0.12);color:var(--blue)}
+.kb-pdf{background:rgba(248,113,113,0.12);color:var(--red)}
+.kb-doc{background:rgba(52,211,153,0.12);color:var(--green)}
+.kb-ticker{background:rgba(167,139,250,0.12);color:#a78bfa}
+.kb-voice{background:rgba(251,146,60,0.12);color:#fb923c}
+.kb-config{background:rgba(255,255,255,0.06);color:var(--text2)}
+.kb-popup{background:rgba(244,114,182,0.12);color:#f472b6}
 
-/* Canva card */
-.vc-canva-hcard{
-  flex-shrink:0;width:200px;scroll-snap-align:start;
-  background:var(--card);border:1px solid rgba(167,139,250,0.25);
-  border-radius:14px;padding:14px;
-  display:flex;flex-direction:column;gap:10px;
-  text-decoration:none;color:var(--text);transition:var(--trans)
+.row-del{
+  background:transparent;color:var(--text3);font-size:12px;
+  padding:2px 6px;border-radius:4px;transition:var(--trans);
 }
-.vc-canva-hcard:hover{border-color:#a78bfa;transform:translateY(-2px)}
-.vc-canva-hcard .ico{
-  width:44px;height:44px;background:rgba(167,139,250,0.14);
-  border-radius:10px;display:flex;align-items:center;justify-content:center;
-  color:#a78bfa;font-size:20px
-}
-.vc-canva-hcard .nm{font-size:13px;font-weight:600;font-family:var(--font-te);line-height:1.4}
-.vc-canva-hcard .sub{font-size:11px;color:var(--text2);margin-top:2px}
-.vc-canva-hcard .open{font-size:11px;color:#a78bfa;display:flex;align-items:center;gap:4px;margin-top:auto}
+.row-del:hover{background:rgba(248,113,113,0.15);color:var(--red)}
 
-/* TTS card */
-.vc-tts-card{
-  flex-shrink:0;width:240px;scroll-snap-align:start;
-  background:rgba(79,255,176,0.05);border:1px solid rgba(79,255,176,0.15);
-  border-radius:14px;padding:14px;
-  display:flex;flex-direction:column;gap:10px
+.add-row-btn{
+  padding:7px 14px;border-radius:8px;background:var(--bg3);
+  border:1px dashed var(--border2);color:var(--text2);font-size:12px;
+  display:flex;align-items:center;gap:6px;transition:var(--trans);
+  margin-top:8px;
 }
-.tts-body{font-size:13px;font-family:var(--font-te);line-height:1.65;color:var(--text)}
-.tts-speak-btn{
-  background:var(--bg3);border:1px solid rgba(79,255,176,0.4);
-  color:var(--accent);border-radius:20px;padding:6px 14px;
-  font-size:12px;font-family:var(--font-te);
-  display:inline-flex;align-items:center;gap:6px;transition:var(--trans);
-  width:fit-content
-}
-.tts-speak-btn:hover{background:rgba(79,255,176,0.08)}
-.tts-speak-btn.speaking{background:rgba(79,255,176,0.15);border-color:var(--accent)}
+.add-row-btn:hover{border-color:var(--accent);color:var(--accent)}
 
-.vc-time{font-size:10px;color:var(--text2);text-align:right;margin-top:6px}
-.vc-empty{text-align:center;color:var(--text2);font-size:13px;font-family:var(--font-te);padding:50px 20px}
-.vc-empty i{font-size:34px;margin-bottom:12px;display:block;opacity:0.35}
+/* CSV URL box */
+.csv-url-box{
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:8px;padding:10px 12px;font-size:11px;
+  color:var(--text2);word-break:break-all;
+  display:flex;align-items:flex-start;gap:8px;
+}
+.csv-url-box i{color:var(--accent);flex-shrink:0;margin-top:2px}
 
-/* ── FIX 3: wbar animation-delay via CSS custom property ──
-   shorthand animation overrides inline animation-delay.
-   Fix: use --wd custom property inside .on rule itself. */
-.wbar{width:3px;border-radius:3px;background:var(--text2);transition:background 0.2s}
-.wbar.on{
-  background:var(--accent);
-  animation:wPulse 0.65s ease-in-out var(--wd,0s) infinite alternate
+/* Toast */
+#toast{
+  position:fixed;bottom:24px;right:24px;z-index:9998;
+  background:var(--bg2);border:1px solid var(--border2);
+  border-radius:10px;padding:12px 18px;font-size:13px;
+  display:flex;align-items:center;gap:10px;
+  box-shadow:0 8px 24px rgba(0,0,0,0.4);
+  transform:translateY(80px);opacity:0;
+  transition:all 0.3s cubic-bezier(0.19,1,0.22,1);
+  pointer-events:none;max-width:320px;
 }
-@keyframes wPulse{from{height:4px}to{height:22px}}
+#toast.show{transform:translateY(0);opacity:1}
+#toast.success i{color:var(--green)}
+#toast.error   i{color:var(--red)}
+#toast.info    i{color:var(--blue)}
 
-.vc-dur{font-size:11px;color:var(--text2);min-width:34px;text-align:right}
-.tts-body{font-size:13px;font-family:var(--font-te);line-height:1.65;color:var(--text);margin-bottom:10px}
-.tts-speak-btn{
-  background:var(--bg3);border:1px solid rgba(79,255,176,0.4);
-  color:var(--accent);border-radius:20px;padding:5px 14px;
-  font-size:12px;font-family:var(--font-te);
-  display:inline-flex;align-items:center;gap:6px;transition:var(--trans)
+/* Modal */
+#modal-overlay{
+  position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.7);
+  backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;
+  padding:16px;display:none;
 }
-.tts-speak-btn:hover{background:rgba(79,255,176,0.08)}
-.tts-speak-btn.speaking{background:rgba(79,255,176,0.15);border-color:var(--accent)}
-.vc-time{font-size:10px;color:var(--text2);margin-top:6px;text-align:right}
-.vc-empty{text-align:center;color:var(--text2);font-size:13px;font-family:var(--font-te);padding:50px 20px}
-.vc-empty i{font-size:34px;margin-bottom:12px;display:block;opacity:0.35}
-.vc-poster-img{width:100%;border-radius:10px;display:block;max-height:280px;object-fit:cover;cursor:pointer}
-.vc-poster-cap{font-size:12px;color:var(--text2);font-family:var(--font-te);margin-top:7px;line-height:1.5}
-.vc-pdf-card{
-  display:flex;align-items:center;gap:12px;background:var(--bg3);
-  border:1px solid rgba(248,113,113,0.2);border-radius:10px;padding:12px 14px;
-  text-decoration:none;color:var(--text);transition:var(--trans)
+#modal-overlay.show{display:flex}
+.modal-box{
+  background:var(--bg2);border:1px solid var(--border2);
+  border-radius:16px;padding:28px;width:100%;max-width:420px;
 }
-.vc-pdf-card:hover{border-color:#f87171;background:rgba(248,113,113,0.06)}
-.vc-pdf-icon{width:44px;height:44px;background:rgba(248,113,113,0.14);border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#f87171;font-size:22px}
-.vc-pdf-info{flex:1;min-width:0}
-.vc-pdf-name{font-size:13px;font-weight:600;font-family:var(--font-te);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.vc-pdf-sub{font-size:11px;color:var(--text2);margin-top:3px}
-.vc-pdf-dl{color:var(--text2);font-size:15px;flex-shrink:0}
-.vc-canva-card{
-  display:flex;align-items:center;gap:12px;background:var(--bg3);
-  border:1px solid rgba(167,139,250,0.25);border-radius:10px;padding:12px 14px;
-  text-decoration:none;color:var(--text);transition:var(--trans)
+.modal-title{font-size:16px;font-weight:700;margin-bottom:6px}
+.modal-sub{font-size:13px;color:var(--text2);margin-bottom:22px}
+.modal-actions{display:flex;gap:10px;margin-top:20px}
+.modal-actions button{flex:1;padding:10px;border-radius:9px;font-size:13px;font-weight:600}
+
+/* Loading overlay */
+#loader{
+  position:fixed;inset:0;z-index:999;background:rgba(10,15,26,0.85);
+  display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:14px;display:none;
 }
-.vc-canva-card:hover{border-color:#a78bfa;background:rgba(167,139,250,0.06)}
-.vc-canva-icon{width:44px;height:44px;background:rgba(167,139,250,0.14);border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#a78bfa;font-size:20px}
-.vc-canva-info{flex:1;min-width:0}
-.vc-canva-name{font-size:13px;font-weight:600;font-family:var(--font-te)}
-.vc-canva-desc{font-size:11px;color:var(--text2);margin-top:3px}
-.vc-canva-open{font-size:11px;color:#a78bfa;display:flex;align-items:center;gap:4px;flex-shrink:0}
-#vc-lightbox{
-  display:none;position:fixed;inset:0;z-index:2000;
-  background:rgba(0,0,0,0.9);align-items:center;justify-content:center;padding:16px
+#loader.show{display:flex}
+.loader-ring{
+  width:40px;height:40px;border:3px solid var(--border);
+  border-top-color:var(--accent);border-radius:50%;
+  animation:spin 0.8s linear infinite;
 }
-#vc-lightbox.on{display:flex}
-#vc-lightbox img{max-width:100%;max-height:90vh;border-radius:10px}
-#vc-lightbox-close{
-  position:absolute;top:16px;right:16px;background:var(--bg3);
-  border:1px solid var(--border);color:var(--text);width:36px;height:36px;
-  border-radius:50%;font-size:16px;display:flex;align-items:center;justify-content:center;cursor:pointer
+@keyframes spin{to{transform:rotate(360deg)}}
+.loader-text{color:var(--text2);font-size:13px}
+
+/* Empty state */
+.empty-state{
+  text-align:center;padding:60px 20px;color:var(--text2);
 }
+.empty-state i{font-size:40px;opacity:0.3;display:block;margin-bottom:14px}
+.empty-state p{font-size:13px;line-height:1.6}
+
+/* Tabs */
+.tab-bar{display:flex;gap:2px;background:var(--bg3);border-radius:10px;padding:3px;margin-bottom:20px;width:fit-content}
+.tab-item{
+  padding:7px 16px;border-radius:8px;font-size:13px;font-weight:500;
+  color:var(--text2);cursor:pointer;transition:var(--trans);
+}
+.tab-item.active{background:var(--card);color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,0.3)}
+.tab-item:hover:not(.active){color:var(--text)}
 </style>
 </head>
 <body>
 
-<div id="loading-screen">
-  <div class="loader-ring"></div>
-  <span class="loader-text">లోడ్ అవుతోంది…</span>
-</div>
-
-<div id="popup-overlay" class="hidden">
-  <div id="popup-box">
-    <img id="popup-img" src="" alt="popup"/>
-    <div class="popup-body">
-      <div style="display:flex;align-items:center;flex-wrap:wrap;gap:6px">
-        <span class="popup-badge"><i class="fas fa-bell"></i> ప్రకటన</span>
-        <span class="popup-counter" id="popup-counter" style="display:none"></span>
+<!-- ═══════════════ LOGIN ═══════════════ -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo"><i class="fas fa-shield-halved"></i></div>
+    <div class="login-title">Admin Dashboard</div>
+    <div class="login-sub">Citizen Digital Seva — Admin Portal</div>
+    <div class="login-err" id="login-err"><i class="fas fa-circle-xmark"></i> <span id="login-err-msg">Wrong password</span></div>
+    <div class="field-row">
+      <div class="field-label">Admin Password</div>
+      <div class="field-wrap">
+        <input type="password" id="pass-input" class="field-input" placeholder="Enter password…" onkeydown="if(event.key==='Enter')doLogin()"/>
+        <i class="fas fa-eye field-eye" onclick="togglePassVis()"></i>
       </div>
-      <div id="popup-title"></div>
-      <div id="popup-subtitle"></div>
-      <button id="popup-close">అర్థమైంది ✓</button>
     </div>
-  </div>
-</div>
-
-<div id="ticker-bar">
-  <span class="ticker-label">📢 LIVE</span>
-  <div class="ticker-track">
-    <div class="ticker-inner" id="ticker-inner">
-      <span class="ticker-item">లోడ్ అవుతోంది…</span>
-    </div>
-  </div>
-</div>
-
-<header id="app-header">
-  <div class="header-brand">
-    <div class="header-logo">
-      <img id="hdr-logo-img" style="display:none;width:100%;height:100%;object-fit:cover;border-radius:8px" onerror="this.style.display='none';document.getElementById('hdr-icon').style.display='flex'"/>
-      <i id="hdr-icon" class="fas fa-landmark"></i>
-    </div>
-    <div>
-      <div class="header-name" id="hdr-name">లోడ్…</div>
-      <div class="header-tag" id="hdr-tag">—</div>
-    </div>
-  </div>
-  <div class="header-actions">
-    <button class="hbtn" id="theme-toggle-btn" onclick="toggleTheme()" title="Light/Dark Mode">
-      <i class="fas fa-moon" id="theme-icon"></i>
+    <button class="login-btn" id="login-btn" onclick="doLogin()">
+      <i class="fas fa-right-to-bracket"></i> Login
     </button>
-    <a id="fab-call" href="#" class="hbtn"><i class="fas fa-phone"></i></a>
-    <a id="fab-wa" href="#" target="_blank" class="hbtn" style="color:#25d366"><i class="fab fa-whatsapp"></i></a>
-  </div>
-</header>
-
-<div id="error-banner">⚠️ Data లోడ్ కాలేదు. Sheet URL సరిగా ఉందా? Internet connection చెక్ చేయండి.</div>
-
-<!-- HOME -->
-<div id="home" class="page active">
-  <!-- Facebook-style profile banner -->
-  <div class="hero-card">
-    <div class="hero-cover">
-      <img id="hero-cover-img" class="hero-cover-img" src="" alt="" style="display:none"/>
-      <div class="hero-cover-gradient"></div>
-      <div class="hero-cover-pattern"></div>
-    </div>
-    <div class="hero-profile-row">
-      <div class="hero-avatar" id="hero-avatar">
-        <img id="hero-logo-img" style="display:none;width:100%;height:100%;object-fit:cover;border-radius:50%;position:absolute;inset:0" onerror="this.style.display='none';document.getElementById('hero-avatar-icon').style.display='flex'"/>
-        <div class="hero-avatar-icon"><i id="hero-avatar-icon" class="fas fa-landmark"></i></div>
-      </div>
-      <div class="hero-info">
-        <div class="hero-name" id="hero-shop-name">—</div>
-        <div class="hero-city" id="hero-city">—</div>
-      </div>
-    </div>
-    <div class="hero-actions">
-      <button class="hero-btn primary" onclick="callPhone()"><i class="fas fa-phone"></i> కాల్ చేయండి</button>
-      <button class="hero-btn secondary" onclick="openWA()"><i class="fab fa-whatsapp"></i> WhatsApp</button>
-    </div>
-  </div>
-
-  <div style="padding:0 16px">
-
-    <!-- BANNER CAROUSEL -->
-    <div id="banner-section">
-      <div class="banner-track">
-        <div class="banner-slides" id="banner-slides"></div>
-        <button class="banner-arrow prev" id="banner-prev" onclick="bannerGo(_bannerCur-1)">
-          <i class="fas fa-chevron-left"></i>
-        </button>
-        <button class="banner-arrow next" id="banner-next" onclick="bannerGo(_bannerCur+1)">
-          <i class="fas fa-chevron-right"></i>
-        </button>
-        <div class="banner-dots" id="banner-dots"></div>
-      </div>
-    </div>
-
-    <div id="home-2col">
-      <div class="updates-section">
-        <div class="section-head"><h2>🔔 తాజా అప్‌డేట్లు</h2><div class="section-line"></div></div>
-        <div id="updates-list"></div>
-      </div>
-      <div class="services-section">
-        <div class="section-head"><h2>🛎️ మా సేవలు</h2><div class="section-line"></div></div>
-        <div class="services-grid" id="services-grid"></div>
-      </div>
-    </div>
-    <div class="page-footer" id="footer-text"></div>
+    <p style="font-size:11px;color:var(--text3);text-align:center;margin-top:16px">Default password: admin@123 (Sheet లో మార్చుకోండి)</p>
   </div>
 </div>
 
-<!-- DOCS -->
-<div id="docs-page" class="page">
-  <div id="docs-2col">
-    <div class="pdf-section">
-      <div class="section-head"><h2>📄 PDF ఫారాలు</h2><div class="section-line"></div></div>
-      <div id="pdf-list"></div>
-    </div>
-    <div>
-      <div class="req-section" id="req-docs-section" style="display:none">
-        <div class="section-head"><h2>📋 అవసరమైన పత్రాలు</h2><div class="section-line"></div></div>
-        <div id="req-docs-list"></div>
+<!-- ═══════════════ APP ═══════════════ -->
+<div id="app">
+
+  <!-- SIDEBAR -->
+  <aside id="sidebar">
+    <div class="sb-header">
+      <div class="sb-logo"><i class="fas fa-shield-halved"></i></div>
+      <div>
+        <div class="sb-title">Admin Panel</div>
+        <div class="sb-sub">Seva Management</div>
       </div>
-      <!-- ── FIX 4: old-docs-section hidden by default ── -->
-      <div id="old-docs-section" style="display:none">
-        <div class="section-head"><h2>📋 అవసరమైన పత్రాలు</h2><div class="section-line"></div></div>
-        <div class="docs-list" id="docs-list"></div>
+      <button class="sb-logout" onclick="doLogout()" title="Logout"><i class="fas fa-right-from-bracket"></i></button>
+    </div>
+
+    <div class="sb-section-label">Menu</div>
+    <button class="sb-nav-btn active" onclick="showView('overview',this)">
+      <i class="fas fa-chart-pie"></i> Overview
+    </button>
+    <button class="sb-nav-btn" onclick="showView('settings',this)">
+      <i class="fas fa-gear"></i> Settings
+    </button>
+
+    <div class="sb-section-label">Agents</div>
+    <div class="sb-agents" id="agents-list">
+      <div style="padding:12px 16px;color:var(--text3);font-size:12px">లోడ్ అవుతోంది…</div>
+    </div>
+
+    <div class="sb-footer">
+      <button class="add-agent-btn" onclick="showAddAgent()">
+        <i class="fas fa-plus"></i> New Agent
+      </button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div id="main">
+    <div id="topbar">
+      <div class="topbar-title" id="topbar-title">Overview</div>
+      <div class="topbar-badge" id="topbar-badge" style="display:none"></div>
+      <div id="topbar-actions"></div>
+    </div>
+
+    <div id="content">
+
+      <!-- OVERVIEW VIEW -->
+      <div id="view-overview" class="view active">
+        <div class="stat-grid" id="stat-grid">
+          <div class="stat-card">
+            <div class="stat-icon" style="color:var(--accent)"><i class="fas fa-users"></i></div>
+            <div class="stat-val" id="stat-agents">—</div>
+            <div class="stat-label">Total Agents</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="color:var(--blue)"><i class="fas fa-server"></i></div>
+            <div class="stat-val">Free</div>
+            <div class="stat-label">Hosting Cost</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="color:var(--green)"><i class="fas fa-circle-check"></i></div>
+            <div class="stat-val">Live</div>
+            <div class="stat-label">System Status</div>
+          </div>
+        </div>
+
+        <div class="sec-head">All Agents</div>
+        <div id="overview-agents-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px"></div>
       </div>
-    </div>
+
+      <!-- AGENT EDITOR VIEW -->
+      <div id="view-agent" class="view">
+        <div class="tab-bar">
+          <div class="tab-item active" onclick="switchTab('basic',this)">Basic Info</div>
+          <div class="tab-item" onclick="switchTab('content',this)">Content</div>
+          <div class="tab-item" onclick="switchTab('csvurl',this)">Sheet URL</div>
+        </div>
+
+        <!-- Basic Info Tab -->
+        <div id="tab-basic">
+          <div class="editor-grid">
+            <div class="editor-card">
+              <div class="editor-card-title"><i class="fas fa-store"></i> Shop Details</div>
+              <div class="field-row"><label>Shop Name (Telugu/English)</label><input type="text" id="f-shopName" oninput="markDirty()"/></div>
+              <div class="field-row"><label>Tagline</label><input type="text" id="f-tagline" oninput="markDirty()"/></div>
+              <div class="field-row"><label>City</label><input type="text" id="f-city" oninput="markDirty()"/></div>
+              <div class="field-row"><label>Phone</label><input type="tel" id="f-phone" oninput="markDirty()"/></div>
+              <div class="field-row"><label>WhatsApp (91XXXXXXXXXX)</label><input type="tel" id="f-whatsapp" oninput="markDirty()"/></div>
+              <div class="field-row"><label>Footer Text</label><input type="text" id="f-footerText" oninput="markDirty()"/></div>
+            </div>
+            <div class="editor-card">
+              <div class="editor-card-title"><i class="fas fa-palette"></i> Appearance</div>
+              <div class="field-row">
+                <label>Logo Icon (Font Awesome class)</label>
+                <input type="text" id="f-logoIcon" placeholder="fas fa-landmark" oninput="markDirty()"/>
+              </div>
+              <div class="field-row">
+                <label>Accent Color</label>
+                <div class="color-preview">
+                  <div class="color-swatch" id="color-swatch" onclick="document.getElementById('f-accentColor').click()"></div>
+                  <input type="color" id="f-accentColor" oninput="updateColorSwatch();markDirty()" style="flex:1;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:8px 12px;color:var(--text);font-size:13px"/>
+                </div>
+              </div>
+              <div class="field-row"><label>Cover Image URL (optional)</label><input type="url" id="f-coverUrl" placeholder="https://…" oninput="markDirty()"/></div>
+              <div class="field-row"><label>Map Embed URL (Google Maps)</label><input type="url" id="f-mapEmbedUrl" placeholder="https://maps.google.com/…" oninput="markDirty()"/></div>
+              <div class="editor-card-title" style="margin-top:16px"><i class="fas fa-bell"></i> Popup</div>
+              <div class="field-row">
+                <label>Popup Show</label>
+                <select id="f-popup_show" onchange="markDirty()">
+                  <option value="false">No (disable)</option>
+                  <option value="true">Yes (show on open)</option>
+                </select>
+              </div>
+              <div class="field-row"><label>Popup Title</label><input type="text" id="f-popup_title" oninput="markDirty()"/></div>
+              <div class="field-row"><label>Popup Subtitle / Message</label><input type="text" id="f-popup_subtitle" oninput="markDirty()"/></div>
+              <div class="field-row"><label>Popup Image URL (optional)</label><input type="url" id="f-popup_imageUrl" placeholder="https://…" oninput="markDirty()"/></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Content Tab -->
+        <div id="tab-content" style="display:none">
+          <div class="editor-card">
+            <div class="editor-card-title" style="justify-content:space-between">
+              <span><i class="fas fa-list"></i> All Rows</span>
+              <div style="display:flex;gap:8px">
+                <button class="add-row-btn" onclick="addRow('ticker')"><i class="fas fa-plus"></i> Ticker</button>
+                <button class="add-row-btn" onclick="addRow('update')"><i class="fas fa-plus"></i> Update</button>
+                <button class="add-row-btn" onclick="addRow('service')"><i class="fas fa-plus"></i> Service</button>
+                <button class="add-row-btn" onclick="addRow('pdf')"><i class="fas fa-plus"></i> PDF</button>
+                <button class="add-row-btn" onclick="addRow('doc')"><i class="fas fa-plus"></i> Doc</button>
+              </div>
+            </div>
+            <div class="rows-table-wrap">
+              <table class="rows-table">
+                <thead><tr>
+                  <th style="width:80px">key</th>
+                  <th>value</th>
+                  <th>title</th>
+                  <th>link</th>
+                  <th style="width:110px">icon</th>
+                  <th style="width:80px">extra</th>
+                  <th style="width:36px"></th>
+                </tr></thead>
+                <tbody id="rows-tbody"></tbody>
+              </table>
+            </div>
+            <button class="add-row-btn" onclick="addRow('update')" style="margin-top:12px">
+              <i class="fas fa-plus"></i> Add Row
+            </button>
+          </div>
+        </div>
+
+        <!-- CSV URL Tab -->
+        <div id="tab-csvurl" style="display:none">
+          <div class="editor-card">
+            <div class="editor-card-title"><i class="fas fa-link"></i> Published CSV URL</div>
+            <p style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.6">
+              ఈ URL ని index.html లో <code style="background:var(--bg3);padding:2px 6px;border-radius:4px;font-size:12px">SHEET_URL</code> గా పెట్టండి.
+              Google Sheet తెరిచి <b>File → Share → Publish to web → CSV</b> చేసి tab select చేయండి.
+            </p>
+            <div class="csv-url-box" id="csv-url-display">
+              <i class="fas fa-link"></i>
+              <span id="csv-url-text">Loading…</span>
+            </div>
+            <button class="add-row-btn" onclick="copyCsvUrl()" style="margin-top:12px">
+              <i class="fas fa-copy"></i> Copy URL
+            </button>
+            <div style="margin-top:20px">
+              <div class="editor-card-title"><i class="fas fa-code"></i> index.html లో paste చేయడానికి</div>
+              <div class="csv-url-box" id="code-snippet">
+                <i class="fas fa-code"></i>
+                <code id="code-snippet-text" style="font-size:11px;word-break:break-all"></code>
+              </div>
+              <button class="add-row-btn" onclick="copyCodeSnippet()" style="margin-top:12px">
+                <i class="fas fa-copy"></i> Copy Code
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SETTINGS VIEW -->
+      <div id="view-settings" class="view">
+        <div class="editor-card" style="max-width:440px">
+          <div class="editor-card-title"><i class="fas fa-key"></i> Change Admin Password</div>
+          <div class="field-row"><label>Current Password</label><input type="password" id="curr-pass" class="field-input"/></div>
+          <div class="field-row"><label>New Password</label><input type="password" id="new-pass" class="field-input"/></div>
+          <div class="field-row"><label>Confirm New Password</label><input type="password" id="conf-pass" class="field-input"/></div>
+          <p style="font-size:12px;color:var(--text2);margin-bottom:12px">Password Sheet లో _admin tab లో నేరుగా కూడా మార్చవచ్చు.</p>
+          <button class="topbar-btn primary" onclick="showToast('Feature coming soon','info')">
+            <i class="fas fa-floppy-disk"></i> Update Password
+          </button>
+        </div>
+        <div class="editor-card" style="max-width:440px;margin-top:16px">
+          <div class="editor-card-title"><i class="fas fa-circle-info"></i> Apps Script Info</div>
+          <div class="field-row"><label>Script URL</label>
+            <div class="csv-url-box"><i class="fas fa-link"></i><span id="script-url-display" style="word-break:break-all;font-size:11px">${SCRIPT_URL}</span></div>
+          </div>
+          <p style="font-size:12px;color:var(--text2);margin-top:10px;line-height:1.6">
+            Apps Script URL మార్చాలంటే ఈ admin.html లో పైన <code style="background:var(--bg3);padding:1px 5px;border-radius:4px">SCRIPT_URL</code> update చేయండి.
+          </p>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+
+</div><!-- /app -->
+
+<!-- MODAL -->
+<div id="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-title" id="modal-title"></div>
+    <div class="modal-sub" id="modal-sub"></div>
+    <div id="modal-body"></div>
+    <div class="modal-actions" id="modal-actions"></div>
   </div>
 </div>
 
-<!-- CONTACT -->
-<div id="contact-page" class="page">
-  <div id="contact-2col">
-    <div class="contact-card" id="contact-card"></div>
-    <div class="map-wrap" id="map-wrap">
-      <div class="map-placeholder"><i class="fas fa-map-marker-alt" style="font-size:28px"></i><span>మ్యాప్ లోడ్ అవుతోంది…</span></div>
-    </div>
-  </div>
-</div>
+<!-- TOAST -->
+<div id="toast"><i class="fas fa-circle-check" id="toast-icon"></i><span id="toast-msg"></span></div>
 
-<!-- VOICE — section-wise horizontal scroll -->
-<div id="voice-page" class="page">
-  <div id="voice-sections">
-    <div class="vc-empty" style="padding:60px 20px">
-      <i class="fas fa-microphone-slash"></i>నోటీసులు లేవు
-    </div>
-  </div>
-</div>
-
-<div id="vc-lightbox">
-  <button id="vc-lightbox-close" onclick="document.getElementById('vc-lightbox').classList.remove('on')">
-    <i class="fas fa-times"></i>
-  </button>
-  <img id="vc-lightbox-img" src="" alt="poster"/>
-</div>
-
-<nav id="bottom-nav">
-  <button class="nav-btn active" onclick="showPage('home',this)"><i class="fas fa-home"></i>హోమ్</button>
-  <button class="nav-btn" onclick="showPage('docs-page',this)"><i class="fas fa-file-alt"></i>పత్రాలు</button>
-  <button class="nav-btn" onclick="showPage('voice-page',this)"><i class="fas fa-bullhorn"></i>నోటీసులు</button>
-  <button class="nav-btn" onclick="showPage('contact-page',this)"><i class="fas fa-map-marker-alt"></i>చిరునామా</button>
-</nav>
-
-<a id="fab" href="#" target="_blank"><i class="fab fa-whatsapp"></i></a>
+<!-- LOADER -->
+<div id="loader"><div class="loader-ring"></div><div class="loader-text" id="loader-text">Loading…</div></div>
 
 <script>
-/* ═══════════════════════════════════════
-   CONFIG — ఒక్క line మాత్రమే మార్చండి
-   ═══════════════════════════════════════ */
-const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQgCCtcdcRdQYX3Zdhdc_BDmZPU2tw6tKUaUmuH8w_LobsbEOXq1LK0kbNSiPSNu0Lst1J_gKX-_GPl/pub?gid=0&single=true&output=csv';
-
-let CLIENT = null;
-
-/* CSV PARSER */
-function parseCSV(text) {
-  const lines = text.trim().split('\n');
-  const headers = splitCSVLine(lines[0]);
-  const rows = [];
-  for (let i = 1; i < lines.length; i++) {
-    if (!lines[i].trim()) continue;
-    const vals = splitCSVLine(lines[i]);
-    const row = {};
-    headers.forEach((h, idx) => { row[h.trim()] = (vals[idx] || '').trim(); });
-    rows.push(row);
-  }
-  return rows;
-}
-function splitCSVLine(line) {
-  const result = []; let cur = '', inQ = false;
-  for (let i = 0; i < line.length; i++) {
-    const c = line[i];
-    if (c === '"') { inQ = !inQ; continue; }
-    if (c === ',' && !inQ) { result.push(cur); cur = ''; continue; }
-    cur += c;
-  }
-  result.push(cur);
-  return result;
-}
-
-/* BUILD CLIENT */
-function buildClient(rows) {
-  if (!rows.length) return null;
-  const kv={}, updates=[], services=[], pdfs=[], docs=[];
-  const tickers=[], announcements=[], reqServices=[], popups=[], banners=[];
-
-  rows.forEach(r => {
-    const key = (r.key||'').trim();
-    if (!key) return;
-    if      (key==='update')      updates.push({title:r.title||r.value, link:r.link||'#'});
-    else if (key==='service')     services.push({title:r.title||r.value, page:r.link||'#', icon:r.icon||'fas fa-star', color:r.extra||'gi-blue'});
-    else if (key==='pdf')         pdfs.push({title:r.title||r.value, link:r.link||'#'});
-    else if (key==='doc')         docs.push(r.value||r.title);
-    else if (key==='ticker')      tickers.push(r.value||r.title);
-    else if (key==='voice')       announcements.push({type:'voice', title:r.title||r.value, link:r.link||'', date:r.extra||''});
-    else if (key==='tts')         announcements.push({type:'tts', text:r.value||r.title, date:r.extra||''});
-    else if (key==='poster')      announcements.push({type:'poster', title:r.title||'', link:r.link||'', date:r.extra||''});
-    else if (key==='pdf_notice')  announcements.push({type:'pdf', title:r.title||r.value, desc:r.value||'PDF డౌన్‌లోడ్', link:r.link||'#', date:r.extra||''});
-    else if (key==='canva')       announcements.push({type:'canva', title:r.title||'Canva Template', desc:r.value||'Template తెరవండి', link:r.link||'#', date:r.extra||''});
-    else if (key==='req_service') reqServices.push({name:r.value||r.title, icon:r.icon||'fas fa-file-alt', docs:[]});
-    else if (key==='req_doc')     { if (reqServices.length) reqServices[reqServices.length-1].docs.push(r.value||r.title); }
-    else if (key==='popup')       popups.push({title:r.title||'', subtitle:r.value||'', imageUrl:r.link||''});
-    else if (key==='banner')      banners.push({
-      imgUrl:   r.link  || '',           // image URL
-      caption:  r.title || r.value || '', // caption text
-      clickUrl: r.value && r.value.startsWith('http') ? r.value : '',  // click-through URL
-      duration: parseInt(r.extra) || 4000 // slide duration ms
-    });
-    else                          kv[key]=r.value;
-  });
-
-  return {
-    shopName:kv.shopName||'Seva Kendra', tagline:kv.tagline||'',
-    logoIcon:kv.logoIcon||'fas fa-landmark', accentColor:kv.accentColor||'#4fffb0',
-    logoUrl: kv.logoUrl || '',
-    city:kv.city||'', phone:kv.phone||'', whatsapp:kv.whatsapp||'',
-    mapEmbedUrl:kv.mapEmbedUrl||'', footerText:kv.footerText||'',
-    popups, updates, services, pdfs, docs, tickers, announcements, reqServices, banners,
-    coverUrl: kv.coverUrl || '',
-  };
-}
-
-/* FETCH — 3 proxy fallbacks */
-async function loadData() {
-  const proxies = [
-    u => u,
-    u => `https://corsproxy.io/?${encodeURIComponent(u)}`,
-    u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
-  ];
-  for (const proxy of proxies) {
-    try {
-      const res = await fetch(proxy(SHEET_URL), {cache:'no-store'});
-      if (!res.ok) throw new Error('HTTP '+res.status);
-      const buf = await res.arrayBuffer();
-      let text  = new TextDecoder('utf-8').decode(buf);
-      if (text.charCodeAt(0)===0xFEFF) text=text.slice(1);
-      if (!text.includes(',') && !text.includes('\t')) throw new Error('Not CSV');
-      const rows = parseCSV(text);
-      CLIENT = buildClient(rows);
-      if (!CLIENT) throw new Error('No data');
-      renderAll();
-      return;
-    } catch(e) { console.warn('proxy failed:',e.message); }
-  }
-  document.getElementById('error-banner').classList.add('show');
-  hideLoader();
-}
-
-/* RENDER ALL */
-function renderAll() {
-  applyTheme(); renderHeader(); renderTicker();
-  renderHero(); renderBanner(); renderUpdates(); renderServices();
-  renderPDFs(); renderDocs(); renderReqDocs();
-  renderVoice(); renderContact(); renderFooter();
-  showPopup(); hideLoader();
-}
-
-/* ── FIX 5: hideLoader — was MISSING, caused infinite loading screen ── */
-function hideLoader() {
-  const s = document.getElementById('loading-screen');
-  s.classList.add('hide');
-  setTimeout(() => { s.style.display='none'; }, 500);
-}
-
-function applyTheme() {
-  document.documentElement.style.setProperty('--accent', CLIENT.accentColor);
-}
-
-function renderHeader() {
-  document.getElementById('hdr-name').textContent = CLIENT.shopName;
-  document.getElementById('hdr-tag').textContent  = CLIENT.tagline;
-  document.getElementById('fab-call').href = 'tel:'+CLIENT.phone;
-  document.getElementById('fab-wa').href   = 'https://wa.me/'+CLIENT.whatsapp;
-  document.getElementById('fab').href      = 'https://wa.me/'+CLIENT.whatsapp;
-  document.title = CLIENT.shopName;
-
-  const hdrImg  = document.getElementById('hdr-logo-img');
-  const hdrIcon = document.getElementById('hdr-icon');
-  if (CLIENT.logoUrl) {
-    hdrImg.src          = CLIENT.logoUrl;
-    hdrImg.style.display = 'block';
-    hdrIcon.style.display = 'none';
-  } else {
-    hdrIcon.className    = CLIENT.logoIcon;
-    hdrIcon.style.display = 'flex';
-  }
-}
-
-/* ── FIX 6: ticker uses plain strings (not objects) — render correctly ── */
-let _tickerRAF = null, _tickerX = 0, _tickerPaused = false;
-
-function renderTicker() {
-  const inner = document.getElementById('ticker-inner');
-  const track = inner.parentElement;
-  const PX_PER_SEC = 80; // ← speed: 50=slow, 80=default, 120=fast
-
-  const src = (CLIENT.tickers && CLIENT.tickers.length)
-    ? CLIENT.tickers
-    : [`స్వాగతం — ${CLIENT.shopName}`];
-
-  // 4 copies — mobile లో కూడా seamless loop
-  const copies = [...src, ...src, ...src, ...src];
-  inner.innerHTML = copies.map(t =>
-    `<span class="ticker-item">📢 ${t}</span>`
-  ).join('<span style="color:var(--border);margin:0 12px">•</span>');
-
-  requestAnimationFrame(() => {
-    const halfW = inner.scrollWidth / 2;
-    let last = null;
-    _tickerX = 0;
-    if (_tickerRAF) cancelAnimationFrame(_tickerRAF);
-    function step(ts) {
-      if (last !== null && !_tickerPaused) {
-        _tickerX += PX_PER_SEC * (ts - last) / 1000;
-        if (_tickerX >= halfW) _tickerX -= halfW;
-        inner.style.transform = `translateX(-${_tickerX}px)`;
-      }
-      last = ts;
-      _tickerRAF = requestAnimationFrame(step);
-    }
-    _tickerRAF = requestAnimationFrame(step);
-  });
-
-  track.addEventListener('mouseenter', () => { _tickerPaused = true; });
-  track.addEventListener('mouseleave', () => { _tickerPaused = false; });
-  track.addEventListener('touchstart', () => { _tickerPaused = true; }, {passive:true});
-  track.addEventListener('touchend', () => { setTimeout(() => { _tickerPaused = false; }, 1200); }, {passive:true});
-}
-
-function renderHero() {
-  document.getElementById('hero-shop-name').textContent = CLIENT.shopName;
-  document.getElementById('hero-city').textContent = CLIENT.city ? '📍 '+CLIENT.city : '';
-  const coverImg = document.getElementById('hero-cover-img');
-  if (CLIENT.coverUrl) { coverImg.src=CLIENT.coverUrl; coverImg.style.display='block'; }
-  document.getElementById('hero-avatar').style.boxShadow = '0 0 0 3px var(--bg)';
-
-  const avatarImg  = document.getElementById('hero-logo-img');
-  const avatarIcon = document.getElementById('hero-avatar-icon');
-  if (CLIENT.logoUrl) {
-    avatarImg.src           = CLIENT.logoUrl;
-    avatarImg.style.display = 'block';
-    avatarIcon.style.display = 'none';
-  } else {
-    avatarIcon.className    = CLIENT.logoIcon || 'fas fa-landmark';
-    avatarIcon.style.display = 'flex';
-  }
-}
-
 /* ═══════════════════════════════════════════════════
-   BANNER CAROUSEL
-   Sheet key: 'banner'
-   link  = image URL
-   title = caption text (optional)
-   value = click-through URL (optional, must start with http)
-   extra = slide duration ms (optional, default 4000)
+   ⚙️ CONFIG — Apps Script URL ఇక్కడ పెట్టండి
    ═══════════════════════════════════════════════════ */
-let _bannerCur = 0, _bannerTimer = null;
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxzYxAB_0BBb-cQ2EjvapC8bGTbJuL0xr0leooTODAP65slPZoM4AX67f6z9c7Jgppw_Q/exec
+';
+/* ═════════════════════════════════════════════════ */
 
-function renderBanner() {
-  const banners = CLIENT.banners || [];
-  if (!banners.length) return;
+let TOKEN       = localStorage.getItem('admin_token') || '';
+let AGENTS      = [];
+let CURRENT_TAB = null;
+let DIRTY       = false;
+let ALL_ROWS    = [];
 
-  const sec    = document.getElementById('banner-section');
-  const slides = document.getElementById('banner-slides');
-  const dots   = document.getElementById('banner-dots');
-  const prev   = document.getElementById('banner-prev');
-  const next   = document.getElementById('banner-next');
-
-  sec.style.display = 'block';
-
-  // Build slides
-  slides.innerHTML = banners.map((b, i) => `
-    <div class="banner-slide" ${b.clickUrl ? `onclick="safeOpen('${b.clickUrl}')" style="cursor:pointer"` : ''}>
-      <img src="${b.imgUrl}" alt="${b.caption}"
-        onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
-      <div class="banner-slide-fallback" style="display:none">
-        <i class="fas fa-image" style="font-size:28px;opacity:.3"></i>
-        <span style="font-size:12px;font-family:var(--font-te)">${b.caption||'Image'}</span>
-      </div>
-      ${b.caption ? `<div class="banner-caption">${b.caption}</div>` : ''}
-    </div>`).join('');
-
-  // Build dots
-  if (banners.length > 1) {
-    dots.innerHTML = banners.map((_,i) =>
-      `<button class="bdot${i===0?' on':''}" onclick="bannerGo(${i})"></button>`
-    ).join('');
-    prev.style.display = next.style.display = 'flex';
-  } else {
-    prev.style.display = next.style.display = 'none';
-  }
-
-  // Add touch/swipe support
-  let touchX = 0;
-  slides.addEventListener('touchstart', e => { touchX = e.touches[0].clientX; }, {passive:true});
-  slides.addEventListener('touchend',   e => {
-    const dx = e.changedTouches[0].clientX - touchX;
-    if (Math.abs(dx) > 40) bannerGo(_bannerCur + (dx < 0 ? 1 : -1));
-  }, {passive:true});
-
-  // Start auto-slide
-  bannerGo(0);
+/* ═══ API helpers ═══ */
+async function api(body) {
+  const res = await fetch(SCRIPT_URL, {
+    method: 'POST',
+    body: JSON.stringify({ ...body, token: TOKEN }),
+  });
+  return res.json();
+}
+async function apiGet(params) {
+  const url = SCRIPT_URL + '?' + new URLSearchParams(params);
+  const res = await fetch(url);
+  return res.json();
 }
 
-window.bannerGo = function(n) {
-  const banners = CLIENT.banners || [];
-  if (!banners.length) return;
-  _bannerCur = ((n % banners.length) + banners.length) % banners.length;
-  document.getElementById('banner-slides').style.transform =
-    `translateX(-${_bannerCur * 100}%)`;
-  document.querySelectorAll('.bdot').forEach((d,i) =>
-    d.classList.toggle('on', i === _bannerCur));
-  // Reset auto-slide timer
-  clearInterval(_bannerTimer);
-  if (banners.length > 1) {
-    const dur = banners[_bannerCur].duration || 4000;
-    _bannerTimer = setInterval(() => bannerGo(_bannerCur + 1), dur);
+/* ═══ Login ═══ */
+async function doLogin() {
+  const pass = document.getElementById('pass-input').value;
+  if (!pass) return;
+  const btn = document.getElementById('login-btn');
+  btn.disabled = true; btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Logging in…';
+  try {
+    const data = await api({ action: 'login', password: pass });
+    if (data.ok) {
+      TOKEN = data.token;
+      localStorage.setItem('admin_token', TOKEN);
+      document.getElementById('login-screen').classList.add('hide');
+      document.getElementById('app').classList.add('show');
+      document.getElementById('script-url-display').textContent = SCRIPT_URL;
+      await loadAgents();
+    } else {
+      showLoginErr(data.error || 'Wrong password');
+    }
+  } catch(e) {
+    showLoginErr('Connection failed. Script URL సరిగా ఉందా?');
   }
+  btn.disabled = false; btn.innerHTML = '<i class="fas fa-right-to-bracket"></i> Login';
+}
+
+function showLoginErr(msg) {
+  const el = document.getElementById('login-err');
+  document.getElementById('login-err-msg').textContent = msg;
+  el.classList.add('show');
+}
+
+function togglePassVis() {
+  const inp = document.getElementById('pass-input');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+}
+
+function doLogout() {
+  localStorage.removeItem('admin_token');
+  TOKEN = '';
+  location.reload();
+}
+
+/* Auto-login if token exists */
+window.addEventListener('DOMContentLoaded', async () => {
+  if (SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') {
+    document.getElementById('login-err-msg').textContent = 'SCRIPT_URL set చేయలేదు. admin.html లో SCRIPT_URL పెట్టండి.';
+    document.getElementById('login-err').classList.add('show');
+    return;
+  }
+  if (TOKEN) {
+    const data = await apiGet({ action: 'agents' }).catch(() => null);
+    if (data && data.ok) {
+      document.getElementById('login-screen').classList.add('hide');
+      document.getElementById('app').classList.add('show');
+      AGENTS = data.agents;
+      renderSidebar();
+      renderOverview();
+    } else {
+      localStorage.removeItem('admin_token');
+      TOKEN = '';
+    }
+  }
+});
+
+/* ═══ Agents ═══ */
+async function loadAgents() {
+  showLoader('Agents లోడ్ అవుతున్నాయి…');
+  const data = await apiGet({ action: 'agents' }).catch(() => null);
+  hideLoader();
+  if (!data || !data.ok) { showToast('Agents load failed', 'error'); return; }
+  AGENTS = data.agents;
+  renderSidebar();
+  renderOverview();
+}
+
+function renderSidebar() {
+  const el = document.getElementById('agents-list');
+  if (!AGENTS.length) {
+    el.innerHTML = '<div style="padding:12px 16px;color:var(--text3);font-size:12px">Agents లేవు. Add చేయండి.</div>';
+    return;
+  }
+  el.innerHTML = AGENTS.map(a => `
+    <div class="agent-item" id="sb_${a.id}" onclick="loadAgent('${a.id}')">
+      <div class="agent-dot" style="background:${a.accentColor};box-shadow:0 0 5px ${a.accentColor}55"></div>
+      <div class="agent-info">
+        <div class="agent-name">${a.shopName}</div>
+        <div class="agent-meta">${a.city||a.id}</div>
+      </div>
+    </div>`).join('');
+  document.getElementById('stat-agents').textContent = AGENTS.length;
+}
+
+function renderOverview() {
+  const grid = document.getElementById('overview-agents-grid');
+  grid.innerHTML = AGENTS.map(a => `
+    <div class="editor-card" style="cursor:pointer;transition:var(--trans);border-left:3px solid ${a.accentColor}"
+      onclick="loadAgent('${a.id}')" onmouseover="this.style.borderColor='${a.accentColor}'" >
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+        <div style="width:36px;height:36px;border-radius:9px;background:${a.accentColor}22;
+          border:1px solid ${a.accentColor}55;display:flex;align-items:center;justify-content:center;
+          color:${a.accentColor};font-size:15px"><i class="fas fa-store"></i></div>
+        <div>
+          <div style="font-size:13px;font-weight:600">${a.shopName}</div>
+          <div style="font-size:11px;color:var(--text2)">${a.city||'—'}</div>
+        </div>
+      </div>
+      <div style="font-size:11px;color:var(--text2);display:flex;gap:12px">
+        <span><i class="fas fa-phone" style="margin-right:4px"></i>${a.phone||'—'}</span>
+        <span><i class="fas fa-table" style="margin-right:4px"></i>${a.rows} rows</span>
+      </div>
+      <div style="margin-top:10px;font-size:11px;color:var(--text3)">${a.id}</div>
+    </div>`).join('');
+}
+
+/* ═══ Load Agent ═══ */
+async function loadAgent(tabId) {
+  if (DIRTY && !confirm('Changes save చేయలేదు. Continue?')) return;
+  DIRTY = false;
+  CURRENT_TAB = tabId;
+
+  // Mark active in sidebar
+  document.querySelectorAll('.agent-item').forEach(el => el.classList.remove('active'));
+  const sbEl = document.getElementById('sb_' + tabId);
+  if (sbEl) sbEl.classList.add('active');
+
+  showLoader('Agent data లోడ్ అవుతోంది…');
+  const data = await apiGet({ action: 'getAgent', tab: tabId }).catch(() => null);
+  hideLoader();
+  if (!data || !data.ok) { showToast('Load failed', 'error'); return; }
+
+  ALL_ROWS = data.rows || [];
+
+  // Populate basic fields
+  const kv = {};
+  ALL_ROWS.forEach(r => { if (r.key && !['update','service','pdf','doc','ticker','voice','tts','poster','pdf_notice','canva','req_service','req_doc','popup'].includes(r.key)) kv[r.key] = r.value || ''; });
+  ['shopName','tagline','city','phone','whatsapp','footerText','logoIcon','accentColor','coverUrl','mapEmbedUrl','popup_show','popup_title','popup_subtitle','popup_imageUrl'].forEach(k => {
+    const el = document.getElementById('f-'+k);
+    if (el) el.value = kv[k] || (k==='accentColor'?'#4fffb0':'') || (k==='popup_show'?'false':'') || '';
+  });
+  updateColorSwatch();
+
+  // Render rows table
+  renderRowsTable();
+
+  // CSV URL
+  document.getElementById('csv-url-text').textContent = data.csvUrl || '—';
+  document.getElementById('code-snippet-text').textContent = `const SHEET_URL = '${data.csvUrl}';`;
+
+  // Switch to agent view
+  const agent = AGENTS.find(a => a.id === tabId);
+  document.getElementById('topbar-title').textContent = agent ? agent.shopName : tabId;
+  document.getElementById('topbar-badge').textContent = tabId;
+  document.getElementById('topbar-badge').style.display = 'inline-flex';
+  document.getElementById('topbar-actions').innerHTML = `
+    <button class="topbar-btn danger" onclick="confirmDelete('${tabId}')"><i class="fas fa-trash"></i> Delete</button>
+    <button class="topbar-btn secondary" onclick="previewAgent('${tabId}')" style="margin-left:8px"><i class="fas fa-eye"></i> Preview</button>
+    <button class="topbar-btn primary" onclick="saveAgent()" style="margin-left:8px"><i class="fas fa-floppy-disk"></i> Save</button>`;
+
+  showView('agent');
+  document.querySelectorAll('.sb-nav-btn').forEach(b => b.classList.remove('active'));
+}
+
+/* ═══ Rows table ═══ */
+const CONTENT_KEYS = ['update','service','pdf','doc','ticker','voice','tts','poster','pdf_notice','canva','req_service','req_doc','popup'];
+const KB_CLASS = {
+  update:'kb-update', service:'kb-service', pdf:'kb-pdf', doc:'kb-doc',
+  ticker:'kb-ticker', voice:'kb-voice', tts:'kb-voice', poster:'kb-update',
+  pdf_notice:'kb-pdf', canva:'kb-service', req_service:'kb-service', req_doc:'kb-doc', popup:'kb-popup'
 };
 
-function renderUpdates() {
-  const list = document.getElementById('updates-list');
-  const updates = CLIENT.updates || [];
-  if (!updates.length) {
-    list.innerHTML = `<div style="color:var(--text2);font-size:13px;padding:12px 0;font-family:var(--font-te)">తాజా అప్‌డేట్లు లేవు</div>`;
-    return;
-  }
-  const LIMIT = 10;
-  const card = u => `
-    <div class="update-card" onclick="safeOpen('${u.link}')">
-      <div class="update-dot"></div>
-      <div class="update-title">${u.title}</div>
-      <i class="fas fa-chevron-right update-arrow"></i>
-    </div>`;
-
-  if (updates.length <= LIMIT) {
-    list.innerHTML = updates.map(card).join('');
-    return;
-  }
-  const visible = updates.slice(0, LIMIT);
-  const extra   = updates.slice(LIMIT);
-  list.innerHTML = visible.map(card).join('') + `
-    <div id="updates-more-wrap" style="display:none">
-      <div style="max-height:340px;overflow-y:auto;scrollbar-width:thin;
-        scrollbar-color:var(--border) transparent;border-radius:10px;
-        border:1px solid var(--border);margin-top:4px;padding:6px 0;">
-        ${extra.map(card).join('')}
-      </div>
-    </div>
-    <button class="updates-show-more" id="updates-toggle-btn"
-      onclick="toggleMoreUpdates(${extra.length})">
-      <i class="fas fa-chevron-down"></i> మరింత చూడండి (${extra.length} అప్‌డేట్లు)
-    </button>`;
+function renderRowsTable() {
+  const tbody  = document.getElementById('rows-tbody');
+  const content= ALL_ROWS.filter(r => CONTENT_KEYS.includes(r.key));
+  tbody.innerHTML = content.map((r, i) => {
+    const cls = KB_CLASS[r.key] || 'kb-config';
+    const gi  = ALL_ROWS.indexOf(r);
+    return `<tr id="tr_${gi}">
+      <td><span class="key-badge ${cls}">${r.key}</span></td>
+      <td><input value="${esc(r.value)}" onchange="updateRowField(${gi},'value',this.value)"/></td>
+      <td><input value="${esc(r.title)}" onchange="updateRowField(${gi},'title',this.value)"/></td>
+      <td><input value="${esc(r.link)}" onchange="updateRowField(${gi},'link',this.value)" placeholder="https://…"/></td>
+      <td><input value="${esc(r.icon)}" onchange="updateRowField(${gi},'icon',this.value)" placeholder="fas fa-…"/></td>
+      <td><input value="${esc(r.extra)}" onchange="updateRowField(${gi},'extra',this.value)"/></td>
+      <td><button class="row-del" onclick="deleteRow(${gi})"><i class="fas fa-trash"></i></button></td>
+    </tr>`;
+  }).join('');
 }
 
-function toggleMoreUpdates(count) {
-  const wrap = document.getElementById('updates-more-wrap');
-  const btn  = document.getElementById('updates-toggle-btn');
-  const open = wrap.style.display === 'block';
-  wrap.style.display = open ? 'none' : 'block';
-  btn.innerHTML = open
-    ? `<i class="fas fa-chevron-down"></i> మరింత చూడండి (${count} అప్‌డేట్లు)`
-    : `<i class="fas fa-chevron-up"></i> తక్కువ చూడండి`;
+function esc(s){ return (s||'').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
+
+function updateRowField(idx, field, val) {
+  ALL_ROWS[idx][field] = val;
+  markDirty();
 }
 
-function renderServices() {
-  const grid = document.getElementById('services-grid');
-  if (!CLIENT.services.length) { grid.innerHTML=`<div style="color:var(--text2);font-size:13px;padding:12px 0;font-family:var(--font-te);grid-column:1/-1">సేవలు లేవు</div>`; return; }
-  grid.innerHTML = CLIENT.services.map(s => `
-    <div class="service-card ${s.color}" onclick="safeOpen('${s.page}')">
-      <div class="service-icon"><i class="${s.icon}"></i></div>
-      <div class="service-name">${s.title}</div>
-    </div>`).join('');
+function deleteRow(idx) {
+  ALL_ROWS.splice(idx, 1);
+  renderRowsTable();
+  markDirty();
 }
 
-function renderPDFs() {
-  const list = document.getElementById('pdf-list');
-  if (!CLIENT.pdfs.length) { list.innerHTML=`<div style="color:var(--text2);font-size:13px;font-family:var(--font-te)">PDF ఫారాలు లేవు</div>`; return; }
-  list.innerHTML = CLIENT.pdfs.map(p => `
-    <div class="pdf-item" onclick="safeOpen('${p.link}')">
-      <div class="pdf-icon-wrap"><i class="fas fa-file-pdf"></i></div>
-      <div class="pdf-name">${p.title}</div>
-      <i class="fas fa-download pdf-dl"></i>
-    </div>`).join('');
+function addRow(key) {
+  ALL_ROWS.push({ key, value:'', title:'', link:'', icon:'', extra:'' });
+  renderRowsTable();
+  markDirty();
+  // scroll to bottom of table
+  setTimeout(() => { const tb = document.getElementById('rows-tbody'); tb.lastElementChild && tb.lastElementChild.scrollIntoView({behavior:'smooth'}); }, 100);
 }
 
-/* ── FIX 7: Show old-docs-section only when no reqServices data ── */
-function renderDocs() {
-  const docs = CLIENT.docs || [];
-  const hasReq = (CLIENT.reqServices||[]).length > 0;
-  if (hasReq) return; // renderReqDocs will handle this section
-  const sec  = document.getElementById('old-docs-section');
-  const list = document.getElementById('docs-list');
-  if (docs.length) {
-    sec.style.display = 'block';
-    list.innerHTML = docs.map(d => `
-      <div class="doc-item">
-        <div class="doc-check"><i class="fas fa-check"></i></div>
-        <span>${d}</span>
-      </div>`).join('');
-  }
-}
+/* ═══ Save Agent ═══ */
+async function saveAgent() {
+  if (!CURRENT_TAB) return;
 
-function renderReqDocs() {
-  const services = CLIENT.reqServices||[];
-  if (!services.length) return;
-  document.getElementById('req-docs-section').style.display = 'block';
-  document.getElementById('req-docs-list').innerHTML = services.map((srv,i) => `
-    <div class="acc-item" id="acc_${i}">
-      <div class="acc-header" onclick="accToggle(${i})">
-        <div class="acc-icon"><i class="${srv.icon}"></i></div>
-        <div class="acc-label">${srv.name}</div>
-        <span class="acc-count">${srv.docs.length} పత్రాలు</span>
-        <i class="fas fa-chevron-down acc-arrow"></i>
-      </div>
-      <div class="acc-body"><div class="acc-inner">
-        ${srv.docs.map(d=>`
-          <div class="req-doc-item">
-            <div class="req-doc-bullet"><i class="fas fa-check"></i></div>
-            <span>${d}</span>
-          </div>`).join('') || '<div class="req-doc-item" style="color:var(--text2)">పత్రాలు add చేయబడలేదు</div>'}
-      </div></div>
-    </div>`).join('');
-}
+  // Collect basic field values
+  const CONFIG_KEYS = ['shopName','tagline','city','phone','whatsapp','footerText','logoIcon','accentColor','coverUrl','mapEmbedUrl','popup_show','popup_title','popup_subtitle','popup_imageUrl'];
+  // Remove old config rows from ALL_ROWS, then rebuild
+  let rows = ALL_ROWS.filter(r => CONTENT_KEYS.includes(r.key));
 
-function accToggle(i) {
-  const item = document.getElementById('acc_'+i);
-  if (!item) return;
-  const wasOpen = item.classList.contains('open');
-  document.querySelectorAll('.acc-item.open').forEach(el=>el.classList.remove('open'));
-  if (!wasOpen) item.classList.add('open');
-}
-
-function renderContact() {
-  document.getElementById('contact-card').innerHTML = `
-    <div class="contact-row" onclick="callPhone()">
-      <div class="contact-icon-wrap" style="background:rgba(96,165,250,0.12);color:#60a5fa"><i class="fas fa-phone"></i></div>
-      <div><div class="contact-label">ఫోన్</div><div class="contact-value">${CLIENT.phone}</div></div>
-    </div>
-    <div class="contact-row" onclick="openWA()">
-      <div class="contact-icon-wrap" style="background:rgba(37,211,102,0.12);color:#25d366"><i class="fab fa-whatsapp"></i></div>
-      <div><div class="contact-label">WhatsApp</div><div class="contact-value">+${CLIENT.whatsapp}</div></div>
-    </div>
-    ${CLIENT.city?`<div class="contact-row">
-      <div class="contact-icon-wrap" style="background:rgba(251,146,60,0.12);color:#fb923c"><i class="fas fa-map-marker-alt"></i></div>
-      <div><div class="contact-label">స్థానం</div><div class="contact-value">${CLIENT.city}</div></div>
-    </div>`:''}`;
-  if (CLIENT.mapEmbedUrl)
-    document.getElementById('map-wrap').innerHTML = `<iframe src="${CLIENT.mapEmbedUrl}" allowfullscreen loading="lazy"></iframe>`;
-}
-
-function renderFooter() {
-  document.getElementById('footer-text').textContent =
-    CLIENT.footerText || '© '+new Date().getFullYear()+' '+CLIENT.shopName;
-}
-
-/* ── FIX 8: popup counter — show correct "1/3" on first popup ── */
-function showPopup() {
-  const popups = CLIENT.popups||[];
-  if (!popups.length) return;
-  let idx=0;
-  const total=popups.length;
-
-  function show() {
-    const p = popups[idx];
-    const img = document.getElementById('popup-img');
-    document.getElementById('popup-title').textContent    = p.title;
-    document.getElementById('popup-subtitle').textContent = p.subtitle;
-    img.src = p.imageUrl||'';
-    p.imageUrl ? img.classList.add('show') : img.classList.remove('show');
-
-    const counter = document.getElementById('popup-counter');
-    if (total>1) {
-      counter.textContent = (idx+1)+' / '+total; /* FIX: idx+1 not idx (was showing 0/N) */
-      counter.style.display='inline-flex';
-    } else {
-      counter.style.display='none';
-    }
-    const isLast = idx===total-1;
-    document.getElementById('popup-close').textContent =
-      isLast ? 'అర్థమైంది ✓' : 'తదుపరి → ('+(idx+1)+'/'+total+')';
-    document.getElementById('popup-overlay').classList.remove('hidden');
-  }
-
-  function next() {
-    document.getElementById('popup-overlay').classList.add('hidden');
-    idx++;
-    if (idx < total) setTimeout(show, 350);
-  }
-
-  document.getElementById('popup-close').onclick = next;
-  document.getElementById('popup-overlay').onclick = e => {
-    if (e.target===document.getElementById('popup-overlay')) next();
-  };
-  show();
-}
-
-/* VOICE — horizontal scroll sections by type */
-function renderVoice() {
-  const wrap = document.getElementById('voice-sections');
-  const items = CLIENT.announcements||[];
-  if (!items.length) return;
-
-  const today = new Date().toLocaleDateString('te-IN',{day:'2-digit',month:'short'});
-  const DELAYS = [0,0.055,0.11,0.165,0.22,0.275,0.33,0.385,0.44,0.495,0.55,0.605,0.66,0.715];
-  const HEIGHTS= [6,12,18,8,20,10,16,5,14,9,17,7,13,11];
-  const bars = HEIGHTS.map((h,b)=>
-    `<div class="wbar" style="height:${4+h}px;--wd:${DELAYS[b]}s"></div>`).join('');
-
-  // Group by type preserving order
-  const groups = { voice:[], poster:[], pdf:[], canva:[], tts:[] };
-  const ORDER  = ['voice','poster','pdf','canva','tts'];
-  const LABELS = {
-    voice:  ['🎙️ వాయిస్ అనౌన్స్‌మెంట్స్', 'fas fa-headphones'],
-    poster: ['🖼️ పోస్టర్లు',                'fas fa-image'],
-    pdf:    ['📄 PDF నోటీసులు',             'fas fa-file-pdf'],
-    canva:  ['🎨 Canva Templates',          'fas fa-palette'],
-    tts:    ['📢 టెక్స్ట్ నోటీసులు',        'fas fa-volume-up'],
-  };
-
-  let ai = 0;
-  items.forEach(item => { if (groups[item.type]) groups[item.type].push({...item, _ai: item.type==='voice'?ai++:0}); });
-
-  let html = '';
-  ORDER.forEach(type => {
-    const list = groups[type];
-    if (!list.length) return;
-    const [label] = LABELS[type];
-    let cardsHTML = '';
-
-    if (type === 'voice') {
-      let vi = 0;
-      list.forEach(item => {
-        const id = 'vc_'+vi++;
-        const dt = item.date||today;
-        cardsHTML += `<div class="vc-audio-card">
-          <div class="vc-sender"><i class="fas fa-headphones"></i> ${dt}</div>
-          <div class="vc-title">${item.title||'Audio Message'}</div>
-          <div class="vc-controls">
-            <button class="vc-play-btn" id="pb_${id}" onclick="vcToggle('${id}',this)"><i class="fas fa-play"></i></button>
-            <div class="vc-wave" id="wv_${id}">${bars}</div>
-            <span class="vc-dur" id="du_${id}">0:00</span>
-          </div>
-          <audio id="${id}" src="${item.link}" preload="metadata"></audio>
-        </div>`;
-      });
-    } else if (type === 'poster') {
-      list.forEach(item => {
-        const dt = item.date||today;
-        cardsHTML += `<div class="vc-poster-card" onclick="vcLightbox('${item.link}')">
-          <img src="${item.link}" alt="poster"
-            onerror="this.style.background='var(--bg3)';this.style.height='160px'"/>
-          ${item.title?`<div class="vc-cap">${item.title}<br><span style="color:var(--accent);font-size:10px">${dt}</span></div>`:`<div class="vc-cap" style="color:var(--accent);font-size:10px">${dt}</div>`}
-        </div>`;
-      });
-    } else if (type === 'pdf') {
-      list.forEach(item => {
-        const dt = item.date||today;
-        cardsHTML += `<a class="vc-pdf-hcard" href="${item.link}" target="_blank" rel="noopener">
-          <div class="ico"><i class="fas fa-file-pdf"></i></div>
-          <div>
-            <div class="nm">${item.title}</div>
-            <div class="sub">${item.desc||'PDF డౌన్‌లోడ్'}</div>
-          </div>
-          <div class="dl"><i class="fas fa-download"></i> Download &nbsp;<span style="color:var(--text2)">${dt}</span></div>
-        </a>`;
-      });
-    } else if (type === 'canva') {
-      list.forEach(item => {
-        const dt = item.date||today;
-        cardsHTML += `<a class="vc-canva-hcard" href="${item.link}" target="_blank" rel="noopener">
-          <div class="ico"><i class="fas fa-object-group"></i></div>
-          <div>
-            <div class="nm">${item.title}</div>
-            <div class="sub">${item.desc}</div>
-          </div>
-          <div class="open"><i class="fas fa-external-link-alt"></i> తెరవండి &nbsp;<span style="color:var(--text2);font-size:10px">${dt}</span></div>
-        </a>`;
-      });
-    } else if (type === 'tts') {
-      list.forEach(item => {
-        const safe = (item.text||'').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
-        const dt = item.date||today;
-        cardsHTML += `<div class="vc-tts-card">
-          <div style="font-size:10px;color:var(--accent)">${dt}</div>
-          <div class="tts-body">${item.text}</div>
-          <button class="tts-speak-btn" onclick="vcSpeak(this,'${safe}')"><i class="fas fa-volume-up"></i> వినండి</button>
-        </div>`;
-      });
-    }
-
-    html += `<div class="vc-section">
-      <div class="vc-section-head">
-        <h3>${label}</h3>
-        <span class="vc-section-count">${list.length}</span>
-        <div class="section-line"></div>
-      </div>
-      <div class="vc-hscroll">${cardsHTML}</div>
-    </div>`;
+  CONFIG_KEYS.forEach(k => {
+    const el = document.getElementById('f-'+k);
+    if (el) rows.unshift({ key: k, value: el.value||'', title:'', link:'', icon:'', extra:'' });
   });
 
-  wrap.innerHTML = html || `<div class="vc-empty"><i class="fas fa-microphone-slash"></i>నోటీసులు లేవు</div>`;
-
-  // Wire audio events
-  let wi=0;
-  items.forEach(item => {
-    if (item.type!=='voice') return;
-    const id='vc_'+wi++;
-    const aud=document.getElementById(id);
-    const dur=document.getElementById('du_'+id);
-    if (!aud||!dur) return;
-    const fmt=s=>`${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`;
-    aud.addEventListener('loadedmetadata',()=>{ if(aud.duration) dur.textContent=fmt(aud.duration); });
-    aud.addEventListener('timeupdate',()=>{ dur.textContent=fmt(aud.currentTime); });
-    aud.addEventListener('ended',()=>vcReset(id));
-  });
-}
-
-function vcLightbox(src) {
-  document.getElementById('vc-lightbox-img').src=src;
-  document.getElementById('vc-lightbox').classList.add('on');
-}
-document.addEventListener('keydown',e=>{ if(e.key==='Escape') document.getElementById('vc-lightbox').classList.remove('on'); });
-
-let _vcAud=null, _vcAudId=null;
-function vcToggle(id, btn) {
-  const aud=document.getElementById(id);
-  const wave=document.getElementById('wv_'+id);
-  if (_vcAud && _vcAud!==aud) { _vcAud.pause(); _vcAud.currentTime=0; vcReset(_vcAudId); }
-  if (aud.paused) {
-    aud.play().catch(()=>{});
-    btn.innerHTML='<i class="fas fa-pause"></i>';
-    btn.classList.add('playing');
-    wave.querySelectorAll('.wbar').forEach(b=>b.classList.add('on'));
-    _vcAud=aud; _vcAudId=id;
+  showLoader('Saving…');
+  const data = await api({ action: 'updateAgent', tab: CURRENT_TAB, rows }).catch(() => null);
+  hideLoader();
+  if (data && data.ok) {
+    DIRTY = false;
+    showToast('Saved ✓', 'success');
+    // Refresh agents list
+    await loadAgents();
+    // Re-highlight active
+    const sbEl = document.getElementById('sb_' + CURRENT_TAB);
+    if (sbEl) sbEl.classList.add('active');
   } else {
-    aud.pause(); vcReset(id);
+    showToast('Save failed: ' + (data?.error||'unknown'), 'error');
   }
 }
-function vcReset(id) {
-  const btn=document.getElementById('pb_'+id);
-  const wave=document.getElementById('wv_'+id);
-  if (btn)  { btn.innerHTML='<i class="fas fa-play"></i>'; btn.classList.remove('playing'); }
-  if (wave) wave.querySelectorAll('.wbar').forEach(b=>b.classList.remove('on'));
+
+/* ═══ Delete Agent ═══ */
+function confirmDelete(tabId) {
+  showModal(
+    'Agent Delete చేయాలా?',
+    `"${tabId}" tab పూర్తిగా delete అవుతుంది. ఇది undo కాదు!`,
+    `<button class="topbar-btn danger" style="flex:1" onclick="doDelete('${tabId}')"><i class="fas fa-trash"></i> Delete</button>
+     <button class="topbar-btn secondary" style="flex:1" onclick="closeModal()">Cancel</button>`
+  );
 }
 
-let _ttsU=null;
-function vcSpeak(btn,text) {
-  if (_ttsU) {
-    speechSynthesis.cancel(); _ttsU=null;
-    btn.innerHTML='<i class="fas fa-volume-up"></i> వినండి';
-    btn.classList.remove('speaking'); return;
+async function doDelete(tabId) {
+  closeModal();
+  showLoader('Deleting…');
+  const data = await api({ action: 'deleteAgent', tab: tabId }).catch(() => null);
+  hideLoader();
+  if (data && data.ok) {
+    showToast('Deleted', 'success');
+    CURRENT_TAB = null; DIRTY = false;
+    await loadAgents();
+    showView('overview');
+    document.getElementById('topbar-badge').style.display = 'none';
+    document.getElementById('topbar-actions').innerHTML = '';
+    document.getElementById('topbar-title').textContent = 'Overview';
+  } else {
+    showToast('Delete failed', 'error');
   }
-  const u=new SpeechSynthesisUtterance(text);
-  u.lang='te-IN'; u.rate=0.88; u.pitch=1;
-  u.onend=()=>{ _ttsU=null; btn.innerHTML='<i class="fas fa-volume-up"></i> వినండి'; btn.classList.remove('speaking'); };
-  speechSynthesis.speak(u);
-  _ttsU=u;
-  btn.innerHTML='<i class="fas fa-stop"></i> ఆపు';
-  btn.classList.add('speaking');
 }
 
-function showPage(id,btn) {
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  if (btn) btn.classList.add('active');
-  window.scrollTo({top:0,behavior:'smooth'});
+/* ═══ Add New Agent ═══ */
+function showAddAgent() {
+  showModal(
+    'New Agent Add చేయండి',
+    'Agent tab create అవుతుంది. తర్వాత edit చేయవచ్చు.',
+    `<div class="field-row"><label>Agent ID (e.g. agent_003)</label>
+      <input type="text" id="new-agent-id" class="field-input" placeholder="agent_003" style="margin-bottom:10px"/>
+     </div>
+     <div class="field-row"><label>Shop Name</label>
+      <input type="text" id="new-agent-name" class="field-input" placeholder="Seva Kendra"/>
+     </div>
+     <div class="field-row"><label>Phone</label>
+      <input type="tel" id="new-agent-phone" class="field-input" placeholder="9999999999"/>
+     </div>
+     <div class="field-row"><label>City</label>
+      <input type="text" id="new-agent-city" class="field-input" placeholder="Hyderabad"/>
+     </div>
+     <div style="display:flex;gap:10px;margin-top:4px">
+      <button class="topbar-btn primary" style="flex:1" onclick="doAddAgent()"><i class="fas fa-plus"></i> Create</button>
+      <button class="topbar-btn secondary" style="flex:1" onclick="closeModal()">Cancel</button>
+     </div>`,
+    true
+  );
 }
 
-function safeOpen(url) { if(url&&url!=='#') window.open(url,'_blank'); }
-function callPhone() { if(CLIENT&&CLIENT.phone) window.location.href='tel:'+CLIENT.phone; }
-function openWA()    { if(CLIENT&&CLIENT.whatsapp) window.open('https://wa.me/'+CLIENT.whatsapp,'_blank'); }
-
-/* ═══════════════════════════════════════
-   LIGHT / DARK MODE TOGGLE
-   ═══════════════════════════════════════ */
-function toggleTheme() {
-  const isLight = document.body.classList.toggle('light-mode');
-  const icon    = document.getElementById('theme-icon');
-  icon.className = isLight ? 'fas fa-sun' : 'fas fa-moon';
-  localStorage.setItem('cds_theme', isLight ? 'light' : 'dark');
-}
-
-// Page load లో saved theme apply చేయడం
-(function initTheme() {
-  const saved = localStorage.getItem('cds_theme');
-  if (saved === 'light') {
-    document.body.classList.add('light-mode');
-    const icon = document.getElementById('theme-icon');
-    if (icon) icon.className = 'fas fa-sun';
+async function doAddAgent() {
+  const id   = document.getElementById('new-agent-id').value.trim();
+  const name = document.getElementById('new-agent-name').value.trim();
+  const phone= document.getElementById('new-agent-phone').value.trim();
+  const city = document.getElementById('new-agent-city').value.trim();
+  if (!id) { showToast('Agent ID required', 'error'); return; }
+  closeModal();
+  showLoader('Creating agent…');
+  const data = await api({ action:'addAgent', agentId:id, shopName:name, phone, city }).catch(()=>null);
+  hideLoader();
+  if (data && data.ok) {
+    showToast('Agent created ✓', 'success');
+    await loadAgents();
+    loadAgent(id);
+  } else {
+    showToast(data?.error||'Failed', 'error');
   }
-})();
+}
 
-loadData();
+/* ═══ Preview ═══ */
+function previewAgent(tabId) {
+  const a = AGENTS.find(x => x.id === tabId);
+  if (a) showToast('index.html లో SHEET_URL మీ tab URL పెట్టి open చేయండి','info');
+}
+
+/* ═══ UI helpers ═══ */
+function showView(name, btn) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById('view-' + name).classList.add('active');
+  if (btn) {
+    document.querySelectorAll('.sb-nav-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+  if (name === 'overview') {
+    document.getElementById('topbar-title').textContent = 'Overview';
+    document.getElementById('topbar-badge').style.display = 'none';
+    document.getElementById('topbar-actions').innerHTML = '';
+    document.querySelectorAll('.agent-item').forEach(e => e.classList.remove('active'));
+    CURRENT_TAB = null; DIRTY = false;
+  }
+  if (name === 'settings') {
+    document.getElementById('topbar-title').textContent = 'Settings';
+    document.getElementById('topbar-badge').style.display = 'none';
+    document.getElementById('topbar-actions').innerHTML = '';
+  }
+}
+
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  ['basic','content','csvurl'].forEach(t => {
+    document.getElementById('tab-'+t).style.display = t === name ? 'block' : 'none';
+  });
+}
+
+function markDirty() { DIRTY = true; }
+
+function updateColorSwatch() {
+  const val = document.getElementById('f-accentColor').value;
+  document.getElementById('color-swatch').style.background = val;
+}
+
+function copyCsvUrl() {
+  const url = document.getElementById('csv-url-text').textContent;
+  navigator.clipboard.writeText(url).then(() => showToast('Copied!', 'success'));
+}
+function copyCodeSnippet() {
+  const code = document.getElementById('code-snippet-text').textContent;
+  navigator.clipboard.writeText(code).then(() => showToast('Copied!', 'success'));
+}
+
+function showToast(msg, type='success') {
+  const t = document.getElementById('toast');
+  const icons = { success:'fas fa-circle-check', error:'fas fa-circle-xmark', info:'fas fa-circle-info' };
+  t.className = 'show ' + type;
+  document.getElementById('toast-icon').className = icons[type]||icons.info;
+  document.getElementById('toast-msg').textContent = msg;
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+function showLoader(msg='Loading…') {
+  document.getElementById('loader-text').textContent = msg;
+  document.getElementById('loader').classList.add('show');
+}
+function hideLoader() { document.getElementById('loader').classList.remove('show'); }
+
+function showModal(title, sub, actionsHtml, hasBody=false) {
+  document.getElementById('modal-title').textContent = title;
+  document.getElementById('modal-sub').textContent = sub;
+  if (hasBody) {
+    document.getElementById('modal-body').innerHTML = actionsHtml;
+    document.getElementById('modal-actions').innerHTML = '';
+  } else {
+    document.getElementById('modal-body').innerHTML = '';
+    document.getElementById('modal-actions').innerHTML = actionsHtml;
+  }
+  document.getElementById('modal-overlay').classList.add('show');
+}
+function closeModal() { document.getElementById('modal-overlay').classList.remove('show'); }
+
+// Close modal on overlay click
+document.getElementById('modal-overlay').onclick = e => {
+  if (e.target === document.getElementById('modal-overlay')) closeModal();
+};
+
+// Warn before leaving with unsaved changes
+window.onbeforeunload = () => DIRTY ? 'Changes save చేయలేదు!' : null;
 </script>
 </body>
 </html>
