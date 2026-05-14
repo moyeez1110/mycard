@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="te">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Admin Dashboard</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+/* ════════════════ TOKENS ════════════════ */
+:root{
+  --accent:#4fffb0;--accent2:#1adb7a;
+  --bg:#0a0f1a;--bg2:#111827;--bg3:#1a2235;--card:#141e2e;
+  --border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.14);
+  --text:#e8edf5;--text2:#8899aa;--text3:#566474;
+  --red:#f87171;--yellow:#fbbf24;--green:#34d399;--blue:#60a5fa;
+  --radius:12px;--font:'Inter',sans-serif;--font-te:'Noto Sans Telugu',sans-serif;
+  --trans:0.2s cubic-bezier(0.19,1,0.22,1);
+  --sidebar:260px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--text);overflow:hidden}
+a{color:inherit;text-decoration:none}
+button{border:none;cursor:pointer;font-family:var(--font)}
+input,textarea,select{font-family:var(--font);outline:none}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
+
+/* ════════════════ LOGIN ════════════════ */
+#login-screen{
+  position:fixed;inset:0;z-index:9999;
+  background:var(--bg);
+  display:flex;align-items:center;justify-content:center;
+}
+#login-screen.hide{display:none}
+.login-box{
+  background:var(--bg2);border:1px solid var(--border2);
+  border-radius:20px;padding:40px;width:100%;max-width:380px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.5);
+}
+.login-logo{
+  width:56px;height:56px;border-radius:14px;
+  background:rgba(79,255,176,0.12);border:1.5px solid var(--accent);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--accent);font-size:24px;margin:0 auto 20px;
+}
+.login-title{font-size:22px;font-weight:700;text-align:center;margin-bottom:4px}
+.login-sub{font-size:13px;color:var(--text2);text-align:center;margin-bottom:28px}
+.field-label{font-size:12px;color:var(--text2);margin-bottom:6px;font-weight:500}
+.field-wrap{position:relative;margin-bottom:16px}
+.field-input{
+  width:100%;background:var(--bg3);border:1px solid var(--border2);
+  border-radius:10px;padding:12px 14px;color:var(--text);font-size:14px;
+  transition:border-color var(--trans);
+}
+.field-input:focus{border-color:var(--accent)}
+.field-eye{
+  position:absolute;right:12px;top:50%;transform:translateY(-50%);
+  color:var(--text2);cursor:pointer;font-size:15px;
+}
+.login-btn{
+  width:100%;padding:13px;border-radius:10px;
+  background:var(--accent);color:#0a0f1a;
+  font-size:14px;font-weight:700;margin-top:4px;
+  transition:var(--trans);
+}
+.login-btn:hover{opacity:0.88;transform:scale(0.99)}
+.login-btn:disabled{opacity:0.5;cursor:not-allowed}
+.login-err{
+  background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.3);
+  color:var(--red);border-radius:8px;padding:10px 14px;
+  font-size:13px;margin-bottom:16px;display:none
+}
+.login-err.show{display:block}
+
+/* ════════════════ APP SHELL ════════════════ */
+#app{display:flex;height:100vh;display:none}
+#app.show{display:flex}
+
+/* ── Sidebar ── */
+#sidebar{
+  width:var(--sidebar);flex-shrink:0;
+  background:var(--bg2);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;overflow:hidden;
+}
+.sb-header{
+  padding:20px 16px 16px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:10px;
+}
+.sb-logo{
+  width:36px;height:36px;border-radius:9px;
+  background:rgba(79,255,176,0.12);border:1px solid var(--accent);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--accent);font-size:16px;flex-shrink:0;
+}
+.sb-title{font-size:14px;font-weight:700}
+.sb-sub{font-size:11px;color:var(--text2)}
+.sb-logout{
+  margin-left:auto;width:30px;height:30px;border-radius:8px;
+  background:rgba(248,113,113,0.1);color:var(--red);
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;transition:var(--trans);
+}
+.sb-logout:hover{background:rgba(248,113,113,0.2)}
+
+.sb-section-label{
+  font-size:10px;font-weight:600;color:var(--text3);
+  letter-spacing:1px;padding:16px 16px 6px;text-transform:uppercase;
+}
+.sb-nav-btn{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 16px;border-radius:0;background:transparent;
+  color:var(--text2);font-size:13px;width:100%;text-align:left;
+  transition:var(--trans);border-left:2px solid transparent;
+}
+.sb-nav-btn i{font-size:15px;width:18px;text-align:center}
+.sb-nav-btn:hover{background:rgba(255,255,255,0.04);color:var(--text)}
+.sb-nav-btn.active{
+  background:rgba(79,255,176,0.07);color:var(--accent);
+  border-left-color:var(--accent);font-weight:600;
+}
+
+.sb-agents{flex:1;overflow-y:auto;padding:4px 0}
+.agent-item{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 16px;cursor:pointer;transition:var(--trans);
+  border-left:2px solid transparent;
+}
+.agent-item:hover{background:rgba(255,255,255,0.04)}
+.agent-item.active{
+  background:rgba(79,255,176,0.07);
+  border-left-color:var(--accent);
+}
+.agent-dot{
+  width:10px;height:10px;border-radius:50%;flex-shrink:0;
+  border:2px solid var(--bg2);
+}
+.agent-info{flex:1;min-width:0}
+.agent-name{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.agent-meta{font-size:11px;color:var(--text2)}
+
+.sb-footer{padding:12px 16px;border-top:1px solid var(--border)}
+.add-agent-btn{
+  width:100%;padding:9px;border-radius:9px;
+  background:rgba(79,255,176,0.1);border:1px solid rgba(79,255,176,0.2);
+  color:var(--accent);font-size:13px;font-weight:600;
+  display:flex;align-items:center;justify-content:center;gap:7px;
+  transition:var(--trans);
+}
+.add-agent-btn:hover{background:rgba(79,255,176,0.18)}
+
+/* ── Main area ── */
+#main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+
+/* Topbar */
+#topbar{
+  height:56px;background:var(--bg2);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;padding:0 24px;gap:14px;flex-shrink:0;
+}
+.topbar-title{font-size:15px;font-weight:700;flex:1}
+.topbar-badge{
+  font-size:11px;background:rgba(79,255,176,0.1);
+  color:var(--accent);border-radius:6px;padding:2px 8px;font-weight:600;
+}
+.topbar-btn{
+  padding:7px 14px;border-radius:8px;font-size:13px;font-weight:600;
+  display:flex;align-items:center;gap:6px;transition:var(--trans);
+}
+.topbar-btn.primary{background:var(--accent);color:#0a0f1a}
+.topbar-btn.primary:hover{opacity:0.88}
+.topbar-btn.danger{background:rgba(248,113,113,0.1);color:var(--red);border:1px solid rgba(248,113,113,0.2)}
+.topbar-btn.danger:hover{background:rgba(248,113,113,0.2)}
+.topbar-btn.secondary{background:var(--bg3);color:var(--text);border:1px solid var(--border2)}
+.topbar-btn.secondary:hover{border-color:var(--accent);color:var(--accent)}
+
+/* Content area */
+#content{flex:1;overflow-y:auto;padding:24px}
+
+/* ════════════════ DASHBOARD VIEWS ════════════════ */
+.view{display:none}
+.view.active{display:block}
+
+/* Welcome / overview */
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-bottom:24px}
+.stat-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:var(--radius);padding:18px;
+}
+.stat-val{font-size:28px;font-weight:700;margin-bottom:4px}
+.stat-label{font-size:12px;color:var(--text2)}
+.stat-icon{font-size:20px;margin-bottom:10px}
+
+/* Section heading */
+.sec-head{font-size:13px;font-weight:700;color:var(--text2);
+  text-transform:uppercase;letter-spacing:0.8px;margin:24px 0 12px}
+
+/* ════════════════ AGENT EDITOR ════════════════ */
+.editor-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:900px){.editor-grid{grid-template-columns:1fr}}
+
+.editor-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:var(--radius);padding:20px;
+}
+.editor-card-title{
+  font-size:13px;font-weight:700;margin-bottom:16px;
+  display:flex;align-items:center;gap:8px;color:var(--text2);
+  text-transform:uppercase;letter-spacing:0.6px;
+}
+.editor-card-title i{font-size:14px}
+
+.field-row{margin-bottom:14px}
+.field-row label{display:block;font-size:11px;color:var(--text2);margin-bottom:5px;font-weight:500}
+.field-row input,.field-row select,.field-row textarea{
+  width:100%;background:var(--bg3);border:1px solid var(--border2);
+  border-radius:8px;padding:9px 12px;color:var(--text);font-size:13px;
+  transition:border-color var(--trans);resize:vertical;
+}
+.field-row input:focus,.field-row select:focus,.field-row textarea:focus{border-color:var(--accent)}
+.field-row select option{background:var(--bg2)}
+
+/* Color preview */
+.color-preview{
+  display:flex;align-items:center;gap:8px;
+}
+.color-swatch{
+  width:28px;height:28px;border-radius:6px;flex-shrink:0;
+  border:1.5px solid var(--border2);cursor:pointer;
+}
+
+/* Rows table */
+.rows-table-wrap{overflow-x:auto}
+.rows-table{width:100%;border-collapse:collapse;font-size:12px}
+.rows-table th{
+  padding:8px 10px;text-align:left;font-size:10px;
+  color:var(--text3);text-transform:uppercase;letter-spacing:0.6px;
+  border-bottom:1px solid var(--border);font-weight:600;background:var(--bg2);
+}
+.rows-table td{
+  padding:7px 10px;border-bottom:1px solid var(--border);
+  vertical-align:top;
+}
+.rows-table tr:hover td{background:rgba(255,255,255,0.02)}
+.rows-table td input{
+  background:transparent;border:none;color:var(--text);
+  font-size:12px;width:100%;padding:1px 2px;
+}
+.rows-table td input:focus{
+  background:var(--bg3);border-radius:4px;outline:1px solid var(--accent);
+  padding:2px 4px;
+}
+.key-badge{
+  display:inline-block;font-size:10px;padding:2px 7px;
+  border-radius:4px;font-weight:600;white-space:nowrap;
+}
+.kb-update{background:rgba(251,191,36,0.12);color:var(--yellow)}
+.kb-service{background:rgba(96,165,250,0.12);color:var(--blue)}
+.kb-pdf{background:rgba(248,113,113,0.12);color:var(--red)}
+.kb-doc{background:rgba(52,211,153,0.12);color:var(--green)}
+.kb-ticker{background:rgba(167,139,250,0.12);color:#a78bfa}
+.kb-voice{background:rgba(251,146,60,0.12);color:#fb923c}
+.kb-config{background:rgba(255,255,255,0.06);color:var(--text2)}
+.kb-popup{background:rgba(244,114,182,0.12);color:#f472b6}
+
+.row-del{
+  background:transparent;color:var(--text3);font-size:12px;
+  padding:2px 6px;border-radius:4px;transition:var(--trans);
+}
+.row-del:hover{background:rgba(248,113,113,0.15);color:var(--red)}
+
+.add-row-btn{
+  padding:7px 14px;border-radius:8px;background:var(--bg3);
+  border:1px dashed var(--border2);color:var(--text2);font-size:12px;
+  display:flex;align-items:center;gap:6px;transition:var(--trans);
+  margin-top:8px;
+}
+.add-row-btn:hover{border-color:var(--accent);color:var(--accent)}
+
+/* CSV URL box */
+.csv-url-box{
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:8px;padding:10px 12px;font-size:11px;
+  color:var(--text2);word-break:break-all;
+  display:flex;align-items:flex-start;gap:8px;
+}
+.csv-url-box i{color:var(--accent);flex-shrink:0;margin-top:2px}
+
+/* Toast */
+#toast{
+  position:fixed;bottom:24px;right:24px;z-index:9998;
+  background:var(--bg2);border:1px solid var(--border2);
+  border-radius:10px;padding:12px 18px;font-size:13px;
+  display:flex;align-items:center;gap:10px;
+  box-shadow:0 8px 24px rgba(0,0,0,0.4);
+  transform:translateY(80px);opacity:0;
+  transition:all 0.3s cubic-bezier(0.19,1,0.22,1);
+  pointer-events:none;max-width:320px;
+}
+#toast.show{transform:translateY(0);opacity:1}
+#toast.success i{color:var(--green)}
+#toast.error   i{color:var(--red)}
+#toast.info    i{color:var(--blue)}
+
+/* Modal */
+#modal-overlay{
+  position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.7);
+  backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;
+  padding:16px;display:none;
+}
+#modal-overlay.show{display:flex}
+.modal-box{
+  background:var(--bg2);border:1px solid var(--border2);
+  border-radius:16px;padding:28px;width:100%;max-width:420px;
+}
+.modal-title{font-size:16px;font-weight:700;margin-bottom:6px}
+.modal-sub{font-size:13px;color:var(--text2);margin-bottom:22px}
+.modal-actions{display:flex;gap:10px;margin-top:20px}
+.modal-actions button{flex:1;padding:10px;border-radius:9px;font-size:13px;font-weight:600}
+
+/* Loading overlay */
+#loader{
+  position:fixed;inset:0;z-index:999;background:rgba(10,15,26,0.85);
+  display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:14px;display:none;
+}
+#loader.show{display:flex}
+.loader-ring{
+  width:40px;height:40px;border:3px solid var(--border);
+  border-top-color:var(--accent);border-radius:50%;
+  animation:spin 0.8s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loader-text{color:var(--text2);font-size:13px}
+
+/* Empty state */
+.empty-state{
+  text-align:center;padding:60px 20px;color:var(--text2);
+}
+.empty-state i{font-size:40px;opacity:0.3;display:block;margin-bottom:14px}
+.empty-state p{font-size:13px;line-height:1.6}
+
+/* Tabs */
+.tab-bar{display:flex;gap:2px;background:var(--bg3);border-radius:10px;padding:3px;margin-bottom:20px;width:fit-content}
+.tab-item{
+  padding:7px 16px;border-radius:8px;font-size:13px;font-weight:500;
+  color:var(--text2);cursor:pointer;transition:var(--trans);
+}
+.tab-item.active{background:var(--card);color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,0.3)}
+.tab-item:hover:not(.active){color:var(--text)}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ LOGIN ═══════════════ -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo"><i class="fas fa-shield-halved"></i></div>
+    <div class="login-title">Admin Dashboard</div>
+    <div class="login-sub">Citizen Digital Seva — Admin Portal</div>
+    <div class="login-err" id="login-err"><i class="fas fa-circle-xmark"></i> <span id="login-err-msg">Wrong password</span></div>
+    <div class="field-row">
+      <div class="field-label">Admin Password</div>
+      <div class="field-wrap">
+        <input type="password" id="pass-input" class="field-input" placeholder="Enter password…" onkeydown="if(event.key==='Enter')doLogin()"/>
+        <i class="fas fa-eye field-eye" onclick="togglePassVis()"></i>
+      </div>
+    </div>
+    <button class="login-btn" id="login-btn" onclick="doLogin()">
+      <i class="fas fa-right-to-bracket"></i> Login
+    </button>
+    <p style="font-size:11px;color:var(--text3);text-align:center;margin-top:16px">Default password: admin@123 (Sheet లో మార్చుకోండి)</p>
+  </div>
+</div>
+
+<!-- ═══════════════ APP ═══════════════ -->
+<div id="app">
+
+  <!-- SIDEBAR -->
+  <aside id="sidebar">
+    <div class="sb-header">
+      <div class="sb-logo"><i class="fas fa-shield-halved"></i></div>
+      <div>
+        <div class="sb-title">Admin Panel</div>
+        <div class="sb-sub">Seva Management</div>
+      </div>
+      <button class="sb-logout" onclick="doLogout()" title="Logout"><i class="fas fa-right-from-bracket"></i></button>
+    </div>
+
+    <div class="sb-section-label">Menu</div>
+    <button class="sb-nav-btn active" onclick="showView('overview',this)">
+      <i class="fas fa-chart-pie"></i> Overview
+    </button>
+    <button class="sb-nav-btn" onclick="showView('settings',this)">
+      <i class="fas fa-gear"></i> Settings
+    </button>
+
+    <div class="sb-section-label">Agents</div>
+    <div class="sb-agents" id="agents-list">
+      <div style="padding:12px 16px;color:var(--text3);font-size:12px">లోడ్ అవుతోంది…</div>
+    </div>
+
+    <div class="sb-footer">
+      <button class="add-agent-btn" onclick="showAddAgent()">
+        <i class="fas fa-plus"></i> New Agent
+      </button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div id="main">
+    <div id="topbar">
+      <div class="topbar-title" id="topbar-title">Overview</div>
+      <div class="topbar-badge" id="topbar-badge" style="display:none"></div>
+      <div id="topbar-actions"></div>
+    </div>
+
+    <div id="content">
+
+      <!-- OVERVIEW VIEW -->
+      <div id="view-overview" class="view active">
+        <div class="stat-grid" id="stat-grid">
+          <div class="stat-card">
+            <div class="stat-icon" style="color:var(--accent)"><i class="fas fa-users"></i></div>
+            <div class="stat-val" id="stat-agents">—</div>
+            <div class="stat-label">Total Agents</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="color:var(--blue)"><i class="fas fa-server"></i></div>
+            <div class="stat-val">Free</div>
+            <div class="stat-label">Hosting Cost</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="color:var(--green)"><i class="fas fa-circle-check"></i></div>
+            <div class="stat-val">Live</div>
+            <div class="stat-label">System Status</div>
+          </div>
+        </div>
+
+        <div class="sec-head">All Agents</div>
+        <div id="overview-agents-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px"></div>
+      </div>
+
+      <!-- AGENT EDITOR VIEW -->
+      <div id="view-agent" class="view">
+        <div class="tab-bar">
+          <div class="tab-item active" onclick="switchTab('basic',this)">Basic Info</div>
+          <div class="tab-item" onclick="switchTab('content',this)">Content</div>
+          <div class="tab-item" onclick="switchTab('csvurl',this)">Sheet URL</div>
+        </div>
+
+        <!-- Basic Info Tab -->
+        <div id="tab-basic">
+          <div class="editor-grid">
+            <div class="editor-card">
+              <div class="editor-card-title"><i class="fas fa-store"></i> Shop Details</div>
+              <div class="field-row"><label>Shop Name (Telugu/English)</label><input type="text" id="f-shopName" oninput="markDirty()"/></div>
+              <div class="field-row"><label>Tagline</label><input type="text" id="f-tagline" oninput="markDirty()"/></div>
+              <div class="field-row"><label>City</label><input type="text" id="f-city" oninput="markDirty()"/></div>
+              <div class="field-row"><label>Phone</label><input type="tel" id="f-phone" oninput="markDirty()"/></div>
+              <div class="field-row"><label>WhatsApp (91XXXXXXXXXX)</label><input type="tel" id="f-whatsapp" oninput="markDirty()"/></div>
+              <div class="field-row"><label>Footer Text</label><input type="text" id="f-footerText" oninput="markDirty()"/></div>
+            </div>
+            <div class="editor-card">
+              <div class="editor-card-title"><i class="fas fa-palette"></i> Appearance</div>
+              <div class="field-row">
+                <label>Logo Icon (Font Awesome class)</label>
+                <input type="text" id="f-logoIcon" placeholder="fas fa-landmark" oninput="markDirty()"/>
+              </div>
+              <div class="field-row">
+                <label>Accent Color</label>
+                <div class="color-preview">
+                  <div class="color-swatch" id="color-swatch" onclick="document.getElementById('f-accentColor').click()"></div>
+                  <input type="color" id="f-accentColor" oninput="updateColorSwatch();markDirty()" style="flex:1;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:8px 12px;color:var(--text);font-size:13px"/>
+                </div>
+              </div>
+              <div class="field-row"><label>Cover Image URL (optional)</label><input type="url" id="f-coverUrl" placeholder="https://…" oninput="markDirty()"/></div>
+              <div class="field-row"><label>Map Embed URL (Google Maps)</label><input type="url" id="f-mapEmbedUrl" placeholder="https://maps.google.com/…" oninput="markDirty()"/></div>
+              <div class="editor-card-title" style="margin-top:16px"><i class="fas fa-bell"></i> Popup</div>
+              <div class="field-row">
+                <label>Popup Show</label>
+                <select id="f-popup_show" onchange="markDirty()">
+                  <option value="false">No (disable)</option>
+                  <option value="true">Yes (show on open)</option>
+                </select>
+              </div>
+              <div class="field-row"><label>Popup Title</label><input type="text" id="f-popup_title" oninput="markDirty()"/></div>
+              <div class="field-row"><label>Popup Subtitle / Message</label><input type="text" id="f-popup_subtitle" oninput="markDirty()"/></div>
+              <div class="field-row"><label>Popup Image URL (optional)</label><input type="url" id="f-popup_imageUrl" placeholder="https://…" oninput="markDirty()"/></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Content Tab -->
+        <div id="tab-content" style="display:none">
+          <div class="editor-card">
+            <div class="editor-card-title" style="justify-content:space-between">
+              <span><i class="fas fa-list"></i> All Rows</span>
+              <div style="display:flex;gap:8px">
+                <button class="add-row-btn" onclick="addRow('ticker')"><i class="fas fa-plus"></i> Ticker</button>
+                <button class="add-row-btn" onclick="addRow('update')"><i class="fas fa-plus"></i> Update</button>
+                <button class="add-row-btn" onclick="addRow('service')"><i class="fas fa-plus"></i> Service</button>
+                <button class="add-row-btn" onclick="addRow('pdf')"><i class="fas fa-plus"></i> PDF</button>
+                <button class="add-row-btn" onclick="addRow('doc')"><i class="fas fa-plus"></i> Doc</button>
+              </div>
+            </div>
+            <div class="rows-table-wrap">
+              <table class="rows-table">
+                <thead><tr>
+                  <th style="width:80px">key</th>
+                  <th>value</th>
+                  <th>title</th>
+                  <th>link</th>
+                  <th style="width:110px">icon</th>
+                  <th style="width:80px">extra</th>
+                  <th style="width:36px"></th>
+                </tr></thead>
+                <tbody id="rows-tbody"></tbody>
+              </table>
+            </div>
+            <button class="add-row-btn" onclick="addRow('update')" style="margin-top:12px">
+              <i class="fas fa-plus"></i> Add Row
+            </button>
+          </div>
+        </div>
+
+        <!-- CSV URL Tab -->
+        <div id="tab-csvurl" style="display:none">
+          <div class="editor-card">
+            <div class="editor-card-title"><i class="fas fa-link"></i> Published CSV URL</div>
+            <p style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.6">
+              ఈ URL ని index.html లో <code style="background:var(--bg3);padding:2px 6px;border-radius:4px;font-size:12px">SHEET_URL</code> గా పెట్టండి.
+              Google Sheet తెరిచి <b>File → Share → Publish to web → CSV</b> చేసి tab select చేయండి.
+            </p>
+            <div class="csv-url-box" id="csv-url-display">
+              <i class="fas fa-link"></i>
+              <span id="csv-url-text">Loading…</span>
+            </div>
+            <button class="add-row-btn" onclick="copyCsvUrl()" style="margin-top:12px">
+              <i class="fas fa-copy"></i> Copy URL
+            </button>
+            <div style="margin-top:20px">
+              <div class="editor-card-title"><i class="fas fa-code"></i> index.html లో paste చేయడానికి</div>
+              <div class="csv-url-box" id="code-snippet">
+                <i class="fas fa-code"></i>
+                <code id="code-snippet-text" style="font-size:11px;word-break:break-all"></code>
+              </div>
+              <button class="add-row-btn" onclick="copyCodeSnippet()" style="margin-top:12px">
+                <i class="fas fa-copy"></i> Copy Code
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SETTINGS VIEW -->
+      <div id="view-settings" class="view">
+        <div class="editor-card" style="max-width:440px">
+          <div class="editor-card-title"><i class="fas fa-key"></i> Change Admin Password</div>
+          <div class="field-row"><label>Current Password</label><input type="password" id="curr-pass" class="field-input"/></div>
+          <div class="field-row"><label>New Password</label><input type="password" id="new-pass" class="field-input"/></div>
+          <div class="field-row"><label>Confirm New Password</label><input type="password" id="conf-pass" class="field-input"/></div>
+          <p style="font-size:12px;color:var(--text2);margin-bottom:12px">Password Sheet లో _admin tab లో నేరుగా కూడా మార్చవచ్చు.</p>
+          <button class="topbar-btn primary" onclick="showToast('Feature coming soon','info')">
+            <i class="fas fa-floppy-disk"></i> Update Password
+          </button>
+        </div>
+        <div class="editor-card" style="max-width:440px;margin-top:16px">
+          <div class="editor-card-title"><i class="fas fa-circle-info"></i> Apps Script Info</div>
+          <div class="field-row"><label>Script URL</label>
+            <div class="csv-url-box"><i class="fas fa-link"></i><span id="script-url-display" style="word-break:break-all;font-size:11px">${SCRIPT_URL}</span></div>
+          </div>
+          <p style="font-size:12px;color:var(--text2);margin-top:10px;line-height:1.6">
+            Apps Script URL మార్చాలంటే ఈ admin.html లో పైన <code style="background:var(--bg3);padding:1px 5px;border-radius:4px">SCRIPT_URL</code> update చేయండి.
+          </p>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+
+</div><!-- /app -->
+
+<!-- MODAL -->
+<div id="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-title" id="modal-title"></div>
+    <div class="modal-sub" id="modal-sub"></div>
+    <div id="modal-body"></div>
+    <div class="modal-actions" id="modal-actions"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"><i class="fas fa-circle-check" id="toast-icon"></i><span id="toast-msg"></span></div>
+
+<!-- LOADER -->
+<div id="loader"><div class="loader-ring"></div><div class="loader-text" id="loader-text">Loading…</div></div>
+
+<script>
+/* ═══════════════════════════════════════════════════
+   ⚙️ CONFIG — Apps Script URL ఇక్కడ పెట్టండి
+   ═══════════════════════════════════════════════════ */
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxzYxAB_0BBb-cQ2EjvapC8bGTbJuL0xr0leooTODAP65slPZoM4AX67f6z9c7Jgppw_Q/exec
+';
+/* ═════════════════════════════════════════════════ */
+
+let TOKEN       = localStorage.getItem('admin_token') || '';
+let AGENTS      = [];
+let CURRENT_TAB = null;
+let DIRTY       = false;
+let ALL_ROWS    = [];
+
+/* ═══ API helpers ═══ */
+async function api(body) {
+  const res = await fetch(SCRIPT_URL, {
+    method: 'POST',
+    body: JSON.stringify({ ...body, token: TOKEN }),
+  });
+  return res.json();
+}
+async function apiGet(params) {
+  const url = SCRIPT_URL + '?' + new URLSearchParams(params);
+  const res = await fetch(url);
+  return res.json();
+}
+
+/* ═══ Login ═══ */
+async function doLogin() {
+  const pass = document.getElementById('pass-input').value;
+  if (!pass) return;
+  const btn = document.getElementById('login-btn');
+  btn.disabled = true; btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Logging in…';
+  try {
+    const data = await api({ action: 'login', password: pass });
+    if (data.ok) {
+      TOKEN = data.token;
+      localStorage.setItem('admin_token', TOKEN);
+      document.getElementById('login-screen').classList.add('hide');
+      document.getElementById('app').classList.add('show');
+      document.getElementById('script-url-display').textContent = SCRIPT_URL;
+      await loadAgents();
+    } else {
+      showLoginErr(data.error || 'Wrong password');
+    }
+  } catch(e) {
+    showLoginErr('Connection failed. Script URL సరిగా ఉందా?');
+  }
+  btn.disabled = false; btn.innerHTML = '<i class="fas fa-right-to-bracket"></i> Login';
+}
+
+function showLoginErr(msg) {
+  const el = document.getElementById('login-err');
+  document.getElementById('login-err-msg').textContent = msg;
+  el.classList.add('show');
+}
+
+function togglePassVis() {
+  const inp = document.getElementById('pass-input');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+}
+
+function doLogout() {
+  localStorage.removeItem('admin_token');
+  TOKEN = '';
+  location.reload();
+}
+
+/* Auto-login if token exists */
+window.addEventListener('DOMContentLoaded', async () => {
+  if (SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') {
+    document.getElementById('login-err-msg').textContent = 'SCRIPT_URL set చేయలేదు. admin.html లో SCRIPT_URL పెట్టండి.';
+    document.getElementById('login-err').classList.add('show');
+    return;
+  }
+  if (TOKEN) {
+    const data = await apiGet({ action: 'agents' }).catch(() => null);
+    if (data && data.ok) {
+      document.getElementById('login-screen').classList.add('hide');
+      document.getElementById('app').classList.add('show');
+      AGENTS = data.agents;
+      renderSidebar();
+      renderOverview();
+    } else {
+      localStorage.removeItem('admin_token');
+      TOKEN = '';
+    }
+  }
+});
+
+/* ═══ Agents ═══ */
+async function loadAgents() {
+  showLoader('Agents లోడ్ అవుతున్నాయి…');
+  const data = await apiGet({ action: 'agents' }).catch(() => null);
+  hideLoader();
+  if (!data || !data.ok) { showToast('Agents load failed', 'error'); return; }
+  AGENTS = data.agents;
+  renderSidebar();
+  renderOverview();
+}
+
+function renderSidebar() {
+  const el = document.getElementById('agents-list');
+  if (!AGENTS.length) {
+    el.innerHTML = '<div style="padding:12px 16px;color:var(--text3);font-size:12px">Agents లేవు. Add చేయండి.</div>';
+    return;
+  }
+  el.innerHTML = AGENTS.map(a => `
+    <div class="agent-item" id="sb_${a.id}" onclick="loadAgent('${a.id}')">
+      <div class="agent-dot" style="background:${a.accentColor};box-shadow:0 0 5px ${a.accentColor}55"></div>
+      <div class="agent-info">
+        <div class="agent-name">${a.shopName}</div>
+        <div class="agent-meta">${a.city||a.id}</div>
+      </div>
+    </div>`).join('');
+  document.getElementById('stat-agents').textContent = AGENTS.length;
+}
+
+function renderOverview() {
+  const grid = document.getElementById('overview-agents-grid');
+  grid.innerHTML = AGENTS.map(a => `
+    <div class="editor-card" style="cursor:pointer;transition:var(--trans);border-left:3px solid ${a.accentColor}"
+      onclick="loadAgent('${a.id}')" onmouseover="this.style.borderColor='${a.accentColor}'" >
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+        <div style="width:36px;height:36px;border-radius:9px;background:${a.accentColor}22;
+          border:1px solid ${a.accentColor}55;display:flex;align-items:center;justify-content:center;
+          color:${a.accentColor};font-size:15px"><i class="fas fa-store"></i></div>
+        <div>
+          <div style="font-size:13px;font-weight:600">${a.shopName}</div>
+          <div style="font-size:11px;color:var(--text2)">${a.city||'—'}</div>
+        </div>
+      </div>
+      <div style="font-size:11px;color:var(--text2);display:flex;gap:12px">
+        <span><i class="fas fa-phone" style="margin-right:4px"></i>${a.phone||'—'}</span>
+        <span><i class="fas fa-table" style="margin-right:4px"></i>${a.rows} rows</span>
+      </div>
+      <div style="margin-top:10px;font-size:11px;color:var(--text3)">${a.id}</div>
+    </div>`).join('');
+}
+
+/* ═══ Load Agent ═══ */
+async function loadAgent(tabId) {
+  if (DIRTY && !confirm('Changes save చేయలేదు. Continue?')) return;
+  DIRTY = false;
+  CURRENT_TAB = tabId;
+
+  // Mark active in sidebar
+  document.querySelectorAll('.agent-item').forEach(el => el.classList.remove('active'));
+  const sbEl = document.getElementById('sb_' + tabId);
+  if (sbEl) sbEl.classList.add('active');
+
+  showLoader('Agent data లోడ్ అవుతోంది…');
+  const data = await apiGet({ action: 'getAgent', tab: tabId }).catch(() => null);
+  hideLoader();
+  if (!data || !data.ok) { showToast('Load failed', 'error'); return; }
+
+  ALL_ROWS = data.rows || [];
+
+  // Populate basic fields
+  const kv = {};
+  ALL_ROWS.forEach(r => { if (r.key && !['update','service','pdf','doc','ticker','voice','tts','poster','pdf_notice','canva','req_service','req_doc','popup'].includes(r.key)) kv[r.key] = r.value || ''; });
+  ['shopName','tagline','city','phone','whatsapp','footerText','logoIcon','accentColor','coverUrl','mapEmbedUrl','popup_show','popup_title','popup_subtitle','popup_imageUrl'].forEach(k => {
+    const el = document.getElementById('f-'+k);
+    if (el) el.value = kv[k] || (k==='accentColor'?'#4fffb0':'') || (k==='popup_show'?'false':'') || '';
+  });
+  updateColorSwatch();
+
+  // Render rows table
+  renderRowsTable();
+
+  // CSV URL
+  document.getElementById('csv-url-text').textContent = data.csvUrl || '—';
+  document.getElementById('code-snippet-text').textContent = `const SHEET_URL = '${data.csvUrl}';`;
+
+  // Switch to agent view
+  const agent = AGENTS.find(a => a.id === tabId);
+  document.getElementById('topbar-title').textContent = agent ? agent.shopName : tabId;
+  document.getElementById('topbar-badge').textContent = tabId;
+  document.getElementById('topbar-badge').style.display = 'inline-flex';
+  document.getElementById('topbar-actions').innerHTML = `
+    <button class="topbar-btn danger" onclick="confirmDelete('${tabId}')"><i class="fas fa-trash"></i> Delete</button>
+    <button class="topbar-btn secondary" onclick="previewAgent('${tabId}')" style="margin-left:8px"><i class="fas fa-eye"></i> Preview</button>
+    <button class="topbar-btn primary" onclick="saveAgent()" style="margin-left:8px"><i class="fas fa-floppy-disk"></i> Save</button>`;
+
+  showView('agent');
+  document.querySelectorAll('.sb-nav-btn').forEach(b => b.classList.remove('active'));
+}
+
+/* ═══ Rows table ═══ */
+const CONTENT_KEYS = ['update','service','pdf','doc','ticker','voice','tts','poster','pdf_notice','canva','req_service','req_doc','popup'];
+const KB_CLASS = {
+  update:'kb-update', service:'kb-service', pdf:'kb-pdf', doc:'kb-doc',
+  ticker:'kb-ticker', voice:'kb-voice', tts:'kb-voice', poster:'kb-update',
+  pdf_notice:'kb-pdf', canva:'kb-service', req_service:'kb-service', req_doc:'kb-doc', popup:'kb-popup'
+};
+
+function renderRowsTable() {
+  const tbody  = document.getElementById('rows-tbody');
+  const content= ALL_ROWS.filter(r => CONTENT_KEYS.includes(r.key));
+  tbody.innerHTML = content.map((r, i) => {
+    const cls = KB_CLASS[r.key] || 'kb-config';
+    const gi  = ALL_ROWS.indexOf(r);
+    return `<tr id="tr_${gi}">
+      <td><span class="key-badge ${cls}">${r.key}</span></td>
+      <td><input value="${esc(r.value)}" onchange="updateRowField(${gi},'value',this.value)"/></td>
+      <td><input value="${esc(r.title)}" onchange="updateRowField(${gi},'title',this.value)"/></td>
+      <td><input value="${esc(r.link)}" onchange="updateRowField(${gi},'link',this.value)" placeholder="https://…"/></td>
+      <td><input value="${esc(r.icon)}" onchange="updateRowField(${gi},'icon',this.value)" placeholder="fas fa-…"/></td>
+      <td><input value="${esc(r.extra)}" onchange="updateRowField(${gi},'extra',this.value)"/></td>
+      <td><button class="row-del" onclick="deleteRow(${gi})"><i class="fas fa-trash"></i></button></td>
+    </tr>`;
+  }).join('');
+}
+
+function esc(s){ return (s||'').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
+
+function updateRowField(idx, field, val) {
+  ALL_ROWS[idx][field] = val;
+  markDirty();
+}
+
+function deleteRow(idx) {
+  ALL_ROWS.splice(idx, 1);
+  renderRowsTable();
+  markDirty();
+}
+
+function addRow(key) {
+  ALL_ROWS.push({ key, value:'', title:'', link:'', icon:'', extra:'' });
+  renderRowsTable();
+  markDirty();
+  // scroll to bottom of table
+  setTimeout(() => { const tb = document.getElementById('rows-tbody'); tb.lastElementChild && tb.lastElementChild.scrollIntoView({behavior:'smooth'}); }, 100);
+}
+
+/* ═══ Save Agent ═══ */
+async function saveAgent() {
+  if (!CURRENT_TAB) return;
+
+  // Collect basic field values
+  const CONFIG_KEYS = ['shopName','tagline','city','phone','whatsapp','footerText','logoIcon','accentColor','coverUrl','mapEmbedUrl','popup_show','popup_title','popup_subtitle','popup_imageUrl'];
+  // Remove old config rows from ALL_ROWS, then rebuild
+  let rows = ALL_ROWS.filter(r => CONTENT_KEYS.includes(r.key));
+
+  CONFIG_KEYS.forEach(k => {
+    const el = document.getElementById('f-'+k);
+    if (el) rows.unshift({ key: k, value: el.value||'', title:'', link:'', icon:'', extra:'' });
+  });
+
+  showLoader('Saving…');
+  const data = await api({ action: 'updateAgent', tab: CURRENT_TAB, rows }).catch(() => null);
+  hideLoader();
+  if (data && data.ok) {
+    DIRTY = false;
+    showToast('Saved ✓', 'success');
+    // Refresh agents list
+    await loadAgents();
+    // Re-highlight active
+    const sbEl = document.getElementById('sb_' + CURRENT_TAB);
+    if (sbEl) sbEl.classList.add('active');
+  } else {
+    showToast('Save failed: ' + (data?.error||'unknown'), 'error');
+  }
+}
+
+/* ═══ Delete Agent ═══ */
+function confirmDelete(tabId) {
+  showModal(
+    'Agent Delete చేయాలా?',
+    `"${tabId}" tab పూర్తిగా delete అవుతుంది. ఇది undo కాదు!`,
+    `<button class="topbar-btn danger" style="flex:1" onclick="doDelete('${tabId}')"><i class="fas fa-trash"></i> Delete</button>
+     <button class="topbar-btn secondary" style="flex:1" onclick="closeModal()">Cancel</button>`
+  );
+}
+
+async function doDelete(tabId) {
+  closeModal();
+  showLoader('Deleting…');
+  const data = await api({ action: 'deleteAgent', tab: tabId }).catch(() => null);
+  hideLoader();
+  if (data && data.ok) {
+    showToast('Deleted', 'success');
+    CURRENT_TAB = null; DIRTY = false;
+    await loadAgents();
+    showView('overview');
+    document.getElementById('topbar-badge').style.display = 'none';
+    document.getElementById('topbar-actions').innerHTML = '';
+    document.getElementById('topbar-title').textContent = 'Overview';
+  } else {
+    showToast('Delete failed', 'error');
+  }
+}
+
+/* ═══ Add New Agent ═══ */
+function showAddAgent() {
+  showModal(
+    'New Agent Add చేయండి',
+    'Agent tab create అవుతుంది. తర్వాత edit చేయవచ్చు.',
+    `<div class="field-row"><label>Agent ID (e.g. agent_003)</label>
+      <input type="text" id="new-agent-id" class="field-input" placeholder="agent_003" style="margin-bottom:10px"/>
+     </div>
+     <div class="field-row"><label>Shop Name</label>
+      <input type="text" id="new-agent-name" class="field-input" placeholder="Seva Kendra"/>
+     </div>
+     <div class="field-row"><label>Phone</label>
+      <input type="tel" id="new-agent-phone" class="field-input" placeholder="9999999999"/>
+     </div>
+     <div class="field-row"><label>City</label>
+      <input type="text" id="new-agent-city" class="field-input" placeholder="Hyderabad"/>
+     </div>
+     <div style="display:flex;gap:10px;margin-top:4px">
+      <button class="topbar-btn primary" style="flex:1" onclick="doAddAgent()"><i class="fas fa-plus"></i> Create</button>
+      <button class="topbar-btn secondary" style="flex:1" onclick="closeModal()">Cancel</button>
+     </div>`,
+    true
+  );
+}
+
+async function doAddAgent() {
+  const id   = document.getElementById('new-agent-id').value.trim();
+  const name = document.getElementById('new-agent-name').value.trim();
+  const phone= document.getElementById('new-agent-phone').value.trim();
+  const city = document.getElementById('new-agent-city').value.trim();
+  if (!id) { showToast('Agent ID required', 'error'); return; }
+  closeModal();
+  showLoader('Creating agent…');
+  const data = await api({ action:'addAgent', agentId:id, shopName:name, phone, city }).catch(()=>null);
+  hideLoader();
+  if (data && data.ok) {
+    showToast('Agent created ✓', 'success');
+    await loadAgents();
+    loadAgent(id);
+  } else {
+    showToast(data?.error||'Failed', 'error');
+  }
+}
+
+/* ═══ Preview ═══ */
+function previewAgent(tabId) {
+  const a = AGENTS.find(x => x.id === tabId);
+  if (a) showToast('index.html లో SHEET_URL మీ tab URL పెట్టి open చేయండి','info');
+}
+
+/* ═══ UI helpers ═══ */
+function showView(name, btn) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById('view-' + name).classList.add('active');
+  if (btn) {
+    document.querySelectorAll('.sb-nav-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+  if (name === 'overview') {
+    document.getElementById('topbar-title').textContent = 'Overview';
+    document.getElementById('topbar-badge').style.display = 'none';
+    document.getElementById('topbar-actions').innerHTML = '';
+    document.querySelectorAll('.agent-item').forEach(e => e.classList.remove('active'));
+    CURRENT_TAB = null; DIRTY = false;
+  }
+  if (name === 'settings') {
+    document.getElementById('topbar-title').textContent = 'Settings';
+    document.getElementById('topbar-badge').style.display = 'none';
+    document.getElementById('topbar-actions').innerHTML = '';
+  }
+}
+
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  ['basic','content','csvurl'].forEach(t => {
+    document.getElementById('tab-'+t).style.display = t === name ? 'block' : 'none';
+  });
+}
+
+function markDirty() { DIRTY = true; }
+
+function updateColorSwatch() {
+  const val = document.getElementById('f-accentColor').value;
+  document.getElementById('color-swatch').style.background = val;
+}
+
+function copyCsvUrl() {
+  const url = document.getElementById('csv-url-text').textContent;
+  navigator.clipboard.writeText(url).then(() => showToast('Copied!', 'success'));
+}
+function copyCodeSnippet() {
+  const code = document.getElementById('code-snippet-text').textContent;
+  navigator.clipboard.writeText(code).then(() => showToast('Copied!', 'success'));
+}
+
+function showToast(msg, type='success') {
+  const t = document.getElementById('toast');
+  const icons = { success:'fas fa-circle-check', error:'fas fa-circle-xmark', info:'fas fa-circle-info' };
+  t.className = 'show ' + type;
+  document.getElementById('toast-icon').className = icons[type]||icons.info;
+  document.getElementById('toast-msg').textContent = msg;
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+function showLoader(msg='Loading…') {
+  document.getElementById('loader-text').textContent = msg;
+  document.getElementById('loader').classList.add('show');
+}
+function hideLoader() { document.getElementById('loader').classList.remove('show'); }
+
+function showModal(title, sub, actionsHtml, hasBody=false) {
+  document.getElementById('modal-title').textContent = title;
+  document.getElementById('modal-sub').textContent = sub;
+  if (hasBody) {
+    document.getElementById('modal-body').innerHTML = actionsHtml;
+    document.getElementById('modal-actions').innerHTML = '';
+  } else {
+    document.getElementById('modal-body').innerHTML = '';
+    document.getElementById('modal-actions').innerHTML = actionsHtml;
+  }
+  document.getElementById('modal-overlay').classList.add('show');
+}
+function closeModal() { document.getElementById('modal-overlay').classList.remove('show'); }
+
+// Close modal on overlay click
+document.getElementById('modal-overlay').onclick = e => {
+  if (e.target === document.getElementById('modal-overlay')) closeModal();
+};
+
+// Warn before leaving with unsaved changes
+window.onbeforeunload = () => DIRTY ? 'Changes save చేయలేదు!' : null;
+</script>
+</body>
+</html>
