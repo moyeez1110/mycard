@@ -277,10 +277,15 @@ async function doAgentLogin() {
 /* ── Redirect to dashboard ── */
 function redirectToDashboard() {
   const info = AGENT_INFO;
+  // ?redirect= param ఉంటే అక్కడికే వెళ్ళు (index.html గురించి auth guard పంపినది)
+  const redirectTo = new URLSearchParams(window.location.search).get('redirect');
+  if (redirectTo) {
+    showStep('step-redirecting');
+    window.location.replace(redirectTo);
+    return;
+  }
   if (INDEX_URL && INDEX_URL !== 'YOUR_INDEX_HTML_URL_HERE') {
     showStep('step-redirecting');
-    // window.location.replace removes this page from history
-    // so back-button from index.html won't loop back here
     window.location.replace(INDEX_URL + '?tab=' + encodeURIComponent(info.agentTab));
   } else {
     // Fallback: INDEX_URL set చేయకపోతే info card చూపించు
