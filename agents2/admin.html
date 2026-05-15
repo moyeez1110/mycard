@@ -746,7 +746,7 @@ button{border:none;cursor:pointer;font-family:var(--font)}
 /* ── Agent toolbar ─────────────────────────────── */
 #agent-toolbar{
   display:none;position:fixed;bottom:72px;right:12px;z-index:900;
-  display:none;flex-direction:column;align-items:flex-end;gap:8px;
+  flex-direction:column;align-items:flex-end;gap:8px;
 }
 #agent-toolbar.show{display:flex}
 .agent-fab{
@@ -988,7 +988,39 @@ button{border:none;cursor:pointer;font-family:var(--font)}
 /* ═══════════════════════════════════════
    CONFIG — ఒక్క line మాత్రమే మార్చండి
    ═══════════════════════════════════════ */
-const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQgCCtcdcRdQYX3Zdhdc_BDmZPU2tw6tKUaUmuH8w_LobsbEOXq1LK0kbNSiPSNu0Lst1J_gKX-_GPl/pub?gid=0&single=true&output=csv';
+const SHEET_URL       = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQgCCtcdcRdQYX3Zdhdc_BDmZPU2tw6tKUaUmuH8w_LobsbEOXq1LK0kbNSiPSNu0Lst1J_gKX-_GPl/pub?gid=0&single=true&output=csv';
+const AGENT_LOGIN_URL = 'agent-login.html';
+
+/* ── Agent tab auth guard ─────────────────────────────────────────────
+   ?tab=agent_xxx తో open చేస్తే login check చేస్తుంది.
+   Token లేకపోతే agent-login.html కి redirect చేస్తుంది.
+   ─────────────────────────────────────────────────────────────────── */
+(function agentAuthGuard() {
+  const params = new URLSearchParams(window.location.search);
+  const tab    = params.get('tab') || '';
+  if (!tab.startsWith('agent_')) return;
+
+  const token   = localStorage.getItem('agent_token');
+  const infoRaw = localStorage.getItem('agent_info');
+
+  if (!token || !infoRaw) {
+    window.location.replace(AGENT_LOGIN_URL + '?redirect=' + encodeURIComponent(window.location.href));
+    return;
+  }
+
+  try {
+    const info = JSON.parse(infoRaw);
+    if (info.agentTab !== tab) {
+      localStorage.removeItem('agent_token');
+      localStorage.removeItem('agent_info');
+      window.location.replace(AGENT_LOGIN_URL + '?redirect=' + encodeURIComponent(window.location.href));
+    }
+  } catch(e) {
+    localStorage.removeItem('agent_token');
+    localStorage.removeItem('agent_info');
+    window.location.replace(AGENT_LOGIN_URL);
+  }
+})();
 
 let CLIENT = null;
 
