@@ -21,13 +21,111 @@
 
 /* ═══ LIGHT MODE ═══ */
 body.light-mode {
-  --bg:#f0f4f8; --bg2:#ffffff; --bg3:#e8edf5; --card:#ffffff;
-  --border:rgba(0,0,0,0.08);
-  --text:#1a2235; --text2:#5a6a7a;
+  --bg:#f0f4f8; --bg2:#ffffff; --bg3:#e2e8f0; --card:#ffffff;
+  --border:rgba(0,0,0,0.09);
+  --text:#0f1f35; --text2:#4a5a72;
   --shadow:0 4px 24px rgba(0,0,0,0.1);
+  /* Darker accent so it's readable on white */
+  --accent:#0d9e6a; --accent-dim:#0a8058;
 }
 body.light-mode #loading-screen { background:var(--bg); }
-body.light-mode .update-card:hover { box-shadow:0 4px 12px rgba(0,0,0,0.1); }
+body.light-mode #app-header {
+  background:#ffffff;
+  border-bottom:1px solid rgba(0,0,0,0.09);
+  box-shadow:0 2px 12px rgba(0,0,0,0.06);
+}
+body.light-mode #ticker-bar {
+  background:#f8fafc;
+  border-bottom:1px solid rgba(0,0,0,0.09);
+}
+body.light-mode .ticker-label {
+  background:var(--accent);
+  color:#fff;
+}
+body.light-mode .header-logo {
+  background:rgba(13,158,106,0.1);
+  border-color:var(--accent);
+}
+body.light-mode .hbtn {
+  background:#f1f5f9;
+  color:#4a5a72;
+  border:1px solid rgba(0,0,0,0.08);
+}
+body.light-mode .hbtn:hover { background:#e2e8f0; color:var(--text); }
+body.light-mode .hero-card {
+  box-shadow:0 2px 16px rgba(0,0,0,0.08);
+}
+body.light-mode .hero-cover {
+  background:linear-gradient(135deg,#c7e8d8 0%,#a8d8c0 50%,#c7e8d8 100%);
+}
+body.light-mode .hero-avatar {
+  border-color:#f0f4f8;
+  background:rgba(13,158,106,0.1);
+}
+body.light-mode .hero-btn.secondary {
+  background:#f1f5f9;
+  border-color:rgba(0,0,0,0.1);
+}
+body.light-mode .service-card {
+  box-shadow:0 1px 6px rgba(0,0,0,0.06);
+}
+body.light-mode .service-card:hover {
+  box-shadow:0 6px 20px rgba(0,0,0,0.12);
+}
+body.light-mode .update-card { box-shadow:0 1px 4px rgba(0,0,0,0.05); }
+body.light-mode .update-card:hover {
+  box-shadow:0 4px 16px rgba(0,0,0,0.1);
+  border-color:var(--accent);
+}
+body.light-mode .update-dot { box-shadow:0 0 6px rgba(13,158,106,0.5); }
+body.light-mode .acc-item { box-shadow:0 1px 4px rgba(0,0,0,0.05); }
+body.light-mode .pdf-item:hover { border-color:#e05555; }
+body.light-mode #popup-box {
+  box-shadow:0 0 40px rgba(13,158,106,0.15);
+  border-color:var(--accent);
+}
+body.light-mode .popup-badge {
+  background:rgba(13,158,106,0.1);
+  color:var(--accent);
+}
+body.light-mode #popup-close {
+  background:var(--accent);
+  color:#fff;
+}
+body.light-mode .banner-track {
+  box-shadow:0 2px 12px rgba(0,0,0,0.08);
+}
+body.light-mode #bottom-nav {
+  background:#ffffff;
+  border-top:1px solid rgba(0,0,0,0.08);
+  box-shadow:0 -2px 12px rgba(0,0,0,0.06);
+}
+body.light-mode .nav-btn { color:#64748b; }
+body.light-mode .nav-btn.active { color:var(--accent); }
+body.light-mode #fab {
+  background:var(--accent);
+  box-shadow:0 4px 16px rgba(13,158,106,0.35);
+}
+body.light-mode .loader-ring { border-top-color:var(--accent); }
+body.light-mode .vc-audio-card,
+body.light-mode .vc-tts-card,
+body.light-mode .vc-poster-card,
+body.light-mode .vc-pdf-hcard,
+body.light-mode .vc-canva-hcard {
+  box-shadow:0 1px 6px rgba(0,0,0,0.07);
+}
+body.light-mode .vc-play-btn {
+  background:var(--accent);
+  color:#fff;
+}
+body.light-mode .tts-speak-btn {
+  background:rgba(13,158,106,0.1);
+  color:var(--accent);
+  border-color:rgba(13,158,106,0.2);
+}
+body.light-mode .acc-icon { background:rgba(13,158,106,0.1); border-color:rgba(13,158,106,0.2); }
+body.light-mode .section-head h2 { color:var(--text); }
+body.light-mode .contact-row { box-shadow:0 1px 4px rgba(0,0,0,0.05); }
 
 /* ═══ DESKTOP FULL WIDTH ═══ */
 /* ═══════════════════════════════════════════
@@ -36,14 +134,15 @@ body.light-mode .update-card:hover { box-shadow:0 4px 12px rgba(0,0,0,0.1); }
 @media(min-width:768px) {
 
   /* ── Header ── */
-  #app-header { padding:0 48px; height:72px; }
-  .header-logo { width:48px; height:48px; font-size:20px; }
+  #app-header { padding:0 48px; height:72px; gap:16px; }
+  .header-logo { width:48px; height:48px; font-size:20px; border-radius:10px; }
   .header-name { font-size:18px; }
   .header-tag  { font-size:12px; }
-  .hbtn        { width:42px; height:42px; font-size:17px; }
+  .hbtn,#logout-btn,#chpass-btn { width:42px!important; height:42px!important; font-size:17px!important; border-radius:10px!important; }
+  .header-actions { gap:8px; }
 
   /* ── Ticker ── */
-  #ticker-bar  { height:42px; padding:0 48px; }
+  #ticker-bar  { height:42px; padding:0 48px; top:72px; }
   .ticker-item { font-size:14px; }
   .ticker-label{ font-size:12px; padding:3px 10px; }
 
@@ -219,7 +318,7 @@ button{border:none;cursor:pointer;font-family:var(--font)}
 #ticker-bar{
   background:var(--bg2);border-bottom:1px solid var(--border);
   padding:0 16px;display:flex;align-items:center;gap:12px;
-  height:38px;overflow:hidden;position:sticky;top:0;z-index:50
+  height:38px;overflow:hidden;position:sticky;top:52px;z-index:50
 }
 .ticker-label{
   background:var(--accent);color:#0a0f1a;border-radius:4px;
@@ -241,24 +340,51 @@ button{border:none;cursor:pointer;font-family:var(--font)}
 /* HEADER */
 #app-header{
   background:var(--bg2);border-bottom:1px solid var(--border);
-  padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:64px
+  padding:0 8px 0 10px;
+  display:flex;align-items:center;justify-content:space-between;
+  height:52px;gap:4px;
+  position:sticky;top:0;z-index:100;
 }
-.header-brand{display:flex;align-items:center;gap:12px}
+.header-brand{display:flex;align-items:center;gap:8px;min-width:0;flex:1;overflow:hidden}
 .header-logo{
-  width:42px;height:42px;background:rgba(79,255,176,0.12);
-  border:1.5px solid var(--accent);border-radius:10px;
+  width:34px;height:34px;flex-shrink:0;background:rgba(79,255,176,0.12);
+  border:1.5px solid var(--accent);border-radius:8px;
   display:flex;align-items:center;justify-content:center;
-  color:var(--accent);font-size:18px
+  color:var(--accent);font-size:14px
 }
-.header-name{font-size:16px;font-weight:700;font-family:var(--font-te)}
-.header-tag{font-size:11px;color:var(--text2);margin-top:1px}
-.header-actions{display:flex;gap:8px}
-.hbtn{
-  width:38px;height:38px;border-radius:10px;background:var(--bg3);
+.header-text{min-width:0;overflow:hidden;flex:1}
+.header-name{font-size:13px;font-weight:700;font-family:var(--font-te);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3}
+.header-tag{font-size:10px;color:var(--text2);margin-top:1px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.header-actions{display:flex;gap:3px;flex-shrink:0;align-items:center}
+/* Base button - all header icons */
+.hbtn,#logout-btn{
+  width:30px;height:30px;border-radius:7px;background:var(--bg3);
   color:var(--text2);display:flex;align-items:center;justify-content:center;
-  font-size:15px;transition:var(--trans)
+  font-size:13px;transition:var(--trans);flex-shrink:0;cursor:pointer;border:none
 }
 .hbtn:hover{background:var(--card);color:var(--text)}
+/* Call button - accent tint */
+#fab-call.hbtn{background:rgba(79,255,176,0.08);color:var(--accent)}
+/* WhatsApp button - green tint */
+#fab-wa.hbtn{background:rgba(37,211,102,0.08);color:#25d366}
+/* Logout - red tint */
+#logout-btn{
+  display:none;
+  background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.2);
+  color:#f87171;
+}
+#logout-btn:hover{background:rgba(248,113,113,0.22)}
+#logout-btn.show{display:flex}
+/* Key/password - accent */
+#chpass-btn{
+  display:none;width:30px;height:30px;border-radius:7px;
+  background:rgba(79,255,176,0.08);border:1px solid rgba(79,255,176,0.15);
+  color:var(--accent);font-size:12px;
+  align-items:center;justify-content:center;cursor:pointer;transition:var(--trans);flex-shrink:0
+}
+#chpass-btn.show{display:flex}
 
 .page{display:none}
 .page.active{display:block}
@@ -405,6 +531,29 @@ button{border:none;cursor:pointer;font-family:var(--font)}
 .section-line{flex:1;height:1px;background:linear-gradient(90deg,var(--border) 0%,transparent 100%)}
 
 .updates-section{margin-bottom:24px}
+
+/* ── Update filter pills ── */
+.upd-filter-wrap{
+  display:flex;gap:6px;overflow-x:auto;padding:0 0 10px;
+  scrollbar-width:none;-ms-overflow-style:none;flex-wrap:nowrap;
+}
+.upd-filter-wrap::-webkit-scrollbar{display:none}
+.upd-pill{
+  flex-shrink:0;padding:5px 12px;border-radius:20px;font-size:12px;
+  font-family:var(--font-te);font-weight:600;cursor:pointer;
+  border:1.5px solid var(--border);background:var(--bg3);
+  color:var(--text2);transition:var(--trans);display:flex;align-items:center;gap:5px;
+  white-space:nowrap;
+}
+.upd-pill:hover{border-color:var(--accent);color:var(--accent)}
+.upd-pill.active{
+  background:var(--accent);color:#0a0f1a;border-color:var(--accent);
+}
+.upd-pill .upd-count{
+  background:rgba(255,255,255,0.25);color:inherit;
+  border-radius:10px;padding:1px 6px;font-size:10px;font-weight:700;
+}
+.upd-pill.active .upd-count{background:rgba(0,0,0,0.15)}
 .updates-scroll-wrap{
   max-height:500px;overflow-y:auto;
   scrollbar-width:thin;scrollbar-color:var(--border) transparent
@@ -429,45 +578,6 @@ button{border:none;cursor:pointer;font-family:var(--font)}
   cursor:pointer;transition:var(--trans);margin-top:4px
 }
 .updates-show-more:hover{border-color:var(--accent);color:var(--accent)}
-
-/* ── CATEGORY TABS ── */
-.cat-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
-.cat-tab{
-  display:flex;align-items:center;gap:6px;
-  padding:7px 14px;border-radius:20px;
-  background:var(--bg3);border:1px solid var(--border);
-  color:var(--text2);font-size:12px;font-weight:600;
-  cursor:pointer;transition:var(--trans);font-family:var(--font-te);
-  white-space:nowrap
-}
-.cat-tab i{font-size:13px}
-.cat-tab:hover{border-color:var(--accent);color:var(--accent)}
-.cat-tab.active{
-  background:var(--accent);color:#0a0f1a;
-  border-color:var(--accent);
-  box-shadow:0 0 12px rgba(79,255,176,0.35)
-}
-.cat-tab .cat-count{
-  background:rgba(0,0,0,0.15);border-radius:10px;
-  padding:1px 6px;font-size:10px;font-weight:700
-}
-.cat-tab.active .cat-count{background:rgba(0,0,0,0.2)}
-
-/* ── UPDATE CARD with badge ── */
-.update-badge{
-  font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;
-  white-space:nowrap;flex-shrink:0
-}
-.badge-jobs     {background:rgba(96,165,250,0.15);color:#60a5fa}
-.badge-admissions{background:rgba(167,139,250,0.15);color:#a78bfa}
-.badge-exams    {background:rgba(251,191,36,0.15);color:#fbbf24}
-.badge-alerts   {background:rgba(248,113,113,0.15);color:#f87171}
-.badge-news     {background:rgba(45,212,191,0.15);color:#2dd4bf}
-.badge-other    {background:rgba(255,255,255,0.08);color:var(--text2)}
-
-.update-card[data-cat]{animation:fadeInCard 0.25s ease}
-@keyframes fadeInCard{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-.update-card.hidden{display:none}
 
 .services-section{margin-bottom:24px}
 .services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
@@ -887,14 +997,7 @@ button{border:none;cursor:pointer;font-family:var(--font)}
 .al-link:hover{opacity:1}
 
 /* Logout button in header */
-#logout-btn{
-  display:none;width:34px;height:34px;border-radius:9px;
-  background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.2);
-  color:#f87171;font-size:13px;align-items:center;justify-content:center;
-  cursor:pointer;transition:background 0.2s;
-}
-#logout-btn:hover{background:rgba(248,113,113,0.22)}
-#logout-btn.show{display:flex}
+/* logout & chpass handled in HEADER block above */
 </style>
 </head>
 <body>
@@ -1053,10 +1156,10 @@ button{border:none;cursor:pointer;font-family:var(--font)}
 <header id="app-header">
   <div class="header-brand">
     <div class="header-logo">
-      <img id="hdr-logo-img" style="display:none;width:100%;height:100%;object-fit:cover;border-radius:8px" onerror="this.style.display='none';document.getElementById('hdr-icon').style.display='flex'"/>
+      <img id="hdr-logo-img" style="display:none;width:100%;height:100%;object-fit:cover;border-radius:6px" onerror="this.style.display='none';document.getElementById('hdr-icon').style.display='flex'"/>
       <i id="hdr-icon" class="fas fa-landmark"></i>
     </div>
-    <div>
+    <div class="header-text">
       <div class="header-name" id="hdr-name">లోడ్…</div>
       <div class="header-tag" id="hdr-tag">—</div>
     </div>
@@ -1067,7 +1170,7 @@ button{border:none;cursor:pointer;font-family:var(--font)}
     </button>
     <a id="fab-call" href="#" class="hbtn"><i class="fas fa-phone"></i></a>
     <a id="fab-wa" href="#" target="_blank" class="hbtn" style="color:#25d366"><i class="fab fa-whatsapp"></i></a>
-    <button id="chpass-btn" onclick="openCpModal()" title="Password మార్చండి" style="display:none;width:34px;height:34px;border-radius:9px;background:rgba(79,255,176,0.08);border:1px solid rgba(79,255,176,0.2);color:var(--accent);font-size:13px;align-items:center;justify-content:center;cursor:pointer;transition:background 0.2s"><i class="fas fa-key"></i></button>
+    <button id="chpass-btn" onclick="openCpModal()" title="Password మార్చండి"><i class="fas fa-key"></i></button>
     <button id="logout-btn" onclick="doAgentLogout()" title="Logout"><i class="fas fa-right-from-bracket"></i></button>
   </div>
 </header>
@@ -1118,7 +1221,7 @@ button{border:none;cursor:pointer;font-family:var(--font)}
     <div id="home-2col">
       <div class="updates-section">
         <div class="section-head"><h2>🔔 తాజా అప్‌డేట్లు</h2><div class="section-line"></div></div>
-        <div class="cat-tabs" id="cat-tabs"></div>
+        <div class="upd-filter-wrap" id="upd-filter-wrap"></div>
         <div id="updates-list"></div>
       </div>
       <div class="services-section">
@@ -1355,7 +1458,7 @@ function startApp(csvUrl, agentTab) {
   AGENT_TAB  = agentTab  || '';
   document.getElementById('agent-login-screen').classList.add('hide');
   document.getElementById('logout-btn').classList.add('show');
-  document.getElementById('chpass-btn').style.display = 'flex';
+  document.getElementById('chpass-btn').classList.add('show');
   // Reset loading screen (checkSession may have set inline display:none)
   const ls = document.getElementById('loading-screen');
   ls.style.display = 'flex';
@@ -1428,7 +1531,7 @@ function buildClient(rows) {
   rows.forEach(r => {
     const key = (r.key||'').trim();
     if (!key) return;
-    if      (key==='update')      updates.push({title:r.title||r.value, link:r.link||'#', category:(r.extra||'other').toLowerCase().trim()});
+    if      (key==='update')      updates.push({title:r.title||r.value, link:r.link||'#', cat:(r.extra||r.icon||'').trim()});
     else if (key==='service')     services.push({title:r.title||r.value, page:r.link||'#', icon:r.icon||'fas fa-star', color:r.extra||'gi-blue'});
     else if (key==='pdf')         pdfs.push({title:r.title||r.value, link:r.link||'#'});
     else if (key==='doc')         docs.push(r.value||r.title);
@@ -1690,89 +1793,90 @@ window.bannerGo = function(n) {
   }
 };
 
-/* ── Category config ── */
-const CAT_CONFIG = {
-  jobs:        { label:'Jobs',        icon:'fas fa-briefcase',     badge:'badge-jobs'      },
-  admissions:  { label:'Admissions',  icon:'fas fa-graduation-cap',badge:'badge-admissions'},
-  exams:       { label:'Exams',       icon:'fas fa-file-alt',      badge:'badge-exams'     },
-  alerts:      { label:'Alerts',      icon:'fas fa-bullhorn',      badge:'badge-alerts'    },
-  news:        { label:'News',        icon:'fas fa-newspaper',     badge:'badge-news'      },
-  other:       { label:'Other',       icon:'fas fa-bell',          badge:'badge-other'     },
-};
-
-let _activecat = 'all';
+let _updCat = 'అన్నీ';
 
 function renderUpdates() {
-  const list     = document.getElementById('updates-list');
-  const tabsWrap = document.getElementById('cat-tabs');
-  const updates  = CLIENT.updates || [];
+  const updates = CLIENT.updates || [];
+  const filterWrap = document.getElementById('upd-filter-wrap');
+  const list = document.getElementById('updates-list');
 
   if (!updates.length) {
-    tabsWrap.innerHTML = '';
+    filterWrap.innerHTML = '';
     list.innerHTML = `<div style="color:var(--text2);font-size:13px;padding:12px 0;font-family:var(--font-te)">తాజా అప్‌డేట్లు లేవు</div>`;
     return;
   }
 
-  /* ── Count per category ── */
-  const cats = {};
-  updates.forEach(u => {
-    const c = u.category || 'other';
-    cats[c] = (cats[c] || 0) + 1;
-  });
-  const hasCats = Object.keys(cats).length > 1;
+  // Build categories
+  const catSet = ['అన్నీ'];
+  updates.forEach(u => { if (u.cat && !catSet.includes(u.cat)) catSet.push(u.cat); });
 
-  /* ── Build tabs ── */
-  if (hasCats) {
-    const total = updates.length;
-    let html = `<button class="cat-tab active" data-cat="all" onclick="filterCat('all')">
-      <i class="fas fa-th-large"></i> అన్నీ <span class="cat-count">${total}</span>
-    </button>`;
-    const ORDER = ['jobs','admissions','exams','alerts','news','other'];
-    const sorted = [...Object.keys(cats)].sort((a,b) => {
-      const ai = ORDER.indexOf(a); const bi = ORDER.indexOf(b);
-      return (ai<0?99:ai) - (bi<0?99:bi);
-    });
-    sorted.forEach(cat => {
-      const cfg = CAT_CONFIG[cat] || {label:cat, icon:'fas fa-tag', badge:'badge-other'};
-      html += `<button class="cat-tab" data-cat="${cat}" onclick="filterCat('${cat}')">
-        <i class="${cfg.icon}"></i> ${cfg.label} <span class="cat-count">${cats[cat]}</span>
+  // Render pills only if we have real categories
+  if (catSet.length > 1) {
+    filterWrap.innerHTML = catSet.map(c => {
+      const count = c === 'అన్నీ' ? updates.length : updates.filter(u => u.cat === c).length;
+      return `<button class="upd-pill${c === _updCat ? ' active' : ''}" onclick="filterUpdates('${c}')">
+        ${c} <span class="upd-count">${count}</span>
       </button>`;
-    });
-    tabsWrap.innerHTML = html;
-    tabsWrap.style.display = 'flex';
+    }).join('');
   } else {
-    tabsWrap.innerHTML = '';
-    tabsWrap.style.display = 'none';
+    filterWrap.innerHTML = '';
   }
 
-  /* ── Render all cards ── */
-  list.innerHTML = updates.map(u => {
-    const cat = u.category || 'other';
-    const cfg = CAT_CONFIG[cat] || CAT_CONFIG.other;
-    const badge = hasCats ? `<span class="update-badge ${cfg.badge}">${cfg.label}</span>` : '';
-    return `<div class="update-card" data-cat="${cat}" onclick="safeOpen('${u.link}')">
-      <div class="update-dot"></div>
-      <div class="update-title">${u.title}</div>
-      ${badge}
-      <i class="fas fa-chevron-right update-arrow"></i>
-    </div>`;
-  }).join('');
+  renderUpdateCards();
 }
 
-function filterCat(cat) {
-  _activecat = cat;
-  /* update tab active state */
-  document.querySelectorAll('.cat-tab').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.cat === cat);
+function filterUpdates(cat) {
+  _updCat = cat;
+  document.querySelectorAll('.upd-pill').forEach(p => {
+    p.classList.toggle('active', p.textContent.trim().startsWith(cat));
   });
-  /* show/hide cards */
-  document.querySelectorAll('#updates-list .update-card').forEach(card => {
-    if (cat === 'all' || card.dataset.cat === cat) {
-      card.classList.remove('hidden');
-    } else {
-      card.classList.add('hidden');
-    }
-  });
+  renderUpdateCards();
+}
+
+function renderUpdateCards() {
+  const list = document.getElementById('updates-list');
+  const updates = CLIENT.updates || [];
+  const filtered = _updCat === 'అన్నీ' ? updates : updates.filter(u => u.cat === _updCat);
+  const LIMIT = 10;
+
+  const card = u => `
+    <div class="update-card" onclick="safeOpen('${u.link}')">
+      <div class="update-dot"></div>
+      <div class="update-title">${u.title}</div>
+      <i class="fas fa-chevron-right update-arrow"></i>
+    </div>`;
+
+  if (filtered.length <= LIMIT) {
+    list.innerHTML = filtered.length
+      ? filtered.map(card).join('')
+      : `<div style="color:var(--text2);font-size:13px;padding:12px 0;font-family:var(--font-te)">ఈ వర్గంలో అప్‌డేట్లు లేవు</div>`;
+    return;
+  }
+
+  const visible = filtered.slice(0, LIMIT);
+  const extra   = filtered.slice(LIMIT);
+  list.innerHTML = visible.map(card).join('') + `
+    <div id="updates-more-wrap" style="display:none">
+      <div style="max-height:340px;overflow-y:auto;scrollbar-width:thin;
+        scrollbar-color:var(--border) transparent;border-radius:10px;
+        border:1px solid var(--border);margin-top:4px;padding:6px 0;">
+        ${extra.map(card).join('')}
+      </div>
+    </div>
+    <button class="updates-show-more" id="updates-toggle-btn"
+      onclick="toggleMoreUpdates(${extra.length})">
+      <i class="fas fa-chevron-down"></i> మరింత చూడండి (${extra.length} అప్‌డేట్లు)
+    </button>`;
+}
+
+function toggleMoreUpdates(count) {
+  const wrap = document.getElementById('updates-more-wrap');
+  const btn  = document.getElementById('updates-toggle-btn');
+  const open = wrap.style.display === 'block';
+  wrap.style.display = open ? 'none' : 'block';
+  btn.innerHTML = open
+    ? `<i class="fas fa-chevron-down"></i> మరింత చూడండి (${count} అప్‌డేట్లు)`
+    : `<i class="fas fa-chevron-up"></i> తక్కువ చూడండి`;
 }
 
 function renderServices() {
