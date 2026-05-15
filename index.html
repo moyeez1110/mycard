@@ -1314,11 +1314,27 @@ function startApp(csvUrl) {
   document.getElementById('agent-login-screen').classList.add('hide');
   document.getElementById('logout-btn').classList.add('show');
   document.getElementById('chpass-btn').style.display = 'flex';
+
+  // ✅ FIX 1: Reset loading screen before loadData()
+  // checkSession() may have set display:none via inline style.
+  // We must clear that inline style and remove .hide class
+  // so the spinner is visible while data loads, and hideLoader()
+  // can properly fade it out afterwards.
+  const ls = document.getElementById('loading-screen');
+  ls.style.display = 'flex';      // clear inline display:none
+  ls.classList.remove('hide');    // restore opacity
+
   loadData();
 }
 
 /* ── Session check on page load (verify token with server) ── */
 (async function checkSession() {
+  // ✅ FIX 2a: Safety timeout — if network hangs >8s, show login
+  const safetyTimer = setTimeout(() => {
+    localStorage.removeItem('agent_session');
+    document.getElementById('loading-screen').style.display = 'none';
+  }, 8000);
+
   const raw = localStorage.getItem('agent_session');
   if (raw) {
     try {
@@ -1328,6 +1344,7 @@ function startApp(csvUrl) {
         const res  = await fetch(`${SCRIPT_URL}?action=agentVerify&agentToken=${encodeURIComponent(s.token)}`).catch(() => null);
         const data = res ? await res.json().catch(() => null) : null;
         if (data && data.ok && data.csvUrl) {
+          clearTimeout(safetyTimer);
           AGENT_TOKEN = s.token;
           // Update stored csvUrl in case it changed
           localStorage.setItem('agent_session', JSON.stringify({ ...s, csvUrl: data.csvUrl }));
@@ -1339,7 +1356,9 @@ function startApp(csvUrl) {
       }
     } catch(e) {}
   }
-  // No valid session — show login, hide loading
+  // ✅ FIX 2b: No valid session — hide loading, agent-login-screen is
+  // already visible (it has no .hide class by default).
+  clearTimeout(safetyTimer);
   document.getElementById('loading-screen').style.display = 'none';
 })();
 
@@ -1413,6 +1432,9 @@ function buildClient(rows) {
 
 /* FETCH — 3 proxy fallbacks */
 async function loadData() {
+  // ✅ FIX 4: Clear previous error banner before each load attempt
+  document.getElementById('error-banner').classList.remove('show');
+
   const proxies = [
     u => u,
     u => `https://corsproxy.io/?${encodeURIComponent(u)}`,
@@ -1433,7 +1455,10 @@ async function loadData() {
       return;
     } catch(e) { console.warn('proxy failed:',e.message); }
   }
-  document.getElementById('error-banner').classList.add('show');
+  // ✅ FIX 4b: Show specific error with publish instructions
+  const banner = document.getElementById('error-banner');
+  banner.innerHTML = '⚠️ Data లోడ్ కాలేదు. Google Sheet ని <b>File → Share → Publish to web → CSV</b> గా publish చేయండి. తర్వాత refresh చేయండి.';
+  banner.classList.add('show');
   hideLoader();
 }
 
@@ -1446,11 +1471,17 @@ function renderAll() {
   showPopup(); hideLoader();
 }
 
-/* ── FIX 5: hideLoader — was MISSING, caused infinite loading screen ── */
+/* ── FIX 5 (original) + FIX 3 (enhanced): hideLoader ── */
+// Previous bug: if loading-screen had inline style="display:flex" set by
+// startApp(), adding .hide class only set opacity:0 but display stayed flex,
+// leaving an invisible but blocking overlay. Now we clear both.
 function hideLoader() {
   const s = document.getElementById('loading-screen');
-  s.classList.add('hide');
-  setTimeout(() => { s.style.display='none'; }, 500);
+  s.classList.add('hide');          // fade out via CSS transition
+  setTimeout(() => {
+    s.style.display = 'none';      // then fully remove from layout
+    s.classList.remove('hide');    // reset for next use
+  }, 500);
 }
 
 function applyTheme() {
