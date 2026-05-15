@@ -21,111 +21,13 @@
 
 /* ═══ LIGHT MODE ═══ */
 body.light-mode {
-  --bg:#f0f4f8; --bg2:#ffffff; --bg3:#e2e8f0; --card:#ffffff;
-  --border:rgba(0,0,0,0.09);
-  --text:#0f1f35; --text2:#4a5a72;
+  --bg:#f0f4f8; --bg2:#ffffff; --bg3:#e8edf5; --card:#ffffff;
+  --border:rgba(0,0,0,0.08);
+  --text:#1a2235; --text2:#5a6a7a;
   --shadow:0 4px 24px rgba(0,0,0,0.1);
-  /* Darker accent so it's readable on white */
-  --accent:#0d9e6a; --accent-dim:#0a8058;
 }
 body.light-mode #loading-screen { background:var(--bg); }
-body.light-mode #app-header {
-  background:#ffffff;
-  border-bottom:1px solid rgba(0,0,0,0.09);
-  box-shadow:0 2px 12px rgba(0,0,0,0.06);
-}
-body.light-mode #ticker-bar {
-  background:#f8fafc;
-  border-bottom:1px solid rgba(0,0,0,0.09);
-}
-body.light-mode .ticker-label {
-  background:var(--accent);
-  color:#fff;
-}
-body.light-mode .header-logo {
-  background:rgba(13,158,106,0.1);
-  border-color:var(--accent);
-}
-body.light-mode .hbtn {
-  background:#f1f5f9;
-  color:#4a5a72;
-  border:1px solid rgba(0,0,0,0.08);
-}
-body.light-mode .hbtn:hover { background:#e2e8f0; color:var(--text); }
-body.light-mode .hero-card {
-  box-shadow:0 2px 16px rgba(0,0,0,0.08);
-}
-body.light-mode .hero-cover {
-  background:linear-gradient(135deg,#c7e8d8 0%,#a8d8c0 50%,#c7e8d8 100%);
-}
-body.light-mode .hero-avatar {
-  border-color:#f0f4f8;
-  background:rgba(13,158,106,0.1);
-}
-body.light-mode .hero-btn.secondary {
-  background:#f1f5f9;
-  border-color:rgba(0,0,0,0.1);
-}
-body.light-mode .service-card {
-  box-shadow:0 1px 6px rgba(0,0,0,0.06);
-}
-body.light-mode .service-card:hover {
-  box-shadow:0 6px 20px rgba(0,0,0,0.12);
-}
-body.light-mode .update-card { box-shadow:0 1px 4px rgba(0,0,0,0.05); }
-body.light-mode .update-card:hover {
-  box-shadow:0 4px 16px rgba(0,0,0,0.1);
-  border-color:var(--accent);
-}
-body.light-mode .update-dot { box-shadow:0 0 6px rgba(13,158,106,0.5); }
-body.light-mode .acc-item { box-shadow:0 1px 4px rgba(0,0,0,0.05); }
-body.light-mode .pdf-item:hover { border-color:#e05555; }
-body.light-mode #popup-box {
-  box-shadow:0 0 40px rgba(13,158,106,0.15);
-  border-color:var(--accent);
-}
-body.light-mode .popup-badge {
-  background:rgba(13,158,106,0.1);
-  color:var(--accent);
-}
-body.light-mode #popup-close {
-  background:var(--accent);
-  color:#fff;
-}
-body.light-mode .banner-track {
-  box-shadow:0 2px 12px rgba(0,0,0,0.08);
-}
-body.light-mode #bottom-nav {
-  background:#ffffff;
-  border-top:1px solid rgba(0,0,0,0.08);
-  box-shadow:0 -2px 12px rgba(0,0,0,0.06);
-}
-body.light-mode .nav-btn { color:#64748b; }
-body.light-mode .nav-btn.active { color:var(--accent); }
-body.light-mode #fab {
-  background:var(--accent);
-  box-shadow:0 4px 16px rgba(13,158,106,0.35);
-}
-body.light-mode .loader-ring { border-top-color:var(--accent); }
-body.light-mode .vc-audio-card,
-body.light-mode .vc-tts-card,
-body.light-mode .vc-poster-card,
-body.light-mode .vc-pdf-hcard,
-body.light-mode .vc-canva-hcard {
-  box-shadow:0 1px 6px rgba(0,0,0,0.07);
-}
-body.light-mode .vc-play-btn {
-  background:var(--accent);
-  color:#fff;
-}
-body.light-mode .tts-speak-btn {
-  background:rgba(13,158,106,0.1);
-  color:var(--accent);
-  border-color:rgba(13,158,106,0.2);
-}
-body.light-mode .acc-icon { background:rgba(13,158,106,0.1); border-color:rgba(13,158,106,0.2); }
-body.light-mode .section-head h2 { color:var(--text); }
-body.light-mode .contact-row { box-shadow:0 1px 4px rgba(0,0,0,0.05); }
+body.light-mode .update-card:hover { box-shadow:0 4px 12px rgba(0,0,0,0.1); }
 
 /* ═══ DESKTOP FULL WIDTH ═══ */
 /* ═══════════════════════════════════════════
@@ -134,14 +36,14 @@ body.light-mode .contact-row { box-shadow:0 1px 4px rgba(0,0,0,0.05); }
 @media(min-width:768px) {
 
   /* ── Header ── */
-  #app-header { padding:0 48px; height:72px; gap:16px; }
+  #app-header { padding:0 48px; height:72px; }
   .header-logo { width:48px; height:48px; font-size:20px; }
   .header-name { font-size:18px; }
   .header-tag  { font-size:12px; }
   .hbtn        { width:42px; height:42px; font-size:17px; }
 
   /* ── Ticker ── */
-  #ticker-bar  { height:42px; padding:0 48px; top:72px; }
+  #ticker-bar  { height:42px; padding:0 48px; }
   .ticker-item { font-size:14px; }
   .ticker-label{ font-size:12px; padding:3px 10px; }
 
@@ -317,7 +219,7 @@ button{border:none;cursor:pointer;font-family:var(--font)}
 #ticker-bar{
   background:var(--bg2);border-bottom:1px solid var(--border);
   padding:0 16px;display:flex;align-items:center;gap:12px;
-  height:38px;overflow:hidden;position:sticky;top:56px;z-index:50
+  height:38px;overflow:hidden;position:sticky;top:0;z-index:50
 }
 .ticker-label{
   background:var(--accent);color:#0a0f1a;border-radius:4px;
@@ -339,24 +241,22 @@ button{border:none;cursor:pointer;font-family:var(--font)}
 /* HEADER */
 #app-header{
   background:var(--bg2);border-bottom:1px solid var(--border);
-  padding:0 12px;display:flex;align-items:center;justify-content:space-between;
-  height:56px;gap:8px;
-  position:sticky;top:0;z-index:100;
+  padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:64px
 }
-.header-brand{display:flex;align-items:center;gap:10px;min-width:0;flex:1}
+.header-brand{display:flex;align-items:center;gap:12px}
 .header-logo{
-  width:38px;height:38px;flex-shrink:0;background:rgba(79,255,176,0.12);
+  width:42px;height:42px;background:rgba(79,255,176,0.12);
   border:1.5px solid var(--accent);border-radius:10px;
   display:flex;align-items:center;justify-content:center;
-  color:var(--accent);font-size:16px
+  color:var(--accent);font-size:18px
 }
-.header-name{font-size:14px;font-weight:700;font-family:var(--font-te);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.header-tag{font-size:10px;color:var(--text2);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.header-actions{display:flex;gap:5px;flex-shrink:0}
+.header-name{font-size:16px;font-weight:700;font-family:var(--font-te)}
+.header-tag{font-size:11px;color:var(--text2);margin-top:1px}
+.header-actions{display:flex;gap:8px}
 .hbtn{
-  width:34px;height:34px;border-radius:9px;background:var(--bg3);
+  width:38px;height:38px;border-radius:10px;background:var(--bg3);
   color:var(--text2);display:flex;align-items:center;justify-content:center;
-  font-size:14px;transition:var(--trans);flex-shrink:0
+  font-size:15px;transition:var(--trans)
 }
 .hbtn:hover{background:var(--card);color:var(--text)}
 
