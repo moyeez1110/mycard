@@ -430,6 +430,45 @@ button{border:none;cursor:pointer;font-family:var(--font)}
 }
 .updates-show-more:hover{border-color:var(--accent);color:var(--accent)}
 
+/* ── CATEGORY TABS ── */
+.cat-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.cat-tab{
+  display:flex;align-items:center;gap:6px;
+  padding:7px 14px;border-radius:20px;
+  background:var(--bg3);border:1px solid var(--border);
+  color:var(--text2);font-size:12px;font-weight:600;
+  cursor:pointer;transition:var(--trans);font-family:var(--font-te);
+  white-space:nowrap
+}
+.cat-tab i{font-size:13px}
+.cat-tab:hover{border-color:var(--accent);color:var(--accent)}
+.cat-tab.active{
+  background:var(--accent);color:#0a0f1a;
+  border-color:var(--accent);
+  box-shadow:0 0 12px rgba(79,255,176,0.35)
+}
+.cat-tab .cat-count{
+  background:rgba(0,0,0,0.15);border-radius:10px;
+  padding:1px 6px;font-size:10px;font-weight:700
+}
+.cat-tab.active .cat-count{background:rgba(0,0,0,0.2)}
+
+/* ── UPDATE CARD with badge ── */
+.update-badge{
+  font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;
+  white-space:nowrap;flex-shrink:0
+}
+.badge-jobs     {background:rgba(96,165,250,0.15);color:#60a5fa}
+.badge-admissions{background:rgba(167,139,250,0.15);color:#a78bfa}
+.badge-exams    {background:rgba(251,191,36,0.15);color:#fbbf24}
+.badge-alerts   {background:rgba(248,113,113,0.15);color:#f87171}
+.badge-news     {background:rgba(45,212,191,0.15);color:#2dd4bf}
+.badge-other    {background:rgba(255,255,255,0.08);color:var(--text2)}
+
+.update-card[data-cat]{animation:fadeInCard 0.25s ease}
+@keyframes fadeInCard{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.update-card.hidden{display:none}
+
 .services-section{margin-bottom:24px}
 .services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .service-card{
@@ -1079,6 +1118,7 @@ button{border:none;cursor:pointer;font-family:var(--font)}
     <div id="home-2col">
       <div class="updates-section">
         <div class="section-head"><h2>🔔 తాజా అప్‌డేట్లు</h2><div class="section-line"></div></div>
+        <div class="cat-tabs" id="cat-tabs"></div>
         <div id="updates-list"></div>
       </div>
       <div class="services-section">
@@ -1388,7 +1428,7 @@ function buildClient(rows) {
   rows.forEach(r => {
     const key = (r.key||'').trim();
     if (!key) return;
-    if      (key==='update')      updates.push({title:r.title||r.value, link:r.link||'#'});
+    if      (key==='update')      updates.push({title:r.title||r.value, link:r.link||'#', category:(r.extra||'other').toLowerCase().trim()});
     else if (key==='service')     services.push({title:r.title||r.value, page:r.link||'#', icon:r.icon||'fas fa-star', color:r.extra||'gi-blue'});
     else if (key==='pdf')         pdfs.push({title:r.title||r.value, link:r.link||'#'});
     else if (key==='doc')         docs.push(r.value||r.title);
@@ -1650,49 +1690,89 @@ window.bannerGo = function(n) {
   }
 };
 
+/* ── Category config ── */
+const CAT_CONFIG = {
+  jobs:        { label:'Jobs',        icon:'fas fa-briefcase',     badge:'badge-jobs'      },
+  admissions:  { label:'Admissions',  icon:'fas fa-graduation-cap',badge:'badge-admissions'},
+  exams:       { label:'Exams',       icon:'fas fa-file-alt',      badge:'badge-exams'     },
+  alerts:      { label:'Alerts',      icon:'fas fa-bullhorn',      badge:'badge-alerts'    },
+  news:        { label:'News',        icon:'fas fa-newspaper',     badge:'badge-news'      },
+  other:       { label:'Other',       icon:'fas fa-bell',          badge:'badge-other'     },
+};
+
+let _activecat = 'all';
+
 function renderUpdates() {
-  const list = document.getElementById('updates-list');
-  const updates = CLIENT.updates || [];
+  const list     = document.getElementById('updates-list');
+  const tabsWrap = document.getElementById('cat-tabs');
+  const updates  = CLIENT.updates || [];
+
   if (!updates.length) {
+    tabsWrap.innerHTML = '';
     list.innerHTML = `<div style="color:var(--text2);font-size:13px;padding:12px 0;font-family:var(--font-te)">తాజా అప్‌డేట్లు లేవు</div>`;
     return;
   }
-  const LIMIT = 10;
-  const card = u => `
-    <div class="update-card" onclick="safeOpen('${u.link}')">
+
+  /* ── Count per category ── */
+  const cats = {};
+  updates.forEach(u => {
+    const c = u.category || 'other';
+    cats[c] = (cats[c] || 0) + 1;
+  });
+  const hasCats = Object.keys(cats).length > 1;
+
+  /* ── Build tabs ── */
+  if (hasCats) {
+    const total = updates.length;
+    let html = `<button class="cat-tab active" data-cat="all" onclick="filterCat('all')">
+      <i class="fas fa-th-large"></i> అన్నీ <span class="cat-count">${total}</span>
+    </button>`;
+    const ORDER = ['jobs','admissions','exams','alerts','news','other'];
+    const sorted = [...Object.keys(cats)].sort((a,b) => {
+      const ai = ORDER.indexOf(a); const bi = ORDER.indexOf(b);
+      return (ai<0?99:ai) - (bi<0?99:bi);
+    });
+    sorted.forEach(cat => {
+      const cfg = CAT_CONFIG[cat] || {label:cat, icon:'fas fa-tag', badge:'badge-other'};
+      html += `<button class="cat-tab" data-cat="${cat}" onclick="filterCat('${cat}')">
+        <i class="${cfg.icon}"></i> ${cfg.label} <span class="cat-count">${cats[cat]}</span>
+      </button>`;
+    });
+    tabsWrap.innerHTML = html;
+    tabsWrap.style.display = 'flex';
+  } else {
+    tabsWrap.innerHTML = '';
+    tabsWrap.style.display = 'none';
+  }
+
+  /* ── Render all cards ── */
+  list.innerHTML = updates.map(u => {
+    const cat = u.category || 'other';
+    const cfg = CAT_CONFIG[cat] || CAT_CONFIG.other;
+    const badge = hasCats ? `<span class="update-badge ${cfg.badge}">${cfg.label}</span>` : '';
+    return `<div class="update-card" data-cat="${cat}" onclick="safeOpen('${u.link}')">
       <div class="update-dot"></div>
       <div class="update-title">${u.title}</div>
+      ${badge}
       <i class="fas fa-chevron-right update-arrow"></i>
     </div>`;
-
-  if (updates.length <= LIMIT) {
-    list.innerHTML = updates.map(card).join('');
-    return;
-  }
-  const visible = updates.slice(0, LIMIT);
-  const extra   = updates.slice(LIMIT);
-  list.innerHTML = visible.map(card).join('') + `
-    <div id="updates-more-wrap" style="display:none">
-      <div style="max-height:340px;overflow-y:auto;scrollbar-width:thin;
-        scrollbar-color:var(--border) transparent;border-radius:10px;
-        border:1px solid var(--border);margin-top:4px;padding:6px 0;">
-        ${extra.map(card).join('')}
-      </div>
-    </div>
-    <button class="updates-show-more" id="updates-toggle-btn"
-      onclick="toggleMoreUpdates(${extra.length})">
-      <i class="fas fa-chevron-down"></i> మరింత చూడండి (${extra.length} అప్‌డేట్లు)
-    </button>`;
+  }).join('');
 }
 
-function toggleMoreUpdates(count) {
-  const wrap = document.getElementById('updates-more-wrap');
-  const btn  = document.getElementById('updates-toggle-btn');
-  const open = wrap.style.display === 'block';
-  wrap.style.display = open ? 'none' : 'block';
-  btn.innerHTML = open
-    ? `<i class="fas fa-chevron-down"></i> మరింత చూడండి (${count} అప్‌డేట్లు)`
-    : `<i class="fas fa-chevron-up"></i> తక్కువ చూడండి`;
+function filterCat(cat) {
+  _activecat = cat;
+  /* update tab active state */
+  document.querySelectorAll('.cat-tab').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.cat === cat);
+  });
+  /* show/hide cards */
+  document.querySelectorAll('#updates-list .update-card').forEach(card => {
+    if (cat === 'all' || card.dataset.cat === cat) {
+      card.classList.remove('hidden');
+    } else {
+      card.classList.add('hidden');
+    }
+  });
 }
 
 function renderServices() {
