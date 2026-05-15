@@ -1152,6 +1152,7 @@ button{border:none;cursor:pointer;font-family:var(--font)}
    ═══════════════════════════════════════════════════ */
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwRpSh2ETh_qyr4P2VVOZUXxQ5ME_E1LFHBJbSwfdratcJzuj8Iqx_NEp-PlIKhhofnfQ/exec';
 let SHEET_URL = '';
+let AGENT_TAB  = '';   // ✅ NEW: agent sheet tab name — used for direct API fetch
 let AGENT_TOKEN = '';
 let CLIENT = null;
 
@@ -1191,10 +1192,10 @@ async function doAgentLogin() {
   try {
     const res  = await fetch(SCRIPT_URL, { method:'POST', body: JSON.stringify({ action:'agentLogin', username, password }) });
     const data = await res.json();
-    if (data.ok && data.token && data.csvUrl) {
-      localStorage.setItem('agent_session', JSON.stringify({ token: data.token, csvUrl: data.csvUrl, agentTab: data.agentTab, username: data.username }));
+    if (data.ok && data.token && data.agentTab) {
+      localStorage.setItem('agent_session', JSON.stringify({ token: data.token, csvUrl: data.csvUrl || '', agentTab: data.agentTab, username: data.username }));
       AGENT_TOKEN = data.token;
-      startApp(data.csvUrl);
+      startApp(data.csvUrl, data.agentTab);
     } else {
       showAlErr(data.error || 'తప్పు username లేదా password');
     }
@@ -1309,55 +1310,45 @@ async function doChangePassword() {
 }
 
 /* ── Start app after login ── */
-function startApp(csvUrl) {
-  SHEET_URL = csvUrl;
+function startApp(csvUrl, agentTab) {
+  SHEET_URL  = csvUrl    || '';
+  AGENT_TAB  = agentTab  || '';
   document.getElementById('agent-login-screen').classList.add('hide');
   document.getElementById('logout-btn').classList.add('show');
   document.getElementById('chpass-btn').style.display = 'flex';
-
-  // ✅ FIX 1: Reset loading screen before loadData()
-  // checkSession() may have set display:none via inline style.
-  // We must clear that inline style and remove .hide class
-  // so the spinner is visible while data loads, and hideLoader()
-  // can properly fade it out afterwards.
+  // Reset loading screen (checkSession may have set inline display:none)
   const ls = document.getElementById('loading-screen');
-  ls.style.display = 'flex';      // clear inline display:none
-  ls.classList.remove('hide');    // restore opacity
-
+  ls.style.display = 'flex';
+  ls.classList.remove('hide');
   loadData();
 }
 
 /* ── Session check on page load (verify token with server) ── */
 (async function checkSession() {
-  // ✅ FIX 2a: Safety timeout — if network hangs >8s, show login
+  // Safety timeout: if Apps Script hangs >10s, fall through to login
   const safetyTimer = setTimeout(() => {
     localStorage.removeItem('agent_session');
     document.getElementById('loading-screen').style.display = 'none';
-  }, 8000);
+  }, 10000);
 
   const raw = localStorage.getItem('agent_session');
   if (raw) {
     try {
       const s = JSON.parse(raw);
       if (s && s.token) {
-        // Verify token with server
         const res  = await fetch(`${SCRIPT_URL}?action=agentVerify&agentToken=${encodeURIComponent(s.token)}`).catch(() => null);
         const data = res ? await res.json().catch(() => null) : null;
-        if (data && data.ok && data.csvUrl) {
+        if (data && data.ok && data.agentTab) {
           clearTimeout(safetyTimer);
           AGENT_TOKEN = s.token;
-          // Update stored csvUrl in case it changed
-          localStorage.setItem('agent_session', JSON.stringify({ ...s, csvUrl: data.csvUrl }));
-          startApp(data.csvUrl);
+          localStorage.setItem('agent_session', JSON.stringify({ ...s, csvUrl: data.csvUrl||'', agentTab: data.agentTab }));
+          startApp(data.csvUrl, data.agentTab);
           return;
         }
-        // Token invalid/expired — clear session
         localStorage.removeItem('agent_session');
       }
     } catch(e) {}
   }
-  // ✅ FIX 2b: No valid session — hide loading, agent-login-screen is
-  // already visible (it has no .hide class by default).
   clearTimeout(safetyTimer);
   document.getElementById('loading-screen').style.display = 'none';
 })();
@@ -1430,34 +1421,58 @@ function buildClient(rows) {
   };
 }
 
-/* FETCH — 3 proxy fallbacks */
+/* ═══════════════════════════════════════════════════
+   LOAD DATA — directly from Apps Script (no Sheet publish needed)
+   Primary:  GET ?action=getAgent&tab=AGENT_TAB  (JSON rows)
+   Fallback: CSV URL with CORS proxies
+   ═══════════════════════════════════════════════════ */
 async function loadData() {
-  // ✅ FIX 4: Clear previous error banner before each load attempt
   document.getElementById('error-banner').classList.remove('show');
 
-  const proxies = [
-    u => u,
-    u => `https://corsproxy.io/?${encodeURIComponent(u)}`,
-    u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
-  ];
-  for (const proxy of proxies) {
+  // PRIMARY: fetch rows directly via Apps Script (no publish needed)
+  if (AGENT_TAB) {
     try {
-      const res = await fetch(proxy(SHEET_URL), {cache:'no-store'});
-      if (!res.ok) throw new Error('HTTP '+res.status);
-      const buf = await res.arrayBuffer();
-      let text  = new TextDecoder('utf-8').decode(buf);
-      if (text.charCodeAt(0)===0xFEFF) text=text.slice(1);
-      if (!text.includes(',') && !text.includes('\t')) throw new Error('Not CSV');
-      const rows = parseCSV(text);
-      CLIENT = buildClient(rows);
-      if (!CLIENT) throw new Error('No data');
-      renderAll();
-      return;
-    } catch(e) { console.warn('proxy failed:',e.message); }
+      const url = `${SCRIPT_URL}?action=getAgent&tab=${encodeURIComponent(AGENT_TAB)}`;
+      const res  = await fetch(url, { cache: 'no-store' });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const json = await res.json();
+      if (json.ok && json.rows && json.rows.length) {
+        CLIENT = buildClient(json.rows);
+        if (CLIENT) { renderAll(); return; }
+      }
+      throw new Error(json.error || 'Empty data');
+    } catch(e) {
+      console.warn('Apps Script fetch failed:', e.message);
+    }
   }
-  // ✅ FIX 4b: Show specific error with publish instructions
+
+  // FALLBACK: published CSV URL with CORS proxies
+  if (SHEET_URL) {
+    const proxies = [
+      u => u,
+      u => `https://corsproxy.io/?${encodeURIComponent(u)}`,
+      u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
+    ];
+    for (const proxy of proxies) {
+      try {
+        const res = await fetch(proxy(SHEET_URL), { cache: 'no-store' });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const buf  = await res.arrayBuffer();
+        let text   = new TextDecoder('utf-8').decode(buf);
+        if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
+        if (!text.includes(',') && !text.includes('\t')) throw new Error('Not CSV');
+        const rows = parseCSV(text);
+        CLIENT = buildClient(rows);
+        if (!CLIENT) throw new Error('No data');
+        renderAll();
+        return;
+      } catch(e) { console.warn('CSV proxy failed:', e.message); }
+    }
+  }
+
+  // BOTH FAILED
   const banner = document.getElementById('error-banner');
-  banner.innerHTML = '⚠️ Data లోడ్ కాలేదు. Google Sheet ని <b>File → Share → Publish to web → CSV</b> గా publish చేయండి. తర్వాత refresh చేయండి.';
+  banner.innerHTML = '⚠️ Data లోడ్ కాలేదు. Apps Script deploy చేశారా? Agent Tab name correct గా ఉందా? Admin లో confirm చేయండి.';
   banner.classList.add('show');
   hideLoader();
 }
@@ -1471,19 +1486,14 @@ function renderAll() {
   showPopup(); hideLoader();
 }
 
-/* ── FIX 5 (original) + FIX 3 (enhanced): hideLoader ── */
-// Previous bug: if loading-screen had inline style="display:flex" set by
-// startApp(), adding .hide class only set opacity:0 but display stayed flex,
-// leaving an invisible but blocking overlay. Now we clear both.
 function hideLoader() {
   const s = document.getElementById('loading-screen');
-  s.classList.add('hide');          // fade out via CSS transition
+  s.classList.add('hide');
   setTimeout(() => {
-    s.style.display = 'none';      // then fully remove from layout
-    s.classList.remove('hide');    // reset for next use
+    s.style.display = 'none';
+    s.classList.remove('hide'); // reset for next startApp() call
   }, 500);
 }
-
 function applyTheme() {
   document.documentElement.style.setProperty('--accent', CLIENT.accentColor);
 }
