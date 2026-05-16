@@ -1,0 +1,22 @@
+{
+  "name": "జన సేవా కేంద్రం",
+  "short_name": "జన సేవా",
+  "description": "అన్ని సేవలు ఒకే చోట",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0a0f1a",
+  "theme_color": "#0a0f1a",
+  "lang": "te",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "అప్‌డేట్లు", "short_name": "అప్‌డేట్లు", "url": "./index.html", "icons": [{ "src": "icon-192.png", "sizes": "192x192" }] },
+    { "name": "సేవలు",       "short_name": "సేవలు",       "url": "./index.html", "icons": [{ "src": "icon-192.png", "sizes": "192x192" }] }
+  ]
+}
