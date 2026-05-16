@@ -3,6 +3,13 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<meta name="theme-color" content="#0a0f1a" id="meta-theme-color"/>
+<meta name="description" content="జన సేవా కేంద్రం — అన్ని సేవలు"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="జన సేవా కేంద్రం"/>
+<link rel="manifest" href="manifest.json"/>
 <title>Citizen Digital Seva</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -561,12 +568,6 @@ button{border:none;cursor:pointer;font-family:var(--font)}
 .updates-scroll-wrap::-webkit-scrollbar{width:4px}
 .updates-scroll-wrap::-webkit-scrollbar-track{background:transparent}
 .updates-scroll-wrap::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
-.update-card{
-  background:var(--card);border:1px solid var(--border);border-radius:10px;
-  padding:14px 16px;display:flex;align-items:center;gap:14px;
-  margin-bottom:8px;cursor:pointer;transition:var(--trans)
-}
-.update-card:hover{border-color:var(--accent);transform:translateY(-1px)}
 .update-dot{width:8px;height:8px;background:var(--accent);border-radius:50%;flex-shrink:0;box-shadow:0 0 6px var(--accent)}
 .update-title{flex:1;font-size:13px;font-family:var(--font-te);line-height:1.5}
 .update-arrow{color:var(--text2);font-size:12px}
@@ -1022,6 +1023,135 @@ button{border:none;cursor:pointer;font-family:var(--font)}
 
 /* Logout button in header */
 /* logout & chpass handled in HEADER block above */
+
+/* ═══════════════════════════════════════
+   SEARCH OVERLAY
+   ═══════════════════════════════════════ */
+#search-overlay{
+  position:fixed;inset:0;z-index:500;
+  background:rgba(10,15,26,0.96);
+  backdrop-filter:blur(12px);
+  display:flex;flex-direction:column;
+  padding:16px;
+  transform:translateY(-100%);opacity:0;
+  transition:transform 0.3s cubic-bezier(0.19,1,0.22,1),opacity 0.3s;
+  pointer-events:none;
+}
+#search-overlay.open{transform:translateY(0);opacity:1;pointer-events:all}
+.search-bar-wrap{
+  display:flex;align-items:center;gap:10px;
+  background:var(--bg3);border:1.5px solid var(--border);
+  border-radius:14px;padding:0 14px;margin-bottom:14px;
+  transition:border-color 0.2s;
+}
+.search-bar-wrap:focus-within{border-color:var(--accent)}
+.search-bar-wrap i{color:var(--text2);font-size:15px}
+#search-input{
+  flex:1;background:none;border:none;outline:none;
+  color:var(--text);font-size:15px;font-family:var(--font-te);
+  padding:14px 0;
+}
+#search-input::placeholder{color:var(--text2)}
+#search-close-btn{
+  background:none;border:none;color:var(--text2);
+  font-size:20px;cursor:pointer;padding:4px;flex-shrink:0;
+}
+#search-close-btn:hover{color:var(--text)}
+.search-section-label{
+  font-size:11px;font-weight:700;color:var(--text2);
+  letter-spacing:0.8px;text-transform:uppercase;
+  padding:6px 0 8px;
+}
+#search-results{flex:1;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+.search-result-item{
+  display:flex;align-items:center;gap:12px;
+  background:var(--card);border:1px solid var(--border);
+  border-radius:10px;padding:12px 14px;margin-bottom:7px;
+  cursor:pointer;transition:var(--trans);
+}
+.search-result-item:hover{border-color:var(--accent);transform:translateX(3px)}
+.search-result-icon{
+  width:34px;height:34px;border-radius:9px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:14px;
+}
+.search-result-icon.svc{background:rgba(79,255,176,0.1);color:var(--accent)}
+.search-result-icon.upd{background:rgba(251,191,36,0.1);color:#fbbf24}
+.search-result-text{flex:1;min-width:0}
+.search-result-title{font-size:13px;font-family:var(--font-te);font-weight:600;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.search-result-sub{font-size:11px;color:var(--text2);margin-top:2px}
+.search-empty{
+  text-align:center;padding:40px 0;color:var(--text2);
+  font-family:var(--font-te);font-size:14px;
+}
+.search-empty i{font-size:32px;display:block;margin-bottom:10px;opacity:0.4}
+
+/* Search highlight */
+.hl{color:var(--accent);font-weight:700}
+
+/* ═══════════════════════════════════════
+   PWA INSTALL BANNER
+   ═══════════════════════════════════════ */
+#pwa-banner{
+  position:fixed;bottom:76px;left:12px;right:12px;z-index:300;
+  background:linear-gradient(135deg,var(--bg3),var(--card));
+  border:1.5px solid var(--accent);border-radius:16px;
+  padding:14px 16px;display:flex;align-items:center;gap:12px;
+  box-shadow:0 8px 32px rgba(79,255,176,0.15);
+  transform:translateY(120%);opacity:0;
+  transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1),opacity 0.3s;
+  pointer-events:none;
+}
+#pwa-banner.show{transform:translateY(0);opacity:1;pointer-events:all}
+.pwa-icon{
+  width:42px;height:42px;border-radius:10px;flex-shrink:0;
+  background:rgba(79,255,176,0.1);border:1px solid rgba(79,255,176,0.2);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--accent);font-size:18px;
+}
+.pwa-text{flex:1;min-width:0}
+.pwa-title{font-size:13px;font-weight:700;color:var(--text);font-family:var(--font-te)}
+.pwa-sub{font-size:11px;color:var(--text2);margin-top:2px;font-family:var(--font-te)}
+.pwa-actions{display:flex;gap:6px;flex-shrink:0}
+.pwa-install-btn{
+  background:var(--accent);color:#0a0f1a;border:none;
+  border-radius:8px;padding:7px 12px;font-size:12px;font-weight:700;
+  cursor:pointer;white-space:nowrap;font-family:var(--font-te);
+}
+.pwa-dismiss-btn{
+  background:var(--bg3);color:var(--text2);border:1px solid var(--border);
+  border-radius:8px;padding:7px 10px;font-size:12px;cursor:pointer;
+}
+
+/* ═══════════════════════════════════════
+   SHARE BUTTON on update cards
+   ═══════════════════════════════════════ */
+.update-card{
+  background:var(--card);border:1px solid var(--border);border-radius:10px;
+  padding:12px 14px;display:flex;align-items:center;gap:12px;
+  margin-bottom:8px;cursor:pointer;transition:var(--trans);position:relative;
+}
+.update-card:hover{border-color:var(--accent);transform:translateY(-1px)}
+.update-share-btn{
+  width:28px;height:28px;border-radius:7px;flex-shrink:0;
+  background:var(--bg3);border:1px solid var(--border);
+  color:var(--text2);display:flex;align-items:center;justify-content:center;
+  font-size:11px;cursor:pointer;transition:var(--trans);
+  opacity:0;transform:scale(0.8);
+}
+.update-card:hover .update-share-btn,
+.update-card:focus-within .update-share-btn{opacity:1;transform:scale(1)}
+.update-share-btn:hover{background:rgba(37,211,102,0.12);color:#25d366;border-color:#25d366}
+
+/* Share toast */
+#share-toast{
+  position:fixed;bottom:88px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:var(--bg3);border:1px solid var(--accent);color:var(--text);
+  border-radius:20px;padding:8px 18px;font-size:12px;
+  font-family:var(--font-te);z-index:600;
+  opacity:0;transition:all 0.3s;pointer-events:none;white-space:nowrap;
+}
+#share-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 </style>
 </head>
 <body>
@@ -1189,6 +1319,9 @@ button{border:none;cursor:pointer;font-family:var(--font)}
     </div>
   </div>
   <div class="header-actions">
+    <button class="hbtn" onclick="openSearch()" title="వెతకండి" style="color:var(--text2)">
+      <i class="fas fa-search"></i>
+    </button>
     <button class="hbtn" id="theme-toggle-btn" onclick="toggleTheme()" title="Light/Dark Mode">
       <i class="fas fa-moon" id="theme-icon"></i>
     </button>
@@ -1200,6 +1333,34 @@ button{border:none;cursor:pointer;font-family:var(--font)}
 </header>
 
 <div id="error-banner">⚠️ Data లోడ్ కాలేదు. Sheet URL సరిగా ఉందా? Internet connection చెక్ చేయండి.</div>
+
+<!-- ═══ SEARCH OVERLAY ═══ -->
+<div id="search-overlay">
+  <div class="search-bar-wrap">
+    <i class="fas fa-search"></i>
+    <input id="search-input" type="search" placeholder="సేవలు, అప్‌డేట్లు వెతకండి…" oninput="doSearch(this.value)" autocomplete="off"/>
+    <button id="search-close-btn" onclick="closeSearch()"><i class="fas fa-times"></i></button>
+  </div>
+  <div id="search-results">
+    <div class="search-empty"><i class="fas fa-search"></i>ఏదైనా టైప్ చేయండి</div>
+  </div>
+</div>
+
+<!-- ═══ PWA INSTALL BANNER ═══ -->
+<div id="pwa-banner">
+  <div class="pwa-icon"><i class="fas fa-mobile-alt"></i></div>
+  <div class="pwa-text">
+    <div class="pwa-title">App గా Install చేయండి</div>
+    <div class="pwa-sub">Home screen లో quick access కోసం</div>
+  </div>
+  <div class="pwa-actions">
+    <button class="pwa-install-btn" onclick="pwaDoPWA()">Install</button>
+    <button class="pwa-dismiss-btn" onclick="pwaDismiss()"><i class="fas fa-times"></i></button>
+  </div>
+</div>
+
+<!-- ═══ SHARE TOAST ═══ -->
+<div id="share-toast">✓ లింక్ కాపీ అయింది!</div>
 
 <!-- HOME -->
 <div id="home" class="page active">
@@ -1867,6 +2028,9 @@ function renderUpdateCards() {
     <div class="update-card" onclick="safeOpen('${u.link}')">
       <div class="update-dot"></div>
       <div class="update-title">${u.title}</div>
+      <button class="update-share-btn" onclick="shareUpdate(event,'${u.title.replace(/'/g,"\\'")}','${u.link}')" title="Share">
+        <i class="fab fa-whatsapp"></i>
+      </button>
       <i class="fas fa-chevron-right update-arrow"></i>
     </div>`;
 
@@ -2250,6 +2414,147 @@ function toggleTheme() {
 
 // loadData() is called by startApp() after successful login.
 // checkSession() at the top handles auto-login if session exists.
+
+/* ═══════════════════════════════════════════════════════
+   SEARCH
+   ═══════════════════════════════════════════════════════ */
+function openSearch() {
+  const overlay = document.getElementById('search-overlay');
+  overlay.classList.add('open');
+  setTimeout(() => document.getElementById('search-input').focus(), 300);
+}
+function closeSearch() {
+  document.getElementById('search-overlay').classList.remove('open');
+  document.getElementById('search-input').value = '';
+  document.getElementById('search-results').innerHTML =
+    `<div class="search-empty"><i class="fas fa-search"></i>ఏదైనా టైప్ చేయండి</div>`;
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSearch(); });
+
+function highlight(text, q) {
+  if (!q) return text;
+  const re = new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi');
+  return text.replace(re, '<span class="hl">$1</span>');
+}
+
+function doSearch(q) {
+  const res = document.getElementById('search-results');
+  q = q.trim();
+  if (!q) {
+    res.innerHTML = `<div class="search-empty"><i class="fas fa-search"></i>ఏదైనా టైప్ చేయండి</div>`;
+    return;
+  }
+  if (!CLIENT) { res.innerHTML = `<div class="search-empty"><i class="fas fa-circle-exclamation"></i>Data లోడ్ కాలేదు</div>`; return; }
+
+  const ql = q.toLowerCase();
+  const svcs = (CLIENT.services || []).filter(s => s.title.toLowerCase().includes(ql));
+  const upds = (CLIENT.updates || []).filter(u => u.title.toLowerCase().includes(ql));
+
+  if (!svcs.length && !upds.length) {
+    res.innerHTML = `<div class="search-empty"><i class="fas fa-face-frown"></i>"${q}" కి results లేవు</div>`;
+    return;
+  }
+
+  let html = '';
+  if (svcs.length) {
+    html += `<div class="search-section-label"><i class="fas fa-th" style="margin-right:5px"></i>సేవలు</div>`;
+    html += svcs.map(s => `
+      <div class="search-result-item" onclick="safeOpen('${s.page}');closeSearch()">
+        <div class="search-result-icon svc ${s.color}">
+          <i class="${s.icon}" style="color:var(--ci,var(--accent))"></i>
+        </div>
+        <div class="search-result-text">
+          <div class="search-result-title">${highlight(s.title, q)}</div>
+          <div class="search-result-sub">సేవ</div>
+        </div>
+        <i class="fas fa-arrow-right" style="color:var(--text2);font-size:12px"></i>
+      </div>`).join('');
+  }
+  if (upds.length) {
+    html += `<div class="search-section-label" style="margin-top:${svcs.length?'10px':'0'}"><i class="fas fa-bell" style="margin-right:5px"></i>అప్‌డేట్లు</div>`;
+    html += upds.map(u => `
+      <div class="search-result-item" onclick="safeOpen('${u.link}');closeSearch()">
+        <div class="search-result-icon upd">
+          <i class="fas fa-newspaper"></i>
+        </div>
+        <div class="search-result-text">
+          <div class="search-result-title">${highlight(u.title, q)}</div>
+          <div class="search-result-sub">${u.cat || 'అప్‌డేట్'}</div>
+        </div>
+        <i class="fas fa-arrow-right" style="color:var(--text2);font-size:12px"></i>
+      </div>`).join('');
+  }
+  res.innerHTML = html;
+}
+
+/* ═══════════════════════════════════════════════════════
+   SHARE
+   ═══════════════════════════════════════════════════════ */
+function shareUpdate(e, title, link) {
+  e.stopPropagation();
+  const url = link === '#' ? location.href : link;
+  const text = `${title}\n${url}`;
+
+  if (navigator.share) {
+    navigator.share({ title, text: title, url }).catch(() => {});
+    return;
+  }
+  // Fallback: copy to clipboard
+  navigator.clipboard.writeText(text).then(() => showShareToast('✓ లింక్ కాపీ అయింది!'))
+    .catch(() => {
+      // Last fallback: WhatsApp
+      window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+    });
+}
+
+function showShareToast(msg) {
+  const t = document.getElementById('share-toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+/* ═══════════════════════════════════════════════════════
+   PWA — Install prompt
+   ═══════════════════════════════════════════════════════ */
+let _pwaPrompt = null;
+
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  _pwaPrompt = e;
+  // Show banner after 5 seconds if not dismissed before
+  const dismissed = sessionStorage.getItem('pwa_dismissed');
+  if (!dismissed) setTimeout(() => document.getElementById('pwa-banner').classList.add('show'), 5000);
+});
+
+function pwaDoPWA() {
+  if (_pwaPrompt) {
+    _pwaPrompt.prompt();
+    _pwaPrompt.userChoice.then(r => {
+      if (r.outcome === 'accepted') pwaDismiss();
+    });
+  } else {
+    // iOS fallback
+    showShareToast('Safari లో: Share → "Add to Home Screen"');
+    pwaDismiss();
+  }
+}
+
+function pwaDismiss() {
+  document.getElementById('pwa-banner').classList.remove('show');
+  sessionStorage.setItem('pwa_dismissed', '1');
+}
+
+window.addEventListener('appinstalled', pwaDismiss);
+
+/* ═══════════════════════════════════════════════════════
+   SERVICE WORKER REGISTRATION
+   ═══════════════════════════════════════════════════════ */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  });
+}
 </script>
 </body>
 </html>
