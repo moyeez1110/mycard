@@ -1143,7 +1143,35 @@ button{border:none;cursor:pointer;font-family:var(--font)}
 .update-card:focus-within .update-share-btn{opacity:1;transform:scale(1)}
 .update-share-btn:hover{background:rgba(37,211,102,0.12);color:#25d366;border-color:#25d366}
 
-/* Share toast */
+/* ── Share buttons on patralu & notices cards ── */
+.item-share-btn, .vc-share-btn {
+  background:var(--bg3);border:1px solid var(--border);
+  color:var(--text2);border-radius:7px;
+  width:28px;height:28px;display:flex;align-items:center;justify-content:center;
+  font-size:11px;cursor:pointer;transition:var(--trans);flex-shrink:0;
+}
+.item-share-btn:hover, .vc-share-btn:hover {
+  background:rgba(37,211,102,0.12);color:#25d366;border-color:#25d366;
+}
+/* pdf-item share btn positioning */
+.pdf-item { position:relative; }
+.pdf-item .item-share-btn { margin-left:auto; margin-right:6px; }
+
+/* poster card share overlay */
+.vc-poster-card { position:relative; }
+.vc-poster-share-wrap {
+  position:absolute;top:8px;right:8px;z-index:2;
+}
+.vc-poster-share-wrap .vc-share-btn {
+  background:rgba(10,15,26,0.7);backdrop-filter:blur(4px);
+  border-color:rgba(255,255,255,0.15);color:#fff;
+}
+.vc-poster-share-wrap .vc-share-btn:hover {
+  background:rgba(37,211,102,0.85);color:#0a0f1a;border-color:transparent;
+}
+
+/* audio card sender row */
+.vc-sender { display:flex;align-items:center;justify-content:space-between; }
 #share-toast{
   position:fixed;bottom:88px;left:50%;transform:translateX(-50%) translateY(20px);
   background:var(--bg3);border:1px solid var(--accent);color:var(--text);
@@ -1465,11 +1493,82 @@ button{border:none;cursor:pointer;font-family:var(--font)}
   <img id="vc-lightbox-img" src="" alt="poster"/>
 </div>
 
+<!-- ═══ INSTALL MODAL ═══ -->
+<div id="install-modal" style="display:none;position:fixed;inset:0;z-index:800;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);align-items:flex-end;justify-content:center;padding:0">
+  <div id="install-sheet" style="background:var(--bg2);border-radius:20px 20px 0 0;width:100%;max-width:520px;padding:24px 20px 40px;border-top:1px solid var(--border);transform:translateY(100%);transition:transform 0.35s cubic-bezier(0.19,1,0.22,1)">
+    <!-- Handle -->
+    <div style="width:40px;height:4px;background:var(--border);border-radius:4px;margin:0 auto 20px"></div>
+
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px">
+      <div style="width:52px;height:52px;border-radius:14px;background:rgba(79,255,176,0.12);border:1.5px solid var(--accent);display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:22px;flex-shrink:0">
+        <i class="fas fa-mobile-alt"></i>
+      </div>
+      <div>
+        <div style="font-size:16px;font-weight:700;font-family:var(--font-te);color:var(--text)" id="install-shop-name">జన సేవా కేంద్రం</div>
+        <div style="font-size:12px;color:var(--text2);margin-top:3px">Home screen కి add చేసుకోండి</div>
+      </div>
+    </div>
+
+    <!-- Benefits -->
+    <div style="background:var(--bg3);border-radius:12px;padding:14px;margin-bottom:20px;display:flex;flex-direction:column;gap:10px">
+      <div style="display:flex;align-items:center;gap:10px;font-size:13px;font-family:var(--font-te);color:var(--text)">
+        <i class="fas fa-bolt" style="color:var(--accent);width:16px"></i> Browser తెరవకుండా నేరుగా open అవుతుంది
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;font-size:13px;font-family:var(--font-te);color:var(--text)">
+        <i class="fas fa-wifi-slash" style="color:var(--accent);width:16px"></i> Internet లేకున్నా కూడా load అవుతుంది
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;font-size:13px;font-family:var(--font-te);color:var(--text)">
+        <i class="fas fa-expand" style="color:var(--accent);width:16px"></i> Full screen లో, ads లేకుండా opens అవుతుంది
+      </div>
+    </div>
+
+    <!-- Android Chrome install button -->
+    <div id="install-android-section">
+      <button onclick="pwaDoPWA()" style="width:100%;padding:14px;border-radius:12px;background:var(--accent);color:#0a0f1a;font-size:15px;font-weight:700;font-family:var(--font-te);border:none;cursor:pointer;margin-bottom:10px">
+        <i class="fas fa-download"></i> Install చేయండి
+      </button>
+      <div style="font-size:11px;color:var(--text2);text-align:center;font-family:var(--font-te)">Chrome లో automatically install అవుతుంది</div>
+    </div>
+
+    <!-- iOS Safari instructions -->
+    <div id="install-ios-section" style="display:none">
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:16px;font-family:var(--font-te)">
+        <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:12px">Safari లో ఇలా చేయండి:</div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;font-size:13px;color:var(--text)">
+          <span style="width:24px;height:24px;border-radius:50%;background:var(--accent);color:#0a0f1a;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">1</span>
+          Screen కింద <i class="fas fa-arrow-up-from-bracket" style="margin:0 4px;color:var(--accent)"></i> Share button tap చేయండి
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;font-size:13px;color:var(--text)">
+          <span style="width:24px;height:24px;border-radius:50%;background:var(--accent);color:#0a0f1a;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">2</span>
+          <span><b>"Add to Home Screen"</b> select చేయండి</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text)">
+          <span style="width:24px;height:24px;border-radius:50%;background:var(--accent);color:#0a0f1a;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">3</span>
+          <span>పైన వచ్చే screen లో <b>"Add"</b> tap చేయండి</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Other browser fallback -->
+    <div id="install-other-section" style="display:none">
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:16px;font-family:var(--font-te)">
+        <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:8px">Browser menu లో చేయండి:</div>
+        <div style="font-size:13px;color:var(--text2)">Browser menu (⋮ లేదా ···) తెరిచి <b>"Install app"</b> లేదా <b>"Add to Home Screen"</b> option చూడండి</div>
+      </div>
+    </div>
+
+    <button onclick="closeInstallModal()" style="width:100%;padding:12px;border-radius:12px;background:var(--bg3);border:1px solid var(--border);color:var(--text2);font-size:14px;font-family:var(--font-te);cursor:pointer;margin-top:10px">
+      తర్వాత చేస్తాను
+    </button>
+  </div>
+</div>
+
 <nav id="bottom-nav">
   <button class="nav-btn active" onclick="showPage('home',this)"><i class="fas fa-home"></i>హోమ్</button>
   <button class="nav-btn" onclick="showPage('docs-page',this)"><i class="fas fa-file-alt"></i>పత్రాలు</button>
   <button class="nav-btn" onclick="showPage('voice-page',this)"><i class="fas fa-bullhorn"></i>నోటీసులు</button>
   <button class="nav-btn" onclick="showPage('contact-page',this)"><i class="fas fa-map-marker-alt"></i>చిరునామా</button>
+  <button class="nav-btn" onclick="openInstallModal()"><i class="fas fa-download"></i>Install</button>
 </nav>
 
 <a id="fab" href="#" target="_blank"><i class="fab fa-whatsapp"></i></a>
@@ -2100,6 +2199,9 @@ function renderPDFs() {
     <div class="pdf-item" onclick="safeOpen('${p.link}')">
       <div class="pdf-icon-wrap"><i class="fas fa-file-pdf"></i></div>
       <div class="pdf-name">${p.title}</div>
+      <button class="item-share-btn" onclick="shareUpdate(event,'${p.title.replace(/'/g,"\\'")}','${p.link}')" title="Share">
+        <i class="fas fa-share-alt"></i>
+      </button>
       <i class="fas fa-download pdf-dl"></i>
     </div>`).join('');
 }
@@ -2253,8 +2355,11 @@ function renderVoice() {
       list.forEach(item => {
         const id = 'vc_'+vi++;
         const dt = item.date||today;
+        const safeTitle = (item.title||'Audio Message').replace(/'/g,"\\'");
         cardsHTML += `<div class="vc-audio-card">
-          <div class="vc-sender"><i class="fas fa-headphones"></i> ${dt}</div>
+          <div class="vc-sender"><i class="fas fa-headphones"></i> ${dt}
+            <button class="vc-share-btn" onclick="shareUpdate(event,'${safeTitle}','${item.link}')" title="Share"><i class="fas fa-share-alt"></i></button>
+          </div>
           <div class="vc-title">${item.title||'Audio Message'}</div>
           <div class="vc-controls">
             <button class="vc-play-btn" id="pb_${id}" onclick="vcToggle('${id}',this)"><i class="fas fa-play"></i></button>
@@ -2267,7 +2372,11 @@ function renderVoice() {
     } else if (type === 'poster') {
       list.forEach(item => {
         const dt = item.date||today;
+        const safeTitle = (item.title||'Poster').replace(/'/g,"\\'");
         cardsHTML += `<div class="vc-poster-card" onclick="vcLightbox('${item.link}')">
+          <div class="vc-poster-share-wrap">
+            <button class="vc-share-btn" onclick="shareUpdate(event,'${safeTitle}','${item.link}')" title="Share"><i class="fas fa-share-alt"></i></button>
+          </div>
           <img src="${item.link}" alt="poster"
             onerror="this.style.background='var(--bg3)';this.style.height='160px'"/>
           ${item.title?`<div class="vc-cap">${item.title}<br><span style="color:var(--accent);font-size:10px">${dt}</span></div>`:`<div class="vc-cap" style="color:var(--accent);font-size:10px">${dt}</div>`}
@@ -2276,6 +2385,7 @@ function renderVoice() {
     } else if (type === 'pdf') {
       list.forEach(item => {
         const dt = item.date||today;
+        const safeTitle = item.title.replace(/'/g,"\\'");
         cardsHTML += `<a class="vc-pdf-hcard" href="${item.link}" target="_blank" rel="noopener">
           <div class="ico"><i class="fas fa-file-pdf"></i></div>
           <div>
@@ -2283,11 +2393,13 @@ function renderVoice() {
             <div class="sub">${item.desc||'PDF డౌన్‌లోడ్'}</div>
           </div>
           <div class="dl"><i class="fas fa-download"></i> Download &nbsp;<span style="color:var(--text2)">${dt}</span></div>
+          <button class="vc-share-btn" onclick="shareUpdate(event,'${safeTitle}','${item.link}')" title="Share"><i class="fas fa-share-alt"></i></button>
         </a>`;
       });
     } else if (type === 'canva') {
       list.forEach(item => {
         const dt = item.date||today;
+        const safeTitle = item.title.replace(/'/g,"\\'");
         cardsHTML += `<a class="vc-canva-hcard" href="${item.link}" target="_blank" rel="noopener">
           <div class="ico"><i class="fas fa-object-group"></i></div>
           <div>
@@ -2295,14 +2407,19 @@ function renderVoice() {
             <div class="sub">${item.desc}</div>
           </div>
           <div class="open"><i class="fas fa-external-link-alt"></i> తెరవండి &nbsp;<span style="color:var(--text2);font-size:10px">${dt}</span></div>
+          <button class="vc-share-btn" onclick="shareUpdate(event,'${safeTitle}','${item.link}')" title="Share"><i class="fas fa-share-alt"></i></button>
         </a>`;
       });
     } else if (type === 'tts') {
       list.forEach(item => {
         const safe = (item.text||'').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+        const safeTitle = (item.text||'నోటీసు').substring(0,60).replace(/'/g,"\\'");
         const dt = item.date||today;
         cardsHTML += `<div class="vc-tts-card">
-          <div style="font-size:10px;color:var(--accent)">${dt}</div>
+          <div style="font-size:10px;color:var(--accent);display:flex;align-items:center;justify-content:space-between">
+            <span>${dt}</span>
+            <button class="vc-share-btn" onclick="shareUpdate(event,'${safeTitle}','${location.href}')" title="Share"><i class="fas fa-share-alt"></i></button>
+          </div>
           <div class="tts-body">${item.text}</div>
           <button class="tts-speak-btn" onclick="vcSpeak(this,'${safe}')"><i class="fas fa-volume-up"></i> వినండి</button>
         </div>`;
@@ -2416,8 +2533,40 @@ function toggleTheme() {
 // checkSession() at the top handles auto-login if session exists.
 
 /* ═══════════════════════════════════════════════════════
-   SEARCH
+   INSTALL MODAL
    ═══════════════════════════════════════════════════════ */
+function openInstallModal() {
+  const modal  = document.getElementById('install-modal');
+  const sheet  = document.getElementById('install-sheet');
+  const andSec = document.getElementById('install-android-section');
+  const iosSec = document.getElementById('install-ios-section');
+  const othSec = document.getElementById('install-other-section');
+
+  // Detect platform
+  const isIOS    = /iPhone|iPad|iPod/.test(navigator.userAgent) && !window.MSStream;
+  const isAndChr = /Android/.test(navigator.userAgent) && /Chrome/.test(navigator.userAgent);
+
+  andSec.style.display = (_pwaPrompt || isAndChr) ? 'block' : 'none';
+  iosSec.style.display = isIOS ? 'block' : 'none';
+  othSec.style.display = (!_pwaPrompt && !isIOS) ? 'block' : 'none';
+
+  // Set shop name dynamically
+  const name = document.getElementById('hdr-name');
+  if (name) document.getElementById('install-shop-name').textContent = name.textContent;
+
+  modal.style.display = 'flex';
+  requestAnimationFrame(() => sheet.style.transform = 'translateY(0)');
+
+  // Close on backdrop tap
+  modal.onclick = e => { if (e.target === modal) closeInstallModal(); };
+}
+
+function closeInstallModal() {
+  const modal = document.getElementById('install-modal');
+  const sheet = document.getElementById('install-sheet');
+  sheet.style.transform = 'translateY(100%)';
+  setTimeout(() => modal.style.display = 'none', 350);
+}
 function openSearch() {
   const overlay = document.getElementById('search-overlay');
   overlay.classList.add('open');
