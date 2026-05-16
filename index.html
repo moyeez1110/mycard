@@ -1817,14 +1817,14 @@ function buildClient(rows) {
     if (!key) return;
     if      (key==='update')      updates.push({title:r.title||r.value, link:r.link||'#', cat:(r.extra||r.icon||'').trim()});
     else if (key==='service')     services.push({title:r.title||r.value, page:r.link||'#', icon:r.icon||'fas fa-star', color:r.extra||'gi-blue', desc:r.desc||'', badge:r.badge||''});
-    else if (key==='pdf')         pdfs.push({title:r.title||r.value, link:r.link||'#'});
+    else if (key==='pdf')         pdfs.push({title:r.title||r.value, link:r.link||'#', share:(r.share||'yes').toLowerCase().trim()});
     else if (key==='doc')         docs.push(r.value||r.title);
     else if (key==='ticker')      tickers.push(r.value||r.title);
-    else if (key==='voice')       announcements.push({type:'voice', title:r.title||r.value, link:r.link||'', date:r.extra||''});
-    else if (key==='tts')         announcements.push({type:'tts', text:r.value||r.title, date:r.extra||''});
-    else if (key==='poster')      announcements.push({type:'poster', title:r.title||'', link:r.link||'', date:r.extra||''});
-    else if (key==='pdf_notice')  announcements.push({type:'pdf', title:r.title||r.value, desc:r.value||'PDF డౌన్‌లోడ్', link:r.link||'#', date:r.extra||''});
-    else if (key==='canva')       announcements.push({type:'canva', title:r.title||'Canva Template', desc:r.value||'Template తెరవండి', link:r.link||'#', date:r.extra||''});
+    else if (key==='voice')       announcements.push({type:'voice',   title:r.title||r.value, link:r.link||'',   date:r.extra||'', share:(r.share||'yes').toLowerCase().trim()});
+    else if (key==='tts')         announcements.push({type:'tts',     text:r.value||r.title,  date:r.extra||'',  share:(r.share||'yes').toLowerCase().trim()});
+    else if (key==='poster')      announcements.push({type:'poster',  title:r.title||'',       link:r.link||'',   date:r.extra||'', share:(r.share||'yes').toLowerCase().trim()});
+    else if (key==='pdf_notice')  announcements.push({type:'pdf',     title:r.title||r.value, desc:r.value||'PDF డౌన్‌లోడ్', link:r.link||'#', date:r.extra||'', share:(r.share||'yes').toLowerCase().trim()});
+    else if (key==='canva')       announcements.push({type:'canva',   title:r.title||'Canva Template', desc:r.value||'Template తెరవండి', link:r.link||'#', date:r.extra||'', share:(r.share||'yes').toLowerCase().trim()});
     else if (key==='req_service') reqServices.push({name:r.value||r.title, icon:r.icon||'fas fa-file-alt', docs:[]});
     else if (key==='req_doc')     { if (reqServices.length) reqServices[reqServices.length-1].docs.push(r.value||r.title); }
     else if (key==='popup')       popups.push({title:r.title||'', subtitle:r.value||'', imageUrl:r.link||''});
@@ -2195,15 +2195,16 @@ function renderServices() {
 function renderPDFs() {
   const list = document.getElementById('pdf-list');
   if (!CLIENT.pdfs.length) { list.innerHTML=`<div style="color:var(--text2);font-size:13px;font-family:var(--font-te)">PDF ఫారాలు లేవు</div>`; return; }
-  list.innerHTML = CLIENT.pdfs.map(p => `
+  list.innerHTML = CLIENT.pdfs.map(p => {
+    const canShare = p.share !== 'no';
+    return `
     <div class="pdf-item" onclick="safeOpen('${p.link}')">
       <div class="pdf-icon-wrap"><i class="fas fa-file-pdf"></i></div>
       <div class="pdf-name">${p.title}</div>
-      <button class="item-share-btn" onclick="shareUpdate(event,'${p.title.replace(/'/g,"\\'")}','${p.link}')" title="Share">
-        <i class="fas fa-share-alt"></i>
-      </button>
+      ${canShare ? `<button class="item-share-btn" onclick="shareUpdate(event,'${p.title.replace(/'/g,"\\'")}','${p.link}')" title="Share"><i class="fas fa-share-alt"></i></button>` : ''}
       <i class="fas fa-download pdf-dl"></i>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 
 /* ── FIX 7: Show old-docs-section only when no reqServices data ── */
@@ -2355,10 +2356,11 @@ function renderVoice() {
       list.forEach(item => {
         const id = 'vc_'+vi++;
         const dt = item.date||today;
+        const canShare = item.share !== 'no';
         const safeTitle = (item.title||'Audio Message').replace(/'/g,"\\'");
         cardsHTML += `<div class="vc-audio-card">
           <div class="vc-sender"><i class="fas fa-headphones"></i> ${dt}
-            <button class="vc-share-btn" onclick="shareUpdate(event,'${safeTitle}','${item.link}')" title="Share"><i class="fas fa-share-alt"></i></button>
+            ${canShare ? `<button class="vc-share-btn" onclick="shareUpdate(event,'${safeTitle}','${item.link}')" title="Share"><i class="fas fa-share-alt"></i></button>` : ''}
           </div>
           <div class="vc-title">${item.title||'Audio Message'}</div>
           <div class="vc-controls">
@@ -2372,11 +2374,10 @@ function renderVoice() {
     } else if (type === 'poster') {
       list.forEach(item => {
         const dt = item.date||today;
+        const canShare = item.share !== 'no';
         const safeTitle = (item.title||'Poster').replace(/'/g,"\\'");
         cardsHTML += `<div class="vc-poster-card" onclick="vcLightbox('${item.link}')">
-          <div class="vc-poster-share-wrap">
-            <button class="vc-share-btn" onclick="shareUpdate(event,'${safeTitle}','${item.link}')" title="Share"><i class="fas fa-share-alt"></i></button>
-          </div>
+          ${canShare ? `<div class="vc-poster-share-wrap"><button class="vc-share-btn" onclick="shareUpdate(event,'${safeTitle}','${item.link}')" title="Share"><i class="fas fa-share-alt"></i></button></div>` : ''}
           <img src="${item.link}" alt="poster"
             onerror="this.style.background='var(--bg3)';this.style.height='160px'"/>
           ${item.title?`<div class="vc-cap">${item.title}<br><span style="color:var(--accent);font-size:10px">${dt}</span></div>`:`<div class="vc-cap" style="color:var(--accent);font-size:10px">${dt}</div>`}
@@ -2385,6 +2386,7 @@ function renderVoice() {
     } else if (type === 'pdf') {
       list.forEach(item => {
         const dt = item.date||today;
+        const canShare = item.share !== 'no';
         const safeTitle = item.title.replace(/'/g,"\\'");
         cardsHTML += `<a class="vc-pdf-hcard" href="${item.link}" target="_blank" rel="noopener">
           <div class="ico"><i class="fas fa-file-pdf"></i></div>
@@ -2393,12 +2395,13 @@ function renderVoice() {
             <div class="sub">${item.desc||'PDF డౌన్‌లోడ్'}</div>
           </div>
           <div class="dl"><i class="fas fa-download"></i> Download &nbsp;<span style="color:var(--text2)">${dt}</span></div>
-          <button class="vc-share-btn" onclick="shareUpdate(event,'${safeTitle}','${item.link}')" title="Share"><i class="fas fa-share-alt"></i></button>
+          ${canShare ? `<button class="vc-share-btn" onclick="shareUpdate(event,'${safeTitle}','${item.link}')" title="Share"><i class="fas fa-share-alt"></i></button>` : ''}
         </a>`;
       });
     } else if (type === 'canva') {
       list.forEach(item => {
         const dt = item.date||today;
+        const canShare = item.share !== 'no';
         const safeTitle = item.title.replace(/'/g,"\\'");
         cardsHTML += `<a class="vc-canva-hcard" href="${item.link}" target="_blank" rel="noopener">
           <div class="ico"><i class="fas fa-object-group"></i></div>
@@ -2407,18 +2410,19 @@ function renderVoice() {
             <div class="sub">${item.desc}</div>
           </div>
           <div class="open"><i class="fas fa-external-link-alt"></i> తెరవండి &nbsp;<span style="color:var(--text2);font-size:10px">${dt}</span></div>
-          <button class="vc-share-btn" onclick="shareUpdate(event,'${safeTitle}','${item.link}')" title="Share"><i class="fas fa-share-alt"></i></button>
+          ${canShare ? `<button class="vc-share-btn" onclick="shareUpdate(event,'${safeTitle}','${item.link}')" title="Share"><i class="fas fa-share-alt"></i></button>` : ''}
         </a>`;
       });
     } else if (type === 'tts') {
       list.forEach(item => {
         const safe = (item.text||'').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+        const canShare = item.share !== 'no';
         const safeTitle = (item.text||'నోటీసు').substring(0,60).replace(/'/g,"\\'");
         const dt = item.date||today;
         cardsHTML += `<div class="vc-tts-card">
           <div style="font-size:10px;color:var(--accent);display:flex;align-items:center;justify-content:space-between">
             <span>${dt}</span>
-            <button class="vc-share-btn" onclick="shareUpdate(event,'${safeTitle}','${location.href}')" title="Share"><i class="fas fa-share-alt"></i></button>
+            ${canShare ? `<button class="vc-share-btn" onclick="shareUpdate(event,'${safeTitle}','${location.href}')" title="Share"><i class="fas fa-share-alt"></i></button>` : ''}
           </div>
           <div class="tts-body">${item.text}</div>
           <button class="tts-speak-btn" onclick="vcSpeak(this,'${safe}')"><i class="fas fa-volume-up"></i> వినండి</button>
