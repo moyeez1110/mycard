@@ -7,6 +7,8 @@
 <title>Resume Builder – జన సేవా కేంద్రం</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@400;600;700&family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
 :root {
   /* ── Site theme (dark) ── */
@@ -425,15 +427,15 @@ select.fi option{background:var(--bg2);color:var(--text)}
     <button class="tb" onclick="setTpl('elegant')" id="btn-elegant"><span class="tdot" style="background:#7b4fa6"></span>Elegant</button>
     <button class="tb" onclick="setTpl('tech')" id="btn-tech"><span class="tdot" style="background:#0d1117;border:1px solid #555"></span>Tech</button>
     <button class="gen-btn" onclick="shareToWhatsApp()" style="background:#25d366"><i class="fab fa-whatsapp"></i> Share</button>
-    <button class="gen-btn" onclick="printResume()" style="background:var(--accent)"><i class="fas fa-print"></i> Print</button>
+    <button class="gen-btn" onclick="printResume()" style="background:var(--accent)"><i class="fas fa-file-pdf"></i> PDF</button>
   </div>
   <!-- Mobile action buttons — always visible -->
   <div class="mobile-actions">
     <button onclick="shareToWhatsApp()" style="width:36px;height:36px;border-radius:8px;background:#25d366;border:none;color:#fff;font-size:16px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0">
       <i class="fab fa-whatsapp"></i>
     </button>
-    <button onclick="printResume()" style="width:36px;height:36px;border-radius:8px;background:var(--accent);border:none;color:#0a0f1a;font-size:14px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0">
-      <i class="fas fa-print"></i>
+    <button onclick="printResume()" style="width:36px;height:36px;border-radius:8px;background:var(--accent);border:none;color:#0a0f1a;font-size:14px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0" title="Download as PDF">
+      <i class="fas fa-file-pdf"></i>
     </button>
   </div>
 </div>
@@ -882,34 +884,113 @@ function render() {
   document.getElementById('preview').innerHTML = html;
 }
 
-function printResume() {
-  window.print();
+/* ── Capture resume as high-quality canvas ── */
+async function captureResume() {
+  const preview = document.getElementById('preview');
+
+  // Wait for fonts to fully load
+  await document.fonts.ready;
+
+  const canvas = await html2canvas(preview, {
+    scale: 3,                    // High DPI — sharp output
+    useCORS: true,
+    allowTaint: true,
+    backgroundColor: '#ffffff',
+    logging: false,
+    imageTimeout: 0,
+    onclone: (doc) => {
+      // Make sure cloned doc fonts are loaded
+      const el = doc.getElementById('preview');
+      if (el) el.style.fontFamily = 'Georgia, serif';
+    }
+  });
+  return canvas;
 }
 
-function shareToWhatsApp() {
-  const name = document.getElementById('f-name').value.trim() || 'My';
-  const role = document.getElementById('f-role').value.trim() || 'Resume';
-  const phone = document.getElementById('f-phone').value.trim();
-  const email = document.getElementById('f-email').value.trim();
-  const loc   = document.getElementById('f-loc').value.trim();
+/* ── PDF Download (Desktop + Mobile) ── */
+async function printResume() {
+  const btn = document.querySelectorAll('.mobile-actions button')[1];
+  const desktopBtn = document.querySelector('.tpl-bar .gen-btn:last-child');
+  const origMobile = btn ? btn.innerHTML : '';
+  const origDesktop = desktopBtn ? desktopBtn.innerHTML : '';
 
-  let msg = `📄 *${name} - ${role}*\n\n`;
-  if (phone) msg += `📞 ${phone}\n`;
-  if (email) msg += `✉️ ${email}\n`;
-  if (loc)   msg += `📍 ${loc}\n`;
+  if (btn) { btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; btn.disabled = true; }
+  if (desktopBtn) { desktopBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; desktopBtn.disabled = true; }
 
-  if (skills.length) msg += `\n🛠️ *Skills:* ${skills.join(', ')}\n`;
+  try {
+    const canvas = await captureResume();
+    const imgData = canvas.toDataURL('image/jpeg', 1.0);
 
-  const langs = document.getElementById('f-langs').value.trim();
-  if (langs) msg += `🗣️ *Languages:* ${langs}\n`;
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: 'a4',
+    });
 
-  const summary = document.getElementById('f-summary').value.trim();
-  if (summary) msg += `\n📝 *Profile:*\n${summary.slice(0, 200)}${summary.length > 200 ? '...' : ''}\n`;
+    const pageW = pdf.internal.pageSize.getWidth();
+    const pageH = pdf.internal.pageSize.getHeight();
+    const imgW = canvas.width;
+    const imgH = canvas.height;
+    const ratio = Math.min(pageW / (imgW * 0.2645), pageH / (imgH * 0.2645));
+    const finalW = imgW * 0.2645 * ratio;
+    const finalH = imgH * 0.2645 * ratio;
 
-  msg += `\n_Resume via జన సేవా కేంద్రం_`;
+    pdf.addImage(imgData, 'JPEG', 0, 0, finalW, finalH);
 
-  const waUrl = `https://wa.me/?text=${encodeURIComponent(msg)}`;
-  window.open(waUrl, '_blank');
+    const name = document.getElementById('f-name').value.trim() || 'Resume';
+    pdf.save(`${name}_Resume.pdf`);
+
+  } catch(err) {
+    console.error(err);
+    alert('PDF error అయింది. మళ్ళీ try చేయండి.');
+  }
+
+  if (btn) { btn.innerHTML = origMobile; btn.disabled = false; }
+  if (desktopBtn) { desktopBtn.innerHTML = origDesktop; desktopBtn.disabled = false; }
+}
+
+/* ── WhatsApp Share (Image) ── */
+async function shareToWhatsApp() {
+  const waBtn = document.querySelectorAll('.mobile-actions button')[0];
+  const origHTML = waBtn ? waBtn.innerHTML : '';
+  if (waBtn) { waBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; waBtn.disabled = true; }
+
+  try {
+    const canvas = await captureResume();
+    const name = document.getElementById('f-name').value.trim() || 'Resume';
+
+    canvas.toBlob(async (blob) => {
+      const file = new File([blob], `${name}_Resume.png`, { type: 'image/png' });
+
+      // Native share (Android Chrome 75+, iOS Safari 15+)
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({
+          files: [file],
+          title: `${name} - Resume`,
+          text: `Resume via జన సేవా కేంద్రం 📄`,
+        });
+      } else {
+        // Fallback: download image
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${name}_Resume.png`;
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        setTimeout(() => window.open(`https://wa.me/?text=${encodeURIComponent(name+' Resume via జన సేవా కేంద్రం')}`, '_blank'), 800);
+      }
+
+      if (waBtn) { waBtn.innerHTML = origHTML; waBtn.disabled = false; }
+    }, 'image/png', 1.0);
+
+  } catch(err) {
+    if (err.name !== 'AbortError') {
+      console.error(err);
+      alert('Share error అయింది.');
+    }
+    if (waBtn) { waBtn.innerHTML = origHTML; waBtn.disabled = false; }
+  }
 }
 
 // Init
