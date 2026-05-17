@@ -1,67 +1,126 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="te">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Resume Builder – Live Preview</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#0a0f1a"/>
+<title>Resume Builder – జన సేవా కేంద్రం</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@400;600;700&family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
 :root {
-  --bg: #f0ede8;
-  --panel: #ffffff;
-  --border: #ddd9d0;
-  --accent: #2d4a3e;
-  --accent2: #c0392b;
-  --accent3: #1a2744;
-  --text: #1a1a1a;
-  --muted: #6b6560;
-  --light: #f7f5f2;
-  --gold: #b5963e;
-  --teal: #1D9E75;
-  --font-body: 'DM Sans', sans-serif;
+  /* ── Site theme (dark) ── */
+  --bg:      #0a0f1a;
+  --bg2:     #111827;
+  --bg3:     #1a2235;
+  --card:    #151e2e;
+  --border:  rgba(255,255,255,0.07);
+  --accent:  #4fffb0;
+  --accent2: #f87171;
+  --text:    #e8edf5;
+  --text2:   #8a9bb5;
+  --shadow:  0 4px 24px rgba(0,0,0,0.4);
+  --radius:  12px;
+  --trans:   all 0.2s ease;
+  --gold:    #fbbf24;
+  --teal:    #4fffb0;
+
+  /* ── Form panel vars (alias) ── */
+  --panel:  var(--bg2);
+  --light:  var(--bg3);
+  --muted:  var(--text2);
+  --font-body: 'DM Sans', 'Noto Sans Telugu', sans-serif;
   --font-display: 'DM Serif Display', serif;
+  --font-te: 'Noto Sans Telugu', sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-height:100vh}
 
 /* ── Header ── */
-.header{background:var(--accent);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.2)}
-.logo{font-family:var(--font-display);font-size:22px;color:#fff;letter-spacing:.3px}
-.logo span{color:#a8d5b5}
-.tpl-bar{display:flex;gap:6px;align-items:center}
-.tpl-label{font-size:11px;color:#a8d5b5;font-weight:500;letter-spacing:.06em;text-transform:uppercase;margin-right:4px}
-.tb{border:1px solid rgba(255,255,255,.25);border-radius:6px;padding:5px 12px;cursor:pointer;font-size:12px;background:rgba(255,255,255,.08);color:rgba(255,255,255,.75);font-family:var(--font-body);transition:all .15s;display:flex;align-items:center;gap:5px}
-.tb:hover{background:rgba(255,255,255,.18);color:#fff}
-.tb.active{background:#fff;color:var(--accent);font-weight:600;border-color:#fff}
-.tdot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.gen-btn{background:var(--gold);color:#fff;border:none;border-radius:8px;padding:8px 18px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font-body);display:flex;align-items:center;gap:6px;transition:background .15s}
-.gen-btn:hover{background:#9a7d30}
+.header{
+  background:var(--bg2);border-bottom:1px solid var(--border);
+  padding:0 16px;display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:100;height:54px;
+  box-shadow:0 2px 16px rgba(0,0,0,0.3);
+}
+.back-btn{
+  display:flex;align-items:center;gap:8px;
+  color:var(--text2);font-size:13px;font-family:var(--font-te);
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:8px;padding:6px 12px;cursor:pointer;
+  text-decoration:none;transition:var(--trans);
+}
+.back-btn:hover{color:var(--accent);border-color:var(--accent)}
+.logo{font-family:var(--font-display);font-size:18px;color:var(--text);letter-spacing:.3px}
+.logo span{color:var(--accent)}
+.tpl-bar{display:flex;gap:5px;align-items:center;overflow-x:auto;scrollbar-width:none}
+.tpl-bar::-webkit-scrollbar{display:none}
+.tpl-label{font-size:10px;color:var(--text2);font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-right:2px;flex-shrink:0}
+.tb{
+  border:1px solid var(--border);border-radius:6px;padding:5px 10px;
+  cursor:pointer;font-size:11px;background:var(--bg3);
+  color:var(--text2);font-family:var(--font-body);
+  transition:var(--trans);display:flex;align-items:center;gap:4px;white-space:nowrap;flex-shrink:0;
+}
+.tb:hover{background:var(--card);color:var(--text);border-color:rgba(255,255,255,0.15)}
+.tb.active{background:var(--accent);color:#0a0f1a;font-weight:700;border-color:var(--accent)}
+.tdot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.gen-btn{
+  background:var(--accent);color:#0a0f1a;border:none;
+  border-radius:8px;padding:7px 14px;font-size:13px;font-weight:700;
+  cursor:pointer;font-family:var(--font-body);display:flex;align-items:center;
+  gap:6px;transition:var(--trans);white-space:nowrap;flex-shrink:0;
+}
+.gen-btn:hover{background:#38e89a;box-shadow:0 4px 16px rgba(79,255,176,0.3)}
 
 /* ── Layout ── */
 .layout{display:flex;height:calc(100vh - 54px)}
 
 /* ── Left Panel ── */
-.lpanel{width:270px;flex-shrink:0;background:var(--panel);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
-.tabs{display:grid;grid-template-columns:repeat(6,1fr);border-bottom:1px solid var(--border);background:var(--light)}
-.tab{padding:9px 2px;font-size:10.5px;cursor:pointer;border:none;background:none;color:var(--muted);font-family:var(--font-body);text-align:center;border-bottom:2.5px solid transparent;transition:all .12s;font-weight:500}
-.tab:hover{color:var(--text);background:#f0ede8}
-.tab.active{color:var(--accent);border-bottom:2.5px solid var(--accent);background:#fff;font-weight:600}
-.fbody{padding:14px;overflow-y:auto;flex:1}
-.fl{font-size:10.5px;font-weight:600;color:var(--muted);margin-bottom:4px;display:block;text-transform:uppercase;letter-spacing:.06em}
-.fi{width:100%;font-size:13px;padding:7px 10px;border:1px solid var(--border);border-radius:7px;background:#fff;color:var(--text);font-family:var(--font-body);margin-bottom:10px;transition:border-color .15s}
-.fi:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(45,74,62,.1)}
+.lpanel{
+  width:270px;flex-shrink:0;background:var(--bg2);
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;overflow:hidden;
+}
+.tabs{
+  display:grid;grid-template-columns:repeat(6,1fr);
+  border-bottom:1px solid var(--border);background:var(--bg);
+}
+.tab{
+  padding:9px 2px;font-size:10.5px;cursor:pointer;border:none;
+  background:none;color:var(--text2);font-family:var(--font-body);
+  text-align:center;border-bottom:2.5px solid transparent;
+  transition:var(--trans);font-weight:500;
+}
+.tab:hover{color:var(--text);background:var(--bg3)}
+.tab.active{color:var(--accent);border-bottom:2.5px solid var(--accent);background:var(--bg2);font-weight:700}
+.fbody{padding:14px;overflow-y:auto;flex:1;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+.fl{font-size:10px;font-weight:700;color:var(--text2);margin-bottom:4px;display:block;
+  text-transform:uppercase;letter-spacing:.08em}
+.fi{
+  width:100%;font-size:13px;padding:8px 10px;
+  border:1px solid var(--border);border-radius:8px;
+  background:var(--bg3);color:var(--text);
+  font-family:var(--font-body);margin-bottom:10px;
+  transition:border-color .15s;
+}
+.fi:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(79,255,176,0.1)}
+.fi::placeholder{color:var(--text2)}
 textarea.fi{resize:vertical;line-height:1.5}
 select.fi{cursor:pointer}
+select.fi option{background:var(--bg2);color:var(--text)}
 .fdiv{height:1px;background:var(--border);margin:10px 0}
+
 /* Icon input wrappers */
 .iw{position:relative;margin-bottom:10px}
 .iw .fi{padding-left:34px;margin-bottom:0}
-.iw .ii{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--muted);pointer-events:none;transition:color .2s}
+.iw .ii{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:12px;color:var(--text2);pointer-events:none;transition:color .2s}
 .iw .fi:focus~.ii,.iw .fi:not(:placeholder-shown)~.ii{color:var(--accent)}
 .iw-ta{position:relative;margin-bottom:10px}
 .iw-ta textarea{padding-left:34px;margin-bottom:0}
-.iw-ta .ii{position:absolute;left:10px;top:12px;font-size:13px;color:var(--muted);pointer-events:none}
+.iw-ta .ii{position:absolute;left:10px;top:12px;font-size:12px;color:var(--text2);pointer-events:none}
 .iw-ta textarea:focus~.ii{color:var(--accent)}
 /* Contact icon chips in preview */
 .ci{display:inline-flex;align-items:center;gap:4px;font-family:Georgia,serif}
@@ -69,38 +128,91 @@ select.fi{cursor:pointer}
 
 /* Summary picker */
 .sum-cat{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--gold);margin:10px 0 6px}
-.sum-opt{display:block;padding:8px 10px;border:1px solid var(--border);border-radius:7px;cursor:pointer;margin-bottom:6px;transition:all .12s;background:#fff}
-.sum-opt:hover{border-color:var(--accent);background:#f0f7f4}
+.sum-opt{
+  display:block;padding:8px 10px;border:1px solid var(--border);
+  border-radius:8px;cursor:pointer;margin-bottom:6px;
+  transition:var(--trans);background:var(--bg3);
+}
+.sum-opt:hover{border-color:var(--accent);background:rgba(79,255,176,0.05)}
 .sum-opt .so-title{font-size:12px;font-weight:600;color:var(--text)}
-.sum-opt .so-preview{font-size:10.5px;color:var(--muted);margin-top:2px;line-height:1.4}
-.sum-opt.picked{border:1.5px solid var(--teal);background:#e8f7f2}
-.sum-opt.picked .so-title{color:var(--teal)}
+.sum-opt .so-preview{font-size:10.5px;color:var(--text2);margin-top:2px;line-height:1.4}
+.sum-opt.picked{border:1.5px solid var(--accent);background:rgba(79,255,176,0.08)}
+.sum-opt.picked .so-title{color:var(--accent)}
 
 /* Skills */
 .skill-row{display:flex;gap:6px;margin-bottom:10px}
 .skill-row .fi{margin-bottom:0;flex:1}
-.sadd{padding:7px 10px;background:var(--accent);color:#fff;border:none;border-radius:7px;cursor:pointer;font-size:12px;font-weight:600;font-family:var(--font-body);white-space:nowrap}
-.sadd:hover{background:#1e3329}
+.sadd{
+  padding:7px 12px;background:var(--accent);color:#0a0f1a;
+  border:none;border-radius:8px;cursor:pointer;font-size:12px;
+  font-weight:700;font-family:var(--font-body);white-space:nowrap;
+}
+.sadd:hover{background:#38e89a}
 .pills{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px}
-.pill{display:flex;align-items:center;gap:4px;font-size:11.5px;padding:4px 10px;border-radius:99px;background:#e8f7f2;color:var(--accent);font-weight:500;border:1px solid rgba(45,74,62,.2)}
+.pill{
+  display:flex;align-items:center;gap:4px;font-size:11.5px;
+  padding:4px 10px;border-radius:99px;
+  background:rgba(79,255,176,0.1);color:var(--accent);
+  font-weight:500;border:1px solid rgba(79,255,176,0.2);
+}
 .pill button{background:none;border:none;cursor:pointer;color:var(--accent);font-size:14px;line-height:1;padding:0;opacity:.6}
 .pill button:hover{opacity:1}
 
 /* Experience */
-.exp-card{background:var(--light);border:1px solid var(--border);border-radius:10px;padding:11px;margin-bottom:10px}
+.exp-card{
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:10px;padding:11px;margin-bottom:10px;
+}
 .exp-ch{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px}
-.exp-cl{font-size:12px;font-weight:600;color:var(--text)}
-.exp-rem{background:none;border:none;cursor:pointer;color:var(--muted);font-size:12px;padding:3px 7px;border-radius:5px;font-family:var(--font-body);transition:all .12s}
-.exp-rem:hover{background:#fde8e8;color:var(--accent2)}
-.add-exp{width:100%;padding:8px;border:1.5px dashed var(--border);background:none;border-radius:8px;color:var(--accent);font-size:12.5px;font-weight:600;cursor:pointer;font-family:var(--font-body);margin-bottom:10px;transition:all .15s}
-.add-exp:hover{background:#f0f7f4;border-color:var(--accent)}
+.exp-cl{font-size:12px;font-weight:700;color:var(--text)}
+.exp-rem{
+  background:none;border:none;cursor:pointer;color:var(--text2);
+  font-size:12px;padding:3px 7px;border-radius:5px;
+  font-family:var(--font-body);transition:var(--trans);
+}
+.exp-rem:hover{background:rgba(248,113,113,0.15);color:#f87171}
+.add-exp{
+  width:100%;padding:8px;border:1.5px dashed var(--border);
+  background:none;border-radius:8px;color:var(--accent);
+  font-size:12.5px;font-weight:600;cursor:pointer;
+  font-family:var(--font-body);margin-bottom:10px;transition:var(--trans);
+}
+.add-exp:hover{background:rgba(79,255,176,0.05);border-color:var(--accent)}
 
 /* ── Right Panel ── */
-.rpanel{flex:1;background:#c8c4be;overflow-y:auto;display:flex;justify-content:center;align-items:flex-start;padding:24px 16px}
-.doc-wrap{width:100%;max-width:560px;filter:drop-shadow(0 8px 24px rgba(0,0,0,.25))}
+.rpanel{flex:1;background:var(--bg);overflow-y:auto;display:flex;justify-content:center;align-items:flex-start;padding:20px 16px}
+.doc-wrap{width:100%;max-width:560px;filter:drop-shadow(0 8px 32px rgba(0,0,0,.5))}
 .doc{background:#fff;width:100%;font-family:Georgia,serif;position:relative}
 
-/* ══ TEMPLATE: Classic ══ */
+@media print{
+  .header,.lpanel{display:none}
+  .rpanel{padding:0;background:#fff;display:block}
+  .doc-wrap{filter:none;max-width:100%;box-shadow:none}
+}
+/* Mobile action buttons */
+.mobile-actions{display:none;gap:6px;align-items:center;flex-shrink:0}
+@media(max-width:768px){
+  .mobile-actions{display:flex}
+  .tpl-bar{display:none}
+  .layout{flex-direction:column;height:auto}
+  .lpanel{width:100%;border-right:none;border-bottom:1px solid var(--border);max-height:50vh}
+  .rpanel{padding:8px 4px;overflow-x:hidden}
+  .header{gap:8px}
+  .back-btn span{display:none}
+
+  /* ── Resume preview: scale to fit mobile screen ── */
+  .doc-wrap{
+    width:100%;
+    max-width:100%;
+    overflow:hidden;
+  }
+  .doc{
+    /* Scale down A4 (595px) to fit mobile screen */
+    transform-origin: top left;
+    width: 595px !important;
+  }
+  /* JS will set transform:scale() dynamically */
+}
 .t-classic .dh{padding:30px 36px 18px;text-align:center;border-bottom:3px double #222}
 .t-classic .dn{font-size:26px;font-weight:700;color:#111;letter-spacing:.5px;font-family:Georgia,serif}
 .t-classic .dr{font-size:12px;color:#555;margin-top:4px;letter-spacing:2px;text-transform:uppercase;font-family:Georgia,serif}
@@ -115,8 +227,6 @@ select.fi{cursor:pointer}
 .t-classic .exco{font-size:12px;font-weight:700;color:#111;font-family:Georgia,serif}
 .t-classic .ext{font-size:11px;color:#555;font-family:Georgia,serif}
 .t-classic .exd{font-size:11px;color:#333;line-height:1.6;margin-top:4px;font-family:Georgia,serif;padding-left:12px}
-.t-classic .extd{font-size:10.5px;color:#777;font-family:Georgia,serif;font-style:italic;margin-top:1px;display:flex;align-items:center;gap:5px}
-.t-classic .extd::before{content:"\f017";font-family:"Font Awesome 6 Free";font-weight:900;font-size:9px;color:#aaa}
 .t-classic .decl-box{margin-top:20px;border:1px solid #ddd;background:#fafafa;padding:12px 14px}
 .t-classic .decl-txt{font-size:10.5px;color:#444;line-height:1.7;font-family:Georgia,serif;font-style:italic}
 .t-classic .sig{display:flex;justify-content:space-between;margin-top:30px;padding-top:12px;border-top:1.5px solid #ccc}
@@ -138,8 +248,6 @@ select.fi{cursor:pointer}
 .t-modern .exco{font-size:12px;font-weight:700;color:#1a2744;font-family:Georgia,serif}
 .t-modern .ext{font-size:11px;color:#666;font-family:Georgia,serif}
 .t-modern .exd{font-size:11px;color:#444;line-height:1.6;margin-top:3px;font-family:Georgia,serif;padding-left:10px}
-.t-modern .extd{font-size:10px;color:#3a5a9e;font-family:Georgia,serif;font-style:italic;margin-top:1px;display:flex;align-items:center;gap:5px}
-.t-modern .extd::before{content:"\f017";font-family:"Font Awesome 6 Free";font-weight:900;font-size:8.5px;color:#94b0d6}
 .t-modern .pdg{display:grid;grid-template-columns:1fr 1fr;gap:3px 8px}
 .t-modern .pdi{font-size:10.5px;color:#444;font-family:Georgia,serif}
 .t-modern .pdk{color:#777;font-size:10px}
@@ -164,8 +272,6 @@ select.fi{cursor:pointer}
 .t-minimal .exco{font-size:12px;font-weight:600;color:#111;font-family:Georgia,serif}
 .t-minimal .ext{font-size:11px;color:#999;font-family:Georgia,serif}
 .t-minimal .exd{font-size:11.5px;color:#444;line-height:1.65;margin-top:3px;font-family:Georgia,serif}
-.t-minimal .extd{font-size:10.5px;color:#aaa;font-family:Georgia,serif;font-style:italic;margin-top:1px;display:flex;align-items:center;gap:5px}
-.t-minimal .extd::before{content:"\f017";font-family:"Font Awesome 6 Free";font-weight:900;font-size:9px;color:#ccc}
 .t-minimal .decl-txt{font-size:10.5px;color:#777;line-height:1.7;font-family:Georgia,serif;font-style:italic;border-top:1px solid #eee;padding-top:12px;margin-top:16px}
 .t-minimal .sig{display:flex;justify-content:space-between;margin-top:20px}
 .t-minimal .sigb{text-align:center;font-size:11px;color:#777;font-family:Georgia,serif}
@@ -186,8 +292,6 @@ select.fi{cursor:pointer}
 .t-bold .exco{font-size:12px;font-weight:700;color:#c0392b;font-family:Georgia,serif}
 .t-bold .ext{font-size:11px;color:#555;font-family:Georgia,serif}
 .t-bold .exd{font-size:11px;color:#333;line-height:1.6;margin-top:3px;font-family:Georgia,serif;padding-left:12px}
-.t-bold .extd{font-size:10.5px;color:#c0392b;font-family:Georgia,serif;font-style:italic;margin-top:1px;display:flex;align-items:center;gap:5px}
-.t-bold .extd::before{content:"\f017";font-family:"Font Awesome 6 Free";font-weight:900;font-size:9px;color:#e87c7c}
 .t-bold .decl-box{margin-top:16px;border-top:2.5px solid #c0392b;padding-top:10px}
 .t-bold .decl-txt{font-size:10.5px;color:#444;line-height:1.7;font-family:Georgia,serif;font-style:italic}
 .t-bold .sig{display:flex;justify-content:space-between;margin-top:20px}
@@ -214,8 +318,6 @@ select.fi{cursor:pointer}
 .t-executive .exco{font-size:12px;font-weight:700;color:#0f1f3d;font-family:Georgia,serif}
 .t-executive .ext{font-size:11px;color:#666;font-family:Georgia,serif}
 .t-executive .exd{font-size:11px;color:#333;line-height:1.6;margin-top:3px;font-family:Georgia,serif;padding-left:12px}
-.t-executive .extd{font-size:10.5px;color:#b5963e;font-family:Georgia,serif;font-style:italic;margin-top:1px;display:flex;align-items:center;gap:5px}
-.t-executive .extd::before{content:"\f017";font-family:"Font Awesome 6 Free";font-weight:900;font-size:9px;color:#d4b86a}
 .t-executive .decl-txt{font-size:10px;color:#555;line-height:1.7;font-family:Georgia,serif;font-style:italic;border-top:2px solid #b5963e;padding-top:10px;margin-top:14px}
 .t-executive .sig{display:flex;justify-content:space-between;margin-top:20px}
 .t-executive .sigb{text-align:center;font-size:11px;color:#555;font-family:Georgia,serif}
@@ -243,8 +345,6 @@ select.fi{cursor:pointer}
 .t-creative .exco{font-size:12px;font-weight:700;color:#00695c;font-family:Georgia,serif}
 .t-creative .ext{font-size:11px;color:#666;font-family:Georgia,serif}
 .t-creative .exd{font-size:11px;color:#333;line-height:1.6;margin-top:3px;font-family:Georgia,serif;padding-left:10px}
-.t-creative .extd{font-size:10.5px;color:#00897b;font-family:Georgia,serif;font-style:italic;margin-top:1px;display:flex;align-items:center;gap:5px}
-.t-creative .extd::before{content:"\f017";font-family:"Font Awesome 6 Free";font-weight:900;font-size:9px;color:#4db6ac}
 .t-creative .decl-txt{font-size:10px;color:#555;line-height:1.7;font-style:italic;border-top:1px solid #b2dfdb;padding-top:10px;margin-top:12px;font-family:Georgia,serif}
 .t-creative .sig{display:flex;justify-content:space-between;margin-top:18px}
 .t-creative .sigb{text-align:center;font-size:10.5px;color:#555;font-family:Georgia,serif}
@@ -269,8 +369,6 @@ select.fi{cursor:pointer}
 .t-elegant .exco{font-size:12px;font-weight:700;color:#2d1b4e;font-family:Georgia,serif;font-style:italic}
 .t-elegant .ext{font-size:11px;color:#7b4fa6;font-family:Georgia,serif}
 .t-elegant .exd{font-size:11px;color:#444;line-height:1.65;margin-top:4px;font-family:Georgia,serif}
-.t-elegant .extd{font-size:10.5px;color:#9c6bc9;font-family:Georgia,serif;font-style:italic;margin-top:2px;display:flex;align-items:center;gap:5px}
-.t-elegant .extd::before{content:"\f017";font-family:"Font Awesome 6 Free";font-weight:900;font-size:9px;color:#c9a8e8}
 .t-elegant .decl-txt{font-size:10px;color:#666;line-height:1.75;font-style:italic;text-align:center;border-top:1px solid #e8d5f5;padding-top:12px;margin-top:16px;font-family:Georgia,serif}
 .t-elegant .sig{display:flex;justify-content:space-between;margin-top:20px}
 .t-elegant .sigb{text-align:center;font-size:11px;color:#666;font-family:Georgia,serif;font-style:italic}
@@ -297,8 +395,6 @@ select.fi{cursor:pointer}
 .t-tech .exco{font-size:12px;font-weight:700;color:#58a6ff;font-family:'Courier New',monospace}
 .t-tech .ext{font-size:10.5px;color:#8b949e;font-family:'Courier New',monospace}
 .t-tech .exd{font-size:10.5px;color:#c9d1d9;line-height:1.65;margin-top:3px;font-family:'Courier New',monospace}
-.t-tech .extd{font-size:10px;color:#00ff88;font-family:'Courier New',monospace;font-style:normal;margin-top:2px;opacity:.8;display:flex;align-items:center;gap:5px}
-.t-tech .extd::before{content:"\f017";font-family:"Font Awesome 6 Free";font-weight:900;font-size:8.5px}
 .t-tech .decl-txt{font-size:10px;color:#8b949e;line-height:1.7;font-family:'Courier New',monospace;border-top:1px solid #30363d;padding-top:10px;margin-top:14px}
 .t-tech .decl-txt::before{content:'/* ';color:#30363d}
 .t-tech .decl-txt::after{content:' */';color:#30363d}
@@ -306,33 +402,54 @@ select.fi{cursor:pointer}
 .t-tech .sigb{text-align:center;font-size:10.5px;color:#8b949e;font-family:'Courier New',monospace}
 .t-tech .sigl{width:100px;height:1px;background:#00ff88;margin:22px auto 4px;opacity:.5}
 
-@media print{
-  .header,.lpanel{display:none}
-  .rpanel{padding:0;background:#fff}
-  .doc-wrap{filter:none;max-width:100%;box-shadow:none}
-}
-@media(max-width:768px){
-  .layout{flex-direction:column;height:auto}
-  .lpanel{width:100%;border-right:none;border-bottom:1px solid var(--border)}
-  .rpanel{min-height:600px}
-}
+/* ══ TEMPLATE: Classic ══ */
+
 </style>
 </head>
 <body>
 
+<!-- Mobile template bar -->
+<div id="mobile-tpl-bar" style="display:none;background:var(--bg2);border-bottom:1px solid var(--border);padding:8px 12px;overflow-x:auto;white-space:nowrap;scrollbar-width:none">
+  <span style="font-size:10px;color:var(--text2);font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-right:6px">Template:</span>
+  <button class="tb active" onclick="setTpl('classic')" id="m-btn-classic"><span class="tdot" style="background:#222"></span>Classic</button>
+  <button class="tb" onclick="setTpl('modern')" id="m-btn-modern"><span class="tdot" style="background:#3a5a9e"></span>Modern</button>
+  <button class="tb" onclick="setTpl('minimal')" id="m-btn-minimal"><span class="tdot" style="background:#aaa"></span>Minimal</button>
+  <button class="tb" onclick="setTpl('bold')" id="m-btn-bold"><span class="tdot" style="background:#c0392b"></span>Bold</button>
+  <button class="tb" onclick="setTpl('executive')" id="m-btn-executive"><span class="tdot" style="background:#b5963e"></span>Executive</button>
+  <button class="tb" onclick="setTpl('creative')" id="m-btn-creative"><span class="tdot" style="background:#00897b"></span>Creative</button>
+  <button class="tb" onclick="setTpl('elegant')" id="m-btn-elegant"><span class="tdot" style="background:#7b4fa6"></span>Elegant</button>
+  <button class="tb" onclick="setTpl('tech')" id="m-btn-tech"><span class="tdot" style="background:#0d1117;border:1px solid #555"></span>Tech</button>
+  <button class="gen-btn" onclick="shareToWhatsApp()" style="background:#25d366;margin-left:6px"><i class="fab fa-whatsapp"></i></button>
+  <button class="gen-btn" onclick="printResume()" style="background:var(--accent)"><i class="fas fa-print"></i></button>
+</div>
+
 <div class="header">
-  <div class="logo">Resume<span>Builder</span></div>
+  <div style="display:flex;align-items:center;gap:10px;min-width:0;flex-shrink:0">
+    <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> <span>వెనక్కి</span></a>
+    <div class="logo">Resume<span>Builder</span></div>
+  </div>
+  <!-- Desktop template bar -->
   <div class="tpl-bar">
     <span class="tpl-label">Template:</span>
     <button class="tb active" onclick="setTpl('classic')" id="btn-classic"><span class="tdot" style="background:#222"></span>Classic</button>
     <button class="tb" onclick="setTpl('modern')" id="btn-modern"><span class="tdot" style="background:#3a5a9e"></span>Modern</button>
-    <button class="tb" onclick="setTpl('minimal')" id="btn-minimal"><span class="tdot" style="background:#ccc"></span>Minimal</button>
+    <button class="tb" onclick="setTpl('minimal')" id="btn-minimal"><span class="tdot" style="background:#aaa"></span>Minimal</button>
     <button class="tb" onclick="setTpl('bold')" id="btn-bold"><span class="tdot" style="background:#c0392b"></span>Bold</button>
     <button class="tb" onclick="setTpl('executive')" id="btn-executive"><span class="tdot" style="background:#b5963e"></span>Executive</button>
     <button class="tb" onclick="setTpl('creative')" id="btn-creative"><span class="tdot" style="background:#00897b"></span>Creative</button>
     <button class="tb" onclick="setTpl('elegant')" id="btn-elegant"><span class="tdot" style="background:#7b4fa6"></span>Elegant</button>
-    <button class="tb" onclick="setTpl('tech')" id="btn-tech"><span class="tdot" style="background:#0d1117"></span>Tech Dark</button>
-    <button class="gen-btn" onclick="printResume()">⬇ Download / Print</button>
+    <button class="tb" onclick="setTpl('tech')" id="btn-tech"><span class="tdot" style="background:#0d1117;border:1px solid #555"></span>Tech</button>
+    <button class="gen-btn" onclick="shareToWhatsApp()" style="background:#25d366"><i class="fab fa-whatsapp"></i> Share</button>
+    <button class="gen-btn" onclick="printResume()" style="background:var(--accent)"><i class="fas fa-file-pdf"></i> PDF</button>
+  </div>
+  <!-- Mobile action buttons — always visible -->
+  <div class="mobile-actions">
+    <button onclick="shareToWhatsApp()" style="width:36px;height:36px;border-radius:8px;background:#25d366;border:none;color:#fff;font-size:16px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0">
+      <i class="fab fa-whatsapp"></i>
+    </button>
+    <button onclick="printResume()" style="width:36px;height:36px;border-radius:8px;background:var(--accent);border:none;color:#0a0f1a;font-size:14px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0" title="Download as PDF">
+      <i class="fas fa-file-pdf"></i>
+    </button>
   </div>
 </div>
 
@@ -379,13 +496,17 @@ select.fi{cursor:pointer}
     <!-- EXP -->
     <div class="fbody" id="sec-exp" style="display:none">
       <div id="exp-list"></div>
-      <button class="add-exp" onclick="addExp()"><i class="fa-solid fa-plus"></i> Add Position</button>
+      <button class="add-exp" onclick="addExp()">+ Add Position</button>
     </div>
 
     <!-- EDU -->
     <div class="fbody" id="sec-edu" style="display:none">
-      <div id="edu-list"></div>
-      <button class="add-exp" onclick="addEdu()"><i class="fa-solid fa-plus"></i> Add Qualification</button>
+      <label class="fl">Degree / Qualification</label><input class="fi" id="f-deg" placeholder="B.Tech Computer Science" oninput="render()">
+      <label class="fl">Institution</label><input class="fi" id="f-uni" placeholder="Osmania University" oninput="render()">
+      <label class="fl">Year</label><input class="fi" id="f-eyear" placeholder="2020 – 2024" oninput="render()">
+      <label class="fl">GPA / Percentage</label><input class="fi" id="f-gpa" placeholder="8.2 / 10" oninput="render()">
+      <label class="fl">Relevant Coursework</label>
+      <textarea class="fi" id="f-course" style="min-height:54px" placeholder="Data Structures, DBMS, Networks..." oninput="render()"></textarea>
     </div>
 
     <!-- SKILLS -->
@@ -491,12 +612,16 @@ function showSec(id) {
   });
   if (id === 'bio') buildSumList();
   if (id === 'exp') renderExpForms();
-  if (id === 'edu') renderEduForms();
 }
 
 function setTpl(t) {
   tpl = t;
-  ['classic','modern','minimal','bold','executive','creative','elegant','tech'].forEach(b => document.getElementById('btn-'+b).classList.toggle('active', b === t));
+  ['classic','modern','minimal','bold','executive','creative','elegant','tech'].forEach(b => {
+    const d = document.getElementById('btn-'+b);
+    const m = document.getElementById('m-btn-'+b);
+    if (d) d.classList.toggle('active', b === t);
+    if (m) m.classList.toggle('active', b === t);
+  });
   render();
 }
 
@@ -515,29 +640,8 @@ function renderPills() {
 }
 
 let expId = 0;
-
-function saveExpData() {
-  expBlocks.forEach(b => {
-    b._title = (document.getElementById(`et_${b.id}`)||{}).value || b._title || '';
-    b._company = (document.getElementById(`ec_${b.id}`)||{}).value || b._company || '';
-    b._dur = (document.getElementById(`ed_${b.id}`)||{}).value || b._dur || '';
-    b._loc = (document.getElementById(`el_${b.id}`)||{}).value || b._loc || '';
-    b._desc = (document.getElementById(`edesc_${b.id}`)||{}).value || b._desc || '';
-  });
-}
-
-function addExp() {
-  saveExpData();
-  expBlocks.push({ id: ++expId, _title:'', _company:'', _dur:'', _loc:'', _desc:'' });
-  renderExpForms();
-  render();
-}
-function removeExp(id) {
-  saveExpData();
-  expBlocks = expBlocks.filter(b => b.id !== id);
-  renderExpForms();
-  render();
-}
+function addExp() { expBlocks.push({ id: ++expId }); renderExpForms(); render(); }
+function removeExp(id) { expBlocks = expBlocks.filter(b => b.id !== id); renderExpForms(); render(); }
 function renderExpForms() {
   const el = document.getElementById('exp-list');
   if (!expBlocks.length) {
@@ -547,70 +651,17 @@ function renderExpForms() {
   el.innerHTML = expBlocks.map((b, i) => `
     <div class="exp-card">
       <div class="exp-ch">
-        <span class="exp-cl"><i class="fa-solid fa-briefcase" style="font-size:11px;margin-right:5px;opacity:.6"></i>Position ${i+1}</span>
-        ${expBlocks.length>1?`<button class="exp-rem" onclick="saveExpData();removeExp(${b.id})">✕ Remove</button>`:''}
+        <span class="exp-cl">Position ${i+1}</span>
+        <button class="exp-rem" onclick="removeExp(${b.id})">✕ Remove</button>
       </div>
-      <label class="fl">Job Title</label><input class="fi" id="et_${b.id}" placeholder="e.g. Data Analyst" value="${esc(b._title)}" oninput="saveExpData();render()">
-      <label class="fl">Company</label><input class="fi" id="ec_${b.id}" placeholder="e.g. Infosys" value="${esc(b._company)}" oninput="saveExpData();render()">
-      <label class="fl">Duration</label><input class="fi" id="ed_${b.id}" placeholder="Jan 2022 – Mar 2024" value="${esc(b._dur)}" oninput="saveExpData();render()">
-      <label class="fl">Location</label><input class="fi" id="el_${b.id}" placeholder="Hyderabad / Remote" value="${esc(b._loc)}" oninput="saveExpData();render()">
+      <label class="fl">Job Title</label><input class="fi" id="et_${b.id}" placeholder="e.g. Data Analyst" oninput="render()">
+      <label class="fl">Company</label><input class="fi" id="ec_${b.id}" placeholder="e.g. Infosys" oninput="render()">
+      <label class="fl">Duration</label><input class="fi" id="ed_${b.id}" placeholder="Jan 2022 – Mar 2024" oninput="render()">
+      <label class="fl">Location</label><input class="fi" id="el_${b.id}" placeholder="Hyderabad / Remote" oninput="render()">
       <label class="fl">Key Responsibilities</label>
-      <textarea class="fi" id="edesc_${b.id}" style="min-height:64px" placeholder="• Led a team of 5&#10;• Improved efficiency by 30%" oninput="saveExpData();render()">${esc(b._desc)}</textarea>
+      <textarea class="fi" id="edesc_${b.id}" style="min-height:64px" placeholder="• Led a team of 5 to deliver X&#10;• Improved efficiency by 30%" oninput="render()"></textarea>
     </div>`).join('');
 }
-
-/* ── Education (multi-entry, same pattern) ── */
-let eduId = 0, eduBlocks = [];
-
-function saveEduData() {
-  eduBlocks.forEach(b => {
-    b._deg  = (document.getElementById(`edeg_${b.id}`)||{}).value || b._deg || '';
-    b._uni  = (document.getElementById(`euni_${b.id}`)||{}).value || b._uni || '';
-    b._yr   = (document.getElementById(`eyr_${b.id}`)||{}).value || b._yr || '';
-    b._gpa  = (document.getElementById(`egpa_${b.id}`)||{}).value || b._gpa || '';
-    b._cw   = (document.getElementById(`ecw_${b.id}`)||{}).value || b._cw || '';
-  });
-}
-
-function addEdu() {
-  saveEduData();
-  eduBlocks.push({ id: ++eduId, _deg:'', _uni:'', _yr:'', _gpa:'', _cw:'' });
-  renderEduForms();
-  render();
-}
-function removeEdu(id) {
-  saveEduData();
-  eduBlocks = eduBlocks.filter(b => b.id !== id);
-  renderEduForms();
-  render();
-}
-function renderEduForms() {
-  const el = document.getElementById('edu-list');
-  if (!el) return;
-  if (!eduBlocks.length) {
-    el.innerHTML = '<div style="text-align:center;padding:20px 0;color:#999;font-size:13px">No qualifications yet.<br>Click <b>+ Add Qualification</b> below.</div>';
-    return;
-  }
-  el.innerHTML = eduBlocks.map((b, i) => `
-    <div class="exp-card">
-      <div class="exp-ch">
-        <span class="exp-cl"><i class="fa-solid fa-graduation-cap" style="font-size:11px;margin-right:5px;opacity:.6"></i>Qualification ${i+1}</span>
-        ${eduBlocks.length>1?`<button class="exp-rem" onclick="saveEduData();removeEdu(${b.id})">✕ Remove</button>`:''}
-      </div>
-      <label class="fl">Degree / Qualification</label>
-      <div class="iw"><input class="fi" id="edeg_${b.id}" placeholder="B.Tech / B.Com / MBA" value="${esc(b._deg)}" oninput="saveEduData();render()"><i class="ii fa-solid fa-graduation-cap"></i></div>
-      <label class="fl">Institution</label>
-      <div class="iw"><input class="fi" id="euni_${b.id}" placeholder="Osmania University" value="${esc(b._uni)}" oninput="saveEduData();render()"><i class="ii fa-solid fa-building-columns"></i></div>
-      <label class="fl">Year</label>
-      <div class="iw"><input class="fi" id="eyr_${b.id}" placeholder="2020 – 2024" value="${esc(b._yr)}" oninput="saveEduData();render()"><i class="ii fa-solid fa-calendar"></i></div>
-      <label class="fl">GPA / Percentage</label>
-      <div class="iw"><input class="fi" id="egpa_${b.id}" placeholder="8.2 / 10 or 78%" value="${esc(b._gpa)}" oninput="saveEduData();render()"><i class="ii fa-solid fa-star"></i></div>
-      <label class="fl">Relevant Coursework</label>
-      <div class="iw-ta"><textarea class="fi" id="ecw_${b.id}" style="min-height:48px" placeholder="Data Structures, DBMS, Networks..." oninput="saveEduData();render()">${esc(b._cw)}</textarea><i class="ii fa-solid fa-book"></i></div>
-    </div>`).join('');
-}
-
-function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
 function initials(n) { return n ? n.split(' ').map(w => w[0]||'').join('').slice(0,2).toUpperCase() : '?'; }
 
@@ -628,44 +679,15 @@ function contactLine(email,phone,loc,linkedin,web,iconColor){
 function expSection(T) {
   if (!expBlocks.length) return '';
   const items = expBlocks.map(b => {
-    const t   = (document.getElementById(`et_${b.id}`)    || {}).value || b._title   || '';
-    const co  = (document.getElementById(`ec_${b.id}`)    || {}).value || b._company || '';
-    const d   = (document.getElementById(`ed_${b.id}`)    || {}).value || b._dur     || '';
-    const l   = (document.getElementById(`el_${b.id}`)    || {}).value || b._loc     || '';
-    const desc= (document.getElementById(`edesc_${b.id}`) || {}).value || b._desc    || '';
-    if (!t && !co) return '';
-    const coLine  = [co, l].filter(Boolean).join(' · ');
-    const durLine = d ? d : '';
-    return `<div style="margin-bottom:12px">
-      <div style="display:flex;justify-content:space-between;align-items:baseline">
-        <div class="${T}exco">${t||'Job Title'}</div>
-      </div>
-      ${coLine ? `<div class="${T}ext">${coLine}</div>` : ''}
-      ${durLine ? `<div class="${T}extd"><i class="${T}dur-icon"></i>${durLine}</div>` : ''}
+    const t=gv(`et_${b.id}`), c=gv(`ec_${b.id}`), d=gv(`ed_${b.id}`), l=gv(`el_${b.id}`), desc=gv(`edesc_${b.id}`);
+    if (!t && !c) return '';
+    return `<div style="margin-bottom:10px">
+      <div class="${T}exco">${t||'Job Title'}</div>
+      <div class="${T}ext">${[c,d,l].filter(Boolean).join(' · ')}</div>
       ${desc ? `<div class="${T}exd">${desc.replace(/\n/g,'<br>')}</div>` : ''}
     </div>`;
   }).join('');
   return items;
-}
-
-/* Education multi-entry section renderer */
-function eduSection(T) {
-  if (!eduBlocks.length) return '';
-  return eduBlocks.map(b => {
-    const deg  = (document.getElementById(`edeg_${b.id}`) || {}).value || b._deg || '';
-    const uni  = (document.getElementById(`euni_${b.id}`) || {}).value || b._uni || '';
-    const yr   = (document.getElementById(`eyr_${b.id}`)  || {}).value || b._yr  || '';
-    const gpa  = (document.getElementById(`egpa_${b.id}`) || {}).value || b._gpa || '';
-    const cw   = (document.getElementById(`ecw_${b.id}`)  || {}).value || b._cw  || '';
-    if (!deg && !uni) return '';
-    const gpaStr = gpa ? ` &nbsp;·&nbsp; GPA: ${gpa}` : '';
-    return `<div style="margin-bottom:12px">
-      <div class="${T}exco">${deg||'Degree'}</div>
-      ${uni  ? `<div class="${T}ext">${uni}</div>` : ''}
-      ${yr   ? `<div class="${T}extd">${yr}${gpaStr}</div>` : (gpa ? `<div class="${T}extd">GPA: ${gpa}</div>` : '')}
-      ${cw   ? `<div class="${T}exd" style="font-size:10px;margin-top:2px">${cw}</div>` : ''}
-    </div>`;
-  }).join('');
 }
 
 function pdGrid(T, data) {
@@ -688,6 +710,7 @@ function render() {
   const name=gv('f-name')||'Your Name', role=gv('f-role')||'Your Title';
   const email=gv('f-email'), phone=gv('f-phone'), loc=gv('f-loc'), linkedin=gv('f-linkedin'), web=gv('f-web');
   const summary=gv('f-summary'), hobbies=gv('f-hobbies');
+  const deg=gv('f-deg'), uni=gv('f-uni'), eyear=gv('f-eyear'), gpa=gv('f-gpa'), course=gv('f-course');
   const langs=gv('f-langs'), certs=gv('f-certs');
   const dob=gv('f-dob'), father=gv('f-father'), marital=gv('f-marital'), nationality=gv('f-nationality'), religion=gv('f-religion');
   const cl = [email,phone,loc,linkedin,web].filter(Boolean).join(' · ');
@@ -701,8 +724,8 @@ function render() {
   const clElegant   = contactLine(email,phone,loc,linkedin,web,'#9c6bc9');
   const pdData = [['DOB',dob],['Father',father],['Marital',marital],['Nationality',nationality],['Religion',religion],['Mobile',phone],['Email',email]];
   const hasPD = pdData.some(d => d[1]);
-  const hasEdu = eduBlocks.some(b => b._deg || b._uni || (document.getElementById(`edeg_${b.id}`)||{}).value);
-  const hasExp = expBlocks.some(b => b._title || b._company || (document.getElementById(`et_${b.id}`)||{}).value);
+  const hasEdu = deg || uni;
+  const hasExp = expBlocks.some(b => gv(`et_${b.id}`) || gv(`ec_${b.id}`));
 
   let html = '';
 
@@ -713,7 +736,7 @@ function render() {
       <div class="db">
         ${summary?`<div class="sh">Professional Summary</div><div class="st">${summary}</div>`:''}
         ${hasExp?`<div class="sh">Work Experience</div>${expSection(T)}`:''}
-        ${hasEdu?`<div class="sh">Education</div>${eduSection(T)}`    :''}
+        ${hasEdu?`<div class="sh">Education</div><div class="st"><strong>${deg}</strong>${uni?', '+uni:''}${eyear?' &nbsp;·&nbsp; '+eyear:''}${gpa?' &nbsp;·&nbsp; GPA: '+gpa:''}</div>${course?`<div class="st" style="margin-top:3px;color:#555">${course}</div>`:''}`:''}
         ${skills.length?`<div class="sh">Skills</div><div>${skills.map(s=>`<span class="stag">${s}</span>`).join('')}</div>`:''}
         ${langs?`<div class="sh">Languages</div><div class="st">${langs}</div>`:''}
         ${certs?`<div class="sh">Certifications</div><div class="st">${certs.replace(/\n/g,'<br>')}</div>`:''}
@@ -737,7 +760,7 @@ function render() {
       <div class="dm">
         ${summary?`<div class="sh">Profile</div><div class="st">${summary}</div>`:''}
         ${hasExp?`<div class="sh">Experience</div>${expSection(T)}`:''}
-        ${hasEdu?`<div class="sh">Education</div>${eduSection(T)}`    :''}
+        ${hasEdu?`<div class="sh">Education</div><div class="st"><strong>${deg}</strong>${uni?', '+uni:''}${eyear?' · '+eyear:''}${gpa?' · '+gpa:''}</div>${course?`<div class="st" style="margin-top:3px;color:#666">${course}</div>`:''}`:''}
         ${certs?`<div class="sh">Certifications</div><div class="st">${certs.replace(/\n/g,'<br>')}</div>`:''}
         ${hobbies?`<div class="sh">Interests</div><div class="st">${hobbies}</div>`:''}
         ${sigBlock(T)}
@@ -754,7 +777,7 @@ function render() {
       <div class="db">
         ${summary?`<div class="sh">About</div><div class="st">${summary}</div>`:''}
         ${hasExp?`<div class="sh">Experience</div>${expSection(T)}`:''}
-        ${hasEdu?`<div class="sh">Education</div>${eduSection(T)}`    :''}
+        ${hasEdu?`<div class="sh">Education</div><div class="st"><strong>${deg}</strong>${uni?', '+uni:''}${eyear?' · '+eyear:''}${gpa?' · '+gpa:''}</div>${course?`<div class="st" style="margin-top:3px;color:#888">${course}</div>`:''}`:''}
         ${skills.length?`<div class="sh">Skills</div><div>${skills.map(s=>`<span class="stag">${s}</span>`).join('')}</div>`:''}
         ${langs?`<div class="sh">Languages</div><div class="st">${langs}</div>`:''}
         ${certs?`<div class="sh">Certifications</div><div class="st">${certs.replace(/\n/g,'<br>')}</div>`:''}
@@ -770,7 +793,7 @@ function render() {
       <div class="db">
         ${summary?`<div class="sh">Profile</div><div class="st">${summary}</div>`:''}
         ${hasExp?`<div class="sh">Experience</div>${expSection(T)}`:''}
-        ${hasEdu?`<div class="sh">Education</div>${eduSection(T)}`    :''}
+        ${hasEdu?`<div class="sh">Education</div><div class="st"><strong>${deg}</strong>${uni?', '+uni:''}${eyear?' · '+eyear:''}${gpa?' · GPA: '+gpa:''}</div>${course?`<div class="st" style="margin-top:3px">${course}</div>`:''}`:''}
         ${skills.length?`<div class="sh">Skills</div><div>${skills.map(s=>`<span class="stag">${s}</span>`).join('')}</div>`:''}
         ${langs?`<div class="sh">Languages</div><div class="st">${langs}</div>`:''}
         ${certs?`<div class="sh">Certifications</div><div class="st">${certs.replace(/\n/g,'<br>')}</div>`:''}
@@ -795,7 +818,7 @@ function render() {
       <div class="db">
         ${summary?`<div class="sh">Professional Summary</div><div class="st">${summary}</div>`:''}
         ${hasExp?`<div class="sh">Experience</div>${expSection(T)}`:''}
-        ${hasEdu?`<div class="sh">Education</div>${eduSection(T)}`    :''}
+        ${hasEdu?`<div class="sh">Education</div><div class="st"><strong>${deg}</strong>${uni?', '+uni:''}${eyear?' · '+eyear:''}${gpa?' · GPA: '+gpa:''}</div>${course?`<div class="st" style="margin-top:3px;color:#555">${course}</div>`:''}`:''}
         ${skills.length?`<div class="sh">Skills</div><div>${skills.map(s=>`<span class="stag">${s}</span>`).join('')}</div>`:''}
         ${langs?`<div class="sh">Languages</div><div class="st">${langs}</div>`:''}
         ${certs?`<div class="sh">Certifications</div><div class="st">${certs.replace(/\n/g,'<br>')}</div>`:''}
@@ -823,7 +846,7 @@ function render() {
       <div class="dm">
         ${summary?`<div class="sh">Profile</div><div class="st">${summary}</div>`:''}
         ${hasExp?`<div class="sh">Experience</div>${expSection(T)}`:''}
-        ${hasEdu?`<div class="sh">Education</div>${eduSection(T)}`    :''}
+        ${hasEdu?`<div class="sh">Education</div><div class="st"><strong>${deg}</strong>${uni?', '+uni:''}${eyear?' · '+eyear:''}${gpa?' · '+gpa:''}</div>${course?`<div class="st" style="margin-top:3px;color:#666">${course}</div>`:''}`:''}
         ${skills.length?`<div class="sh">Key Skills</div><div>${skills.map(s=>`<span class="stag">${s}</span>`).join('')}</div>`:''}
         ${certs?`<div class="sh">Certifications</div><div class="st">${certs.replace(/\n/g,'<br>')}</div>`:''}
         ${hobbies?`<div class="sh">Interests</div><div class="st">${hobbies}</div>`:''}
@@ -841,7 +864,7 @@ function render() {
       <div class="db">
         ${summary?`<div class="sh">Profile</div><div class="st">${summary}</div>`:''}
         ${hasExp?`<div class="sh">Experience</div>${expSection(T)}`:''}
-        ${hasEdu?`<div class="sh">Education</div>${eduSection(T)}`    :''}
+        ${hasEdu?`<div class="sh">Education</div><div class="st" style="text-align:center"><strong>${deg}</strong>${uni?', '+uni:''}${eyear?' &nbsp;·&nbsp; '+eyear:''}${gpa?' &nbsp;·&nbsp; '+gpa:''}</div>${course?`<div class="st" style="margin-top:4px;color:#666;text-align:center">${course}</div>`:''}`:''}
         ${skills.length?`<div class="sh">Skills</div><div style="text-align:center">${skills.map(s=>`<span class="stag">${s}</span>`).join('')}</div>`:''}
         ${langs?`<div class="sh">Languages</div><div class="st">${langs}</div>`:''}
         ${certs?`<div class="sh">Certifications</div><div class="st">${certs.replace(/\n/g,'<br>')}</div>`:''}
@@ -861,7 +884,7 @@ function render() {
       <div class="db">
         ${summary?`<div class="sh">About</div><div class="st">${summary}</div>`:''}
         ${hasExp?`<div class="sh">Experience</div>${expSection(T)}`:''}
-        ${hasEdu?`<div class="sh">Education</div>${eduSection(T)}`    :''}
+        ${hasEdu?`<div class="sh">Education</div><div class="st"><strong style="color:#58a6ff">${deg}</strong>${uni?`<span style="color:#8b949e">, ${uni}</span>`:''}${eyear?`<span style="color:#8b949e"> · ${eyear}</span>`:''}${gpa?`<span style="color:#00ff88"> · ${gpa}</span>`:''}</div>${course?`<div class="st" style="margin-top:3px;color:#8b949e">${course}</div>`:''}`:''}
         ${skills.length?`<div class="sh">Tech Stack</div><div>${skills.map(s=>`<span class="stag">${s}</span>`).join('')}</div>`:''}
         ${langs?`<div class="sh">Languages</div><div class="st">${langs}</div>`:''}
         ${certs?`<div class="sh">Certifications</div><div class="st">${certs.replace(/\n/g,'<br>')}</div>`:''}
@@ -872,16 +895,149 @@ function render() {
   }
 
   document.getElementById('preview').innerHTML = html;
+  setTimeout(scaleMobilePreview, 50);
 }
 
-function printResume() {
-  window.print();
+/* ── Capture resume as high-quality canvas ── */
+async function captureResume() {
+  const preview = document.getElementById('preview');
+
+  // Wait for fonts to fully load
+  await document.fonts.ready;
+
+  const canvas = await html2canvas(preview, {
+    scale: 3,                    // High DPI — sharp output
+    useCORS: true,
+    allowTaint: true,
+    backgroundColor: '#ffffff',
+    logging: false,
+    imageTimeout: 0,
+    onclone: (doc) => {
+      // Make sure cloned doc fonts are loaded
+      const el = doc.getElementById('preview');
+      if (el) el.style.fontFamily = 'Georgia, serif';
+    }
+  });
+  return canvas;
+}
+
+/* ── PDF Download (Desktop + Mobile) ── */
+async function printResume() {
+  const btn = document.querySelectorAll('.mobile-actions button')[1];
+  const desktopBtn = document.querySelector('.tpl-bar .gen-btn:last-child');
+  const origMobile = btn ? btn.innerHTML : '';
+  const origDesktop = desktopBtn ? desktopBtn.innerHTML : '';
+
+  if (btn) { btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; btn.disabled = true; }
+  if (desktopBtn) { desktopBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; desktopBtn.disabled = true; }
+
+  try {
+    const canvas = await captureResume();
+    const imgData = canvas.toDataURL('image/jpeg', 1.0);
+
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: 'a4',
+    });
+
+    const pageW = pdf.internal.pageSize.getWidth();
+    const pageH = pdf.internal.pageSize.getHeight();
+    const imgW = canvas.width;
+    const imgH = canvas.height;
+    const ratio = Math.min(pageW / (imgW * 0.2645), pageH / (imgH * 0.2645));
+    const finalW = imgW * 0.2645 * ratio;
+    const finalH = imgH * 0.2645 * ratio;
+
+    pdf.addImage(imgData, 'JPEG', 0, 0, finalW, finalH);
+
+    const name = document.getElementById('f-name').value.trim() || 'Resume';
+    pdf.save(`${name}_Resume.pdf`);
+
+  } catch(err) {
+    console.error(err);
+    alert('PDF error అయింది. మళ్ళీ try చేయండి.');
+  }
+
+  if (btn) { btn.innerHTML = origMobile; btn.disabled = false; }
+  if (desktopBtn) { desktopBtn.innerHTML = origDesktop; desktopBtn.disabled = false; }
+}
+
+/* ── WhatsApp Share (Image) ── */
+async function shareToWhatsApp() {
+  const waBtn = document.querySelectorAll('.mobile-actions button')[0];
+  const origHTML = waBtn ? waBtn.innerHTML : '';
+  if (waBtn) { waBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; waBtn.disabled = true; }
+
+  try {
+    const canvas = await captureResume();
+    const name = document.getElementById('f-name').value.trim() || 'Resume';
+
+    canvas.toBlob(async (blob) => {
+      const file = new File([blob], `${name}_Resume.png`, { type: 'image/png' });
+
+      // Native share (Android Chrome 75+, iOS Safari 15+)
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({
+          files: [file],
+          title: `${name} - Resume`,
+          text: `Resume via జన సేవా కేంద్రం 📄`,
+        });
+      } else {
+        // Fallback: download image
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${name}_Resume.png`;
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        setTimeout(() => window.open(`https://wa.me/?text=${encodeURIComponent(name+' Resume via జన సేవా కేంద్రం')}`, '_blank'), 800);
+      }
+
+      if (waBtn) { waBtn.innerHTML = origHTML; waBtn.disabled = false; }
+    }, 'image/png', 1.0);
+
+  } catch(err) {
+    if (err.name !== 'AbortError') {
+      console.error(err);
+      alert('Share error అయింది.');
+    }
+    if (waBtn) { waBtn.innerHTML = origHTML; waBtn.disabled = false; }
+  }
+}
+
+// ── Mobile: scale resume preview to fit screen ──
+function scaleMobilePreview() {
+  if (window.innerWidth > 768) return;
+  const doc = document.querySelector('.doc');
+  const wrap = document.querySelector('.doc-wrap');
+  if (!doc || !wrap) return;
+
+  const availW = wrap.parentElement.clientWidth - 16;
+  const docW   = 595; // A4 width in px
+  const scale  = Math.min(1, availW / docW);
+
+  doc.style.transform = `scale(${scale})`;
+  doc.style.transformOrigin = 'top left';
+  doc.style.width = docW + 'px';
+
+  // Set wrapper height to scaled height so no overlap
+  wrap.style.height = (doc.scrollHeight * scale) + 'px';
+  wrap.style.overflow = 'hidden';
 }
 
 // Init
+if (window.innerWidth <= 768) {
+  document.getElementById('mobile-tpl-bar').style.display = 'block';
+}
 addExp();
-addEdu();
 render();
+setTimeout(scaleMobilePreview, 300);
+
+// Re-scale on input change and resize
+window.addEventListener('resize', scaleMobilePreview);
+document.addEventListener('input', () => setTimeout(scaleMobilePreview, 100));
 </script>
 </body>
 </html>
