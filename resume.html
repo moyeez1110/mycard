@@ -187,12 +187,16 @@ select.fi option{background:var(--bg2);color:var(--text)}
   .rpanel{padding:0;background:#fff;display:block}
   .doc-wrap{filter:none;max-width:100%;box-shadow:none}
 }
+/* Mobile action buttons */
+.mobile-actions{display:none;gap:6px;align-items:center;flex-shrink:0}
 @media(max-width:768px){
+  .mobile-actions{display:flex}
+  .tpl-bar{display:none}
   .layout{flex-direction:column;height:auto}
   .lpanel{width:100%;border-right:none;border-bottom:1px solid var(--border);max-height:55vh}
   .rpanel{min-height:500px;padding:12px 8px}
-  .tpl-bar{display:none}
   .header{gap:8px}
+  .back-btn span{display:none}
 }
 .t-classic .dh{padding:30px 36px 18px;text-align:center;border-bottom:3px double #222}
 .t-classic .dn{font-size:26px;font-weight:700;color:#111;letter-spacing:.5px;font-family:Georgia,serif}
@@ -400,6 +404,8 @@ select.fi option{background:var(--bg2);color:var(--text)}
   <button class="tb" onclick="setTpl('creative')" id="m-btn-creative"><span class="tdot" style="background:#00897b"></span>Creative</button>
   <button class="tb" onclick="setTpl('elegant')" id="m-btn-elegant"><span class="tdot" style="background:#7b4fa6"></span>Elegant</button>
   <button class="tb" onclick="setTpl('tech')" id="m-btn-tech"><span class="tdot" style="background:#0d1117;border:1px solid #555"></span>Tech</button>
+  <button class="gen-btn" onclick="shareToWhatsApp()" style="background:#25d366;margin-left:6px"><i class="fab fa-whatsapp"></i></button>
+  <button class="gen-btn" onclick="printResume()" style="background:var(--accent)"><i class="fas fa-print"></i></button>
 </div>
 
 <div class="header">
@@ -407,6 +413,7 @@ select.fi option{background:var(--bg2);color:var(--text)}
     <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> <span>వెనక్కి</span></a>
     <div class="logo">Resume<span>Builder</span></div>
   </div>
+  <!-- Desktop template bar -->
   <div class="tpl-bar">
     <span class="tpl-label">Template:</span>
     <button class="tb active" onclick="setTpl('classic')" id="btn-classic"><span class="tdot" style="background:#222"></span>Classic</button>
@@ -417,7 +424,17 @@ select.fi option{background:var(--bg2);color:var(--text)}
     <button class="tb" onclick="setTpl('creative')" id="btn-creative"><span class="tdot" style="background:#00897b"></span>Creative</button>
     <button class="tb" onclick="setTpl('elegant')" id="btn-elegant"><span class="tdot" style="background:#7b4fa6"></span>Elegant</button>
     <button class="tb" onclick="setTpl('tech')" id="btn-tech"><span class="tdot" style="background:#0d1117;border:1px solid #555"></span>Tech</button>
-    <button class="gen-btn" onclick="printResume()"><i class="fas fa-download"></i> Download</button>
+    <button class="gen-btn" onclick="shareToWhatsApp()" style="background:#25d366"><i class="fab fa-whatsapp"></i> Share</button>
+    <button class="gen-btn" onclick="printResume()" style="background:var(--accent)"><i class="fas fa-print"></i> Print</button>
+  </div>
+  <!-- Mobile action buttons — always visible -->
+  <div class="mobile-actions">
+    <button onclick="shareToWhatsApp()" style="width:36px;height:36px;border-radius:8px;background:#25d366;border:none;color:#fff;font-size:16px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0">
+      <i class="fab fa-whatsapp"></i>
+    </button>
+    <button onclick="printResume()" style="width:36px;height:36px;border-radius:8px;background:var(--accent);border:none;color:#0a0f1a;font-size:14px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0">
+      <i class="fas fa-print"></i>
+    </button>
   </div>
 </div>
 
@@ -867,6 +884,32 @@ function render() {
 
 function printResume() {
   window.print();
+}
+
+function shareToWhatsApp() {
+  const name = document.getElementById('f-name').value.trim() || 'My';
+  const role = document.getElementById('f-role').value.trim() || 'Resume';
+  const phone = document.getElementById('f-phone').value.trim();
+  const email = document.getElementById('f-email').value.trim();
+  const loc   = document.getElementById('f-loc').value.trim();
+
+  let msg = `📄 *${name} - ${role}*\n\n`;
+  if (phone) msg += `📞 ${phone}\n`;
+  if (email) msg += `✉️ ${email}\n`;
+  if (loc)   msg += `📍 ${loc}\n`;
+
+  if (skills.length) msg += `\n🛠️ *Skills:* ${skills.join(', ')}\n`;
+
+  const langs = document.getElementById('f-langs').value.trim();
+  if (langs) msg += `🗣️ *Languages:* ${langs}\n`;
+
+  const summary = document.getElementById('f-summary').value.trim();
+  if (summary) msg += `\n📝 *Profile:*\n${summary.slice(0, 200)}${summary.length > 200 ? '...' : ''}\n`;
+
+  msg += `\n_Resume via జన సేవా కేంద్రం_`;
+
+  const waUrl = `https://wa.me/?text=${encodeURIComponent(msg)}`;
+  window.open(waUrl, '_blank');
 }
 
 // Init
