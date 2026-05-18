@@ -307,14 +307,141 @@ select.fi{cursor:pointer}
 .t-tech .sigl{width:100px;height:1px;background:#00ff88;margin:22px auto 4px;opacity:.5}
 
 @media print{
-  .header,.lpanel{display:none}
+  .header,.lpanel,.mob-toggle{display:none}
   .rpanel{padding:0;background:#fff}
-  .doc-wrap{filter:none;max-width:100%;box-shadow:none}
+  .doc-wrap{filter:none;max-width:100%;box-shadow:none;transform:none!important}
 }
+
+.mob-toggle{display:none}
+
 @media(max-width:768px){
+  .header{padding:8px 10px;gap:6px}
+  .logo{font-size:16px}
+  .tpl-bar{width:100%;overflow-x:auto;flex-wrap:nowrap;padding-bottom:2px;gap:4px;scrollbar-width:none}
+  .tpl-bar::-webkit-scrollbar{display:none}
+  .tb{padding:4px 8px;font-size:10.5px;flex-shrink:0}
+  .gen-btn{padding:6px 10px;font-size:11.5px;flex-shrink:0}
+
   .layout{flex-direction:column;height:auto}
-  .lpanel{width:100%;border-right:none;border-bottom:1px solid var(--border)}
-  .rpanel{min-height:600px}
+  .lpanel{width:100%;border-right:none;border-bottom:none;display:none}
+  .lpanel.mob-active{display:flex;flex-direction:column}
+  .rpanel{width:100%;min-height:unset;padding:10px 6px;display:none;background:#c8c4be}
+  .rpanel.mob-active{display:flex}
+
+  .mob-toggle{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--border);background:var(--light);position:sticky;top:0;z-index:100}
+  .mob-tab{padding:10px;font-size:12.5px;font-weight:600;text-align:center;cursor:pointer;border:none;background:none;color:var(--muted);font-family:var(--font-body);border-bottom:3px solid transparent;display:flex;align-items:center;justify-content:center;gap:5px}
+  .mob-tab.active{color:var(--accent);border-bottom:3px solid var(--accent);background:#fff}
+
+  /* Scale resume to screen */
+  .doc-wrap{max-width:100%;width:100%;overflow:hidden}
+
+  /* ── Classic hero ── */
+  .t-classic .dh{padding:14px 12px 10px}
+  .t-classic .dn{font-size:16px;letter-spacing:.2px}
+  .t-classic .dr{font-size:8.5px;letter-spacing:.5px;margin-top:2px}
+  .t-classic .dc{font-size:8px;margin-top:5px;line-height:1.9}
+  .t-classic .dc .ci{display:inline-flex;margin:1px 4px}
+  .t-classic .db{padding:8px 12px 14px}
+  .t-classic .sh{font-size:9px;margin:9px 0 5px;padding-bottom:2px}
+  .t-classic .st{font-size:9.5px;line-height:1.6}
+  .t-classic .stag{font-size:8.5px;padding:2px 6px;margin:1.5px}
+  .t-classic .exco{font-size:10px}.t-classic .ext{font-size:9px}.t-classic .extd{font-size:9px}.t-classic .exd{font-size:9px}
+  .t-classic .pdg{gap:2px 8px}.t-classic .pdi{font-size:9px}
+
+  /* ── Bold hero ── */
+  .t-bold .dh{padding:14px 12px}
+  .t-bold .dn{font-size:16px;letter-spacing:.1px}
+  .t-bold .dr{font-size:8.5px;letter-spacing:.5px;margin-top:2px}
+  .t-bold .dc{font-size:8px;margin-top:5px;line-height:1.9}
+  .t-bold .db{padding:8px 12px 14px}
+  .t-bold .sh{font-size:9px;margin:9px 0 5px}
+  .t-bold .st{font-size:9.5px}.t-bold .stag{font-size:8.5px;padding:2px 6px;margin:1.5px}
+  .t-bold .exco{font-size:10px}.t-bold .ext{font-size:9px}.t-bold .extd{font-size:9px}.t-bold .exd{font-size:9px}
+
+  /* ── Minimal hero ── */
+  .t-minimal .dh{padding:16px 14px 6px}
+  .t-minimal .dn{font-size:18px;letter-spacing:-.3px}
+  .t-minimal .dr{font-size:9.5px}
+  .t-minimal .dc{font-size:8px;gap:5px;flex-wrap:wrap;margin-top:4px}
+  .t-minimal .ddiv{margin:8px 14px 0}
+  .t-minimal .db{padding:8px 14px 14px}
+  .t-minimal .sh{font-size:9px;letter-spacing:1.5px;margin:10px 0 5px}
+  .t-minimal .st{font-size:9.5px}.t-minimal .stag{font-size:8.5px;padding:2px 6px}
+  .t-minimal .exco{font-size:10px}.t-minimal .ext{font-size:9px}.t-minimal .extd{font-size:9px}.t-minimal .exd{font-size:9px}
+
+  /* ── Executive hero ── */
+  .t-executive .dh-top{padding:14px 12px 10px}
+  .t-executive .dn{font-size:16px}
+  .t-executive .dr{font-size:8.5px;letter-spacing:.5px}
+  .t-executive .dh-contact{flex-wrap:wrap}
+  .t-executive .dci{flex:1 1 48%;padding:5px 7px;font-size:8.5px;min-width:0}
+  .t-executive .dci span{font-size:7.5px}
+  .t-executive .db{padding:8px 12px 14px}
+  .t-executive .sh{font-size:9px;margin:9px 0 5px}
+  .t-executive .st{font-size:9.5px}.t-executive .stag{font-size:8.5px;padding:2px 7px;margin:1.5px}
+  .t-executive .exco{font-size:10px}.t-executive .ext{font-size:9px}.t-executive .extd{font-size:9px}.t-executive .exd{font-size:9px}
+
+  /* ── Modern hero ── */
+  .t-modern .doc{flex-direction:column}
+  .t-modern .dsb{width:100%;flex-direction:row;flex-wrap:wrap;align-items:center;padding:12px 12px 8px;gap:8px}
+  .t-modern .dav{width:42px;height:42px;font-size:14px;margin:0;flex-shrink:0}
+  .t-modern .dn{font-size:12px;text-align:left;flex:1;min-width:0}
+  .t-modern .dr{text-align:left;font-size:8.5px}
+  .t-modern .sbh{font-size:7.5px;margin:6px 0 3px}
+  .t-modern .sbi{font-size:8.5px}
+  .t-modern .sb-skill{font-size:8.5px;padding:1px 0}
+  .t-modern .dm{padding:10px 12px}
+  .t-modern .sh{font-size:10px;margin:9px 0 5px}
+  .t-modern .st{font-size:9.5px}.t-modern .exco{font-size:10px}.t-modern .ext{font-size:9px}.t-modern .extd{font-size:9px}.t-modern .exd{font-size:9px}
+
+  /* ── Creative hero ── */
+  .t-creative .doc{flex-direction:column}
+  .t-creative .dsb{width:100%}
+  .t-creative .sb-top{display:flex;align-items:center;gap:10px;padding:12px 12px 8px}
+  .t-creative .dav{width:42px;height:42px;font-size:14px;margin:0;flex-shrink:0}
+  .t-creative .dn{font-size:12px;text-align:left}
+  .t-creative .dr{text-align:left;font-size:8.5px}
+  .t-creative .sb-sec{padding:6px 12px}
+  .t-creative .sbh{font-size:7.5px;margin:4px 0 3px}
+  .t-creative .sbi{font-size:8.5px}
+  .t-creative .dm{padding:10px 12px}
+  .t-creative .sh{font-size:10px;margin:9px 0 5px}
+  .t-creative .st{font-size:9.5px}.t-creative .exco{font-size:10px}.t-creative .ext{font-size:9px}.t-creative .extd{font-size:9px}.t-creative .exd{font-size:9px}
+
+  /* ── Elegant hero ── */
+  .t-elegant .dh{padding:18px 14px 8px}
+  .t-elegant .dh::before{height:4px}
+  .t-elegant .dn{font-size:20px}
+  .t-elegant .dr{font-size:9.5px;letter-spacing:1px}
+  .t-elegant .dc{font-size:8px;gap:6px;flex-wrap:wrap;justify-content:center}
+  .t-elegant .db{padding:6px 14px 14px}
+  .t-elegant .sh{font-size:9px;margin:10px 0 5px}
+  .t-elegant .sh::before,.t-elegant .sh::after{content:'—';padding:0 4px}
+  .t-elegant .st{font-size:9.5px}.t-elegant .stag{font-size:8.5px;padding:2px 8px;margin:2px}
+  .t-elegant .exco{font-size:10px}.t-elegant .ext{font-size:9px}.t-elegant .extd{font-size:9px}.t-elegant .exd{font-size:9px}
+
+  /* ── Tech Dark hero ── */
+  .t-tech .dh{padding:14px 12px}
+  .t-tech .dn{font-size:15px}
+  .t-tech .dn::before{font-size:13px}
+  .t-tech .dr{font-size:9.5px}
+  .t-tech .dc{font-size:8.5px;gap:6px;flex-wrap:wrap}
+  .t-tech .db{padding:10px 12px 14px}
+  .t-tech .sh{font-size:9px;margin:9px 0 5px}
+  .t-tech .st{font-size:9.5px}.t-tech .stag{font-size:8.5px;padding:2px 7px;margin:1.5px}
+  .t-tech .exco{font-size:10px}.t-tech .ext{font-size:9px}.t-tech .extd{font-size:9px}.t-tech .exd{font-size:9px}
+
+  /* Common section heads */
+  .t-classic .pdg,.t-bold .pdg,.t-minimal .pdg,.t-executive .pdg,
+  .t-elegant .pdg,.t-tech .pdg,.t-modern .pdg,.t-creative .pdg{grid-template-columns:1fr 1fr;gap:2px 8px}
+  .t-classic .pdi,.t-bold .pdi,.t-minimal .pdi,.t-executive .pdi,
+  .t-elegant .pdi,.t-tech .pdi,.t-modern .pdi,.t-creative .pdi{font-size:8.5px}
+}
+
+@media(max-width:400px){
+  .t-classic .dn,.t-bold .dn{font-size:14px}
+  .t-minimal .dn,.t-elegant .dn{font-size:16px}
+  .t-executive .dn,.t-tech .dn{font-size:14px}
 }
 </style>
 </head>
@@ -334,6 +461,24 @@ select.fi{cursor:pointer}
     <button class="tb" onclick="setTpl('tech')" id="btn-tech"><span class="tdot" style="background:#0d1117"></span>Tech Dark</button>
     <button class="gen-btn" onclick="printResume()">⬇ Download / Print</button>
   </div>
+</div>
+
+<div class="mob-toggle">
+  <button class="mob-tab active" id="mob-form" onclick="mobSwitch('form')">
+    <i class="fa-solid fa-pen-to-square"></i> Fill Form
+  </button>
+  <button class="mob-tab" id="mob-preview" onclick="mobSwitch('preview')">
+    <i class="fa-solid fa-eye"></i> Preview Resume
+  </button>
+</div>
+
+<div class="mob-toggle">
+  <button class="mob-tab active" id="mob-form" onclick="mobSwitch('form')">
+    <i class="fa-solid fa-pen-to-square"></i> Fill Form
+  </button>
+  <button class="mob-tab" id="mob-preview" onclick="mobSwitch('preview')">
+    <i class="fa-solid fa-eye"></i> Preview
+  </button>
 </div>
 
 <div class="layout">
@@ -390,13 +535,21 @@ select.fi{cursor:pointer}
 
     <!-- SKILLS -->
     <div class="fbody" id="sec-skills" style="display:none">
-      <label class="fl">Add Skill</label>
+      <label class="fl">Choose skills from a category</label>
+      <div id="skill-cat-list"></div>
+
+      <label class="fl" style="margin-top:6px">Or type your own</label>
       <div class="skill-row">
         <div class="iw" style="flex:1;margin-bottom:0"><input class="fi" id="skill-inp" placeholder="e.g. Python" onkeydown="if(event.key==='Enter')addSkill()"><i class="ii fa-solid fa-layer-group"></i></div>
         <button class="sadd" onclick="addSkill()">Add</button>
       </div>
       <div class="pills" id="skill-pills"></div>
-      <label class="fl">Languages</label>
+
+      <label class="fl" style="margin-top:4px">Strengths</label>
+      <div id="strength-list"></div>
+      <div class="pills" id="strength-pills"></div>
+
+      <label class="fl" style="margin-top:6px">Languages</label>
       <div class="iw"><input class="fi" id="f-langs" placeholder="English (Fluent), Telugu (Native)" oninput="render()"><i class="ii fa-solid fa-language"></i></div>
       <label class="fl">Certifications</label>
       <div class="iw-ta"><textarea class="fi" id="f-certs" style="min-height:54px" placeholder="AWS Cloud Practitioner, 2024&#10;Google Digital Marketing, 2023" oninput="render()"></textarea><i class="ii fa-solid fa-certificate"></i></div>
@@ -492,6 +645,7 @@ function showSec(id) {
   if (id === 'bio') buildSumList();
   if (id === 'exp') renderExpForms();
   if (id === 'edu') renderEduForms();
+  if (id === 'skills') { buildSkillCats(); buildStrengthList(); }
 }
 
 function setTpl(t) {
@@ -689,6 +843,8 @@ function render() {
   const email=gv('f-email'), phone=gv('f-phone'), loc=gv('f-loc'), linkedin=gv('f-linkedin'), web=gv('f-web');
   const summary=gv('f-summary'), hobbies=gv('f-hobbies');
   const langs=gv('f-langs'), certs=gv('f-certs');
+  const hasStrengths = strengths.length > 0;
+  const strengthHTML = (T) => hasStrengths ? `<div class="${T}sh">Strengths</div><div>${strengths.map(s=>`<span class="${T}stag">${s}</span>`).join('')}</div>` : '';
   const dob=gv('f-dob'), father=gv('f-father'), marital=gv('f-marital'), nationality=gv('f-nationality'), religion=gv('f-religion');
   const cl = [email,phone,loc,linkedin,web].filter(Boolean).join(' · ');
 
@@ -715,6 +871,7 @@ function render() {
         ${hasExp?`<div class="sh">Work Experience</div>${expSection(T)}`:''}
         ${hasEdu?`<div class="sh">Education</div>${eduSection(T)}`    :''}
         ${skills.length?`<div class="sh">Skills</div><div>${skills.map(s=>`<span class="stag">${s}</span>`).join('')}</div>`:''}
+        ${strengthHTML(T)}
         ${langs?`<div class="sh">Languages</div><div class="st">${langs}</div>`:''}
         ${certs?`<div class="sh">Certifications</div><div class="st">${certs.replace(/\n/g,'<br>')}</div>`:''}
         ${hasPD?`<div class="sh">Personal Details</div>${pdGrid(T,pdData)}`:''}
@@ -738,6 +895,8 @@ function render() {
         ${summary?`<div class="sh">Profile</div><div class="st">${summary}</div>`:''}
         ${hasExp?`<div class="sh">Experience</div>${expSection(T)}`:''}
         ${hasEdu?`<div class="sh">Education</div>${eduSection(T)}`    :''}
+        ${strengthHTML(T)}
+        ${strengthHTML(T)}
         ${certs?`<div class="sh">Certifications</div><div class="st">${certs.replace(/\n/g,'<br>')}</div>`:''}
         ${hobbies?`<div class="sh">Interests</div><div class="st">${hobbies}</div>`:''}
         ${sigBlock(T)}
@@ -756,6 +915,7 @@ function render() {
         ${hasExp?`<div class="sh">Experience</div>${expSection(T)}`:''}
         ${hasEdu?`<div class="sh">Education</div>${eduSection(T)}`    :''}
         ${skills.length?`<div class="sh">Skills</div><div>${skills.map(s=>`<span class="stag">${s}</span>`).join('')}</div>`:''}
+        ${strengthHTML(T)}
         ${langs?`<div class="sh">Languages</div><div class="st">${langs}</div>`:''}
         ${certs?`<div class="sh">Certifications</div><div class="st">${certs.replace(/\n/g,'<br>')}</div>`:''}
         ${hasPD?`<div class="sh">Personal</div>${pdGrid(T,pdData)}`:''}
@@ -772,6 +932,7 @@ function render() {
         ${hasExp?`<div class="sh">Experience</div>${expSection(T)}`:''}
         ${hasEdu?`<div class="sh">Education</div>${eduSection(T)}`    :''}
         ${skills.length?`<div class="sh">Skills</div><div>${skills.map(s=>`<span class="stag">${s}</span>`).join('')}</div>`:''}
+        ${strengthHTML(T)}
         ${langs?`<div class="sh">Languages</div><div class="st">${langs}</div>`:''}
         ${certs?`<div class="sh">Certifications</div><div class="st">${certs.replace(/\n/g,'<br>')}</div>`:''}
         ${hasPD?`<div class="sh">Personal Details</div>${pdGrid(T,pdData)}`:''}
@@ -797,6 +958,7 @@ function render() {
         ${hasExp?`<div class="sh">Experience</div>${expSection(T)}`:''}
         ${hasEdu?`<div class="sh">Education</div>${eduSection(T)}`    :''}
         ${skills.length?`<div class="sh">Skills</div><div>${skills.map(s=>`<span class="stag">${s}</span>`).join('')}</div>`:''}
+        ${strengthHTML(T)}
         ${langs?`<div class="sh">Languages</div><div class="st">${langs}</div>`:''}
         ${certs?`<div class="sh">Certifications</div><div class="st">${certs.replace(/\n/g,'<br>')}</div>`:''}
         ${hasPD?`<div class="sh">Personal Details</div>${pdGrid(T,pdData)}`:''}
@@ -843,6 +1005,7 @@ function render() {
         ${hasExp?`<div class="sh">Experience</div>${expSection(T)}`:''}
         ${hasEdu?`<div class="sh">Education</div>${eduSection(T)}`    :''}
         ${skills.length?`<div class="sh">Skills</div><div style="text-align:center">${skills.map(s=>`<span class="stag">${s}</span>`).join('')}</div>`:''}
+        ${strengthHTML(T)}
         ${langs?`<div class="sh">Languages</div><div class="st">${langs}</div>`:''}
         ${certs?`<div class="sh">Certifications</div><div class="st">${certs.replace(/\n/g,'<br>')}</div>`:''}
         ${hasPD?`<div class="sh">Personal Details</div>${pdGrid(T,pdData)}`:''}
@@ -863,6 +1026,7 @@ function render() {
         ${hasExp?`<div class="sh">Experience</div>${expSection(T)}`:''}
         ${hasEdu?`<div class="sh">Education</div>${eduSection(T)}`    :''}
         ${skills.length?`<div class="sh">Tech Stack</div><div>${skills.map(s=>`<span class="stag">${s}</span>`).join('')}</div>`:''}
+        ${strengthHTML(T)}
         ${langs?`<div class="sh">Languages</div><div class="st">${langs}</div>`:''}
         ${certs?`<div class="sh">Certifications</div><div class="st">${certs.replace(/\n/g,'<br>')}</div>`:''}
         ${hasPD?`<div class="sh">Personal</div>${pdGrid(T,pdData)}`:''}
@@ -874,13 +1038,110 @@ function render() {
   document.getElementById('preview').innerHTML = html;
 }
 
-function printResume() {
-  window.print();
+/* ── Skill categories ── */
+const SKILL_CATS = [
+  { cat:'💻 Software / IT',       color:'#1a2744', items:['Python','Java','JavaScript','React.js','Node.js','HTML/CSS','SQL','MongoDB','Git','Docker','AWS','REST APIs','TypeScript','C++','Linux','MySQL','Machine Learning','Data Analysis'] },
+  { cat:'📊 Data & Analytics',    color:'#00695c', items:['Excel (Advanced)','Power BI','Tableau','SQL','Python (Pandas)','Google Analytics','Data Visualisation','Statistics','R Programming','Scikit-learn','TensorFlow','ETL Pipelines'] },
+  { cat:'🎨 Design / Creative',   color:'#7b4fa6', items:['Figma','Adobe XD','Photoshop','Illustrator','UI/UX Design','Prototyping','Wireframing','Canva','InDesign','Brand Design','Motion Design','Typography'] },
+  { cat:'📣 Marketing',           color:'#c0392b', items:['SEO/SEM','Google Ads','Social Media Marketing','Content Writing','Email Marketing','HubSpot','Copywriting','Market Research','A/B Testing','Campaign Management','Branding','CRM'] },
+  { cat:'💼 Business / Finance',  color:'#b5963e', items:['Financial Modelling','Budgeting','Forecasting','MS Excel','Tally ERP','SAP','Accounting','Auditing','Project Management','Business Analysis','MIS Reporting','Stakeholder Management'] },
+  { cat:'🏥 Healthcare',          color:'#00897b', items:['Patient Care','Clinical Documentation','First Aid','Medical Coding','EMR Systems','Pharmacology','Wound Care','Lab Techniques','Infection Control','Health & Safety'] },
+  { cat:'👥 HR & People Ops',     color:'#5c6bc0', items:['Recruitment','Talent Acquisition','Onboarding','HRIS (Workday)','Payroll Processing','Employee Relations','Performance Management','Training & Development','Compliance','Org Development'] },
+  { cat:'⚙️ Operations / Mgmt',  color:'#2d4a3e', items:['Supply Chain','Inventory Management','Process Improvement','Lean / Six Sigma','Team Leadership','Vendor Management','ERP Systems','Quality Control','Logistics','Risk Management'] },
+];
+
+const STRENGTHS = [
+  'Communication','Teamwork','Problem Solving','Leadership','Time Management','Adaptability','Attention to Detail','Critical Thinking','Work Under Pressure','Initiative','Creativity','Positive Attitude','Self-Motivation','Reliability','Quick Learner','Decision Making','Conflict Resolution','Negotiation','Multitasking','Analytical Thinking','Empathy','Customer Focus','Accountability','Organisation'
+];
+
+let strengths = [];
+let skillCatOpen = null;
+
+function buildSkillCats() {
+  const el = document.getElementById('skill-cat-list');
+  if (!el) return;
+  el.innerHTML = SKILL_CATS.map((cat, ci) => `
+    <div style="margin-bottom:5px">
+      <div onclick="toggleCat(${ci})" style="display:flex;justify-content:space-between;align-items:center;padding:7px 10px;border:1px solid var(--border);border-radius:7px;cursor:pointer;background:${skillCatOpen===ci?'#f0f7f4':'#fff'};transition:background .12s">
+        <span style="font-size:12px;font-weight:500;color:${cat.color}">${cat.cat}</span>
+        <i class="fa-solid fa-chevron-${skillCatOpen===ci?'up':'down'}" style="font-size:10px;color:var(--muted)"></i>
+      </div>
+      ${skillCatOpen===ci?`<div style="display:flex;flex-wrap:wrap;gap:5px;padding:8px 6px;border:1px solid var(--border);border-top:none;border-radius:0 0 7px 7px;background:#fafaf8">
+        ${cat.items.map(s=>`<span onclick="toggleCatSkill('${s.replace(/'/g,"\\'")}',this)" style="font-size:11px;padding:3px 9px;border-radius:99px;cursor:pointer;border:1px solid ${cat.color};color:${skills.includes(s)?'#fff':cat.color};background:${skills.includes(s)?cat.color:'transparent'};transition:all .12s">${s}</span>`).join('')}
+      </div>`:''}
+    </div>`).join('');
 }
+
+function toggleCat(ci) {
+  skillCatOpen = skillCatOpen === ci ? null : ci;
+  buildSkillCats();
+}
+
+function toggleCatSkill(s, el) {
+  if (skills.includes(s)) {
+    skills = skills.filter(x => x !== s);
+  } else {
+    skills.push(s);
+  }
+  renderPills();
+  buildSkillCats();
+  render();
+}
+
+function buildStrengthList() {
+  const el = document.getElementById('strength-list');
+  if (!el) return;
+  el.innerHTML = `<div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px">
+    ${STRENGTHS.map(s=>`<span onclick="toggleStrength('${s}')" style="font-size:11px;padding:3px 9px;border-radius:99px;cursor:pointer;border:1px solid #b5963e;color:${strengths.includes(s)?'#fff':'#b5963e'};background:${strengths.includes(s)?'#b5963e':'transparent'};transition:all .12s">${s}</span>`).join('')}
+  </div>`;
+  document.getElementById('strength-pills').innerHTML = ''; // rendered inline above
+}
+
+function toggleStrength(s) {
+  if (strengths.includes(s)) strengths = strengths.filter(x => x !== s);
+  else strengths.push(s);
+  buildStrengthList();
+  render();
+}
+
+/* ── Mobile switch ── */
+function mobSwitch(tab) {
+  const isMob = window.innerWidth <= 768;
+  if (!isMob) return;
+  const lp = document.querySelector('.lpanel');
+  const rp = document.querySelector('.rpanel');
+  const ft = document.getElementById('mob-form');
+  const pt = document.getElementById('mob-preview');
+  if (tab === 'form') {
+    lp.classList.add('mob-active'); rp.classList.remove('mob-active');
+    ft.classList.add('active');     pt.classList.remove('active');
+  } else {
+    rp.classList.add('mob-active'); lp.classList.remove('mob-active');
+    pt.classList.add('active');     ft.classList.remove('active');
+  }
+}
+
+function initMobile() {
+  if (window.innerWidth <= 768) {
+    document.querySelector('.lpanel').classList.add('mob-active');
+    document.querySelector('.rpanel').classList.remove('mob-active');
+  } else {
+    ['lpanel','rpanel'].forEach(c => {
+      const el = document.querySelector('.'+c);
+      el.classList.remove('mob-active');
+      el.style.display = '';
+    });
+  }
+}
+
+window.addEventListener('resize', initMobile);
+
+function printResume() { window.print(); }
 
 // Init
 addExp();
 addEdu();
+initMobile();
 render();
 </script>
 </body>
