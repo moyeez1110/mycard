@@ -28,144 +28,161 @@
 
 /* ═══ LIGHT MODE ═══ */
 body.light-mode {
-  --bg:      #dceefb;   /* page bg — clearly visible sky blue */
-  --bg2:     #1a6fb5;   /* header, ticker — strong blue */
-  --bg3:     #c8e2f5;   /* pill bg, chips — medium blue */
-  --card:    #ffffff;   /* cards — white so they pop on blue bg */
-  --border:  rgba(26,111,181,0.20);
-  --text:    #0a1f35;
-  --text2:   #2c5070;
-  --shadow:  0 4px 24px rgba(26,111,181,0.15);
-  --accent:  #0d9e6a; --accent-dim:#0a8058;
+  --bg:    #e8f5f0;       /* soft mint-green page bg */
+  --bg2:   #f0faf6;       /* header/ticker — very light green-white */
+  --bg3:   #d4ede4;       /* chips, pills — medium mint */
+  --card:  #ffffff;       /* cards — white pops on mint bg */
+  --border: rgba(13,120,80,0.15);
+  --text:  #0a2018;
+  --text2: #3a6050;
+  --shadow: 0 4px 24px rgba(13,120,80,0.12);
+  --accent: #0a8a5a; --accent-dim:#087a50;
 }
+
+/* Loading */
 body.light-mode #loading-screen { background:var(--bg); }
+body.light-mode .loader-ring { border-top-color:var(--accent); }
+
+/* Header */
 body.light-mode #app-header {
-  background:#1a6fb5;
-  border-bottom:1px solid rgba(0,0,0,0.15);
-  box-shadow:0 2px 16px rgba(26,111,181,0.35);
+  background:linear-gradient(135deg,#0d9e6a 0%,#0a8a5a 100%);
+  border-bottom:1px solid rgba(0,0,0,0.12);
+  box-shadow:0 2px 16px rgba(13,158,106,0.30);
 }
 body.light-mode .header-name { color:#ffffff; }
-body.light-mode .header-tag  { color:rgba(255,255,255,0.75); }
+body.light-mode .header-tag  { color:rgba(255,255,255,0.80); }
 body.light-mode .header-logo {
-  background:rgba(255,255,255,0.15);
-  border-color:rgba(255,255,255,0.4);
+  background:rgba(255,255,255,0.18);
+  border-color:rgba(255,255,255,0.45);
   color:#ffffff;
 }
 body.light-mode .hbtn {
-  background:rgba(255,255,255,0.15);
+  background:rgba(255,255,255,0.18);
   color:#ffffff;
-  border:1px solid rgba(255,255,255,0.2);
+  border:1px solid rgba(255,255,255,0.25);
 }
-body.light-mode .hbtn:hover { background:rgba(255,255,255,0.28); color:#ffffff; }
-body.light-mode #fab-call.hbtn { background:rgba(13,158,106,0.3); color:#ffffff; }
-body.light-mode #fab-wa.hbtn   { background:rgba(37,211,102,0.25); color:#ffffff; }
-body.light-mode .ticker-item { color:#ffe066 !important; }
-body.light-mode .ticker-item:hover { color:#ffffff !important; }
+body.light-mode .hbtn:hover { background:rgba(255,255,255,0.32); color:#ffffff; }
+body.light-mode #fab-call.hbtn { background:rgba(255,255,255,0.22); color:#ffffff; }
+body.light-mode #fab-wa.hbtn   { background:rgba(255,255,255,0.22); color:#ffffff; }
+body.light-mode #logout-btn {
+  background:rgba(255,100,100,0.25);
+  border-color:rgba(255,100,100,0.35);
+  color:#ffffff;
+}
+
+/* Ticker */
 body.light-mode #ticker-bar {
-  background:#1560a0;
-  border-bottom:1px solid rgba(0,0,0,0.12);
-}
-body.light-mode .ticker-label {
-  background:rgba(255,255,255,0.2);
-  color:#ffffff;
+  background:linear-gradient(90deg,#c8ead8 0%,#d8f0e4 100%);
+  border-bottom:1px solid rgba(13,120,80,0.18);
 }
 body.light-mode .ticker-label {
   background:var(--accent);
-  color:#fff;
+  color:#ffffff;
 }
-body.light-mode .header-logo {
-  background:rgba(13,158,106,0.1);
-  border-color:var(--accent);
-}
-body.light-mode .hbtn {
-  background:#f1f5f9;
-  color:#4a5a72;
-  border:1px solid rgba(0,0,0,0.08);
-}
-body.light-mode .hbtn:hover { background:#e2e8f0; color:var(--text); }
+body.light-mode .ticker-item { color:#a07800 !important; font-weight:700; }
+body.light-mode .ticker-item:hover { color:#7a5c00 !important; }
+
+/* Hero */
 body.light-mode .hero-card {
-  box-shadow:0 4px 24px rgba(26,111,181,0.18);
-  border-color:rgba(26,111,181,0.20);
+  box-shadow:0 4px 20px rgba(13,120,80,0.14);
+  border-color:rgba(13,120,80,0.18);
 }
 body.light-mode .hero-cover {
-  background:linear-gradient(135deg,#1a6fb5 0%,#1560a0 50%,#0d9e6a 100%);
+  background:linear-gradient(135deg,#0d9e6a 0%,#0a7a52 50%,#1a6fb5 100%);
 }
 body.light-mode .hero-avatar {
-  border-color:#f0f4f8;
-  background:rgba(13,158,106,0.1);
+  border-color:#e8f5f0;
+  background:rgba(13,158,106,0.12);
 }
 body.light-mode .hero-btn.secondary {
-  background:#f1f5f9;
-  border-color:rgba(0,0,0,0.1);
+  background:#e8f5f0;
+  border-color:rgba(13,120,80,0.20);
+  color:var(--text);
 }
-body.light-mode .service-card {
-  background:#ffffff;
-  box-shadow:0 2px 12px rgba(26,111,181,0.12);
-  border-color:rgba(26,111,181,0.15);
+
+/* Banner */
+body.light-mode .banner-track {
+  box-shadow:0 2px 16px rgba(13,120,80,0.12);
 }
-body.light-mode .service-card:hover {
-  box-shadow:0 8px 28px rgba(26,111,181,0.22);
-}
+
+/* Section head */
+body.light-mode .section-head h2 { color:var(--text); }
+
+/* Update cards */
 body.light-mode .update-card {
   background:#ffffff;
-  box-shadow:0 2px 10px rgba(26,111,181,0.10);
-  border-color:rgba(26,111,181,0.15);
+  box-shadow:0 2px 10px rgba(13,120,80,0.08);
+  border-color:rgba(13,120,80,0.14);
 }
 body.light-mode .update-card:hover {
-  box-shadow:0 6px 22px rgba(26,111,181,0.18);
+  box-shadow:0 6px 20px rgba(13,120,80,0.16);
   border-color:var(--accent);
 }
-body.light-mode .update-dot { box-shadow:0 0 6px rgba(13,158,106,0.5); }
-body.light-mode .acc-item { box-shadow:0 1px 4px rgba(0,0,0,0.05); }
+body.light-mode .update-dot { box-shadow:0 0 6px rgba(13,158,106,0.6); }
+
+/* Service cards */
+body.light-mode .service-card {
+  background:#ffffff;
+  box-shadow:0 2px 12px rgba(13,120,80,0.10);
+  border-color:rgba(13,120,80,0.14);
+}
+body.light-mode .service-card:hover {
+  box-shadow:0 8px 26px rgba(13,120,80,0.18);
+}
+
+/* Accordion / Docs */
+body.light-mode .acc-item { box-shadow:0 1px 4px rgba(13,120,80,0.06); }
+body.light-mode .acc-icon { background:rgba(13,158,106,0.10); border-color:rgba(13,158,106,0.22); }
 body.light-mode .pdf-item:hover { border-color:#e05555; }
+
+/* Popup */
 body.light-mode #popup-box {
-  box-shadow:0 0 40px rgba(13,158,106,0.15);
+  box-shadow:0 0 40px rgba(13,158,106,0.18);
   border-color:var(--accent);
 }
 body.light-mode .popup-badge {
-  background:rgba(13,158,106,0.1);
+  background:rgba(13,158,106,0.10);
   color:var(--accent);
 }
 body.light-mode #popup-close {
   background:var(--accent);
-  color:#fff;
+  color:#ffffff;
 }
-body.light-mode .banner-track {
-  box-shadow:0 2px 12px rgba(0,0,0,0.08);
-}
-body.light-mode #bottom-nav {
-  background:#1a6fb5;
-  border-top:1px solid rgba(0,0,0,0.12);
-  box-shadow:0 -2px 16px rgba(26,111,181,0.3);
-}
-body.light-mode .nav-btn { color:rgba(255,255,255,0.65); }
-body.light-mode .nav-btn.active { color:#ffffff; }
-body.light-mode .nav-btn { color:#64748b; }
-body.light-mode .nav-btn.active { color:var(--accent); }
-body.light-mode #fab {
-  background:var(--accent);
-  box-shadow:0 4px 16px rgba(13,158,106,0.35);
-}
-body.light-mode .loader-ring { border-top-color:var(--accent); }
+
+/* Voice cards */
 body.light-mode .vc-audio-card,
 body.light-mode .vc-tts-card,
 body.light-mode .vc-poster-card,
 body.light-mode .vc-pdf-hcard,
 body.light-mode .vc-canva-hcard {
-  box-shadow:0 1px 6px rgba(0,0,0,0.07);
+  box-shadow:0 2px 8px rgba(13,120,80,0.08);
+  border-color:rgba(13,120,80,0.12);
 }
-body.light-mode .vc-play-btn {
-  background:var(--accent);
-  color:#fff;
-}
+body.light-mode .vc-play-btn { background:var(--accent); color:#ffffff; }
 body.light-mode .tts-speak-btn {
-  background:rgba(13,158,106,0.1);
+  background:rgba(13,158,106,0.10);
   color:var(--accent);
-  border-color:rgba(13,158,106,0.2);
+  border-color:rgba(13,158,106,0.22);
 }
-body.light-mode .acc-icon { background:rgba(13,158,106,0.1); border-color:rgba(13,158,106,0.2); }
-body.light-mode .section-head h2 { color:var(--text); }
-body.light-mode .contact-row { box-shadow:0 1px 4px rgba(0,0,0,0.05); }
+
+/* Contact */
+body.light-mode .contact-row { box-shadow:0 1px 4px rgba(13,120,80,0.06); }
+
+/* Bottom nav */
+body.light-mode #bottom-nav {
+  background:linear-gradient(135deg,#0d9e6a 0%,#0a8a5a 100%);
+  border-top:1px solid rgba(0,0,0,0.10);
+  box-shadow:0 -2px 16px rgba(13,158,106,0.25);
+}
+body.light-mode .nav-btn       { color:rgba(255,255,255,0.60); }
+body.light-mode .nav-btn.active { color:#ffffff; }
+body.light-mode .nav-btn.active i { filter:drop-shadow(0 0 6px rgba(255,255,255,0.6)); }
+
+/* FAB */
+body.light-mode #fab {
+  background:var(--accent);
+  box-shadow:0 4px 16px rgba(13,158,106,0.40);
+}
 
 /* ═══ DESKTOP FULL WIDTH ═══ */
 /* ═══════════════════════════════════════════
