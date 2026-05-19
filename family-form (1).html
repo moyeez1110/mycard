@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="te">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>కుటుంబసభ్యుల ధృవీకరణ పత్రముకై దరఖాస్తు — MeeSeva</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Telugu:wght@400;600;700&family=Noto+Sans+Telugu:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --acc:#1a7a35;--ora:#e07b00;--panel:300px;
+  --bg-panel:#151f2b;--bg-card:#1c2b38;--bg-input:#1a2d3a;
+  --border-dim:#2a4050;--text-main:#d8e8e0;--text-muted:#6a9a84;
+  --green:#27ae60;--red:#c0392b;--blue:#2980b9;--amber:#e67e22;
+}
+body{font-family:'Noto Serif Telugu',serif;background:#b8c8d4;display:flex;height:100vh;overflow:hidden;}
+
+/* ══════════════════════════════════════
+   RIGHT PANEL
+══════════════════════════════════════ */
+.panel{
+  width:var(--panel);min-width:var(--panel);
+  background:var(--bg-panel);color:var(--text-main);
+  display:flex;flex-direction:column;height:100vh;
+  overflow:hidden;order:2;
+  box-shadow:-3px 0 20px rgba(0,0,0,.45);
+  border-left:1px solid #0d1820;
+}
+
+/* Panel header */
+.ph{
+  background:linear-gradient(135deg,#0a2d18 0%,#145c28 60%,#1a7a35 100%);
+  padding:11px 13px 9px;flex-shrink:0;
+  border-bottom:1px solid #0d3018;
+}
+.ph-top{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
+.ph-icon{
+  width:32px;height:32px;background:rgba(255,255,255,.12);
+  border-radius:8px;display:flex;align-items:center;justify-content:center;
+  font-size:14px;flex-shrink:0;
+}
+.ph h2{font-family:'Noto Sans Telugu',sans-serif;font-size:9.5pt;font-weight:700;color:#fff;line-height:1.3;}
+.ph p{font-size:7pt;color:#80bc9a;font-family:sans-serif;margin-top:2px;}
+
+/* Action buttons row */
+.actions{
+  display:grid;grid-template-columns:1fr 1fr;gap:5px;
+  padding:7px 10px;background:#101820;
+  border-bottom:1px solid #0d1820;flex-shrink:0;
+}
+.actions button{
+  padding:6px 4px;border:none;border-radius:5px;
+  font-size:8.5pt;font-weight:700;cursor:pointer;
+  font-family:sans-serif;transition:opacity .15s,transform .1s;
+  display:flex;align-items:center;justify-content:center;gap:4px;
+}
+.actions button:hover{opacity:.85;}
+.actions button:active{transform:scale(.96);}
+.btn-print{background:#1a6b4a;color:#aaffd0;}
+.btn-word{background:#1a4a7a;color:#aad0ff;}
+.btn-copy{background:#5a4a10;color:#ffd87a;}
+.btn-clear{background:#5a1a1a;color:#ffaaaa;}
+
+/* Panel scrollable body */
+.pb{flex:1;overflow-y:auto;padding:9px 10px 12px;}
+.pb::-webkit-scrollbar{width:3px;}
+.pb::-webkit-scrollbar-thumb{background:#2a4050;border-radius:2px;}
+
+/* Section label */
+.sl{
+  font-family:sans-serif;font-size:6.5pt;font-weight:700;
+  color:var(--amber);text-transform:uppercase;letter-spacing:.8px;
+  padding:7px 0 3px;border-top:1px solid #1e3040;
+  margin-top:5px;display:flex;align-items:center;gap:5px;
+}
+.sl:first-child{border-top:none;margin-top:0;padding-top:0;}
+.sl-icon{font-size:10px;}
+
+/* Input group */
+.ig{margin-bottom:6px;}
+.ig label{
+  display:block;font-size:7pt;color:var(--text-muted);
+  margin-bottom:2px;font-family:'Noto Sans Telugu',sans-serif;font-weight:600;
+  line-height:1.3;
+}
+.ig input,.ig select,.ig textarea{
+  width:100%;background:var(--bg-input);
+  border:1px solid var(--border-dim);
+  color:var(--text-main);padding:4px 7px;
+  border-radius:4px;font-size:8.5pt;
+  font-family:'Noto Serif Telugu',serif;
+  outline:none;transition:border-color .15s,background .15s;
+  -webkit-appearance:none;
+}
+.ig input:focus,.ig select:focus,.ig textarea:focus{
+  border-color:var(--green);background:#1e3328;
+}
+.ig input::placeholder{color:#3a5848;font-size:7.5pt;}
+.ig select option{background:#1a2d3a;color:var(--text-main);}
+.ig select{cursor:pointer;}
+.r2{display:grid;grid-template-columns:1fr 1fr;gap:5px;}
+.r3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;}
+
+/* Member block */
+.mb{
+  background:#172535;border:1px solid #223344;
+  border-radius:5px;padding:6px 8px;margin-bottom:5px;
+}
+.mb .mn{
+  font-size:7.5pt;color:#50c878;font-weight:700;
+  margin-bottom:4px;font-family:sans-serif;
+  display:flex;align-items:center;gap:5px;
+}
+.mb .mn-num{
+  background:#1a6b2a;color:#aaffcc;border-radius:3px;
+  padding:0px 6px;font-size:7pt;
+}
+
+/* Logo upload area */
+.logo-upload-area{
+  border:1.5px dashed #2a6040;border-radius:5px;
+  padding:8px;text-align:center;cursor:pointer;
+  background:#0e2018;transition:border-color .2s,background .2s;
+  font-size:8pt;color:#5a9a74;font-family:sans-serif;
+  font-weight:600;display:flex;align-items:center;
+  justify-content:center;gap:6px;
+}
+.logo-upload-area:hover{border-color:#27ae60;background:#112a1a;color:#7acc94;}
+.logo-row{display:flex;gap:5px;margin-bottom:5px;}
+.logo-row .logo-upload-area{flex:1;}
+.btn-remove-logo{
+  background:#3a1515;color:#ff9a9a;border:1px solid #5a2020;
+  border-radius:4px;padding:5px 8px;font-size:8pt;
+  cursor:pointer;font-family:sans-serif;font-weight:700;
+  white-space:nowrap;
+}
+.btn-remove-logo:hover{background:#4a1818;}
+#logo-status{font-size:7pt;color:#4a8060;margin-top:3px;font-family:sans-serif;}
+
+/* Slider */
+input[type=range]{
+  -webkit-appearance:none;width:100%;height:4px;
+  background:#1e3828;border-radius:2px;border:none;
+  cursor:pointer;
+}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:14px;height:14px;
+  background:var(--green);border-radius:50%;cursor:pointer;
+}
+
+/* Toast notification */
+.toast{
+  position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(60px);
+  background:#1a7a35;color:#fff;padding:8px 18px;border-radius:20px;
+  font-size:9pt;font-family:sans-serif;font-weight:700;
+  box-shadow:0 4px 20px rgba(0,0,0,.4);transition:transform .3s ease;
+  z-index:9999;pointer-events:none;
+}
+.toast.show{transform:translateX(-50%) translateY(0);}
+
+/* ══════════════════════════════════════
+   DOCUMENT WRAPPER
+══════════════════════════════════════ */
+.dw{
+  flex:1;overflow-y:auto;
+  padding:16px;order:1;
+  display:flex;justify-content:center;align-items:flex-start;
+}
+.dw::-webkit-scrollbar{width:6px;}
+.dw::-webkit-scrollbar-thumb{background:#8a9aaa;border-radius:3px;}
+
+/* ══════════════════════════════════════
+   A4 SHEET
+══════════════════════════════════════ */
+.sheet{
+  width:210mm;min-height:297mm;
+  background:#fff;
+  padding:8mm 13mm 7mm 13mm;
+  box-shadow:0 6px 30px rgba(0,0,0,.25);
+  font-family:'Noto Serif Telugu','Times New Roman',serif;
+  font-size:9.5pt;color:#111;line-height:1.65;
+  flex-shrink:0;overflow:hidden;position:relative;
+  border:1px solid #ccc;
+}
+
+/* ── Draggable logo ── */
+#logo-dragger{
+  position:absolute;top:8mm;left:50%;
+  transform:translateX(-50%);
+  cursor:move;z-index:10;user-select:none;
+}
+.logo-box{
+  display:inline-flex;align-items:center;gap:8px;
+  border:2px solid var(--acc);border-radius:10px;
+  padding:4px 14px 4px 6px;background:#fff;
+}
+.logo-circle{
+  width:42px;height:42px;
+  background:radial-gradient(circle at 50% 45%,#fff8e0 50%,#ffd97a 100%);
+  border-radius:50%;border:2.5px solid var(--ora);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;overflow:hidden;
+}
+.logo-circle svg{width:28px;height:28px;}
+.logo-txt{text-align:left;line-height:1.1;}
+.logo-main{font-size:20pt;font-weight:900;color:var(--acc);font-family:'Noto Serif Telugu',serif;line-height:1;}
+.logo-main em{color:var(--ora);font-style:normal;}
+.logo-tag{font-size:6.5pt;color:#555;font-family:sans-serif;letter-spacing:.3px;}
+#logo-uploaded{display:none;max-height:60px;max-width:200px;object-fit:contain;}
+.drag-hint{
+  position:absolute;top:-18px;left:50%;transform:translateX(-50%);
+  background:#1a7a35;color:#fff;font-size:6pt;padding:1px 8px;
+  border-radius:8px;white-space:nowrap;font-family:sans-serif;
+  opacity:.8;pointer-events:none;
+}
+#logo-spacer{height:60px;}
+
+/* ── Document typography ── */
+.dtitle{font-size:12pt;font-weight:700;text-decoration:underline;text-align:center;margin-bottom:2px;}
+.dmemo{font-size:7.5pt;text-align:center;color:#444;font-family:sans-serif;margin-bottom:1px;}
+.dscheme{font-size:8.5pt;text-align:center;text-decoration:underline;margin-bottom:8px;}
+
+/* ── Blank spans ── */
+.bl{
+  display:inline-block;border-bottom:1px dotted #555;
+  min-width:70px;font-weight:600;padding:0 2px;
+  vertical-align:bottom;color:#111;line-height:1.2;
+}
+.bl.e{color:transparent;border-color:#bbb;}
+.bl.narrow{min-width:40px;}
+.bl.wide{min-width:120px;}
+.bl.full{min-width:160px;}
+
+/* ── Address line ── */
+.al{display:flex;align-items:baseline;gap:3px;margin-bottom:2px;}
+.al .bl{flex:1;}
+
+/* ── Body paragraph ── */
+.bp-text{text-align:justify;margin-bottom:5px;font-size:9.5pt;line-height:1.65;}
+
+/* ── Table ── */
+.ft{width:100%;border-collapse:collapse;margin:6px 0;font-size:9pt;}
+.ft th,.ft td{border:1px solid #333;padding:3px 5px;text-align:center;vertical-align:middle;}
+.ft th{background:#f0f0f0;font-weight:700;font-size:9pt;line-height:1.4;}
+.ft td.nc{width:28px;}
+.ft td.name{text-align:left;min-width:100px;}
+.ft td.rel{min-width:80px;}
+.ft td.age{width:44px;}
+
+/* ── Applicant details section ── */
+.adet-title{font-weight:700;text-decoration:underline;margin-bottom:4px;font-size:9.5pt;}
+.adet-row{display:flex;gap:16px;margin-bottom:2px;flex-wrap:wrap;}
+.adet-item{display:flex;align-items:baseline;gap:4px;font-size:9.5pt;}
+.adet-item .lbl{font-weight:600;white-space:nowrap;}
+.adet-item .val{
+  border-bottom:1px dotted #555;min-width:70px;
+  font-weight:600;padding:0 2px;color:#111;
+}
+.adet-item .val.e{color:transparent;border-color:#bbb;}
+
+/* ── Signature ── */
+.bd{text-align:center;margin:8px 0 4px;font-weight:700;font-size:10pt;text-decoration:underline;}
+.sig-line{text-align:right;font-size:9.5pt;}
+.sigb{display:inline-block;border-bottom:1px solid #333;min-width:130px;text-align:center;}
+
+/* ── Enclosures ── */
+.enc-title{font-weight:700;text-decoration:underline;margin-bottom:3px;font-size:9.5pt;}
+.enc-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 16px;}
+.enc-item{font-size:9pt;margin-bottom:3px;}
+.cont-row{font-size:9pt;display:flex;flex-direction:column;gap:2px;}
+.cont-item{display:flex;align-items:baseline;gap:4px;}
+.cont-dash{
+  flex:1;border-bottom:1px solid #333;
+  min-width:50px;font-weight:600;padding:0 2px;color:#111;
+}
+.cont-dash.e{color:transparent;}
+.fnote{margin-top:5px;font-size:8pt;font-style:italic;color:#444;}
+
+/* ══════════════════════════════════════
+   PRINT
+══════════════════════════════════════ */
+@media print{
+  @page{size:A4;margin:0;}
+  body{background:#fff;height:auto;overflow:visible;}
+  .panel{display:none !important;}
+  .dw{padding:0;overflow:visible;background:#fff;}
+  .sheet{box-shadow:none;margin:0;border:none;}
+  .drag-hint{display:none !important;}
+  .toast{display:none !important;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════
+     A4 DOCUMENT
+══════════════════════════════════════════════════ -->
+<div class="dw">
+ <div class="sheet" id="the-sheet">
+
+  <!-- Draggable Logo -->
+  <div id="logo-dragger" title="Drag to reposition logo">
+    <div class="drag-hint" id="drag-hint">⠿ drag to move</div>
+    <div id="logo-default" class="logo-box">
+      <div class="logo-circle">
+        <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="20" cy="20" r="17" fill="#fff7d6" stroke="#e07b00" stroke-width="2"/>
+          <circle cx="14" cy="16" r="2.2" fill="#1a7a35"/>
+          <circle cx="26" cy="16" r="2.2" fill="#1a7a35"/>
+          <path d="M13 24 Q20 31 27 24" stroke="#1a7a35" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+          <text x="20" y="13" text-anchor="middle" font-size="6" font-weight="bold" fill="#e07b00" font-family="sans-serif">TS</text>
+        </svg>
+      </div>
+      <div class="logo-txt">
+        <div class="logo-main">మీ <em>సేవ</em></div>
+        <div class="logo-tag">సలహాలు · సేవలు · MeeSeva</div>
+      </div>
+    </div>
+    <img id="logo-uploaded" src="" alt="Logo">
+  </div>
+
+  <div id="logo-spacer"></div>
+
+  <!-- Title -->
+  <div class="dtitle">కుటుంబసభ్యుల ధృవీకరణ పత్రముకై దరఖాస్తు</div>
+  <div class="dmemo">(As per Memo No.31346/Ser.II.2/2010-Revenue Department – dated.25.10.2010)</div>
+  <div class="dscheme">(ప్రభుత్వము అందించు సాంఘిక భ్రదత పథకముల కొరకు)</div>
+
+  <!-- Addressed to -->
+  <div style="margin-bottom:3px;">నకు,</div>
+  <div class="al">
+    <span class="bl e wide" id="d-tahsildar">&#8203;</span>
+    <span style="flex-shrink:0;">తహశిల్దారు వారికి,</span>
+  </div>
+  <div class="al">
+    <span class="bl e wide" id="d-district">&#8203;</span>
+    <span style="flex-shrink:0;">జిల్లా.</span>
+  </div>
+
+  <!-- Applicant intro -->
+  <div class="bp-text" style="margin-top:5px;">
+    <span class="bl e" id="d-gram1">&#8203;</span>గ్రామ కాపరస్తులు శ్రీ/శ్రీమతి
+    <span class="bl e wide" id="d-aname">&#8203;</span>
+    తండ్రి/భర్త <span class="bl e" id="d-father">&#8203;</span> ప్రాసుకొను దరఖాస్తు విన్నపముం.
+  </div>
+
+  <div style="margin-bottom:3px;">అయ్యా,</div>
+
+  <!-- Para 1: Residence -->
+  <div class="bp-text">
+    నేను <span class="bl e" id="d-gram2">&#8203;</span> గ్రామములో
+    <span class="bl e" id="d-locality">&#8203;</span> లొకాలిటి / లాండ్ మార్క్
+    <span class="bl e narrow" id="d-doorno">&#8203;</span>
+    దొరు నెంబరు గల యింటిలో గత
+    <span class="bl e narrow" id="d-years">&#8203;</span>
+    కాలము నుండి నా కుటుంబ సభ్యులతో నివశించుచున్నాను.
+  </div>
+
+  <!-- Para 2: Deceased -->
+  <div class="bp-text">
+    నా <span class="bl e" id="d-rel1">&#8203;</span> గారైన శ్రీ/శ్రీమతి
+    <span class="bl e wide" id="d-dname">&#8203;</span>
+    తండ్రి/భర్త <span class="bl e" id="d-dfather">&#8203;</span>
+    గారు <span class="bl e" id="d-ddate">&#8203;</span> వతేదిన
+    <span class="bl e" id="d-dcause">&#8203;</span> వలన
+    <span class="bl e" id="d-dgram">&#8203;</span> గ్రామములో చనిపోయినారు.
+  </div>
+
+  <!-- Para 3: Family table intro -->
+  <div class="bp-text">చనిపోయిన నా <span class="bl e" id="d-rel2">&#8203;</span> గారికి ఈ దిగువ తెలిపిన కుటుంభ సభ్యులు గలరు.</div>
+
+  <!-- Family Members Table -->
+  <table class="ft">
+    <thead>
+      <tr>
+        <th class="nc">వరుస<br>సెం.</th>
+        <th class="name">కుటుంభ సభ్యుని పేరు</th>
+        <th class="rel">మరణించిన వ్యక్తితో బంధుత్వం</th>
+        <th class="age">సుమారు<br>వయస్సు</th>
+      </tr>
+    </thead>
+    <tbody id="members-tbody">
+      <!-- rows injected by JS -->
+    </tbody>
+  </table>
+
+  <!-- Para 4: Scheme -->
+  <div class="bp-text">
+    చనిపోయిన నా <span class="bl e" id="d-rel3">&#8203;</span> గారికి ప్రభుత్వము నుండి రావలసిన
+    <span class="bl e wide" id="d-scheme">&#8203;</span>
+    పొందు నిమిత్తం మమ్మెలను కుటుంభ సభ్యులు గా నిర్ణారించుచూ కుటుంభ సభ్యత్వ ధృవీకరణ ధృవపత్రము మంజారు చేయవలసినదిగా కోరుచున్నాను.
+  </div>
+
+  <!-- Para 5: Death certificate -->
+  <div class="bp-text">
+    ఇందుతో పాటు నా <span class="bl e" id="d-lrel">&#8203;</span> లేటు శ్రీ/శ్రీమతి
+    <span class="bl e wide" id="d-lname">&#8203;</span>
+    గారి యొక్క మరణ ధృవపత్రము జతపరుచుచున్నాను.
+  </div>
+
+  <!-- Applicant details -->
+  <div class="adet-title">దరఖాస్తుదారుని వివరములు :</div>
+  <div class="adet-row">
+    <div class="adet-item"><span class="lbl">లింగము :</span><span class="val e" id="d-gender">&#8203;</span></div>
+    <div class="adet-item"><span class="lbl">పుట్టిన తేది :</span><span class="val e" id="d-dob">&#8203;</span></div>
+    <div class="adet-item"><span class="lbl">పిన్ కోడ్ :</span><span class="val e narrow" id="d-pin">&#8203;</span></div>
+  </div>
+  <div class="adet-row">
+    <div class="adet-item"><span class="lbl">రేషన్ కార్డ్ నంబరు :</span><span class="val e" id="d-ration">&#8203;</span></div>
+    <div class="adet-item"><span class="lbl">ఆధార్ నంబరు :</span><span class="val e" id="d-aadhar">&#8203;</span></div>
+  </div>
+
+  <!-- Signature -->
+  <div class="bd">భవ దీయ</div>
+  <div class="sig-line">
+    (<span class="sigb" id="d-sig">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>)
+  </div>
+
+  <!-- Enclosures -->
+  <div style="margin-top:9px;">
+    <div class="enc-title">దరఖాస్తు తో జత పరచవలసినది :</div>
+    <div class="enc-grid">
+      <div>
+        <div class="enc-item">1. అప్లికేషన్ ఫారమ్ *</div>
+        <div class="enc-item">2. రేషన్ కార్డు / ఆధార్ కార్డు / ఇంటిపన్ను రశీదు *</div>
+        <div class="enc-item">3. మరణ ధృవీకరణ పత్రము *</div>
+      </div>
+      <div class="cont-row">
+        <div class="cont-item">1. ల్యాండ్ సెం –<span class="cont-dash e" id="d-land">&#8203;</span></div>
+        <div class="cont-item">2. మొబైల్ సెం –<span class="cont-dash e" id="d-mob">&#8203;</span></div>
+        <div class="cont-item">3. ఈ మెయిల్ ఐ.డి –<span class="cont-dash e" id="d-email">&#8203;</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="fnote">( * తప్పుతమాగా జత పరచవలెను)</div>
+
+ </div><!-- /sheet -->
+</div><!-- /dw -->
+
+
+<!-- ══════════════════════════════════════════════════
+     RIGHT INPUT PANEL
+══════════════════════════════════════════════════ -->
+<div class="panel">
+  <div class="ph">
+    <div class="ph-top">
+      <div class="ph-icon">📋</div>
+      <div>
+        <h2>కుటుంబ ధృవీకరణ దరఖాస్తు</h2>
+        <p>Fill below → document updates live in real-time</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action buttons -->
+  <div class="actions">
+    <button class="btn-print" onclick="doPrint()">🖨 Print</button>
+    <button class="btn-word" onclick="doWord()">📄 Word</button>
+    <button class="btn-copy" onclick="doCopy()">📋 Copy</button>
+    <button class="btn-clear" onclick="clearAll()">🗑 Clear</button>
+  </div>
+
+  <!-- Scrollable form body -->
+  <div class="pb">
+
+    <!-- LOGO SECTION -->
+    <div class="sl"><span class="sl-icon">🖼</span>Logo అప్లోడ్ / Upload</div>
+    <div class="logo-row">
+      <label class="logo-upload-area" for="logo-file">
+        📁 Logo Choose చేయండి
+      </label>
+      <button class="btn-remove-logo" onclick="removeLogo()">✕ Remove</button>
+    </div>
+    <input type="file" id="logo-file" accept="image/*" style="display:none;" onchange="uploadLogo(event)">
+    <div id="logo-status"></div>
+    <div class="ig" style="margin-top:5px;">
+      <label>Logo పరిమాణం / Size (drag to resize)</label>
+      <input type="range" id="logo-size" min="30" max="130" value="60" oninput="resizeLogo(this.value)">
+    </div>
+    <div style="font-size:7pt;color:#3a6050;font-family:sans-serif;margin-bottom:4px;">
+      📌 Document లో logo drag చేసి ఎక్కడైనా place చేయవచ్చు
+    </div>
+
+    <!-- ADDRESS TO -->
+    <div class="sl"><span class="sl-icon">📍</span>చిరునామా / Addressed To</div>
+    <div class="ig">
+      <label>తహశిల్దారు పేరు / Tahsildar Name</label>
+      <input type="text" id="i-tahsildar" placeholder="Tahsildar name" oninput="s('i-tahsildar','d-tahsildar')">
+    </div>
+    <div class="ig">
+      <label>జిల్లా / District</label>
+      <input type="text" id="i-district" placeholder="District name" oninput="s('i-district','d-district')">
+    </div>
+
+    <!-- APPLICANT -->
+    <div class="sl"><span class="sl-icon">👤</span>దరఖాస్తుదారు / Applicant Details</div>
+    <div class="ig">
+      <label>గ్రామం / Village</label>
+      <input type="text" id="i-gram" placeholder="Village name" oninput="sm('i-gram',['d-gram1','d-gram2'])">
+    </div>
+    <div class="ig">
+      <label>దరఖాస్తుదారు పేరు / Applicant Name</label>
+      <input type="text" id="i-aname" placeholder="Full name" oninput="sm('i-aname',['d-aname','d-sig'])">
+    </div>
+    <div class="ig">
+      <label>తండ్రి / భర్త పేరు / Father or Husband</label>
+      <input type="text" id="i-father" placeholder="Father / Husband name" oninput="s('i-father','d-father')">
+    </div>
+    <div class="r2">
+      <div class="ig">
+        <label>లొకాలిటి / Locality</label>
+        <input type="text" id="i-loc" placeholder="Locality" oninput="s('i-loc','d-locality')">
+      </div>
+      <div class="ig">
+        <label>దొరు నెంబరు / Door No.</label>
+        <input type="text" id="i-door" placeholder="Door No." oninput="s('i-door','d-doorno')">
+      </div>
+    </div>
+    <div class="ig">
+      <label>నివాస కాలం / Years of Stay</label>
+      <input type="text" id="i-years" placeholder="e.g. 10 సంవత్సరముల" oninput="s('i-years','d-years')">
+    </div>
+
+    <!-- DECEASED -->
+    <div class="sl"><span class="sl-icon">🕯</span>మరణించిన వ్యక్తి / Deceased Person</div>
+    <div class="ig">
+      <label>బంధుత్వం / Relation to Applicant (e.g. భార్య/తండ్రి)</label>
+      <input type="text" id="i-rel" placeholder="e.g. భర్త / తండ్రి / తల్లి" oninput="sm('i-rel',['d-rel1','d-rel2','d-rel3','d-lrel'])">
+    </div>
+    <div class="ig">
+      <label>మరణించిన వ్యక్తి పేరు / Deceased Full Name</label>
+      <input type="text" id="i-dname" placeholder="Deceased name" oninput="sm('i-dname',['d-dname','d-lname'])">
+    </div>
+    <div class="ig">
+      <label>తండ్రి / భర్త పేరు / Deceased Father or Husband</label>
+      <input type="text" id="i-dfather" placeholder="Deceased's father/husband" oninput="s('i-dfather','d-dfather')">
+    </div>
+    <div class="r2">
+      <div class="ig">
+        <label>మరణ తేదీ / Death Date</label>
+        <input type="text" id="i-ddate" placeholder="DD-MM-YYYY" oninput="s('i-ddate','d-ddate')">
+      </div>
+      <div class="ig">
+        <label>మరణ కారణం / Cause of Death</label>
+        <input type="text" id="i-dcause" placeholder="Cause" oninput="s('i-dcause','d-dcause')">
+      </div>
+    </div>
+    <div class="ig">
+      <label>మరణించిన గ్రామం / Place of Death</label>
+      <input type="text" id="i-dgram" placeholder="Village / Town of death" oninput="s('i-dgram','d-dgram')">
+    </div>
+    <div class="ig">
+      <label>ప్రభుత్వ పథకం / Government Scheme</label>
+      <input type="text" id="i-scheme" placeholder="Scheme name" oninput="s('i-scheme','d-scheme')">
+    </div>
+
+    <div class="sl"><span class="sl-icon">👨‍👩‍👧</span>కుటుంభ సభ్యులు / Family Members</div>
+
+    <!-- Member count bar -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:7px;">
+      <span id="member-count-label" style="font-size:7.5pt;color:#50c878;font-family:sans-serif;font-weight:700;">సభ్యులు: 6</span>
+      <div style="display:flex;gap:5px;">
+        <button onclick="removeMember()" id="btn-remove-member"
+          style="background:#3a1a1a;color:#ff9a9a;border:1px solid #5a2020;border-radius:4px;
+                 padding:4px 10px;font-size:9pt;cursor:pointer;font-family:sans-serif;font-weight:700;
+                 display:none;">− తొలగించు</button>
+        <button onclick="addMember()"
+          style="background:#1a3a1a;color:#7aff9a;border:1px solid #2a5a2a;border-radius:4px;
+                 padding:4px 10px;font-size:9pt;cursor:pointer;font-family:sans-serif;font-weight:700;">+ సభ్యుడు</button>
+      </div>
+    </div>
+
+    <div id="mp"></div>
+
+    <!-- APPLICANT DETAILS -->
+    <div class="sl"><span class="sl-icon">📋</span>దరఖాస్తుదారు వివరాలు / Personal Info</div>
+    <div class="r2">
+      <div class="ig">
+        <label>లింగము / Gender</label>
+        <select id="i-gender" onchange="s('i-gender','d-gender')">
+          <option value="">Select</option>
+          <option value="పురుషుడు">పురుషుడు (Male)</option>
+          <option value="స్త్రీ">స్త్రీ (Female)</option>
+          <option value="ఇతర">ఇతర (Other)</option>
+        </select>
+      </div>
+      <div class="ig">
+        <label>పుట్టిన తేది / DOB</label>
+        <input type="text" id="i-dob" placeholder="DD-MM-YYYY" oninput="s('i-dob','d-dob')">
+      </div>
+    </div>
+    <div class="r3">
+      <div class="ig">
+        <label>పిన్ కోడ్</label>
+        <input type="text" id="i-pin" placeholder="PIN" maxlength="6" oninput="s('i-pin','d-pin')">
+      </div>
+      <div class="ig" style="grid-column:span 2;">
+        <label>రేషన్ కార్డ్ నంబరు</label>
+        <input type="text" id="i-ration" placeholder="Ration Card No." oninput="s('i-ration','d-ration')">
+      </div>
+    </div>
+    <div class="ig">
+      <label>ఆధార్ నంబరు / Aadhaar Number</label>
+      <input type="text" id="i-aadhar" placeholder="XXXX XXXX XXXX" maxlength="14" oninput="s('i-aadhar','d-aadhar')">
+    </div>
+
+    <!-- CONTACT -->
+    <div class="sl"><span class="sl-icon">📞</span>సంప్రదింపు / Contact Details</div>
+    <div class="ig">
+      <label>ల్యాండ్ లైన్ / Landline</label>
+      <input type="text" id="i-land" placeholder="Landline number" oninput="s('i-land','d-land')">
+    </div>
+    <div class="ig">
+      <label>మొబైల్ / Mobile</label>
+      <input type="text" id="i-mob" placeholder="10-digit mobile" maxlength="10" oninput="s('i-mob','d-mob')">
+    </div>
+    <div class="ig">
+      <label>ఈ మెయిల్ / Email</label>
+      <input type="text" id="i-email" placeholder="email@example.com" oninput="s('i-email','d-email')">
+    </div>
+
+  </div><!-- /pb -->
+</div><!-- /panel -->
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* ══════════════════════════════════════════════
+   UTILITY
+══════════════════════════════════════════════ */
+function sp(id, val) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (val && val.trim()) {
+    el.textContent = val;
+    el.classList.remove('e');
+  } else {
+    el.innerHTML = '&#8203;';
+    el.classList.add('e');
+  }
+}
+function s(inId, outId) {
+  sp(outId, document.getElementById(inId)?.value || '');
+}
+function sm(inId, outIds) {
+  const v = document.getElementById(inId)?.value || '';
+  outIds.forEach(id => sp(id, v));
+}
+function mt(i, f) {
+  const v = document.getElementById(`m${i}${f}i`)?.value || '';
+  const td = document.getElementById(`m${i}${f}`);
+  if (td) td.textContent = v;
+}
+
+/* ══════════════════════════════════════════════
+   TOAST
+══════════════════════════════════════════════ */
+function showToast(msg, color) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.background = color || '#1a7a35';
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+/* ══════════════════════════════════════════════
+   LOGO DRAG
+══════════════════════════════════════════════ */
+(function () {
+  const dragger = document.getElementById('logo-dragger');
+  const sheet   = document.getElementById('the-sheet');
+  let dragging  = false, ox = 0, oy = 0;
+
+  function startDrag(cx, cy) {
+    dragging = true;
+    const r  = dragger.getBoundingClientRect();
+    ox = cx - r.left;
+    oy = cy - r.top;
+    dragger.style.transform = 'none';
+    dragger.style.cursor    = 'grabbing';
+    document.getElementById('drag-hint').style.display = 'none';
+  }
+  function moveDrag(cx, cy) {
+    if (!dragging) return;
+    const sr = sheet.getBoundingClientRect();
+    let x = cx - sr.left - ox;
+    let y = cy - sr.top  - oy;
+    x = Math.max(0, Math.min(x, sr.width  - dragger.offsetWidth));
+    y = Math.max(0, Math.min(y, sr.height - dragger.offsetHeight));
+    dragger.style.left = x + 'px';
+    dragger.style.top  = y + 'px';
+  }
+  function endDrag() { if (dragging) { dragging = false; dragger.style.cursor = 'move'; } }
+
+  dragger.addEventListener('mousedown',  e => { startDrag(e.clientX, e.clientY); e.preventDefault(); });
+  document.addEventListener('mousemove', e => moveDrag(e.clientX, e.clientY));
+  document.addEventListener('mouseup',   endDrag);
+
+  dragger.addEventListener('touchstart', e => { startDrag(e.touches[0].clientX, e.touches[0].clientY); e.preventDefault(); }, { passive: false });
+  document.addEventListener('touchmove', e => { if (dragging) { moveDrag(e.touches[0].clientX, e.touches[0].clientY); e.preventDefault(); } }, { passive: false });
+  document.addEventListener('touchend',  endDrag);
+})();
+
+/* ══════════════════════════════════════════════
+   LOGO UPLOAD / RESIZE / REMOVE
+══════════════════════════════════════════════ */
+function uploadLogo(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const img = document.getElementById('logo-uploaded');
+    const def = document.getElementById('logo-default');
+    img.src = ev.target.result;
+    img.style.display = 'block';
+    def.style.display = 'none';
+    document.getElementById('logo-status').textContent = '✓ Uploaded: ' + file.name;
+    showToast('✓ Logo uploaded!', '#1a6b40');
+  };
+  reader.readAsDataURL(file);
+}
+function removeLogo() {
+  const img = document.getElementById('logo-uploaded');
+  const def = document.getElementById('logo-default');
+  img.src = '';
+  img.style.display = 'none';
+  def.style.display = 'flex';
+  document.getElementById('logo-status').textContent = '';
+  document.getElementById('logo-file').value = '';
+  // Reset size
+  def.style.transform = '';
+  img.style.maxHeight = '';
+  document.getElementById('logo-size').value = 60;
+  showToast('Logo removed', '#5a4020');
+}
+function resizeLogo(v) {
+  const img = document.getElementById('logo-uploaded');
+  const def = document.getElementById('logo-default');
+  const h   = parseInt(v);
+  if (img.style.display !== 'none') {
+    img.style.maxHeight = h + 'px';
+    img.style.maxWidth  = (h * 3.5) + 'px';
+  } else {
+    const scale = h / 60;
+    def.style.transform = `scale(${scale})`;
+    def.style.transformOrigin = 'top left';
+    // Adjust spacer
+    document.getElementById('logo-spacer').style.height = Math.max(50, h) + 'px';
+  }
+}
+
+/* ══════════════════════════════════════════════
+   DYNAMIC FAMILY MEMBERS
+══════════════════════════════════════════════ */
+let memberCount = 0;
+const MIN_MEMBERS = 6;
+
+function buildMemberPanel(i) {
+  return `
+  <div class="mb" id="mb-block-${i}">
+    <div class="mn"><span class="mn-num">${i}</span> సభ్యుడు ${i} / Member ${i}</div>
+    <div class="ig" style="margin-bottom:4px;">
+      <label>పేరు / Name</label>
+      <input type="text" id="m${i}ni" placeholder="Full name" oninput="mt(${i},'n')">
+    </div>
+    <div class="r2">
+      <div class="ig">
+        <label>బంధుత్వం / Relation</label>
+        <input type="text" id="m${i}ri" placeholder="e.g. కుమారుడు" oninput="mt(${i},'r')">
+      </div>
+      <div class="ig">
+        <label>వయస్సు / Age</label>
+        <input type="text" id="m${i}ai" placeholder="Age" oninput="mt(${i},'a')">
+      </div>
+    </div>
+  </div>`;
+}
+
+function buildTableRow(i) {
+  const tr = document.createElement('tr');
+  tr.id = `tr-member-${i}`;
+  tr.innerHTML = `<td class="nc">${i}</td><td class="name" id="m${i}n"></td><td class="rel" id="m${i}r"></td><td class="age" id="m${i}a"></td>`;
+  return tr;
+}
+
+function updateMemberUI() {
+  document.getElementById('member-count-label').textContent = `సభ్యులు: ${memberCount}`;
+  // Show remove button only if > MIN_MEMBERS
+  const rmBtn = document.getElementById('btn-remove-member');
+  rmBtn.style.display = memberCount > MIN_MEMBERS ? 'inline-flex' : 'none';
+}
+
+function addMember() {
+  memberCount++;
+  // Panel block
+  document.getElementById('mp').insertAdjacentHTML('beforeend', buildMemberPanel(memberCount));
+  // Table row
+  document.getElementById('members-tbody').appendChild(buildTableRow(memberCount));
+  updateMemberUI();
+  // Scroll panel to new block
+  const newBlock = document.getElementById(`mb-block-${memberCount}`);
+  if (newBlock) newBlock.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  showToast(`✅ సభ్యుడు ${memberCount} జోడించబడ్డారు`, '#1a5a2a');
+}
+
+function removeMember() {
+  if (memberCount <= MIN_MEMBERS) return;
+  // Remove panel block
+  const block = document.getElementById(`mb-block-${memberCount}`);
+  if (block) block.remove();
+  // Remove table row
+  const tr = document.getElementById(`tr-member-${memberCount}`);
+  if (tr) tr.remove();
+  memberCount--;
+  updateMemberUI();
+  showToast(`🗑 సభ్యుడు ${memberCount + 1} తొలగించబడ్డారు`, '#5a2020');
+}
+
+// Init — build MIN_MEMBERS rows on load
+(function initMembers() {
+  for (let i = 1; i <= MIN_MEMBERS; i++) {
+    document.getElementById('mp').insertAdjacentHTML('beforeend', buildMemberPanel(i));
+    document.getElementById('members-tbody').appendChild(buildTableRow(i));
+    memberCount = i;
+  }
+  updateMemberUI();
+})();
+
+/* ══════════════════════════════════════════════
+   CLEAR ALL
+══════════════════════════════════════════════ */
+function clearAll() {
+  document.querySelectorAll('.panel input[type=text],.panel input[type=tel],.panel select').forEach(el => {
+    el.value = '';
+    if (el.tagName === 'SELECT') el.selectedIndex = 0;
+  });
+  document.querySelectorAll('.bl,.val,.cont-dash').forEach(el => {
+    el.innerHTML = '&#8203;';
+    el.classList.add('e');
+  });
+  // Clear ALL current member table cells
+  for (let i = 1; i <= memberCount; i++) {
+    ['n','r','a'].forEach(f => {
+      const td = document.getElementById(`m${i}${f}`);
+      if (td) td.textContent = '';
+    });
+  }
+  // Remove extra members (keep MIN_MEMBERS)
+  while (memberCount > MIN_MEMBERS) removeMember();
+  const sig = document.getElementById('d-sig');
+  if (sig) sig.innerHTML = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+  showToast('🗑 Form cleared', '#8a1a1a');
+}
+
+/* ══════════════════════════════════════════════
+   PRINT
+══════════════════════════════════════════════ */
+function doPrint() {
+  showToast('🖨 Printing...', '#1a5a3a');
+  setTimeout(() => window.print(), 300);
+}
+
+/* ══════════════════════════════════════════════
+   COPY TEXT
+══════════════════════════════════════════════ */
+function doCopy() {
+  const sheet = document.getElementById('the-sheet');
+  const text  = sheet.innerText.replace(/\u200B/g, '').trim();
+  navigator.clipboard.writeText(text).then(() => {
+    showToast('📋 Text copied!', '#5a4010');
+  }).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    showToast('📋 Text copied!', '#5a4010');
+  });
+}
+
+/* ══════════════════════════════════════════════
+   WORD DOWNLOAD (.doc)
+══════════════════════════════════════════════ */
+function doWord() {
+  // Build a table for family members
+  let memberRows = '';
+  for (let i = 1; i <= memberCount; i++) {
+    const n = document.getElementById(`m${i}ni`)?.value || '';
+    const r = document.getElementById(`m${i}ri`)?.value || '';
+    const a = document.getElementById(`m${i}ai`)?.value || '';
+    memberRows += `
+      <tr>
+        <td style="border:1px solid #333;padding:4px 6px;text-align:center;">${i}</td>
+        <td style="border:1px solid #333;padding:4px 6px;">${n}</td>
+        <td style="border:1px solid #333;padding:4px 6px;text-align:center;">${r}</td>
+        <td style="border:1px solid #333;padding:4px 6px;text-align:center;">${a}</td>
+      </tr>`;
+  }
+
+  function g(id) {
+    const el = document.getElementById(id);
+    if (!el) return '';
+    const v = el.classList.contains('e') ? '' : el.textContent.replace(/\u200B/g,'').trim();
+    return v || '_______________';
+  }
+
+  const html = `
+<html xmlns:o='urn:schemas-microsoft-com:office:office'
+      xmlns:w='urn:schemas-microsoft-com:office:word'
+      xmlns='http://www.w3.org/TR/REC-html40'>
+<head>
+<meta charset="UTF-8">
+<style>
+  @page { size: A4; margin: 15mm 20mm 15mm 20mm; }
+  body { font-family: 'Noto Serif Telugu', 'Times New Roman', serif; font-size: 11pt; line-height: 1.7; color: #111; }
+  h2 { text-align:center; font-size:13pt; text-decoration:underline; margin-bottom:4px; }
+  .sub { text-align:center; font-size:9pt; color:#444; margin-bottom:2px; }
+  .sub2 { text-align:center; font-size:10pt; text-decoration:underline; margin-bottom:12px; }
+  p { text-align:justify; margin-bottom:8px; }
+  table { width:100%; border-collapse:collapse; margin:8px 0; font-size:10pt; }
+  th,td { border:1px solid #333; padding:4px 7px; }
+  th { background:#f0f0f0; text-align:center; }
+  .sig { text-align:right; margin-top:14px; }
+  .enc { font-size:10pt; }
+  .fn { font-size:9pt; font-style:italic; color:#555; }
+  .uline { border-bottom:1px dotted #555; display:inline-block; min-width:80px; font-weight:600; }
+</style>
+</head>
+<body>
+<h2>కుటుంబసభ్యుల ధృవీకరణ పత్రముకై దరఖాస్తు</h2>
+<p class="sub">(As per Memo No.31346/Ser.II.2/2010-Revenue Department – dated.25.10.2010)</p>
+<p class="sub2">(ప్రభుత్వము అందించు సాంఘిక భ్రదత పథకముల కొరకు)</p>
+
+<p>నకు,<br>
+<span class="uline">${g('d-tahsildar')}</span> తహశిల్దారు వారికి,<br>
+<span class="uline">${g('d-district')}</span> జిల్లా.</p>
+
+<p><span class="uline">${g('d-gram1')}</span> గ్రామ కాపరస్తులు శ్రీ/శ్రీమతి <span class="uline">${g('d-aname')}</span> తండ్రి/భర్త <span class="uline">${g('d-father')}</span> ప్రాసుకొను దరఖాస్తు విన్నపముం.</p>
+
+<p>అయ్యా,</p>
+
+<p>నేను <span class="uline">${g('d-gram2')}</span> గ్రామములో <span class="uline">${g('d-locality')}</span> లొకాలిటి / లాండ్ మార్క్ <span class="uline">${g('d-doorno')}</span> దొరు నెంబరు గల యింటిలో గత <span class="uline">${g('d-years')}</span> కాలము నుండి నా కుటుంబ సభ్యులతో నివశించుచున్నాను.</p>
+
+<p>నా <span class="uline">${g('d-rel1')}</span> గారైన శ్రీ/శ్రీమతి <span class="uline">${g('d-dname')}</span> తండ్రి/భర్త <span class="uline">${g('d-dfather')}</span> గారు <span class="uline">${g('d-ddate')}</span> వతేదిన <span class="uline">${g('d-dcause')}</span> వలన <span class="uline">${g('d-dgram')}</span> గ్రామములో చనిపోయినారు.</p>
+
+<p>చనిపోయిన నా <span class="uline">${g('d-rel2')}</span> గారికి ఈ దిగువ తెలిపిన కుటుంభ సభ్యులు గలరు.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="width:30px;">వరుస సెం.</th>
+      <th>కుటుంభ సభ్యుని పేరు</th>
+      <th>మరణించిన వ్యక్తితో బంధుత్వం</th>
+      <th style="width:50px;">సుమారు వయస్సు</th>
+    </tr>
+  </thead>
+  <tbody>${memberRows}</tbody>
+</table>
+
+<p>చనిపోయిన నా <span class="uline">${g('d-rel3')}</span> గారికి ప్రభుత్వము నుండి రావలసిన <span class="uline">${g('d-scheme')}</span> పొందు నిమిత్తం మమ్మెలను కుటుంభ సభ్యులు గా నిర్ణారించుచూ కుటుంభ సభ్యత్వ ధృవీకరణ ధృవపత్రము మంజారు చేయవలసినదిగా కోరుచున్నాను.</p>
+
+<p>ఇందుతో పాటు నా <span class="uline">${g('d-lrel')}</span> లేటు శ్రీ/శ్రీమతి <span class="uline">${g('d-lname')}</span> గారి యొక్క మరణ ధృవపత్రము జతపరుచుచున్నాను.</p>
+
+<p style="text-decoration:underline;font-weight:bold;margin-bottom:4px;">దరఖాస్తుదారుని వివరములు :</p>
+<p>
+  లింగము : <span class="uline">${g('d-gender')}</span> &nbsp;&nbsp;
+  పుట్టిన తేది : <span class="uline">${g('d-dob')}</span> &nbsp;&nbsp;
+  పిన్ కోడ్ : <span class="uline">${g('d-pin')}</span><br>
+  రేషన్ కార్డ్ నంబరు : <span class="uline">${g('d-ration')}</span> &nbsp;&nbsp;
+  ఆధార్ నంబరు : <span class="uline">${g('d-aadhar')}</span>
+</p>
+
+<p style="text-align:center;font-weight:bold;text-decoration:underline;font-size:12pt;">భవ దీయ</p>
+<div class="sig">
+  (<span style="display:inline-block;border-bottom:1px solid #333;min-width:140px;text-align:center;">${g('d-sig')}</span>)
+</div>
+
+<br>
+<div class="enc">
+<p style="text-decoration:underline;font-weight:bold;margin-bottom:4px;">దరఖాస్తు తో జత పరచవలసినది :</p>
+<table style="font-size:10pt;">
+  <tr>
+    <td style="border:none;padding:2px 4px;vertical-align:top;width:50%;">
+      1. అప్లికేషన్ ఫారమ్ *<br>
+      2. రేషన్ కార్డు/ఆధార్ కార్డు/ఇంటిపన్ను రశీదు *<br>
+      3. మరణ ధృవీకరణ పత్రము *
+    </td>
+    <td style="border:none;padding:2px 4px;vertical-align:top;">
+      1. ల్యాండ్ సెం – <span class="uline">${g('d-land')}</span><br>
+      2. మొబైల్ సెం – <span class="uline">${g('d-mob')}</span><br>
+      3. ఈ మెయిల్ ఐ.డి – <span class="uline">${g('d-email')}</span>
+    </td>
+  </tr>
+</table>
+</div>
+<p class="fn">( * తప్పుతమాగా జత పరచవలెను)</p>
+</body>
+</html>`;
+
+  const blob = new Blob(['\ufeff', html], { type: 'application/msword' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = 'KutumbaConfirmation_MeeSeva.doc';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('📄 Word file downloaded!', '#1a3a7a');
+}
+</script>
+</body>
+</html>
