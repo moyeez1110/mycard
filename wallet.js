@@ -24,16 +24,6 @@ const _CFG = {
 const PAGE_CREDITS = {
   'resume':           5,
   'family-form':     10,
-  'family_form':     10,
-  'affidavit':        8,
-  'marriage':         8,
-  'caste':            6,
-  'income':           6,
-  'pan':              8,
-  'passport':        15,
-  'voter':            5,
-  'aadhar':           5,
-  'driving':         10,
   'కుటుంబ':         10,
    // default fallback → 5
 };
