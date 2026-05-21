@@ -35,6 +35,7 @@ const PAGE_CREDITS = {
   'aadhar':           5,
   'driving':         10,
   'ration':           8,
+  'కుటుంబసభ్యుల ధృవీకరణ పత్రము':         10,
   // default fallback → 5
 };
 
