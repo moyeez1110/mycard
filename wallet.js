@@ -34,7 +34,7 @@ const PAGE_CREDITS = {
   'voter':            5,
   'aadhar':           5,
   'driving':         10,
-  ''కుటుంబసభ్యుల ధృవీకరణ పత్రమ':         10,
+  ''కుటుంబ':        10,
    // default fallback → 5
 };
 
