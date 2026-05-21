@@ -518,18 +518,8 @@ input,textarea,select{font-family:var(--font);outline:none}
         <!-- Content Tab -->
         <div id="tab-content" style="display:none">
           <div class="editor-card">
-            <div class="editor-card-title" style="justify-content:space-between">
-              <span><i class="fas fa-list"></i> All Rows</span>
-              <div style="display:flex;gap:8px;flex-wrap:wrap">
-                <button class="add-row-btn" onclick="addRow('ticker')"><i class="fas fa-plus"></i> Ticker</button>
-                <button class="add-row-btn" onclick="addRow('update')"><i class="fas fa-plus"></i> Update</button>
-                <button class="add-row-btn" onclick="addRow('service')"><i class="fas fa-plus"></i> Service</button>
-                <button class="add-row-btn" onclick="addRow('canva')"><i class="fas fa-plus"></i> Canva</button>
-                <button class="add-row-btn" onclick="addRow('req_service')"><i class="fas fa-plus"></i> Req Service</button>
-                <button class="add-row-btn" onclick="addRow('pdf')"><i class="fas fa-plus"></i> PDF</button>
-                <button class="add-row-btn" onclick="addRow('req_doc')"><i class="fas fa-plus"></i> Req Doc</button>
-                <button class="add-row-btn" onclick="addRow('doc')"><i class="fas fa-plus"></i> Doc</button>
-              </div>
+            <div class="editor-card-title">
+              <i class="fas fa-list"></i> All Rows
             </div>
             <div class="rows-table-wrap">
               <table class="rows-table">
@@ -547,15 +537,18 @@ input,textarea,select{font-family:var(--font);outline:none}
                 <tbody id="rows-tbody"></tbody>
               </table>
             </div>
-            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
-              <span style="font-size:11px;color:var(--text3);align-self:center">Add Row:</span>
-              <button class="add-row-btn" onclick="addRow('update')"><i class="fas fa-plus"></i> Update</button>
-              <button class="add-row-btn" onclick="addRow('service')"><i class="fas fa-plus"></i> Service</button>
-              <button class="add-row-btn" onclick="addRow('canva')"><i class="fas fa-plus"></i> Canva</button>
-              <button class="add-row-btn" onclick="addRow('req_service')"><i class="fas fa-plus"></i> Req Service</button>
-              <button class="add-row-btn" onclick="addRow('pdf')"><i class="fas fa-plus"></i> PDF</button>
-              <button class="add-row-btn" onclick="addRow('req_doc')"><i class="fas fa-plus"></i> Req Doc</button>
-              <button class="add-row-btn" onclick="addRow('doc')"><i class="fas fa-plus"></i> Doc</button>
+            <div style="margin-top:14px;padding:12px 14px;background:var(--bg2);border-radius:10px;border:1px solid var(--border)">
+              <div style="font-size:10px;color:var(--text3);font-weight:600;letter-spacing:0.8px;text-transform:uppercase;margin-bottom:10px">+ Add Row</div>
+              <div style="display:flex;gap:6px;flex-wrap:wrap">
+                <button class="add-row-btn" style="margin-top:0" onclick="addRow('ticker')"><i class="fas fa-plus"></i> Ticker</button>
+                <button class="add-row-btn" style="margin-top:0" onclick="addRow('update')"><i class="fas fa-plus"></i> Update</button>
+                <button class="add-row-btn" style="margin-top:0" onclick="addRow('service')"><i class="fas fa-plus"></i> Service</button>
+                <button class="add-row-btn" style="margin-top:0" onclick="addRow('canva')"><i class="fas fa-plus"></i> Canva</button>
+                <button class="add-row-btn" style="margin-top:0" onclick="addRow('req_service')"><i class="fas fa-plus"></i> Req Service</button>
+                <button class="add-row-btn" style="margin-top:0" onclick="addRow('pdf')"><i class="fas fa-plus"></i> PDF</button>
+                <button class="add-row-btn" style="margin-top:0" onclick="addRow('req_doc')"><i class="fas fa-plus"></i> Req Doc</button>
+                <button class="add-row-btn" style="margin-top:0" onclick="addRow('doc')"><i class="fas fa-plus"></i> Doc</button>
+              </div>
             </div>
           </div>
         </div>
