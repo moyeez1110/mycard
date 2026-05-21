@@ -199,6 +199,56 @@ input,textarea,select{font-family:var(--font);outline:none}
 .editor-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 @media(max-width:900px){.editor-grid{grid-template-columns:1fr}}
 
+/* ════ CATEGORY DRAG-DROP ════ */
+.cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.cat-col{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;min-height:80px}
+.cat-col-head{
+  padding:10px 14px;display:flex;align-items:center;gap:8px;
+  font-size:11px;font-weight:700;letter-spacing:0.7px;text-transform:uppercase;
+  border-bottom:1px solid var(--border);background:var(--bg3);
+}
+.cat-col-head .cat-count{
+  margin-left:auto;background:rgba(255,255,255,0.08);
+  border-radius:10px;padding:1px 8px;font-size:10px;color:var(--text2);font-weight:600;
+}
+.cat-drop-zone{min-height:48px;padding:6px;display:flex;flex-direction:column;gap:4px}
+.cat-drop-zone.drag-over{background:rgba(79,255,176,0.06);outline:1.5px dashed var(--accent);border-radius:8px}
+.row-card{
+  display:flex;align-items:center;gap:8px;
+  background:var(--card);border:1px solid var(--border);
+  border-radius:8px;padding:7px 10px;cursor:grab;
+  transition:box-shadow 0.15s,border-color 0.15s;user-select:none;
+}
+.row-card:active{cursor:grabbing}
+.row-card.dragging{opacity:0.4;border-style:dashed}
+.row-card.drag-placeholder{
+  background:transparent;border:1.5px dashed var(--accent);
+  opacity:0.5;pointer-events:none;
+}
+.row-card-drag{color:var(--text3);font-size:11px;cursor:grab;padding:0 2px;flex-shrink:0}
+.row-card-body{flex:1;min-width:0}
+.row-card-value{font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row-card-sub{font-size:10px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row-card-flags{display:flex;gap:4px;flex-shrink:0;align-items:center}
+.flag-btn{
+  border-radius:5px;padding:2px 7px;font-size:10px;font-weight:700;cursor:pointer;
+  transition:all 0.15s;border:1px solid transparent;line-height:1.5;
+}
+.flag-btn.share-on{background:rgba(52,211,153,0.15);color:var(--green);border-color:rgba(52,211,153,0.3)}
+.flag-btn.share-off{background:rgba(248,113,113,0.12);color:var(--red);border-color:rgba(248,113,113,0.25)}
+.flag-btn.new-on{background:rgba(79,255,176,0.15);color:var(--accent);border-color:rgba(79,255,176,0.3)}
+.flag-btn.new-off{background:rgba(255,255,255,0.04);color:var(--text3);border-color:var(--border)}
+.row-card-edit{
+  background:transparent;color:var(--text3);font-size:11px;padding:2px 5px;
+  border-radius:4px;cursor:pointer;transition:var(--trans);border:none;flex-shrink:0;
+}
+.row-card-edit:hover{color:var(--accent);background:rgba(79,255,176,0.08)}
+.row-card-del{
+  background:transparent;color:var(--text3);font-size:11px;padding:2px 5px;
+  border-radius:4px;cursor:pointer;transition:var(--trans);border:none;flex-shrink:0;
+}
+.row-card-del:hover{color:var(--red);background:rgba(248,113,113,0.1)}
+
 .editor-card{
   background:var(--card);border:1px solid var(--border);
   border-radius:var(--radius);padding:20px;
@@ -517,40 +567,20 @@ input,textarea,select{font-family:var(--font);outline:none}
 
         <!-- Content Tab -->
         <div id="tab-content" style="display:none">
-          <div class="editor-card">
-            <div class="editor-card-title">
-              <i class="fas fa-list"></i> All Rows
-            </div>
-            <div class="rows-table-wrap">
-              <table class="rows-table">
-                <thead><tr>
-                  <th style="width:80px">key</th>
-                  <th>value</th>
-                  <th>title</th>
-                  <th>link</th>
-                  <th style="width:90px">icon</th>
-                  <th style="width:70px">extra</th>
-                  <th style="width:54px;text-align:center">Share</th>
-                  <th style="width:54px;text-align:center"><span style="color:var(--accent)">NEW</span></th>
-                  <th style="width:36px"></th>
-                </tr></thead>
-                <tbody id="rows-tbody"></tbody>
-              </table>
-            </div>
-            <div style="margin-top:14px;padding:12px 14px;background:var(--bg2);border-radius:10px;border:1px solid var(--border)">
-              <div style="font-size:10px;color:var(--text3);font-weight:600;letter-spacing:0.8px;text-transform:uppercase;margin-bottom:10px">+ Add Row</div>
-              <div style="display:flex;gap:6px;flex-wrap:wrap">
-                <button class="add-row-btn" style="margin-top:0" onclick="addRow('ticker')"><i class="fas fa-plus"></i> Ticker</button>
-                <button class="add-row-btn" style="margin-top:0" onclick="addRow('update')"><i class="fas fa-plus"></i> Update</button>
-                <button class="add-row-btn" style="margin-top:0" onclick="addRow('service')"><i class="fas fa-plus"></i> Service</button>
-                <button class="add-row-btn" style="margin-top:0" onclick="addRow('canva')"><i class="fas fa-plus"></i> Canva</button>
-                <button class="add-row-btn" style="margin-top:0" onclick="addRow('req_service')"><i class="fas fa-plus"></i> Req Service</button>
-                <button class="add-row-btn" style="margin-top:0" onclick="addRow('pdf')"><i class="fas fa-plus"></i> PDF</button>
-                <button class="add-row-btn" style="margin-top:0" onclick="addRow('req_doc')"><i class="fas fa-plus"></i> Req Doc</button>
-                <button class="add-row-btn" style="margin-top:0" onclick="addRow('doc')"><i class="fas fa-plus"></i> Doc</button>
-              </div>
-            </div>
+          <!-- Add Row Bar -->
+          <div style="padding:10px 14px;background:var(--bg2);border-radius:10px;border:1px solid var(--border);margin-bottom:14px;display:flex;align-items:center;flex-wrap:wrap;gap:6px">
+            <span style="font-size:10px;color:var(--text3);font-weight:700;letter-spacing:0.8px;text-transform:uppercase;margin-right:4px">+ Add</span>
+            <button class="add-row-btn" style="margin-top:0" onclick="addRow('ticker')"><i class="fas fa-plus"></i> Ticker</button>
+            <button class="add-row-btn" style="margin-top:0" onclick="addRow('update')"><i class="fas fa-plus"></i> Update</button>
+            <button class="add-row-btn" style="margin-top:0" onclick="addRow('service')"><i class="fas fa-plus"></i> Service</button>
+            <button class="add-row-btn" style="margin-top:0" onclick="addRow('canva')"><i class="fas fa-plus"></i> Canva</button>
+            <button class="add-row-btn" style="margin-top:0" onclick="addRow('req_service')"><i class="fas fa-plus"></i> Req Service</button>
+            <button class="add-row-btn" style="margin-top:0" onclick="addRow('pdf')"><i class="fas fa-plus"></i> PDF</button>
+            <button class="add-row-btn" style="margin-top:0" onclick="addRow('req_doc')"><i class="fas fa-plus"></i> Req Doc</button>
+            <button class="add-row-btn" style="margin-top:0" onclick="addRow('doc')"><i class="fas fa-plus"></i> Doc</button>
           </div>
+          <!-- Category columns -->
+          <div class="cat-grid" id="cat-grid"></div>
         </div>
 
         <!-- CSV URL Tab -->
@@ -867,7 +897,7 @@ async function loadAgent(tabId) {
   document.querySelectorAll('.sb-nav-btn').forEach(b => b.classList.remove('active'));
 }
 
-/* ═══ Rows table ═══ */
+/* ═══ Category Drag-Drop Rows ═══ */
 const CONTENT_KEYS = ['update','service','pdf','doc','ticker','voice','tts','poster','pdf_notice','canva','req_service','req_doc','popup'];
 const KB_CLASS = {
   update:'kb-update', service:'kb-service', pdf:'kb-pdf', doc:'kb-doc',
@@ -875,64 +905,171 @@ const KB_CLASS = {
   pdf_notice:'kb-pdf', canva:'kb-service', req_service:'kb-service', req_doc:'kb-doc', popup:'kb-popup'
 };
 
-function renderRowsTable() {
-  const tbody  = document.getElementById('rows-tbody');
-  const content= ALL_ROWS.filter(r => CONTENT_KEYS.includes(r.key));
-  tbody.innerHTML = content.map((r, i) => {
-    const cls = KB_CLASS[r.key] || 'kb-config';
-    const gi  = ALL_ROWS.indexOf(r);
+// Category definitions — order and color
+const CATEGORIES = [
+  { key:'ticker',      label:'Ticker',       icon:'fa-scroll',         color:'#a78bfa', keys:['ticker'] },
+  { key:'update',      label:'Updates',      icon:'fa-bullhorn',       color:'var(--yellow)', keys:['update','poster'] },
+  { key:'service',     label:'Services',     icon:'fa-hand-holding-hand', color:'var(--blue)', keys:['service','canva','req_service'] },
+  { key:'pdf',         label:'PDFs',         icon:'fa-file-pdf',       color:'var(--red)',   keys:['pdf','pdf_notice'] },
+  { key:'doc',         label:'Documents',    icon:'fa-file-lines',     color:'var(--green)', keys:['doc','req_doc'] },
+  { key:'voice',       label:'Voice / TTS',  icon:'fa-microphone',     color:'#fb923c',      keys:['voice','tts'] },
+  { key:'popup',       label:'Popup',        icon:'fa-bell',           color:'#f472b6',      keys:['popup'] },
+];
 
-    // Parse extra field for share and new flags
-    // extra field format: "share:no|new:yes" or plain text
-    const extraRaw = r.extra || '';
-    const extraParts = extraRaw.split('|').map(s => s.trim());
-    const sharePart = extraParts.find(p => p.startsWith('share:'));
-    const newPart   = extraParts.find(p => p.startsWith('new:'));
-    const isNoShare = sharePart === 'share:no';
-    const isNew     = newPart   === 'new:yes';
-    // "plain" extra = parts that are NOT share: or new: flags
-    const plainExtra = extraParts.filter(p => !p.startsWith('share:') && !p.startsWith('new:')).join('|');
+// Which flags apply to which keys
+const SHARE_KEYS = ['pdf','doc','req_doc','pdf_notice'];
+const NEW_KEYS   = ['service','canva','req_service','pdf','req_doc','update','poster'];
 
-    // Share toggle — only for pdf, doc, req_doc rows
-    const shareApplicable = ['pdf','doc','req_doc'].includes(r.key);
-    const shareCell = shareApplicable
-      ? `<td style="text-align:center">
-           <button onclick="toggleRowFlag(${gi},'share')" title="${isNoShare?'Sharing OFF — click to enable':'Sharing ON — click to disable'}"
-             style="background:${isNoShare?'rgba(248,113,113,0.15)':'rgba(52,211,153,0.15)'};
-                    color:${isNoShare?'var(--red)':'var(--green)'};
-                    border:1px solid ${isNoShare?'rgba(248,113,113,0.3)':'rgba(52,211,153,0.3)'};
-                    border-radius:6px;padding:3px 7px;font-size:11px;cursor:pointer;font-weight:600">
-             <i class="fas ${isNoShare?'fa-eye-slash':'fa-share-nodes'}"></i>
-           </button>
-         </td>`
-      : `<td style="text-align:center;color:var(--text3);font-size:10px">—</td>`;
+let _dragSrcIdx = null;   // global index in ALL_ROWS of the card being dragged
+let _placeholder = null;
 
-    // NEW badge toggle — for service, canva, req_service, pdf, req_doc, update rows
-    const newApplicable = ['service','canva','req_service','pdf','req_doc','update'].includes(r.key);
-    const newCell = newApplicable
-      ? `<td style="text-align:center">
-           <button onclick="toggleRowFlag(${gi},'new')" title="${isNew?'NEW badge ON — click to remove':'Click to add NEW badge'}"
-             style="background:${isNew?'rgba(79,255,176,0.15)':'rgba(255,255,255,0.05)'};
-                    color:${isNew?'var(--accent)':'var(--text3)'};
-                    border:1px solid ${isNew?'rgba(79,255,176,0.3)':'var(--border)'};
-                    border-radius:6px;padding:3px 7px;font-size:11px;cursor:pointer;font-weight:700">
-             NEW
-           </button>
-         </td>`
-      : `<td style="text-align:center;color:var(--text3);font-size:10px">—</td>`;
+function renderCatGrid() {
+  const grid = document.getElementById('cat-grid');
+  if (!grid) return;
 
-    return `<tr id="tr_${gi}">
-      <td><span class="key-badge ${cls}">${r.key}</span></td>
-      <td><input value="${esc(r.value)}" onchange="updateRowField(${gi},'value',this.value)"/></td>
-      <td><input value="${esc(r.title)}" onchange="updateRowField(${gi},'title',this.value)"/></td>
-      <td><input value="${esc(r.link)}" onchange="updateRowField(${gi},'link',this.value)" placeholder="https://…"/></td>
-      <td><input value="${esc(r.icon)}" onchange="updateRowField(${gi},'icon',this.value)" placeholder="fas fa-…"/></td>
-      <td><input value="${esc(plainExtra)}" onchange="updatePlainExtra(${gi},this.value)" title="Extra (share/new flags apart)"/></td>
-      ${shareCell}
-      ${newCell}
-      <td><button class="row-del" onclick="deleteRow(${gi})"><i class="fas fa-trash"></i></button></td>
-    </tr>`;
+  // Build content rows with their global index
+  const contentRows = [];
+  ALL_ROWS.forEach((r, gi) => {
+    if (CONTENT_KEYS.includes(r.key)) contentRows.push({ r, gi });
+  });
+
+  grid.innerHTML = CATEGORIES.map(cat => {
+    const rows = contentRows.filter(({ r }) => cat.keys.includes(r.key));
+    return `
+    <div class="cat-col" data-cat="${cat.key}">
+      <div class="cat-col-head" style="border-top:2px solid ${cat.color}">
+        <i class="fas ${cat.icon}" style="color:${cat.color}"></i>
+        ${cat.label}
+        <span class="cat-count">${rows.length}</span>
+      </div>
+      <div class="cat-drop-zone" id="dz_${cat.key}"
+        ondragover="onDragOver(event,'${cat.key}')"
+        ondragleave="onDragLeave(event,'${cat.key}')"
+        ondrop="onDrop(event,'${cat.key}')">
+        ${rows.map(({ r, gi }) => buildCard(r, gi, cat)).join('')}
+        ${rows.length === 0 ? `<div style="padding:10px 8px;font-size:11px;color:var(--text3);text-align:center">— empty —</div>` : ''}
+      </div>
+    </div>`;
   }).join('');
+}
+
+function buildCard(r, gi, cat) {
+  const extraRaw  = r.extra || '';
+  const parts     = extraRaw.split('|').map(s => s.trim()).filter(Boolean);
+  const isNoShare = parts.includes('share:no');
+  const isNew     = parts.includes('new:yes');
+  const plainExtra= parts.filter(p => !p.startsWith('share:') && !p.startsWith('new:')).join('|');
+  const shareApplicable = SHARE_KEYS.includes(r.key);
+  const newApplicable   = NEW_KEYS.includes(r.key);
+
+  const shareBtn = shareApplicable
+    ? `<button class="flag-btn ${isNoShare?'share-off':'share-on'}"
+         onclick="toggleRowFlag(${gi},'share')" title="${isNoShare?'Share OFF':'Share ON'}">
+         <i class="fas ${isNoShare?'fa-eye-slash':'fa-share-nodes'}"></i>
+       </button>` : '';
+
+  const newBtn = newApplicable
+    ? `<button class="flag-btn ${isNew?'new-on':'new-off'}"
+         onclick="toggleRowFlag(${gi},'new')" title="${isNew?'NEW ON — click to remove':'Add NEW badge'}">
+         NEW
+       </button>` : '';
+
+  const label = r.value || r.title || '(empty)';
+  const sub   = [r.title && r.value ? r.title : '', r.link ? '🔗 ' + r.link.slice(0,30) : ''].filter(Boolean).join(' · ');
+
+  return `<div class="row-card" id="rc_${gi}"
+    draggable="true"
+    ondragstart="onDragStart(event,${gi})"
+    ondragend="onDragEnd(event)">
+    <span class="row-card-drag"><i class="fas fa-grip-vertical"></i></span>
+    <div class="row-card-body">
+      <div class="row-card-value">${esc(label)}</div>
+      ${sub ? `<div class="row-card-sub">${esc(sub)}</div>` : ''}
+    </div>
+    <div class="row-card-flags">
+      ${shareBtn}${newBtn}
+    </div>
+    <button class="row-card-edit" onclick="editRowInline(${gi})" title="Edit"><i class="fas fa-pen"></i></button>
+    <button class="row-card-del" onclick="deleteRow(${gi})" title="Delete"><i class="fas fa-trash"></i></button>
+  </div>`;
+}
+
+/* ── Drag handlers ── */
+function onDragStart(e, gi) {
+  _dragSrcIdx = gi;
+  e.dataTransfer.effectAllowed = 'move';
+  setTimeout(() => {
+    const el = document.getElementById('rc_' + gi);
+    if (el) el.classList.add('dragging');
+  }, 0);
+}
+function onDragEnd(e) {
+  document.querySelectorAll('.row-card.dragging').forEach(el => el.classList.remove('dragging'));
+  document.querySelectorAll('.cat-drop-zone.drag-over').forEach(el => el.classList.remove('drag-over'));
+  _dragSrcIdx = null;
+}
+function onDragOver(e, catKey) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  document.getElementById('dz_' + catKey).classList.add('drag-over');
+}
+function onDragLeave(e, catKey) {
+  // only remove if truly leaving the zone (not just entering a child)
+  const dz = document.getElementById('dz_' + catKey);
+  if (!dz.contains(e.relatedTarget)) dz.classList.remove('drag-over');
+}
+function onDrop(e, catKey) {
+  e.preventDefault();
+  document.getElementById('dz_' + catKey).classList.remove('drag-over');
+  if (_dragSrcIdx === null) return;
+
+  const cat = CATEGORIES.find(c => c.key === catKey);
+  if (!cat) return;
+
+  // Change the key of the dragged row to the first key of the target category
+  const newKey = cat.keys[0];
+  if (ALL_ROWS[_dragSrcIdx]) {
+    ALL_ROWS[_dragSrcIdx].key = newKey;
+    markDirty();
+    renderCatGrid();
+  }
+}
+
+/* ── Edit row inline (small modal) ── */
+function editRowInline(gi) {
+  const r = ALL_ROWS[gi];
+  if (!r) return;
+  const extraRaw   = r.extra || '';
+  const parts      = extraRaw.split('|').map(s => s.trim()).filter(Boolean);
+  const plainExtra = parts.filter(p => !p.startsWith('share:') && !p.startsWith('new:')).join('|');
+
+  showModal('Edit Row — ' + r.key, 'Fields మార్చండి, Save చేయడానికి Update click చేయండి', `
+    <div class="field-row"><label>Value</label><input type="text" id="er-value" class="field-input" value="${esc(r.value)}"/></div>
+    <div class="field-row"><label>Title</label><input type="text" id="er-title" class="field-input" value="${esc(r.title)}"/></div>
+    <div class="field-row"><label>Link</label><input type="url" id="er-link" class="field-input" value="${esc(r.link)}" placeholder="https://…"/></div>
+    <div class="field-row"><label>Icon (fas fa-…)</label><input type="text" id="er-icon" class="field-input" value="${esc(r.icon)}" placeholder="fas fa-file"/></div>
+    <div class="field-row"><label>Extra (optional notes)</label><input type="text" id="er-extra" class="field-input" value="${esc(plainExtra)}"/></div>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <button class="topbar-btn primary" style="flex:1" onclick="saveInlineEdit(${gi})"><i class="fas fa-check"></i> Update</button>
+      <button class="add-row-btn" onclick="closeModal()">Cancel</button>
+    </div>`, true);
+}
+
+function saveInlineEdit(gi) {
+  const r = ALL_ROWS[gi];
+  if (!r) return;
+  r.value = document.getElementById('er-value').value;
+  r.title = document.getElementById('er-title').value;
+  r.link  = document.getElementById('er-link').value;
+  r.icon  = document.getElementById('er-icon').value;
+  const plainVal = document.getElementById('er-extra').value.trim();
+  // Preserve share/new flags
+  const existingParts = (r.extra||'').split('|').map(s=>s.trim()).filter(Boolean);
+  const flags = existingParts.filter(p => p.startsWith('share:') || p.startsWith('new:'));
+  r.extra = plainVal ? [plainVal, ...flags].join('|') : flags.join('|');
+  markDirty();
+  closeModal();
+  renderCatGrid();
 }
 
 function esc(s){ return (s||'').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
@@ -942,55 +1079,44 @@ function updateRowField(idx, field, val) {
   markDirty();
 }
 
-// Update the "plain" extra (non-flag part), preserve share/new flags
-function updatePlainExtra(idx, plainVal) {
-  const extraRaw = ALL_ROWS[idx].extra || '';
-  const parts = extraRaw.split('|').map(s => s.trim());
-  const flagParts = parts.filter(p => p.startsWith('share:') || p.startsWith('new:'));
-  const newParts = plainVal.trim() ? [plainVal.trim(), ...flagParts] : flagParts;
-  ALL_ROWS[idx].extra = newParts.join('|');
-  markDirty();
-}
-
-// Toggle share:no or new:yes flag in extra field
-function toggleRowFlag(idx, flag) {
-  const extraRaw = ALL_ROWS[idx].extra || '';
-  const parts = extraRaw.split('|').map(s => s.trim()).filter(Boolean);
+// Toggle share:no or new:yes flag in extra field — FIXED: uses gi directly (no indexOf bug)
+function toggleRowFlag(gi, flag) {
+  const r = ALL_ROWS[gi];
+  if (!r) return;
+  const parts = (r.extra||'').split('|').map(s => s.trim()).filter(Boolean);
 
   if (flag === 'share') {
     const has = parts.includes('share:no');
-    if (has) {
-      ALL_ROWS[idx].extra = parts.filter(p => p !== 'share:no').join('|');
-    } else {
-      parts.push('share:no');
-      ALL_ROWS[idx].extra = parts.join('|');
-    }
+    r.extra = has
+      ? parts.filter(p => p !== 'share:no').join('|')
+      : [...parts, 'share:no'].join('|');
   } else if (flag === 'new') {
     const has = parts.includes('new:yes');
-    if (has) {
-      ALL_ROWS[idx].extra = parts.filter(p => p !== 'new:yes').join('|');
-    } else {
-      parts.push('new:yes');
-      ALL_ROWS[idx].extra = parts.join('|');
-    }
+    r.extra = has
+      ? parts.filter(p => p !== 'new:yes').join('|')
+      : [...parts, 'new:yes'].join('|');
   }
   markDirty();
-  renderRowsTable();
+  renderCatGrid();
 }
 
 function deleteRow(idx) {
+  if (!confirm('ఈ row delete చేయాలా?')) return;
   ALL_ROWS.splice(idx, 1);
-  renderRowsTable();
+  renderCatGrid();
   markDirty();
 }
 
 function addRow(key) {
   ALL_ROWS.push({ key, value:'', title:'', link:'', icon:'', extra:'' });
-  renderRowsTable();
+  renderCatGrid();
   markDirty();
-  // scroll to bottom of table
-  setTimeout(() => { const tb = document.getElementById('rows-tbody'); tb.lastElementChild && tb.lastElementChild.scrollIntoView({behavior:'smooth'}); }, 100);
+  // Open edit modal for the new row immediately
+  setTimeout(() => editRowInline(ALL_ROWS.length - 1), 80);
 }
+
+// Keep renderRowsTable as alias for backward compat
+function renderRowsTable() { renderCatGrid(); }
 
 /* ═══ Save Agent ═══ */
 async function saveAgent() {
