@@ -340,6 +340,15 @@ input,textarea,select{font-family:var(--font);outline:none}
 .empty-state i{font-size:40px;opacity:0.3;display:block;margin-bottom:14px}
 .empty-state p{font-size:13px;line-height:1.6}
 
+/* Group section cards */
+[id^="group-card-popup"]  { border-left:3px solid #f472b6 }
+[id^="group-card-update"] { border-left:3px solid var(--yellow) }
+[id^="group-card-service"]{ border-left:3px solid var(--blue) }
+[id^="group-card-reqdoc"] { border-left:3px solid var(--green) }
+[id^="group-card-pdf"]    { border-left:3px solid var(--red) }
+[id^="group-card-ticker"] { border-left:3px solid #a78bfa }
+[id^="group-card-voice"]  { border-left:3px solid #fb923c }
+
 /* Tabs */
 .tab-bar{display:flex;gap:2px;background:var(--bg3);border-radius:10px;padding:3px;margin-bottom:20px;width:fit-content}
 .tab-item{
@@ -515,37 +524,9 @@ input,textarea,select{font-family:var(--font);outline:none}
           </div>
         </div>
 
-        <!-- Content Tab -->
+        <!-- Content Tab — Grouped Sections -->
         <div id="tab-content" style="display:none">
-          <div class="editor-card">
-            <div class="editor-card-title" style="justify-content:space-between">
-              <span><i class="fas fa-list"></i> All Rows</span>
-              <div style="display:flex;gap:8px">
-                <button class="add-row-btn" onclick="addRow('ticker')"><i class="fas fa-plus"></i> Ticker</button>
-                <button class="add-row-btn" onclick="addRow('update')"><i class="fas fa-plus"></i> Update</button>
-                <button class="add-row-btn" onclick="addRow('service')"><i class="fas fa-plus"></i> Service</button>
-                <button class="add-row-btn" onclick="addRow('pdf')"><i class="fas fa-plus"></i> PDF</button>
-                <button class="add-row-btn" onclick="addRow('doc')"><i class="fas fa-plus"></i> Doc</button>
-              </div>
-            </div>
-            <div class="rows-table-wrap">
-              <table class="rows-table">
-                <thead><tr>
-                  <th style="width:80px">key</th>
-                  <th>value</th>
-                  <th>title</th>
-                  <th>link</th>
-                  <th style="width:110px">icon</th>
-                  <th style="width:80px">extra</th>
-                  <th style="width:36px"></th>
-                </tr></thead>
-                <tbody id="rows-tbody"></tbody>
-              </table>
-            </div>
-            <button class="add-row-btn" onclick="addRow('update')" style="margin-top:12px">
-              <i class="fas fa-plus"></i> Add Row
-            </button>
-          </div>
+          <div id="content-groups"></div>
         </div>
 
         <!-- CSV URL Tab -->
@@ -862,7 +843,7 @@ async function loadAgent(tabId) {
   document.querySelectorAll('.sb-nav-btn').forEach(b => b.classList.remove('active'));
 }
 
-/* ═══ Rows table ═══ */
+/* ═══ Rows table — Grouped Sections ═══ */
 const CONTENT_KEYS = ['update','service','pdf','doc','ticker','voice','tts','poster','pdf_notice','canva','req_service','req_doc','popup'];
 const KB_CLASS = {
   update:'kb-update', service:'kb-service', pdf:'kb-pdf', doc:'kb-doc',
@@ -870,22 +851,95 @@ const KB_CLASS = {
   pdf_notice:'kb-pdf', canva:'kb-service', req_service:'kb-service', req_doc:'kb-doc', popup:'kb-popup'
 };
 
+// Group definitions — order matters for display
+const GROUPS = [
+  { id:'popup',   label:'Popup',              icon:'fas fa-bell',          badge:'kb-popup',   keys:['popup'],                         addKey:'popup',       addLabel:'Popup Add' },
+  { id:'update',  label:'Updates',            icon:'fas fa-newspaper',     badge:'kb-update',  keys:['update'],                        addKey:'update',      addLabel:'Update Add' },
+  { id:'service', label:'Services',           icon:'fas fa-list-check',    badge:'kb-service', keys:['service','canva','req_service'],  addKey:'service',     addLabel:'Service Add' },
+  { id:'reqdoc',  label:'Required Documents', icon:'fas fa-file-lines',    badge:'kb-doc',     keys:['req_doc','doc'],                 addKey:'req_doc',     addLabel:'Document Add' },
+  { id:'pdf',     label:'PDFs / Notices',     icon:'fas fa-file-pdf',      badge:'kb-pdf',     keys:['pdf','pdf_notice'],              addKey:'pdf',         addLabel:'PDF Add' },
+  { id:'ticker',  label:'Ticker',             icon:'fas fa-scroll',        badge:'kb-ticker',  keys:['ticker'],                        addKey:'ticker',      addLabel:'Ticker Add' },
+  { id:'voice',   label:'Voice / TTS / Poster', icon:'fas fa-microphone', badge:'kb-voice',   keys:['voice','tts','poster'],          addKey:'voice',       addLabel:'Voice Add' },
+];
+
+function buildGroupRows(g) {
+  const rows = ALL_ROWS.filter(r => g.keys.includes(r.key));
+  const multiType = g.keys.length > 1;
+  if (!rows.length) return `<div style="padding:10px 0 4px;color:var(--text3);font-size:12px;text-align:center">
+    <i class="fas fa-inbox" style="margin-right:5px;opacity:.5"></i>Items లేవు — కింద Add చేయండి</div>`;
+  return `<div class="rows-table-wrap" style="margin-top:8px">
+    <table class="rows-table">
+      <thead><tr>
+        ${multiType ? '<th style="width:80px">type</th>' : ''}
+        <th>value / name</th>
+        <th>title</th>
+        <th>link</th>
+        <th style="width:110px">icon</th>
+        <th style="width:80px">extra</th>
+        <th style="width:36px"></th>
+      </tr></thead>
+      <tbody>
+        ${rows.map(r => {
+          const gi = ALL_ROWS.indexOf(r);
+          const cls = KB_CLASS[r.key] || 'kb-config';
+          return `<tr id="tr_${gi}">
+            ${multiType ? `<td><span class="key-badge ${cls}">${r.key}</span></td>` : ''}
+            <td><input value="${esc(r.value)}" onchange="updateRowField(${gi},'value',this.value)"/></td>
+            <td><input value="${esc(r.title)}" onchange="updateRowField(${gi},'title',this.value)"/></td>
+            <td><input value="${esc(r.link)}" onchange="updateRowField(${gi},'link',this.value)" placeholder="https://…"/></td>
+            <td><input value="${esc(r.icon)}" onchange="updateRowField(${gi},'icon',this.value)" placeholder="fas fa-…"/></td>
+            <td><input value="${esc(r.extra)}" onchange="updateRowField(${gi},'extra',this.value)"/></td>
+            <td><button class="row-del" onclick="deleteRow(${gi})"><i class="fas fa-trash"></i></button></td>
+          </tr>`;
+        }).join('')}
+      </tbody>
+    </table>
+  </div>`;
+}
+
 function renderRowsTable() {
-  const tbody  = document.getElementById('rows-tbody');
-  const content= ALL_ROWS.filter(r => CONTENT_KEYS.includes(r.key));
-  tbody.innerHTML = content.map((r, i) => {
-    const cls = KB_CLASS[r.key] || 'kb-config';
-    const gi  = ALL_ROWS.indexOf(r);
-    return `<tr id="tr_${gi}">
-      <td><span class="key-badge ${cls}">${r.key}</span></td>
-      <td><input value="${esc(r.value)}" onchange="updateRowField(${gi},'value',this.value)"/></td>
-      <td><input value="${esc(r.title)}" onchange="updateRowField(${gi},'title',this.value)"/></td>
-      <td><input value="${esc(r.link)}" onchange="updateRowField(${gi},'link',this.value)" placeholder="https://…"/></td>
-      <td><input value="${esc(r.icon)}" onchange="updateRowField(${gi},'icon',this.value)" placeholder="fas fa-…"/></td>
-      <td><input value="${esc(r.extra)}" onchange="updateRowField(${gi},'extra',this.value)"/></td>
-      <td><button class="row-del" onclick="deleteRow(${gi})"><i class="fas fa-trash"></i></button></td>
-    </tr>`;
-  }).join('');
+  const container = document.getElementById('content-groups');
+  if (!container) return;
+  const parts = GROUPS.map(g => {
+    const badgeList = g.keys.map(k => `<span class="key-badge ${KB_CLASS[k]||'kb-config'}" style="margin-left:3px">${k}</span>`).join('');
+    return `<div class="editor-card" style="margin-bottom:16px" id="group-card-${g.id}">
+      <div class="editor-card-title" style="justify-content:space-between;flex-wrap:wrap;gap:6px">
+        <span><i class="${g.icon}"></i>&nbsp; ${g.label}</span>
+        <div style="display:flex;gap:4px;flex-wrap:wrap;align-items:center">${badgeList}</div>
+      </div>
+      <div id="group-rows-${g.id}">${buildGroupRows(g)}</div>
+      <button class="add-row-btn" style="margin-top:10px;width:100%;justify-content:center" onclick="addRowToGroup('${g.id}')">
+        <i class="fas fa-plus"></i>&nbsp; ${g.addLabel}
+      </button>
+    </div>`;
+  });
+  container.innerHTML = parts.join('');
+}
+
+function refreshGroup(groupId) {
+  const g = GROUPS.find(x => x.id === groupId);
+  if (!g) { renderRowsTable(); return; }
+  const el = document.getElementById('group-rows-' + g.id);
+  if (el) el.innerHTML = buildGroupRows(g);
+}
+
+function addRowToGroup(groupId) {
+  const g = GROUPS.find(x => x.id === groupId);
+  if (!g) return;
+  ALL_ROWS.push({ key: g.addKey, value:'', title:'', link:'', icon:'', extra:'' });
+  markDirty();
+  refreshGroup(groupId);
+  // Focus first input in last row of this group
+  setTimeout(() => {
+    const el = document.getElementById('group-rows-' + groupId);
+    if (el) {
+      const rows = el.querySelectorAll('tbody tr');
+      if (rows.length) {
+        const inp = rows[rows.length-1].querySelector('input');
+        if (inp) { inp.focus(); inp.scrollIntoView({ behavior:'smooth', block:'center' }); }
+      }
+    }
+  }, 80);
 }
 
 function esc(s){ return (s||'').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
@@ -896,17 +950,21 @@ function updateRowField(idx, field, val) {
 }
 
 function deleteRow(idx) {
+  const key = ALL_ROWS[idx] && ALL_ROWS[idx].key;
   ALL_ROWS.splice(idx, 1);
-  renderRowsTable();
   markDirty();
+  // Find which group owned this key and refresh it
+  const g = GROUPS.find(x => x.keys.includes(key));
+  if (g) { renderRowsTable(); } else { renderRowsTable(); }
 }
 
 function addRow(key) {
-  ALL_ROWS.push({ key, value:'', title:'', link:'', icon:'', extra:'' });
-  renderRowsTable();
-  markDirty();
-  // scroll to bottom of table
-  setTimeout(() => { const tb = document.getElementById('rows-tbody'); tb.lastElementChild && tb.lastElementChild.scrollIntoView({behavior:'smooth'}); }, 100);
+  // Find the group this key belongs to and delegate
+  const g = GROUPS.find(x => x.keys.includes(key) || x.addKey === key);
+  if (g) { addRowToGroup(g.id); } else {
+    ALL_ROWS.push({ key, value:'', title:'', link:'', icon:'', extra:'' });
+    markDirty(); renderRowsTable();
+  }
 }
 
 /* ═══ Save Agent ═══ */
