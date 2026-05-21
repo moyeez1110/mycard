@@ -1700,6 +1700,129 @@ button{border:none;cursor:pointer;font-family:var(--font)}
   .vc-tts-card   { width: 300px; }
 }
 </style>
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<style>
+/* ══════════════════════════════════════
+   WALLET SYSTEM STYLES
+══════════════════════════════════════ */
+/* Wallet badge in header */
+#wallet-badge {
+  display:none;align-items:center;gap:6px;
+  background:rgba(79,255,176,0.12);
+  border:1px solid rgba(79,255,176,0.3);
+  border-radius:20px;padding:5px 12px;
+  font-size:13px;font-weight:600;color:var(--accent);
+  cursor:pointer;transition:all var(--trans);
+}
+#wallet-badge:hover { background:rgba(79,255,176,0.2); }
+#wallet-badge.show { display:flex; }
+#wallet-badge.low { border-color:rgba(251,191,36,0.5);background:rgba(251,191,36,0.1);color:#fbbf24; }
+#wallet-badge.empty { border-color:rgba(248,113,113,0.5);background:rgba(248,113,113,0.1);color:#f87171; }
+body.light-mode #wallet-badge { background:rgba(13,158,106,0.12);border-color:rgba(13,158,106,0.3);color:#0a8a5a; }
+
+/* Price badge on service cards */
+.service-price-badge {
+  position:absolute;top:8px;right:8px;
+  background:rgba(251,191,36,0.18);
+  border:1px solid rgba(251,191,36,0.4);
+  color:#fbbf24;border-radius:10px;
+  font-size:10px;font-weight:700;padding:2px 7px;
+  font-family:var(--font);
+}
+body.light-mode .service-price-badge { background:rgba(180,135,0,0.12);border-color:rgba(180,135,0,0.4);color:#a07000; }
+
+/* Wallet Page */
+#wallet-page { display:none; }
+#wallet-page.active { display:block; }
+.wallet-hero {
+  background:linear-gradient(135deg,rgba(79,255,176,0.15) 0%,rgba(26,219,122,0.08) 100%);
+  border:1px solid rgba(79,255,176,0.2);
+  border-radius:20px;padding:28px 24px;margin-bottom:20px;
+  text-align:center;position:relative;overflow:hidden;
+}
+.wallet-hero::before {
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at 30% 50%,rgba(79,255,176,0.08),transparent 70%);
+  pointer-events:none;
+}
+.wallet-balance-label { font-size:13px;color:var(--text2);font-family:var(--font-te);margin-bottom:6px; }
+.wallet-balance-amt {
+  font-size:48px;font-weight:700;color:var(--accent);
+  font-family:var(--font);line-height:1;margin-bottom:4px;
+}
+.wallet-balance-sub { font-size:12px;color:var(--text2); }
+body.light-mode .wallet-hero { background:linear-gradient(135deg,rgba(13,158,106,0.12),rgba(13,158,106,0.05)); border-color:rgba(13,158,106,0.25); }
+body.light-mode .wallet-balance-amt { color:#0a8a5a; }
+
+/* Transaction list */
+.txn-list { display:flex;flex-direction:column;gap:10px; }
+.txn-item {
+  background:var(--card);border:1px solid var(--border);
+  border-radius:14px;padding:14px 16px;
+  display:flex;align-items:center;gap:12px;
+}
+.txn-icon {
+  width:40px;height:40px;border-radius:12px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:18px;
+}
+.txn-icon.debit { background:rgba(248,113,113,0.12);color:#f87171; }
+.txn-icon.credit { background:rgba(52,211,153,0.12);color:#34d399; }
+.txn-body { flex:1;min-width:0; }
+.txn-name { font-size:13px;font-weight:600;font-family:var(--font-te); }
+.txn-date { font-size:11px;color:var(--text2);margin-top:2px; }
+.txn-amt { font-size:15px;font-weight:700; }
+.txn-amt.debit { color:#f87171; }
+.txn-amt.credit { color:#34d399; }
+body.light-mode .txn-item { background:#fff;border-color:rgba(13,120,80,0.14); }
+
+/* Deduct confirm popup */
+#wallet-confirm-overlay {
+  display:none;position:fixed;inset:0;z-index:9000;
+  background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);
+  align-items:center;justify-content:center;
+}
+#wallet-confirm-overlay.show { display:flex; }
+#wallet-confirm-box {
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:20px;padding:28px 24px;max-width:340px;width:90%;
+  text-align:center;
+}
+.wc-icon { font-size:40px;margin-bottom:12px; }
+.wc-title { font-size:17px;font-weight:700;margin-bottom:6px; }
+.wc-sub { font-size:13px;color:var(--text2);font-family:var(--font-te);margin-bottom:20px; }
+.wc-credits {
+  background:rgba(79,255,176,0.1);border:1px solid rgba(79,255,176,0.25);
+  border-radius:12px;padding:14px;margin-bottom:20px;
+}
+.wc-credits-num { font-size:28px;font-weight:700;color:var(--accent); }
+.wc-credits-lbl { font-size:12px;color:var(--text2);margin-top:2px; }
+.wc-balance-after { font-size:12px;color:var(--text2);margin-bottom:20px; }
+.wc-btns { display:flex;gap:10px; }
+.wc-btn-cancel {
+  flex:1;padding:12px;border-radius:12px;font-size:14px;font-weight:600;
+  background:var(--bg3);color:var(--text2);border:1px solid var(--border);cursor:pointer;
+}
+.wc-btn-confirm {
+  flex:1;padding:12px;border-radius:12px;font-size:14px;font-weight:600;
+  background:var(--accent);color:#0a0f1a;border:none;cursor:pointer;
+}
+body.light-mode #wallet-confirm-box { background:#fff; }
+body.light-mode .wc-btn-confirm { color:#fff;background:#0a8a5a; }
+
+/* Low balance warning */
+.wallet-low-banner {
+  background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.3);
+  border-radius:12px;padding:12px 16px;margin-bottom:16px;
+  font-size:13px;color:#fbbf24;font-family:var(--font-te);
+  display:none;align-items:center;gap:8px;
+}
+.wallet-low-banner.show { display:flex; }
+
+/* Service cards with price — position relative already set */
+.service-card { position:relative; }
+</style>
 </head>
 <body>
 
@@ -1874,6 +1997,10 @@ button{border:none;cursor:pointer;font-family:var(--font)}
     </button>
     <a id="fab-call" href="#" class="hbtn"><i class="fas fa-phone"></i></a>
     <a id="fab-wa" href="#" target="_blank" class="hbtn" style="color:#25d366"><i class="fab fa-whatsapp"></i></a>
+    <div id="wallet-badge" onclick="showWalletPage()" title="నా Wallet">
+      <i class="fas fa-wallet"></i>
+      <span id="wallet-badge-amt">0</span>
+    </div>
     <button id="chpass-btn" onclick="openCpModal()" title="Password మార్చండి"><i class="fas fa-key"></i></button>
     <button id="logout-btn" onclick="doAgentLogout()" title="Logout"><i class="fas fa-right-from-bracket"></i></button>
   </div>
@@ -1960,6 +2087,52 @@ button{border:none;cursor:pointer;font-family:var(--font)}
       <div class="services-grid" id="services-grid"></div>
     </div>
     <div class="page-footer" id="footer-text"></div>
+  </div>
+</div>
+
+<!-- WALLET CONFIRM OVERLAY -->
+<div id="wallet-confirm-overlay">
+  <div id="wallet-confirm-box">
+    <div class="wc-icon" id="wc-icon">🛎️</div>
+    <div class="wc-title" id="wc-title">సేవ వినియోగించాలా?</div>
+    <div class="wc-sub" id="wc-sub">ఈ సేవ కోసం credits అవసరం</div>
+    <div class="wc-credits">
+      <div class="wc-credits-num" id="wc-credits-num">0</div>
+      <div class="wc-credits-lbl">credits (= ₹<span id="wc-rupees">0</span>)</div>
+    </div>
+    <div class="wc-balance-after" id="wc-balance-after">మీ balance తర్వాత: 0 credits</div>
+    <div class="wc-btns">
+      <button class="wc-btn-cancel" onclick="closeWalletConfirm()">రద్దు చేయి</button>
+      <button class="wc-btn-confirm" id="wc-confirm-btn" onclick="confirmServiceDeduct()">✓ Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- WALLET PAGE -->
+<div id="wallet-page" class="page">
+  <div class="section-head" style="padding-top:8px">
+    <h2>💰 నా Wallet</h2><div class="section-line"></div>
+  </div>
+
+  <!-- Balance hero -->
+  <div class="wallet-hero">
+    <div class="wallet-balance-label">అందుబాటులో ఉన్న Credits</div>
+    <div class="wallet-balance-amt" id="wp-balance">—</div>
+    <div class="wallet-balance-sub" id="wp-balance-rs">లోడ్ అవుతోంది...</div>
+  </div>
+
+  <!-- Low balance warning -->
+  <div class="wallet-low-banner" id="wp-low-banner">
+    <i class="fas fa-exclamation-triangle"></i>
+    <span>మీ wallet balance తక్కువగా ఉంది. Admin ద్వారా recharge చేయించుకోండి.</span>
+  </div>
+
+  <!-- Transaction history -->
+  <div class="section-head">
+    <h2>📋 లావాదేవీల చరిత్ర</h2><div class="section-line"></div>
+  </div>
+  <div id="wp-txn-list" class="txn-list">
+    <div style="color:var(--text2);font-size:13px;font-family:var(--font-te);padding:16px 0">లోడ్ అవుతోంది...</div>
   </div>
 </div>
 
@@ -2085,6 +2258,7 @@ button{border:none;cursor:pointer;font-family:var(--font)}
   <button class="nav-btn" onclick="showPage('docs-page',this)"><i class="fas fa-file-alt"></i>పత్రాలు</button>
   <button class="nav-btn" onclick="showPage('voice-page',this)"><i class="fas fa-bullhorn"></i>నోటీసులు</button>
   <button class="nav-btn" onclick="showPage('contact-page',this)"><i class="fas fa-map-marker-alt"></i>చిరునామా</button>
+  <button class="nav-btn" id="wallet-nav-btn" onclick="showWalletPage(this)" style="display:none"><i class="fas fa-wallet"></i>Wallet</button>
   <button class="nav-btn" onclick="openInstallModal()"><i class="fas fa-download"></i>Install</button>
 </nav>
 
@@ -2094,6 +2268,226 @@ button{border:none;cursor:pointer;font-family:var(--font)}
 /* ═══════════════════════════════════════════════════
    CONFIG
    ═══════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════
+   FIREBASE WALLET ENGINE
+   ═══════════════════════════════════════════════════ */
+const FB_CONFIG = {
+  apiKey: "AIzaSyA2NnpnP2WtqhgygLF-oN12R1xQhtwEmgs",
+  authDomain: "janseva-wallet.firebaseapp.com",
+  projectId: "janseva-wallet",
+  storageBucket: "janseva-wallet.firebasestorage.app",
+  messagingSenderId: "786586023405",
+  appId: "1:786586023405:web:b303ce1215df8d2bdca3e4"
+};
+firebase.initializeApp(FB_CONFIG);
+const db = firebase.firestore();
+
+/* Credit prices — service title (lowercase) → credits */
+const SERVICE_CREDITS = {
+  'resume builder':     5,
+  'family member form': 10,
+  'ration card':        8,
+  'income certificate': 6,
+  'caste certificate':  6,
+  'aadhar update':      5,
+  'pan card':           8,
+  'passport':          15,
+  'voter id':           5,
+  'driving licence':   10,
+};
+
+let WALLET_AGENT_ID  = '';  // set from agent session username
+let WALLET_BALANCE   = 0;
+let WALLET_LISTENER  = null; // real-time snapshot
+let PENDING_SERVICE  = null; // { title, page, credits }
+
+/* ── Init wallet after login ── */
+async function walletInit(agentUsername) {
+  WALLET_AGENT_ID = agentUsername || '';
+  if (!WALLET_AGENT_ID) return;
+
+  // Ensure wallet doc exists
+  const ref = db.collection('wallets').doc(WALLET_AGENT_ID);
+  const snap = await ref.get().catch(() => null);
+  if (!snap || !snap.exists) {
+    await ref.set({ balance: 0, agentId: WALLET_AGENT_ID, createdAt: firebase.firestore.FieldValue.serverTimestamp() }).catch(() => {});
+  }
+
+  // Real-time balance listener
+  if (WALLET_LISTENER) WALLET_LISTENER();
+  WALLET_LISTENER = ref.onSnapshot(doc => {
+    if (doc.exists) {
+      WALLET_BALANCE = doc.data().balance || 0;
+      updateWalletBadge();
+    }
+  }, () => {});
+
+  // Show wallet UI elements
+  const badge = document.getElementById('wallet-badge');
+  const navBtn = document.getElementById('wallet-nav-btn');
+  if (badge)  badge.classList.add('show');
+  if (navBtn) navBtn.style.display = '';
+}
+
+/* ── Update header badge ── */
+function updateWalletBadge() {
+  const badge = document.getElementById('wallet-badge');
+  const amt   = document.getElementById('wallet-badge-amt');
+  if (!badge || !amt) return;
+  amt.textContent = WALLET_BALANCE + ' ₹';
+  badge.classList.remove('low','empty');
+  if (WALLET_BALANCE === 0)       badge.classList.add('empty');
+  else if (WALLET_BALANCE <= 20)  badge.classList.add('low');
+
+  // Update wallet page if open
+  const wp = document.getElementById('wp-balance');
+  const wpRs = document.getElementById('wp-balance-rs');
+  const lowBanner = document.getElementById('wp-low-banner');
+  if (wp) wp.textContent = WALLET_BALANCE;
+  if (wpRs) wpRs.textContent = `₹${WALLET_BALANCE} సమానం`;
+  if (lowBanner) lowBanner.classList.toggle('show', WALLET_BALANCE <= 20);
+}
+
+/* ── Service click — check credits & confirm ── */
+function openServiceWithWallet(title, page) {
+  const credits = getServiceCredits(title);
+  if (!WALLET_AGENT_ID || credits === 0) {
+    safeOpen(page);
+    return;
+  }
+  // Show confirm dialog
+  PENDING_SERVICE = { title, page, credits };
+  document.getElementById('wc-icon').textContent      = getServiceIcon(title);
+  document.getElementById('wc-title').textContent     = title;
+  document.getElementById('wc-sub').textContent       = 'ఈ సేవ వినియోగించడానికి మీ wallet నుండి credits తీసివేయబడతాయి';
+  document.getElementById('wc-credits-num').textContent = credits;
+  document.getElementById('wc-rupees').textContent    = credits;
+  const after = WALLET_BALANCE - credits;
+  document.getElementById('wc-balance-after').textContent = `మీ balance తర్వాత: ${Math.max(0,after)} credits`;
+  const confirmBtn = document.getElementById('wc-confirm-btn');
+  if (WALLET_BALANCE < credits) {
+    confirmBtn.textContent = '⚠ Balance తక్కువ';
+    confirmBtn.disabled    = true;
+    confirmBtn.style.opacity = '0.5';
+  } else {
+    confirmBtn.textContent = '✓ Confirm & తెరవండి';
+    confirmBtn.disabled    = false;
+    confirmBtn.style.opacity = '';
+  }
+  document.getElementById('wallet-confirm-overlay').classList.add('show');
+}
+
+function closeWalletConfirm() {
+  document.getElementById('wallet-confirm-overlay').classList.remove('show');
+  PENDING_SERVICE = null;
+}
+
+async function confirmServiceDeduct() {
+  if (!PENDING_SERVICE) return;
+  const { title, page, credits } = PENDING_SERVICE;
+  const btn = document.getElementById('wc-confirm-btn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Processing...';
+  try {
+    const ref = db.collection('wallets').doc(WALLET_AGENT_ID);
+    await db.runTransaction(async tx => {
+      const doc = await tx.get(ref);
+      const bal = doc.exists ? (doc.data().balance || 0) : 0;
+      if (bal < credits) throw new Error('Insufficient balance');
+      tx.update(ref, { balance: firebase.firestore.FieldValue.increment(-credits) });
+    });
+    // Save transaction
+    await db.collection('transactions').add({
+      agentId:   WALLET_AGENT_ID,
+      service:   title,
+      credits:   -credits,
+      type:      'debit',
+      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+    });
+    closeWalletConfirm();
+    safeOpen(page);
+  } catch(e) {
+    btn.textContent = e.message === 'Insufficient balance' ? '⚠ Balance తక్కువ' : '❌ Error — Retry';
+    btn.disabled = false;
+    setTimeout(() => { btn.textContent = '✓ Confirm & తెరవండి'; btn.disabled = false; }, 2000);
+  }
+}
+
+function getServiceCredits(title) {
+  const t = (title || '').toLowerCase().trim();
+  for (const [k, v] of Object.entries(SERVICE_CREDITS)) {
+    if (t.includes(k)) return v;
+  }
+  return 0;
+}
+
+function getServiceIcon(title) {
+  const t = (title||'').toLowerCase();
+  if (t.includes('resume'))   return '📄';
+  if (t.includes('family'))   return '👨‍👩‍👧';
+  if (t.includes('ration'))   return '🏠';
+  if (t.includes('aadhar'))   return '🪪';
+  if (t.includes('pan'))      return '💳';
+  if (t.includes('passport')) return '📕';
+  if (t.includes('voter'))    return '🗳️';
+  return '🛎️';
+}
+
+/* ── Show wallet page ── */
+async function showWalletPage(navEl) {
+  // Switch page
+  document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
+  document.getElementById('wallet-page').style.display = 'block';
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  if (navEl) navEl.classList.add('active');
+
+  // Update balance display
+  updateWalletBadge();
+
+  // Load transactions
+  const list = document.getElementById('wp-txn-list');
+  list.innerHTML = '<div style="color:var(--text2);font-size:13px;font-family:var(--font-te);padding:16px 0">లోడ్ అవుతోంది...</div>';
+  try {
+    const snap = await db.collection('transactions')
+      .where('agentId','==', WALLET_AGENT_ID)
+      .orderBy('timestamp','desc')
+      .limit(30)
+      .get();
+    if (snap.empty) {
+      list.innerHTML = '<div style="color:var(--text2);font-size:13px;font-family:var(--font-te);padding:16px 0;text-align:center">లావాదేవీలు ఏమీ లేవు</div>';
+      return;
+    }
+    list.innerHTML = snap.docs.map(d => {
+      const t = d.data();
+      const isDebit = t.type === 'debit';
+      const amt = Math.abs(t.credits || 0);
+      const date = t.timestamp ? t.timestamp.toDate().toLocaleDateString('te-IN',{day:'numeric',month:'short',year:'numeric'}) : '—';
+      const icon = isDebit ? '↑' : '↓';
+      return `<div class="txn-item">
+        <div class="txn-icon ${t.type}">${isDebit ? '🛎️' : '💰'}</div>
+        <div class="txn-body">
+          <div class="txn-name">${t.service || (isDebit ? 'సేవ' : 'Recharge')}</div>
+          <div class="txn-date">${date}</div>
+        </div>
+        <div class="txn-amt ${t.type}">${isDebit ? '-' : '+'}${amt} ₹</div>
+      </div>`;
+    }).join('');
+  } catch(e) {
+    list.innerHTML = '<div style="color:var(--text2);font-size:13px;font-family:var(--font-te);padding:16px 0">లోడ్ కాలేదు. Internet check చేయండి.</div>';
+  }
+}
+
+/* ── Logout: cleanup wallet listener ── */
+function walletCleanup() {
+  if (WALLET_LISTENER) { WALLET_LISTENER(); WALLET_LISTENER = null; }
+  WALLET_AGENT_ID = '';
+  WALLET_BALANCE  = 0;
+  const badge = document.getElementById('wallet-badge');
+  const navBtn = document.getElementById('wallet-nav-btn');
+  if (badge)  { badge.classList.remove('show','low','empty'); }
+  if (navBtn) navBtn.style.display = 'none';
+}
+
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxrd4UBac7zPuBWHfgnRVcJ8akmMS2oO4n9J_uSpJZ-08ZWTwvmuTtGiZlmkQXqeK90kw/exec';
 let SHEET_URL = '';
 let AGENT_TAB  = '';   // ✅ NEW: agent sheet tab name — used for direct API fetch
@@ -2139,6 +2533,7 @@ async function doAgentLogin() {
     if (data.ok && data.token && data.agentTab) {
       localStorage.setItem('agent_session', JSON.stringify({ token: data.token, csvUrl: data.csvUrl || '', agentTab: data.agentTab, username: data.username }));
       AGENT_TOKEN = data.token;
+      walletInit(data.username || username);
       startApp(data.csvUrl, data.agentTab);
     } else {
       showAlErr(data.error || 'తప్పు username లేదా password');
@@ -2209,6 +2604,7 @@ async function doResetPassword() {
 /* ── Logout ── */
 function doAgentLogout() {
   if (!confirm('Logout చేయాలా?')) return;
+  walletCleanup();
   localStorage.removeItem('agent_session');
   AGENT_TOKEN = '';
   location.reload();
@@ -2286,6 +2682,7 @@ function startApp(csvUrl, agentTab) {
           clearTimeout(safetyTimer);
           AGENT_TOKEN = s.token;
           localStorage.setItem('agent_session', JSON.stringify({ ...s, csvUrl: data.csvUrl||'', agentTab: data.agentTab }));
+          walletInit(s.username || '');
           startApp(data.csvUrl, data.agentTab);
           return;
         }
@@ -2699,9 +3096,16 @@ function renderServices() {
       ? `<span class="service-badge ${s.badge === 'new' || s.badge === 'కొత్తది' ? 'new' : 'hot'}">${s.badge === 'new' ? '✦ NEW' : s.badge === 'hot' ? '🔥 HOT' : s.badge}</span>`
       : '';
     const desc = s.desc ? `<div class="service-desc">${s.desc}</div>` : '';
+    const credits = getServiceCredits(s.title);
+    const priceBadge = (credits > 0 && WALLET_AGENT_ID)
+      ? `<span class="service-price-badge">₹${credits}</span>`
+      : '';
+    const clickFn = (credits > 0 && WALLET_AGENT_ID)
+      ? `openServiceWithWallet('${s.title.replace(/'/g,"\\'")}','${s.page}')`
+      : `safeOpen('${s.page}')`;
     return `
-    <div class="service-card ${color}" onclick="safeOpen('${s.page}')">
-      ${badge}
+    <div class="service-card ${color}" onclick="${clickFn}">
+      ${badge}${priceBadge}
       <div class="service-icon"><i class="${s.icon}"></i></div>
       <div class="service-name">${s.title}</div>
       ${desc}
