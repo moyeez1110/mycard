@@ -349,6 +349,9 @@ input,textarea,select{font-family:var(--font);outline:none}
 .tab-item.active{background:var(--card);color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,0.3)}
 .tab-item:hover:not(.active){color:var(--text)}
 </style>
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
 
@@ -467,6 +470,7 @@ input,textarea,select{font-family:var(--font);outline:none}
           <div class="tab-item active" onclick="switchTab('basic',this)">Basic Info</div>
           <div class="tab-item" onclick="switchTab('content',this)">Content</div>
           <div class="tab-item" onclick="switchTab('csvurl',this)">Sheet URL</div>
+          <div class="tab-item" onclick="switchTab('wallet',this)">💰 Wallet</div>
         </div>
 
         <!-- Basic Info Tab -->
@@ -568,6 +572,59 @@ input,textarea,select{font-family:var(--font);outline:none}
               <button class="add-row-btn" onclick="copyCodeSnippet()" style="margin-top:12px">
                 <i class="fas fa-copy"></i> Copy Code
               </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- WALLET TAB -->
+        <div id="tab-wallet" style="display:none">
+          <div class="editor-card">
+            <div class="editor-card-title"><i class="fas fa-wallet"></i> Agent Wallet</div>
+
+            <!-- Current balance display -->
+            <div id="admin-wallet-balance-box" style="background:rgba(79,255,176,0.08);border:1px solid rgba(79,255,176,0.2);border-radius:14px;padding:20px;margin-bottom:20px;text-align:center">
+              <div style="font-size:12px;color:var(--text2);margin-bottom:6px">Current Balance</div>
+              <div id="admin-wallet-balance" style="font-size:36px;font-weight:700;color:var(--accent)">—</div>
+              <div style="font-size:12px;color:var(--text2);margin-top:4px">credits (₹ equivalent)</div>
+            </div>
+
+            <!-- Recharge -->
+            <div style="margin-bottom:20px">
+              <div style="font-size:13px;font-weight:600;margin-bottom:10px">Credits Add చేయండి</div>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+                <button class="add-row-btn" onclick="quickRecharge(50)"  style="flex:1;min-width:70px">+50</button>
+                <button class="add-row-btn" onclick="quickRecharge(100)" style="flex:1;min-width:70px">+100</button>
+                <button class="add-row-btn" onclick="quickRecharge(200)" style="flex:1;min-width:70px">+200</button>
+                <button class="add-row-btn" onclick="quickRecharge(500)" style="flex:1;min-width:70px">+500</button>
+              </div>
+              <div style="display:flex;gap:8px">
+                <input type="number" id="admin-recharge-amt" placeholder="Custom amount" min="1" max="10000"
+                  style="flex:1;background:var(--bg3);border:1px solid var(--border2);border-radius:10px;padding:10px 14px;color:var(--text);font-size:14px"/>
+                <button class="topbar-btn primary" onclick="doRecharge()" style="white-space:nowrap">
+                  <i class="fas fa-plus"></i> Recharge
+                </button>
+              </div>
+              <div id="admin-recharge-msg" style="font-size:12px;margin-top:8px;display:none"></div>
+            </div>
+
+            <!-- Deduct (correction) -->
+            <div style="border-top:1px solid var(--border);padding-top:16px;margin-bottom:20px">
+              <div style="font-size:13px;font-weight:600;margin-bottom:10px;color:var(--red)">Credits తీసివేయండి (correction)</div>
+              <div style="display:flex;gap:8px">
+                <input type="number" id="admin-deduct-amt" placeholder="Amount to deduct" min="1"
+                  style="flex:1;background:var(--bg3);border:1px solid var(--border2);border-radius:10px;padding:10px 14px;color:var(--text);font-size:14px"/>
+                <button class="topbar-btn" onclick="doDeduct()" style="white-space:nowrap;background:rgba(248,113,113,0.15);color:var(--red);border:1px solid rgba(248,113,113,0.3)">
+                  <i class="fas fa-minus"></i> Deduct
+                </button>
+              </div>
+            </div>
+
+            <!-- Recent transactions -->
+            <div style="border-top:1px solid var(--border);padding-top:16px">
+              <div style="font-size:13px;font-weight:600;margin-bottom:12px">Recent Transactions</div>
+              <div id="admin-txn-list" style="display:flex;flex-direction:column;gap:8px">
+                <div style="font-size:13px;color:var(--text2)">Select an agent to view transactions</div>
+              </div>
             </div>
           </div>
         </div>
@@ -994,9 +1051,140 @@ function showView(name, btn) {
 function switchTab(name, btn) {
   document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
   btn.classList.add('active');
-  ['basic','content','csvurl'].forEach(t => {
+  ['basic','content','csvurl','wallet'].forEach(t => {
     document.getElementById('tab-'+t).style.display = t === name ? 'block' : 'none';
   });
+  if (name === 'wallet' && CURRENT_TAB) loadAdminWallet(CURRENT_TAB);
+}
+
+/* ═══════════════════════════════════════
+   FIREBASE WALLET — ADMIN FUNCTIONS
+═══════════════════════════════════════ */
+const FB_CONFIG_ADMIN = {
+  apiKey: "AIzaSyA2NnpnP2WtqhgygLF-oN12R1xQhtwEmgs",
+  authDomain: "janseva-wallet.firebaseapp.com",
+  projectId: "janseva-wallet",
+  storageBucket: "janseva-wallet.firebasestorage.app",
+  messagingSenderId: "786586023405",
+  appId: "1:786586023405:web:b303ce1215df8d2bdca3e4"
+};
+
+// Init Firebase only once
+if (!firebase.apps.length) firebase.initializeApp(FB_CONFIG_ADMIN);
+const adminDb = firebase.firestore();
+let ADMIN_WALLET_LISTENER = null;
+
+async function loadAdminWallet(agentId) {
+  // Real-time balance
+  if (ADMIN_WALLET_LISTENER) { ADMIN_WALLET_LISTENER(); ADMIN_WALLET_LISTENER = null; }
+  const ref = adminDb.collection('wallets').doc(agentId);
+  const balEl = document.getElementById('admin-wallet-balance');
+  balEl.textContent = '...';
+
+  ADMIN_WALLET_LISTENER = ref.onSnapshot(doc => {
+    const bal = doc.exists ? (doc.data().balance || 0) : 0;
+    balEl.textContent = bal;
+    balEl.style.color = bal === 0 ? 'var(--red)' : bal <= 20 ? 'var(--yellow)' : 'var(--accent)';
+  });
+
+  // Transactions
+  const listEl = document.getElementById('admin-txn-list');
+  listEl.innerHTML = '<div style="font-size:13px;color:var(--text2)">లోడ్ అవుతోంది...</div>';
+  try {
+    const snap = await adminDb.collection('transactions')
+      .where('agentId','==', agentId)
+      .orderBy('timestamp','desc')
+      .limit(20)
+      .get();
+    if (snap.empty) { listEl.innerHTML = '<div style="font-size:13px;color:var(--text2)">Transactions లేవు</div>'; return; }
+    listEl.innerHTML = snap.docs.map(d => {
+      const t = d.data();
+      const isDebit = t.type === 'debit';
+      const amt = Math.abs(t.credits || 0);
+      const date = t.timestamp ? t.timestamp.toDate().toLocaleString('te-IN') : '—';
+      return `<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg3);border-radius:10px;font-size:13px">
+        <span style="font-size:18px">${isDebit ? '🛎️' : '💰'}</span>
+        <div style="flex:1">
+          <div style="font-weight:600">${t.service || (isDebit ? 'Service' : 'Recharge')}</div>
+          <div style="font-size:11px;color:var(--text2)">${date}</div>
+        </div>
+        <div style="font-weight:700;color:${isDebit ? 'var(--red)' : 'var(--green)'}">
+          ${isDebit ? '-' : '+'}${amt} ₹
+        </div>
+      </div>`;
+    }).join('');
+  } catch(e) {
+    listEl.innerHTML = '<div style="font-size:13px;color:var(--red)">Error loading. Firestore rules check చేయండి.</div>';
+  }
+}
+
+function quickRecharge(amt) {
+  document.getElementById('admin-recharge-amt').value = amt;
+  doRecharge();
+}
+
+async function doRecharge() {
+  if (!CURRENT_TAB) return showToast('Agent select చేయండి','warn');
+  const inp = document.getElementById('admin-recharge-amt');
+  const amt = parseInt(inp.value);
+  if (!amt || amt < 1) return showToast('Valid amount enter చేయండి','warn');
+  const msgEl = document.getElementById('admin-recharge-msg');
+  msgEl.style.display = 'block';
+  msgEl.style.color = 'var(--text2)';
+  msgEl.textContent = '⏳ Processing...';
+  try {
+    const ref = adminDb.collection('wallets').doc(CURRENT_TAB);
+    const snap = await ref.get();
+    if (!snap.exists) {
+      await ref.set({ balance: amt, agentId: CURRENT_TAB, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+    } else {
+      await ref.update({ balance: firebase.firestore.FieldValue.increment(amt) });
+    }
+    await adminDb.collection('transactions').add({
+      agentId:   CURRENT_TAB,
+      service:   'Admin Recharge',
+      credits:   amt,
+      type:      'credit',
+      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+    });
+    inp.value = '';
+    msgEl.style.color = 'var(--green)';
+    msgEl.textContent = `✓ ₹${amt} credits add అయ్యాయి!`;
+    showToast(`${CURRENT_TAB} కి ₹${amt} recharge అయింది`, 'success');
+    loadAdminWallet(CURRENT_TAB);
+    setTimeout(() => { msgEl.style.display = 'none'; }, 3000);
+  } catch(e) {
+    msgEl.style.color = 'var(--red)';
+    msgEl.textContent = '❌ Error: ' + e.message;
+  }
+}
+
+async function doDeduct() {
+  if (!CURRENT_TAB) return showToast('Agent select చేయండి','warn');
+  const inp = document.getElementById('admin-deduct-amt');
+  const amt = parseInt(inp.value);
+  if (!amt || amt < 1) return showToast('Valid amount enter చేయండి','warn');
+  if (!confirm(`${CURRENT_TAB} నుండి ${amt} credits తీసివేయాలా?`)) return;
+  try {
+    const ref = adminDb.collection('wallets').doc(CURRENT_TAB);
+    await adminDb.runTransaction(async tx => {
+      const doc = await tx.get(ref);
+      const bal = doc.exists ? (doc.data().balance || 0) : 0;
+      tx.set(ref, { balance: Math.max(0, bal - amt), agentId: CURRENT_TAB }, { merge: true });
+    });
+    await adminDb.collection('transactions').add({
+      agentId:   CURRENT_TAB,
+      service:   'Admin Correction',
+      credits:   -amt,
+      type:      'debit',
+      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+    });
+    inp.value = '';
+    showToast(`${amt} credits deduct అయ్యాయి`, 'success');
+    loadAdminWallet(CURRENT_TAB);
+  } catch(e) {
+    showToast('Error: ' + e.message, 'error');
+  }
 }
 
 function markDirty() { DIRTY = true; }
