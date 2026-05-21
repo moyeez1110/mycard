@@ -24,8 +24,18 @@ const _CFG = {
 const PAGE_CREDITS = {
   'resume':           5,
   'family-form':     10,
-  'కుటుంబ':         10,
-   // default fallback → 5
+  'family_form':     10,
+  'affidavit':        8,
+  'marriage':         8,
+  'caste':            6,
+  'income':           6,
+  'pan':              8,
+  'passport':        15,
+  'voter':            5,
+  'aadhar':           5,
+  'driving':         10,
+  'ration':           8,
+  // default fallback → 5
 };
 
 /* ── Detect credits from current page filename ── */
@@ -77,15 +87,20 @@ function _isDownloadBtn(btn) {
 
 /* ══════════════════════════════════════
    INTERCEPT window.print globally
+   (only fires if NOT already handled by button hook)
 ══════════════════════════════════════ */
 const _originalPrint = window.print.bind(window);
+let _printHandledByBtn = false; // guard flag
+
 window.print = function() {
+  // If button hook already showed popup — skip intercept
+  if (_printHandledByBtn) { _printHandledByBtn = false; _originalPrint(); return; }
   const agentId = _getAgentId();
   if (!agentId) { _originalPrint(); return; }
   walletGate({
-    service: '🖨️ ' + _getServiceName() + ' — Print',
-    credits: _getCredits(),
-    emoji:   '🖨️',
+    service:   '🖨️ ' + _getServiceName() + ' — Print',
+    credits:   _getCredits(),
+    emoji:     '🖨️',
     onConfirm: _originalPrint
   });
 };
@@ -343,15 +358,19 @@ function _hookButtons() {
       e.preventDefault();
       e.stopImmediatePropagation();
 
-      const emoji   = isPrint ? '🖨️' : '📄';
-      const action  = isPrint ? 'Print' : 'Download';
+      const emoji  = isPrint ? '🖨️' : '📄';
+      const action = isPrint ? 'Print' : 'Download';
 
       walletGate({
         service:   `${emoji} ${serviceName} — ${action}`,
         credits,
         emoji,
         onConfirm: () => {
-          if (origOnclick) {
+          if (isPrint) {
+            // Set flag so window.print intercept knows button already handled this
+            _printHandledByBtn = true;
+            _originalPrint();
+          } else if (origOnclick) {
             origOnclick.call(btn);
           } else if (origAttr) {
             // eslint-disable-next-line no-new-func
