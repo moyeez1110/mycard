@@ -47,12 +47,23 @@ function _getCredits() {
   return 5; // default
 }
 
-/* ── Detect service name from page title or filename ── */
+/* ── Detect service name from page title — clean suffixes ── */
 function _getServiceName() {
-  const title = document.title.trim();
+  let title = document.title.trim();
+
+  // Remove common suffixes like "— MeeSeva", "– Live Preview", "| App" etc.
+  title = title
+    .replace(/\s*[—–|-]\s*(MeeSeva|జన సేవా|Jan Seva|Live Preview|Preview|App|Online|Portal|Form)\s*$/i, '')
+    .replace(/\s*[—–|-]\s*$/, '')
+    .trim();
+
   if (title && title.length > 2) return title;
+
+  // Fallback: clean filename
   const fname = location.pathname.split('/').pop()
-    .replace(/[-_]/g,' ').replace(/\.html$/i,'');
+    .replace(/[-_]/g, ' ')
+    .replace(/\.html$/i, '')
+    .trim();
   return fname.charAt(0).toUpperCase() + fname.slice(1);
 }
 
