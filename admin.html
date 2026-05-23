@@ -550,17 +550,10 @@ input,textarea,select{font-family:var(--font);outline:none}
               </div>
               <div class="field-row"><label>Cover Image URL (optional)</label><input type="url" id="f-coverUrl" placeholder="https://…" oninput="markDirty()"/></div>
               <div class="field-row"><label>Map Embed URL (Google Maps)</label><input type="url" id="f-mapEmbedUrl" placeholder="https://maps.google.com/…" oninput="markDirty()"/></div>
-              <div class="editor-card-title" style="margin-top:16px"><i class="fas fa-bell"></i> Popup</div>
-              <div class="field-row">
-                <label>Popup Show</label>
-                <select id="f-popup_show" onchange="markDirty()">
-                  <option value="false">No (disable)</option>
-                  <option value="true">Yes (show on open)</option>
-                </select>
+              <div style="margin-top:16px;padding:12px 14px;background:rgba(244,114,182,0.08);border:1px solid rgba(244,114,182,0.25);border-radius:10px;font-size:12px;color:#f472b6">
+                <i class="fas fa-bell" style="margin-right:6px"></i>
+                Popup manage చేయడానికి → <strong>Content tab</strong> లో <strong>Popup</strong> column లో card edit చేయండి
               </div>
-              <div class="field-row"><label>Popup Title</label><input type="text" id="f-popup_title" oninput="markDirty()"/></div>
-              <div class="field-row"><label>Popup Subtitle / Message</label><input type="text" id="f-popup_subtitle" oninput="markDirty()"/></div>
-              <div class="field-row"><label>Popup Image URL (optional)</label><input type="url" id="f-popup_imageUrl" placeholder="https://…" oninput="markDirty()"/></div>
             </div>
           </div>
         </div>
@@ -578,6 +571,10 @@ input,textarea,select{font-family:var(--font);outline:none}
             <button class="add-row-btn" style="margin-top:0" onclick="addRow('pdf')"><i class="fas fa-plus"></i> PDF</button>
             <button class="add-row-btn" style="margin-top:0" onclick="addRow('req_doc')"><i class="fas fa-plus"></i> Req Doc</button>
             <button class="add-row-btn" style="margin-top:0" onclick="addRow('doc')"><i class="fas fa-plus"></i> Doc</button>
+            <button class="add-row-btn" style="margin-top:0;border-color:rgba(251,146,60,0.4);color:#fb923c" onclick="addRow('voice')"><i class="fas fa-plus"></i> Voice</button>
+            <button class="add-row-btn" style="margin-top:0;border-color:rgba(251,146,60,0.4);color:#fb923c" onclick="addRow('tts')"><i class="fas fa-plus"></i> TTS</button>
+            <button class="add-row-btn" style="margin-top:0;border-color:rgba(251,146,60,0.4);color:#fb923c" onclick="addRow('poster')"><i class="fas fa-plus"></i> Poster</button>
+            <button class="add-row-btn" style="margin-top:0;border-color:rgba(244,114,182,0.4);color:#f472b6" onclick="addRow('popup')"><i class="fas fa-plus"></i> Popup</button>
           </div>
           <!-- Category columns -->
           <div class="cat-grid" id="cat-grid"></div>
@@ -907,13 +904,14 @@ const KB_CLASS = {
 
 // Category definitions — order and color
 const CATEGORIES = [
-  { key:'ticker',      label:'Ticker',       icon:'fa-scroll',         color:'#a78bfa', keys:['ticker'] },
-  { key:'update',      label:'Updates',      icon:'fa-bullhorn',       color:'var(--yellow)', keys:['update','poster'] },
-  { key:'service',     label:'Services',     icon:'fa-hand-holding-hand', color:'var(--blue)', keys:['service','canva','req_service'] },
-  { key:'pdf',         label:'PDFs',         icon:'fa-file-pdf',       color:'var(--red)',   keys:['pdf','pdf_notice'] },
-  { key:'doc',         label:'Documents',    icon:'fa-file-lines',     color:'var(--green)', keys:['doc','req_doc'] },
-  { key:'voice',       label:'Voice / TTS',  icon:'fa-microphone',     color:'#fb923c',      keys:['voice','tts'] },
-  { key:'popup',       label:'Popup',        icon:'fa-bell',           color:'#f472b6',      keys:['popup'] },
+  { key:'ticker',      label:'Ticker',            icon:'fa-scroll',            color:'#a78bfa', keys:['ticker'] },
+  { key:'update',      label:'Updates',           icon:'fa-bullhorn',          color:'var(--yellow)', keys:['update','poster'] },
+  { key:'service',     label:'Services',          icon:'fa-hand-holding-hand', color:'var(--blue)',   keys:['service','canva'] },
+  { key:'reqservice',  label:'Required Services', icon:'fa-clipboard-list',    color:'#22d3ee',       keys:['req_service','req_doc'] },
+  { key:'pdf',         label:'PDFs',              icon:'fa-file-pdf',          color:'var(--red)',    keys:['pdf','pdf_notice'] },
+  { key:'doc',         label:'Documents',         icon:'fa-file-lines',        color:'var(--green)',  keys:['doc'] },
+  { key:'voice',       label:'Voice / TTS',       icon:'fa-microphone',        color:'#fb923c',       keys:['voice','tts'] },
+  { key:'popup',       label:'Popup',             icon:'fa-bell',              color:'#f472b6',       keys:['popup'] },
 ];
 
 // Which flags apply to which keys
@@ -964,18 +962,46 @@ function buildCard(r, gi, cat) {
 
   const shareBtn = shareApplicable
     ? `<button class="flag-btn ${isNoShare?'share-off':'share-on'}"
-         onclick="toggleRowFlag(${gi},'share')" title="${isNoShare?'Share OFF':'Share ON'}">
+         onclick="toggleRowFlag(${gi},'share')" title="${isNoShare?'Share OFF — click to enable':'Share ON — click to disable'}">
          <i class="fas ${isNoShare?'fa-eye-slash':'fa-share-nodes'}"></i>
        </button>` : '';
 
   const newBtn = newApplicable
     ? `<button class="flag-btn ${isNew?'new-on':'new-off'}"
-         onclick="toggleRowFlag(${gi},'new')" title="${isNew?'NEW ON — click to remove':'Add NEW badge'}">
+         onclick="toggleRowFlag(${gi},'new')" title="${isNew?'NEW badge ON — click to remove':'NEW badge OFF — click to add'}">
          NEW
        </button>` : '';
 
-  const label = r.value || r.title || '(empty)';
-  const sub   = [r.title && r.value ? r.title : '', r.link ? '🔗 ' + r.link.slice(0,30) : ''].filter(Boolean).join(' · ');
+  // For req_service — show doc count as sub
+  let label = r.value || r.title || '(empty)';
+  let sub   = [r.title && r.value ? r.title : '', r.link ? '🔗 ' + r.link.slice(0,28) : ''].filter(Boolean).join(' · ');
+
+  if (r.key === 'req_service') {
+    // Count how many req_doc rows follow before next req_service
+    let docCount = 0;
+    for (let i = gi + 1; i < ALL_ROWS.length; i++) {
+      if (ALL_ROWS[i].key === 'req_service') break;
+      if (ALL_ROWS[i].key === 'req_doc') docCount++;
+    }
+    sub = `📋 ${docCount} document${docCount !== 1 ? 's' : ''}`;
+  }
+
+  // req_doc rows: show as sub-item (indented, no drag, no share/new)
+  if (r.key === 'req_doc') {
+    return `<div class="row-card req-doc-card" id="rc_${gi}" style="margin-left:16px;border-left:2px solid #22d3ee;opacity:0.85">
+      <span class="row-card-drag"><i class="fas fa-grip-vertical"></i></span>
+      <div class="row-card-body">
+        <div class="row-card-value" style="font-size:12px">📄 ${esc(label)}</div>
+      </div>
+      <button class="row-card-del" onclick="deleteRow(${gi})" title="Delete"><i class="fas fa-trash"></i></button>
+    </div>`;
+  }
+
+  // popup card — special label
+  if (r.key === 'popup') {
+    label = r.title || r.value || 'Popup';
+    sub   = r.extra === 'yes' ? '✅ Show on open' : '❌ Hidden';
+  }
 
   return `<div class="row-card" id="rc_${gi}"
     draggable="true"
@@ -1043,16 +1069,232 @@ function editRowInline(gi) {
   const parts      = extraRaw.split('|').map(s => s.trim()).filter(Boolean);
   const plainExtra = parts.filter(p => !p.startsWith('share:') && !p.startsWith('new:')).join('|');
 
+  /* ── req_service: show service name + its req_docs below it ── */
+  if (r.key === 'req_service') {
+    // Find all req_doc rows that follow this req_service until next req_service
+    const startIdx = gi + 1;
+    const docRows  = [];
+    for (let i = startIdx; i < ALL_ROWS.length; i++) {
+      if (ALL_ROWS[i].key === 'req_service') break;
+      if (ALL_ROWS[i].key === 'req_doc') docRows.push({ gi: i, val: ALL_ROWS[i].value || ALL_ROWS[i].title });
+    }
+    const docInputs = docRows.map((d, i) =>
+      `<div style="display:flex;gap:6px;margin-bottom:6px">
+        <input type="text" class="field-input req-doc-inp" data-docgi="${d.gi}" value="${esc(d.val)}" placeholder="Document ${i+1}"/>
+        <button onclick="removeReqDoc(${d.gi})" style="background:rgba(248,113,113,0.15);border:1px solid rgba(248,113,113,0.3);color:#f87171;border-radius:8px;padding:4px 10px;cursor:pointer"><i class="fas fa-trash"></i></button>
+      </div>`
+    ).join('');
+
+    showModal('Required Service Edit', 'Service name మరియు అవసరమైన documents enter చేయండి', `
+      <div class="field-row"><label>Service పేరు</label><input type="text" id="er-value" class="field-input" value="${esc(r.value || r.title)}"/></div>
+      <div class="field-row"><label>Icon (fas fa-…)</label><input type="text" id="er-icon" class="field-input" value="${esc(r.icon)}" placeholder="fas fa-file"/></div>
+      <div style="margin-top:12px">
+        <label style="font-size:12px;color:var(--text2);font-weight:600">అవసరమైన Documents</label>
+        <div id="req-doc-list" style="margin-top:8px">${docInputs}</div>
+        <button onclick="addReqDocInput(${gi})" class="add-row-btn" style="margin-top:6px;font-size:12px"><i class="fas fa-plus"></i> Document Add చేయండి</button>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:16px">
+        <button class="topbar-btn primary" style="flex:1" onclick="saveReqServiceEdit(${gi})"><i class="fas fa-check"></i> Save</button>
+        <button class="add-row-btn" onclick="closeModal()">Cancel</button>
+      </div>`, true);
+    return;
+  }
+
+  /* ── popup: show all popup fields ── */
+  if (r.key === 'popup') {
+    showModal('Popup Edit', 'Popup details మార్చండి', `
+      <div class="field-row"><label>Title</label><input type="text" id="er-popup-title" class="field-input" value="${esc(r.title)}"/></div>
+      <div class="field-row"><label>Subtitle / Message</label><input type="text" id="er-popup-sub" class="field-input" value="${esc(r.value)}"/></div>
+      <div class="field-row"><label>Image URL (optional)</label><input type="url" id="er-popup-img" class="field-input" value="${esc(r.link)}" placeholder="https://…"/></div>
+      <div class="field-row">
+        <label>Show on Open</label>
+        <select id="er-popup-show" class="field-input">
+          <option value="yes" ${r.extra === 'yes' ? 'selected' : ''}>Yes</option>
+          <option value="no"  ${r.extra !== 'yes' ? 'selected' : ''}>No</option>
+        </select>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:16px">
+        <button class="topbar-btn primary" style="flex:1" onclick="savePopupEdit(${gi})"><i class="fas fa-check"></i> Save</button>
+        <button class="add-row-btn" onclick="closeModal()">Cancel</button>
+      </div>`, true);
+    return;
+  }
+
+  /* ── voice: audio announcement ── */
+  if (r.key === 'voice') {
+    showModal('Voice Announcement Edit', 'Audio announcement details enter చేయండి', `
+      <div class="field-row"><label>Title / పేరు</label><input type="text" id="er-voice-title" class="field-input" value="${esc(r.title || r.value)}" placeholder="e.g. సమావేశ నోటీసు"/></div>
+      <div class="field-row"><label>Audio URL (Drive / HostedLink)</label><input type="url" id="er-voice-link" class="field-input" value="${esc(r.link)}" placeholder="https://drive.google.com/uc?id=…"/></div>
+      <div class="field-row"><label>Date (optional)</label><input type="text" id="er-voice-date" class="field-input" value="${esc(plainExtra)}" placeholder="e.g. 23 May"/></div>
+      <div class="field-row">
+        <label>Share Button</label>
+        <select id="er-voice-share" class="field-input">
+          <option value="yes" ${(r.share||'yes') === 'yes' ? 'selected' : ''}>చూపించు</option>
+          <option value="no"  ${(r.share||'yes') === 'no'  ? 'selected' : ''}>దాచు</option>
+        </select>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:16px">
+        <button class="topbar-btn primary" style="flex:1" onclick="saveVoiceEdit(${gi})"><i class="fas fa-check"></i> Save</button>
+        <button class="add-row-btn" onclick="closeModal()">Cancel</button>
+      </div>`, true);
+    return;
+  }
+
+  /* ── tts: text-to-speech notice ── */
+  if (r.key === 'tts') {
+    showModal('TTS నోటీసు Edit', 'Text-to-speech notice enter చేయండి', `
+      <div class="field-row"><label>నోటీసు Text (Telugu లో రాయండి)</label><textarea id="er-tts-text" class="field-input" rows="4" placeholder="ఇక్కడ నోటీసు టెక్స్ట్ రాయండి…">${esc(r.value || r.title)}</textarea></div>
+      <div class="field-row"><label>Date (optional)</label><input type="text" id="er-tts-date" class="field-input" value="${esc(plainExtra)}" placeholder="e.g. 23 May"/></div>
+      <div class="field-row">
+        <label>Share Button</label>
+        <select id="er-tts-share" class="field-input">
+          <option value="yes" ${(r.share||'yes') === 'yes' ? 'selected' : ''}>చూపించు</option>
+          <option value="no"  ${(r.share||'yes') === 'no'  ? 'selected' : ''}>దాచు</option>
+        </select>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:16px">
+        <button class="topbar-btn primary" style="flex:1" onclick="saveTtsEdit(${gi})"><i class="fas fa-check"></i> Save</button>
+        <button class="add-row-btn" onclick="closeModal()">Cancel</button>
+      </div>`, true);
+    return;
+  }
+
+  /* ── poster: image poster ── */
+  if (r.key === 'poster') {
+    showModal('Poster Edit', 'Poster image details enter చేయండి', `
+      <div class="field-row"><label>Caption / పేరు (optional)</label><input type="text" id="er-poster-title" class="field-input" value="${esc(r.title)}" placeholder="e.g. Independence Day Poster"/></div>
+      <div class="field-row"><label>Image URL</label><input type="url" id="er-poster-link" class="field-input" value="${esc(r.link)}" placeholder="https://drive.google.com/uc?id=…"/></div>
+      <div class="field-row"><label>Date (optional)</label><input type="text" id="er-poster-date" class="field-input" value="${esc(plainExtra)}" placeholder="e.g. 23 May"/></div>
+      <div class="field-row">
+        <label>Share Button</label>
+        <select id="er-poster-share" class="field-input">
+          <option value="yes" ${(r.share||'yes') === 'yes' ? 'selected' : ''}>చూపించు</option>
+          <option value="no"  ${(r.share||'yes') === 'no'  ? 'selected' : ''}>దాచు</option>
+        </select>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:16px">
+        <button class="topbar-btn primary" style="flex:1" onclick="savePosterEdit(${gi})"><i class="fas fa-check"></i> Save</button>
+        <button class="add-row-btn" onclick="closeModal()">Cancel</button>
+      </div>`, true);
+    return;
+  }
+
+  /* ── default edit modal ── */
   showModal('Edit Row — ' + r.key, 'Fields మార్చండి, Save చేయడానికి Update click చేయండి', `
     <div class="field-row"><label>Value</label><input type="text" id="er-value" class="field-input" value="${esc(r.value)}"/></div>
     <div class="field-row"><label>Title</label><input type="text" id="er-title" class="field-input" value="${esc(r.title)}"/></div>
     <div class="field-row"><label>Link</label><input type="url" id="er-link" class="field-input" value="${esc(r.link)}" placeholder="https://…"/></div>
     <div class="field-row"><label>Icon (fas fa-…)</label><input type="text" id="er-icon" class="field-input" value="${esc(r.icon)}" placeholder="fas fa-file"/></div>
-    <div class="field-row"><label>Extra (optional notes)</label><input type="text" id="er-extra" class="field-input" value="${esc(plainExtra)}"/></div>
+    <div class="field-row"><label>Extra (optional)</label><input type="text" id="er-extra" class="field-input" value="${esc(plainExtra)}"/></div>
     <div style="display:flex;gap:8px;margin-top:8px">
       <button class="topbar-btn primary" style="flex:1" onclick="saveInlineEdit(${gi})"><i class="fas fa-check"></i> Update</button>
       <button class="add-row-btn" onclick="closeModal()">Cancel</button>
     </div>`, true);
+}
+
+/* ── req_service edit helpers ── */
+function addReqDocInput(serviceGi) {
+  // Find insert position: after last req_doc of this service
+  let insertAfter = serviceGi;
+  for (let i = serviceGi + 1; i < ALL_ROWS.length; i++) {
+    if (ALL_ROWS[i].key === 'req_service') break;
+    if (ALL_ROWS[i].key === 'req_doc') insertAfter = i;
+  }
+  // Insert new req_doc row
+  const newRow = { key:'req_doc', value:'', title:'', link:'', icon:'', extra:'' };
+  ALL_ROWS.splice(insertAfter + 1, 0, newRow);
+  markDirty();
+  // Re-open modal
+  closeModal();
+  setTimeout(() => editRowInline(serviceGi), 100);
+}
+
+function removeReqDoc(docGi) {
+  // Find parent req_service gi
+  let parentGi = docGi - 1;
+  while (parentGi >= 0 && ALL_ROWS[parentGi].key !== 'req_service') parentGi--;
+  ALL_ROWS.splice(docGi, 1);
+  markDirty();
+  closeModal();
+  if (parentGi >= 0) setTimeout(() => editRowInline(parentGi), 100);
+}
+
+function saveReqServiceEdit(gi) {
+  const r = ALL_ROWS[gi];
+  if (!r) return;
+  r.value = document.getElementById('er-value').value;
+  r.title = r.value;
+  r.icon  = document.getElementById('er-icon').value;
+  // Save all doc inputs
+  document.querySelectorAll('.req-doc-inp').forEach(inp => {
+    const docGi = parseInt(inp.dataset.docgi);
+    if (!isNaN(docGi) && ALL_ROWS[docGi]) {
+      ALL_ROWS[docGi].value = inp.value;
+      ALL_ROWS[docGi].title = inp.value;
+    }
+  });
+  markDirty();
+  closeModal();
+  renderCatGrid();
+  showToast('Saved!', 'success');
+}
+
+/* ── popup edit save ── */
+function savePopupEdit(gi) {
+  const r = ALL_ROWS[gi];
+  if (!r) return;
+  r.title = document.getElementById('er-popup-title').value;
+  r.value = document.getElementById('er-popup-sub').value;
+  r.link  = document.getElementById('er-popup-img').value;
+  r.extra = document.getElementById('er-popup-show').value;
+  markDirty();
+  closeModal();
+  renderCatGrid();
+  showToast('Popup saved!', 'success');
+}
+
+/* ── voice edit save ── */
+function saveVoiceEdit(gi) {
+  const r = ALL_ROWS[gi];
+  if (!r) return;
+  r.title = document.getElementById('er-voice-title').value;
+  r.value = r.title;
+  r.link  = document.getElementById('er-voice-link').value;
+  r.extra = document.getElementById('er-voice-date').value;
+  const shareVal = document.getElementById('er-voice-share').value;
+  // Encode share flag into extra field using pipe convention
+  const extraParts = [r.extra].filter(Boolean);
+  if (shareVal === 'no') extraParts.push('share:no');
+  r.extra = extraParts.join('|');
+  markDirty(); closeModal(); renderCatGrid(); showToast('Voice saved!', 'success');
+}
+
+/* ── tts edit save ── */
+function saveTtsEdit(gi) {
+  const r = ALL_ROWS[gi];
+  if (!r) return;
+  r.value = document.getElementById('er-tts-text').value;
+  r.title = r.value.substring(0, 60);
+  r.extra = document.getElementById('er-tts-date').value;
+  const shareVal = document.getElementById('er-tts-share').value;
+  const extraParts = [r.extra].filter(Boolean);
+  if (shareVal === 'no') extraParts.push('share:no');
+  r.extra = extraParts.join('|');
+  markDirty(); closeModal(); renderCatGrid(); showToast('TTS saved!', 'success');
+}
+
+/* ── poster edit save ── */
+function savePosterEdit(gi) {
+  const r = ALL_ROWS[gi];
+  if (!r) return;
+  r.title = document.getElementById('er-poster-title').value;
+  r.link  = document.getElementById('er-poster-link').value;
+  r.extra = document.getElementById('er-poster-date').value;
+  const shareVal = document.getElementById('er-poster-share').value;
+  const extraParts = [r.extra].filter(Boolean);
+  if (shareVal === 'no') extraParts.push('share:no');
+  r.extra = extraParts.join('|');
+  markDirty(); closeModal(); renderCatGrid(); showToast('Poster saved!', 'success');
 }
 
 function saveInlineEdit(gi) {
