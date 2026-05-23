@@ -2760,18 +2760,18 @@ function buildClient(rows) {
     const key = (r.key||'').trim();
     if (!key) return;
     if      (key==='update')      updates.push({title:r.title||r.value, link:r.link||'#', cat:(r.extra||r.icon||'').trim()});
-    else if (key==='service')     services.push({title:r.title||r.value, page:r.link||'#', icon:r.icon||'fas fa-star', color:r.extra||'gi-blue', desc:r.desc||'', badge:r.badge||''});
-    else if (key==='pdf')         pdfs.push({title:r.title||r.value, link:r.link||'#', share:(r.share||'yes').toLowerCase().trim()});
+    else if (key==='service')     services.push({title:r.title||r.value, page:r.link||'#', icon:r.icon||'fas fa-star', color:r.extra||'gi-blue', desc:r.desc||'', badge:r.badge||'', share:(r.share||'yes').toLowerCase().trim(), isnew:(r.isnew||'no').toLowerCase().trim()});
+    else if (key==='pdf')         pdfs.push({title:r.title||r.value, link:r.link||'#', share:(r.share||'yes').toLowerCase().trim(), isnew:(r.isnew||'no').toLowerCase().trim()});
     else if (key==='doc')         docs.push(r.value||r.title);
     else if (key==='ticker')      tickers.push(r.value||r.title);
-    else if (key==='voice')       announcements.push({type:'voice',   title:r.title||r.value, link:r.link||'',   date:r.extra||'', share:(r.share||'yes').toLowerCase().trim()});
-    else if (key==='tts')         announcements.push({type:'tts',     text:r.value||r.title,  date:r.extra||'',  share:(r.share||'yes').toLowerCase().trim()});
-    else if (key==='poster')      announcements.push({type:'poster',  title:r.title||'',       link:r.link||'',   date:r.extra||'', share:(r.share||'yes').toLowerCase().trim()});
-    else if (key==='pdf_notice')  announcements.push({type:'pdf',     title:r.title||r.value, desc:r.value||'PDF డౌన్‌లోడ్', link:r.link||'#', date:r.extra||'', share:(r.share||'yes').toLowerCase().trim()});
-    else if (key==='canva')       announcements.push({type:'canva',   title:r.title||'Canva Template', desc:r.value||'Template తెరవండి', link:r.link||'#', date:r.extra||'', share:(r.share||'yes').toLowerCase().trim()});
+    else if (key==='voice')       announcements.push({type:'voice',   title:r.title||r.value, link:r.link||'',   date:r.extra||'', share:(r.share||'yes').toLowerCase().trim(), isnew:(r.isnew||'no').toLowerCase().trim()});
+    else if (key==='tts')         announcements.push({type:'tts',     text:r.value||r.title,  date:r.extra||'',  share:(r.share||'yes').toLowerCase().trim(), isnew:(r.isnew||'no').toLowerCase().trim()});
+    else if (key==='poster')      announcements.push({type:'poster',  title:r.title||'',       link:r.link||'',   date:r.extra||'', share:(r.share||'yes').toLowerCase().trim(), isnew:(r.isnew||'no').toLowerCase().trim()});
+    else if (key==='pdf_notice')  announcements.push({type:'pdf',     title:r.title||r.value, desc:r.value||'PDF డౌన్‌లోడ్', link:r.link||'#', date:r.extra||'', share:(r.share||'yes').toLowerCase().trim(), isnew:(r.isnew||'no').toLowerCase().trim()});
+    else if (key==='canva')       announcements.push({type:'canva',   title:r.title||'Canva Template', desc:r.value||'Template తెరవండి', link:r.link||'#', date:r.extra||'', share:(r.share||'yes').toLowerCase().trim(), isnew:(r.isnew||'no').toLowerCase().trim()});
     else if (key==='req_service') reqServices.push({name:r.value||r.title, icon:r.icon||'fas fa-file-alt', docs:[]});
     else if (key==='req_doc')     { if (reqServices.length) reqServices[reqServices.length-1].docs.push(r.value||r.title); }
-    else if (key==='popup')       popups.push({title:r.title||'', subtitle:r.value||'', imageUrl:r.link||''});
+    else if (key==='popup')       popups.push({title:r.title||'', subtitle:r.value||'', imageUrl:r.link||'', show:(r.extra||'yes').toLowerCase().trim()});
     else if (key==='banner')      banners.push({
       imgUrl:   r.link  || '',           // image URL
       caption:  r.title || r.value || '', // caption text
@@ -3228,7 +3228,9 @@ function renderFooter() {
 
 /* ── FIX 8: popup counter — show correct "1/3" on first popup ── */
 function showPopup() {
-  const popups = CLIENT.popups||[];
+  const allPopups = CLIENT.popups||[];
+  // Only show popups where show !== 'no'
+  const popups = allPopups.filter(p => p.show !== 'no');
   if (!popups.length) return;
   let idx=0;
   const total=popups.length;
