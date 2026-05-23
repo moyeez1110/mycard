@@ -2282,6 +2282,13 @@ const FB_CONFIG = {
 firebase.initializeApp(FB_CONFIG);
 const db = firebase.firestore();
 
+// App Check — ఇక్కడ add చేయండి
+const appCheck = firebase.appCheck();
+appCheck.activate(
+  new firebase.appCheck.ReCaptchaEnterpriseProvider('6Le6m_gsAAAAAE76lWmQb1s-z8qXd2lMyMrQJKGu'),
+  true
+);
+
 /* Credit prices — service title (lowercase) → credits */
 const SERVICE_CREDITS = {
   'resume builder':     5,
