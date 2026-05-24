@@ -1,8 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-<script src="wallet.js"></script>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -28,7 +25,6 @@
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-height:100vh}
 
-/* ── Header ── */
 .header{background:var(--accent);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.2)}
 .logo{font-family:var(--font-display);font-size:22px;color:#fff;letter-spacing:.3px}
 .logo span{color:#a8d5b5}
@@ -41,10 +37,8 @@ body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-hei
 .gen-btn{background:var(--gold);color:#fff;border:none;border-radius:8px;padding:8px 18px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font-body);display:flex;align-items:center;gap:6px;transition:background .15s}
 .gen-btn:hover{background:#9a7d30}
 
-/* ── Layout ── */
 .layout{display:flex;height:calc(100vh - 54px)}
 
-/* ── Left Panel ── */
 .lpanel{width:270px;flex-shrink:0;background:var(--panel);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
 .tabs{display:grid;grid-template-columns:repeat(6,1fr);border-bottom:1px solid var(--border);background:var(--light)}
 .tab{padding:9px 2px;font-size:10.5px;cursor:pointer;border:none;background:none;color:var(--muted);font-family:var(--font-body);text-align:center;border-bottom:2.5px solid transparent;transition:all .12s;font-weight:500}
@@ -57,7 +51,6 @@ body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-hei
 textarea.fi{resize:vertical;line-height:1.5}
 select.fi{cursor:pointer}
 .fdiv{height:1px;background:var(--border);margin:10px 0}
-/* Icon input wrappers */
 .iw{position:relative;margin-bottom:10px}
 .iw .fi{padding-left:34px;margin-bottom:0}
 .iw .ii{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--muted);pointer-events:none;transition:color .2s}
@@ -66,11 +59,9 @@ select.fi{cursor:pointer}
 .iw-ta textarea{padding-left:34px;margin-bottom:0}
 .iw-ta .ii{position:absolute;left:10px;top:12px;font-size:13px;color:var(--muted);pointer-events:none}
 .iw-ta textarea:focus~.ii{color:var(--accent)}
-/* Contact icon chips in preview */
 .ci{display:inline-flex;align-items:center;gap:4px;font-family:Georgia,serif}
 .ci i{font-size:9px;opacity:.75}
 
-/* Summary picker */
 .sum-cat{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--gold);margin:10px 0 6px}
 .sum-opt{display:block;padding:8px 10px;border:1px solid var(--border);border-radius:7px;cursor:pointer;margin-bottom:6px;transition:all .12s;background:#fff}
 .sum-opt:hover{border-color:var(--accent);background:#f0f7f4}
@@ -79,7 +70,6 @@ select.fi{cursor:pointer}
 .sum-opt.picked{border:1.5px solid var(--teal);background:#e8f7f2}
 .sum-opt.picked .so-title{color:var(--teal)}
 
-/* Skills */
 .skill-row{display:flex;gap:6px;margin-bottom:10px}
 .skill-row .fi{margin-bottom:0;flex:1}
 .sadd{padding:7px 10px;background:var(--accent);color:#fff;border:none;border-radius:7px;cursor:pointer;font-size:12px;font-weight:600;font-family:var(--font-body);white-space:nowrap}
@@ -89,7 +79,6 @@ select.fi{cursor:pointer}
 .pill button{background:none;border:none;cursor:pointer;color:var(--accent);font-size:14px;line-height:1;padding:0;opacity:.6}
 .pill button:hover{opacity:1}
 
-/* Experience */
 .exp-card{background:var(--light);border:1px solid var(--border);border-radius:10px;padding:11px;margin-bottom:10px}
 .exp-ch{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px}
 .exp-cl{font-size:12px;font-weight:600;color:var(--text)}
@@ -98,7 +87,6 @@ select.fi{cursor:pointer}
 .add-exp{width:100%;padding:8px;border:1.5px dashed var(--border);background:none;border-radius:8px;color:var(--accent);font-size:12.5px;font-weight:600;cursor:pointer;font-family:var(--font-body);margin-bottom:10px;transition:all .15s}
 .add-exp:hover{background:#f0f7f4;border-color:var(--accent)}
 
-/* ── Right Panel ── */
 .rpanel{flex:1;background:#c8c4be;overflow-y:auto;display:flex;justify-content:center;align-items:flex-start;padding:24px 16px}
 .doc-wrap{width:100%;max-width:560px;filter:drop-shadow(0 8px 24px rgba(0,0,0,.25))}
 .doc{background:#fff;width:100%;font-family:Georgia,serif;position:relative}
@@ -197,7 +185,7 @@ select.fi{cursor:pointer}
 .t-bold .sigb{text-align:center;font-size:11px;color:#555;font-family:Georgia,serif}
 .t-bold .sigl{width:100px;height:2px;background:#c0392b;margin:22px auto 4px}
 
-/* ══ TEMPLATE: Executive (Navy + Gold) ══ */
+/* ══ TEMPLATE: Executive ══ */
 .t-executive .dh{background:#0f1f3d;padding:0}
 .t-executive .dh-top{padding:26px 32px 16px;border-bottom:3px solid #b5963e}
 .t-executive .dn{font-size:26px;font-weight:700;color:#fff;letter-spacing:.5px;font-family:Georgia,serif}
@@ -224,7 +212,7 @@ select.fi{cursor:pointer}
 .t-executive .sigb{text-align:center;font-size:11px;color:#555;font-family:Georgia,serif}
 .t-executive .sigl{width:110px;height:1px;background:#b5963e;margin:22px auto 4px}
 
-/* ══ TEMPLATE: Creative (Teal Left Bar) ══ */
+/* ══ TEMPLATE: Creative ══ */
 .t-creative .doc{display:flex;min-height:600px}
 .t-creative .dsb{width:160px;flex-shrink:0;background:linear-gradient(160deg,#00695c,#004d40);padding:0}
 .t-creative .sb-top{padding:28px 14px 20px;border-bottom:1px solid rgba(255,255,255,.15)}
@@ -234,8 +222,6 @@ select.fi{cursor:pointer}
 .t-creative .sb-sec{padding:12px 14px}
 .t-creative .sbh{font-size:8.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#a5d6a7;padding-bottom:3px;margin-bottom:6px;border-bottom:1px solid rgba(255,255,255,.15);font-family:Georgia,serif}
 .t-creative .sbi{font-size:9.5px;color:#c8e6c9;margin-bottom:3px;font-family:Georgia,serif;word-break:break-all;line-height:1.4}
-.t-creative .sb-bar{height:5px;border-radius:99px;background:rgba(255,255,255,.15);margin:2px 0 5px;overflow:hidden}
-.t-creative .sb-fill{height:100%;border-radius:99px;background:#a5d6a7}
 .t-creative .dm{flex:1;padding:20px 18px}
 .t-creative .sh{font-size:12px;font-weight:700;color:#00695c;margin:14px 0 7px;font-family:Georgia,serif;text-transform:uppercase;letter-spacing:1px;border-bottom:2px solid #00695c;padding-bottom:4px}
 .t-creative .st{font-size:11.5px;color:#2c2c2c;line-height:1.7;font-family:Georgia,serif}
@@ -253,14 +239,13 @@ select.fi{cursor:pointer}
 .t-creative .sigb{text-align:center;font-size:10.5px;color:#555;font-family:Georgia,serif}
 .t-creative .sigl{width:100px;height:2px;background:#00695c;margin:20px auto 4px}
 
-/* ══ TEMPLATE: Elegant (Purple + Serif) ══ */
+/* ══ TEMPLATE: Elegant ══ */
 .t-elegant .dh{padding:32px 36px 24px;text-align:center;position:relative}
 .t-elegant .dh::before{content:'';position:absolute;top:0;left:0;right:0;height:6px;background:linear-gradient(90deg,#7b4fa6,#9c6bc9,#7b4fa6)}
 .t-elegant .dh::after{content:'';display:block;width:80px;height:1px;background:#c9a8e8;margin:14px auto 0}
 .t-elegant .dn{font-size:28px;font-weight:400;color:#2d1b4e;letter-spacing:1px;font-family:Georgia,serif;font-style:italic}
 .t-elegant .dr{font-size:11px;color:#7b4fa6;margin-top:5px;letter-spacing:3px;text-transform:uppercase;font-family:Georgia,serif}
 .t-elegant .dc{font-size:10.5px;color:#666;margin-top:10px;display:flex;justify-content:center;gap:18px;flex-wrap:wrap;font-family:Georgia,serif}
-.t-elegant .dc-sep{color:#c9a8e8}
 .t-elegant .db{padding:8px 36px 28px}
 .t-elegant .sh{font-size:11px;font-weight:400;letter-spacing:3px;text-transform:uppercase;color:#7b4fa6;text-align:center;margin:18px 0 8px;font-family:Georgia,serif;position:relative}
 .t-elegant .sh::before,.t-elegant .sh::after{content:'——';color:#c9a8e8;padding:0 8px}
@@ -309,14 +294,69 @@ select.fi{cursor:pointer}
 .t-tech .sigb{text-align:center;font-size:10.5px;color:#8b949e;font-family:'Courier New',monospace}
 .t-tech .sigl{width:100px;height:1px;background:#00ff88;margin:22px auto 4px;opacity:.5}
 
-@media print{
-  .header,.lpanel,.mob-toggle{display:none}
-  .rpanel{padding:0;background:#fff}
-  .doc-wrap{filter:none;max-width:100%;box-shadow:none;transform:none!important}
+/* ══════════════════════════════════════════
+   PRINT — show ONLY the resume preview
+══════════════════════════════════════════ */
+@media print {
+  @page { size: A4; margin: 0; }
+
+  /* Hide everything UI-related */
+  .header,
+  .lpanel,
+  .mob-toggle,
+  .tabs,
+  #mob-form,
+  #mob-preview { display: none !important; }
+
+  /* Reset body + layout */
+  html, body {
+    background: #fff !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  .layout {
+    display: block !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  /* Show the right panel as full-page */
+  .rpanel {
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: #fff !important;
+    overflow: visible !important;
+  }
+
+  /* Resume wrapper fills the page */
+  .doc-wrap {
+    max-width: 100% !important;
+    width: 100% !important;
+    filter: none !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    transform: none !important;
+  }
+
+  .doc { width: 100% !important; }
+
+  /* Preserve background colours for coloured templates */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
 }
 
+/* ── Mobile ── */
 .mob-toggle{display:none}
-
 @media(max-width:768px){
   .header{padding:8px 10px;gap:6px}
   .logo{font-size:16px}
@@ -324,123 +364,24 @@ select.fi{cursor:pointer}
   .tpl-bar::-webkit-scrollbar{display:none}
   .tb{padding:4px 8px;font-size:10.5px;flex-shrink:0}
   .gen-btn{padding:6px 10px;font-size:11.5px;flex-shrink:0}
-
   .layout{flex-direction:column;height:auto}
   .lpanel{width:100%;border-right:none;border-bottom:none;display:none}
   .lpanel.mob-active{display:flex;flex-direction:column}
   .rpanel{width:100%;min-height:unset;padding:10px 6px;display:none;background:#c8c4be}
   .rpanel.mob-active{display:flex}
-
   .mob-toggle{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--border);background:var(--light);position:sticky;top:0;z-index:100}
   .mob-tab{padding:10px;font-size:12.5px;font-weight:600;text-align:center;cursor:pointer;border:none;background:none;color:var(--muted);font-family:var(--font-body);border-bottom:3px solid transparent;display:flex;align-items:center;justify-content:center;gap:5px}
   .mob-tab.active{color:var(--accent);border-bottom:3px solid var(--accent);background:#fff}
-
-  /* Scale resume to screen */
   .doc-wrap{max-width:100%;width:100%;overflow:hidden}
-
-  /* ── Classic hero ── */
-  .t-classic .dh{padding:14px 12px 10px}
-  .t-classic .dn{font-size:16px;letter-spacing:.2px}
-  .t-classic .dr{font-size:8.5px;letter-spacing:.5px;margin-top:2px}
-  .t-classic .dc{font-size:8px;margin-top:5px;line-height:1.9}
-  .t-classic .dc .ci{display:inline-flex;margin:1px 4px}
-  .t-classic .db{padding:8px 12px 14px}
-  .t-classic .sh{font-size:9px;margin:9px 0 5px;padding-bottom:2px}
-  .t-classic .st{font-size:9.5px;line-height:1.6}
-  .t-classic .stag{font-size:8.5px;padding:2px 6px;margin:1.5px}
-  .t-classic .exco{font-size:10px}.t-classic .ext{font-size:9px}.t-classic .extd{font-size:9px}.t-classic .exd{font-size:9px}
-  .t-classic .pdg{gap:2px 8px}.t-classic .pdi{font-size:9px}
-
-  /* ── Bold hero ── */
-  .t-bold .dh{padding:14px 12px}
-  .t-bold .dn{font-size:16px;letter-spacing:.1px}
-  .t-bold .dr{font-size:8.5px;letter-spacing:.5px;margin-top:2px}
-  .t-bold .dc{font-size:8px;margin-top:5px;line-height:1.9}
-  .t-bold .db{padding:8px 12px 14px}
-  .t-bold .sh{font-size:9px;margin:9px 0 5px}
-  .t-bold .st{font-size:9.5px}.t-bold .stag{font-size:8.5px;padding:2px 6px;margin:1.5px}
-  .t-bold .exco{font-size:10px}.t-bold .ext{font-size:9px}.t-bold .extd{font-size:9px}.t-bold .exd{font-size:9px}
-
-  /* ── Minimal hero ── */
-  .t-minimal .dh{padding:16px 14px 6px}
-  .t-minimal .dn{font-size:18px;letter-spacing:-.3px}
-  .t-minimal .dr{font-size:9.5px}
-  .t-minimal .dc{font-size:8px;gap:5px;flex-wrap:wrap;margin-top:4px}
-  .t-minimal .ddiv{margin:8px 14px 0}
-  .t-minimal .db{padding:8px 14px 14px}
-  .t-minimal .sh{font-size:9px;letter-spacing:1.5px;margin:10px 0 5px}
-  .t-minimal .st{font-size:9.5px}.t-minimal .stag{font-size:8.5px;padding:2px 6px}
-  .t-minimal .exco{font-size:10px}.t-minimal .ext{font-size:9px}.t-minimal .extd{font-size:9px}.t-minimal .exd{font-size:9px}
-
-  /* ── Executive hero ── */
-  .t-executive .dh-top{padding:14px 12px 10px}
-  .t-executive .dn{font-size:16px}
-  .t-executive .dr{font-size:8.5px;letter-spacing:.5px}
-  .t-executive .dh-contact{flex-wrap:wrap}
-  .t-executive .dci{flex:1 1 48%;padding:5px 7px;font-size:8.5px;min-width:0}
-  .t-executive .dci span{font-size:7.5px}
-  .t-executive .db{padding:8px 12px 14px}
-  .t-executive .sh{font-size:9px;margin:9px 0 5px}
-  .t-executive .st{font-size:9.5px}.t-executive .stag{font-size:8.5px;padding:2px 7px;margin:1.5px}
-  .t-executive .exco{font-size:10px}.t-executive .ext{font-size:9px}.t-executive .extd{font-size:9px}.t-executive .exd{font-size:9px}
-
-  /* ── Modern hero ── */
-  .t-modern .doc{flex-direction:column}
-  .t-modern .dsb{width:100%;flex-direction:row;flex-wrap:wrap;align-items:center;padding:12px 12px 8px;gap:8px}
-  .t-modern .dav{width:42px;height:42px;font-size:14px;margin:0;flex-shrink:0}
-  .t-modern .dn{font-size:12px;text-align:left;flex:1;min-width:0}
-  .t-modern .dr{text-align:left;font-size:8.5px}
-  .t-modern .sbh{font-size:7.5px;margin:6px 0 3px}
-  .t-modern .sbi{font-size:8.5px}
-  .t-modern .sb-skill{font-size:8.5px;padding:1px 0}
-  .t-modern .dm{padding:10px 12px}
-  .t-modern .sh{font-size:10px;margin:9px 0 5px}
-  .t-modern .st{font-size:9.5px}.t-modern .exco{font-size:10px}.t-modern .ext{font-size:9px}.t-modern .extd{font-size:9px}.t-modern .exd{font-size:9px}
-
-  /* ── Creative hero ── */
-  .t-creative .doc{flex-direction:column}
-  .t-creative .dsb{width:100%}
-  .t-creative .sb-top{display:flex;align-items:center;gap:10px;padding:12px 12px 8px}
-  .t-creative .dav{width:42px;height:42px;font-size:14px;margin:0;flex-shrink:0}
-  .t-creative .dn{font-size:12px;text-align:left}
-  .t-creative .dr{text-align:left;font-size:8.5px}
-  .t-creative .sb-sec{padding:6px 12px}
-  .t-creative .sbh{font-size:7.5px;margin:4px 0 3px}
-  .t-creative .sbi{font-size:8.5px}
-  .t-creative .dm{padding:10px 12px}
-  .t-creative .sh{font-size:10px;margin:9px 0 5px}
-  .t-creative .st{font-size:9.5px}.t-creative .exco{font-size:10px}.t-creative .ext{font-size:9px}.t-creative .extd{font-size:9px}.t-creative .exd{font-size:9px}
-
-  /* ── Elegant hero ── */
-  .t-elegant .dh{padding:18px 14px 8px}
-  .t-elegant .dh::before{height:4px}
-  .t-elegant .dn{font-size:20px}
-  .t-elegant .dr{font-size:9.5px;letter-spacing:1px}
-  .t-elegant .dc{font-size:8px;gap:6px;flex-wrap:wrap;justify-content:center}
-  .t-elegant .db{padding:6px 14px 14px}
-  .t-elegant .sh{font-size:9px;margin:10px 0 5px}
-  .t-elegant .sh::before,.t-elegant .sh::after{content:'—';padding:0 4px}
-  .t-elegant .st{font-size:9.5px}.t-elegant .stag{font-size:8.5px;padding:2px 8px;margin:2px}
-  .t-elegant .exco{font-size:10px}.t-elegant .ext{font-size:9px}.t-elegant .extd{font-size:9px}.t-elegant .exd{font-size:9px}
-
-  /* ── Tech Dark hero ── */
-  .t-tech .dh{padding:14px 12px}
-  .t-tech .dn{font-size:15px}
-  .t-tech .dn::before{font-size:13px}
-  .t-tech .dr{font-size:9.5px}
-  .t-tech .dc{font-size:8.5px;gap:6px;flex-wrap:wrap}
-  .t-tech .db{padding:10px 12px 14px}
-  .t-tech .sh{font-size:9px;margin:9px 0 5px}
-  .t-tech .st{font-size:9.5px}.t-tech .stag{font-size:8.5px;padding:2px 7px;margin:1.5px}
-  .t-tech .exco{font-size:10px}.t-tech .ext{font-size:9px}.t-tech .extd{font-size:9px}.t-tech .exd{font-size:9px}
-
-  /* Common section heads */
-  .t-classic .pdg,.t-bold .pdg,.t-minimal .pdg,.t-executive .pdg,
-  .t-elegant .pdg,.t-tech .pdg,.t-modern .pdg,.t-creative .pdg{grid-template-columns:1fr 1fr;gap:2px 8px}
-  .t-classic .pdi,.t-bold .pdi,.t-minimal .pdi,.t-executive .pdi,
-  .t-elegant .pdi,.t-tech .pdi,.t-modern .pdi,.t-creative .pdi{font-size:8.5px}
+  .t-classic .dh{padding:14px 12px 10px}.t-classic .dn{font-size:16px}.t-classic .dr{font-size:8.5px}.t-classic .dc{font-size:8px;line-height:1.9}.t-classic .db{padding:8px 12px 14px}.t-classic .sh{font-size:9px;margin:9px 0 5px}.t-classic .st{font-size:9.5px}.t-classic .stag{font-size:8.5px;padding:2px 6px}.t-classic .exco{font-size:10px}.t-classic .ext{font-size:9px}.t-classic .extd{font-size:9px}.t-classic .exd{font-size:9px}.t-classic .pdg{gap:2px 8px}.t-classic .pdi{font-size:9px}
+  .t-bold .dh{padding:14px 12px}.t-bold .dn{font-size:16px}.t-bold .dr{font-size:8.5px}.t-bold .dc{font-size:8px;line-height:1.9}.t-bold .db{padding:8px 12px 14px}.t-bold .sh{font-size:9px;margin:9px 0 5px}.t-bold .st{font-size:9.5px}.t-bold .stag{font-size:8.5px;padding:2px 6px}.t-bold .exco{font-size:10px}.t-bold .ext{font-size:9px}.t-bold .extd{font-size:9px}.t-bold .exd{font-size:9px}
+  .t-minimal .dh{padding:16px 14px 6px}.t-minimal .dn{font-size:18px}.t-minimal .dr{font-size:9.5px}.t-minimal .dc{font-size:8px;gap:5px;flex-wrap:wrap;margin-top:4px}.t-minimal .ddiv{margin:8px 14px 0}.t-minimal .db{padding:8px 14px 14px}.t-minimal .sh{font-size:9px;letter-spacing:1.5px;margin:10px 0 5px}.t-minimal .st{font-size:9.5px}.t-minimal .stag{font-size:8.5px;padding:2px 6px}.t-minimal .exco{font-size:10px}.t-minimal .ext{font-size:9px}.t-minimal .extd{font-size:9px}.t-minimal .exd{font-size:9px}
+  .t-executive .dh-top{padding:14px 12px 10px}.t-executive .dn{font-size:16px}.t-executive .dr{font-size:8.5px}.t-executive .dh-contact{flex-wrap:wrap}.t-executive .dci{flex:1 1 48%;padding:5px 7px;font-size:8.5px;min-width:0}.t-executive .dci span{font-size:7.5px}.t-executive .db{padding:8px 12px 14px}.t-executive .sh{font-size:9px;margin:9px 0 5px}.t-executive .st{font-size:9.5px}.t-executive .stag{font-size:8.5px;padding:2px 7px}.t-executive .exco{font-size:10px}.t-executive .ext{font-size:9px}.t-executive .extd{font-size:9px}.t-executive .exd{font-size:9px}
+  .t-modern .doc{flex-direction:column}.t-modern .dsb{width:100%;flex-direction:row;flex-wrap:wrap;align-items:center;padding:12px 12px 8px;gap:8px}.t-modern .dav{width:42px;height:42px;font-size:14px;margin:0;flex-shrink:0}.t-modern .dn{font-size:12px;text-align:left;flex:1;min-width:0}.t-modern .dr{text-align:left;font-size:8.5px}.t-modern .sbh{font-size:7.5px;margin:6px 0 3px}.t-modern .sbi{font-size:8.5px}.t-modern .sb-skill{font-size:8.5px;padding:1px 0}.t-modern .dm{padding:10px 12px}.t-modern .sh{font-size:10px;margin:9px 0 5px}.t-modern .st{font-size:9.5px}.t-modern .exco{font-size:10px}.t-modern .ext{font-size:9px}.t-modern .extd{font-size:9px}.t-modern .exd{font-size:9px}
+  .t-creative .doc{flex-direction:column}.t-creative .dsb{width:100%}.t-creative .sb-top{display:flex;align-items:center;gap:10px;padding:12px 12px 8px}.t-creative .dav{width:42px;height:42px;font-size:14px;margin:0;flex-shrink:0}.t-creative .dn{font-size:12px;text-align:left}.t-creative .dr{text-align:left;font-size:8.5px}.t-creative .sb-sec{padding:6px 12px}.t-creative .sbh{font-size:7.5px;margin:4px 0 3px}.t-creative .sbi{font-size:8.5px}.t-creative .dm{padding:10px 12px}.t-creative .sh{font-size:10px;margin:9px 0 5px}.t-creative .st{font-size:9.5px}.t-creative .exco{font-size:10px}.t-creative .ext{font-size:9px}.t-creative .extd{font-size:9px}.t-creative .exd{font-size:9px}
+  .t-elegant .dh{padding:18px 14px 8px}.t-elegant .dh::before{height:4px}.t-elegant .dn{font-size:20px}.t-elegant .dr{font-size:9.5px;letter-spacing:1px}.t-elegant .dc{font-size:8px;gap:6px;flex-wrap:wrap;justify-content:center}.t-elegant .db{padding:6px 14px 14px}.t-elegant .sh{font-size:9px;margin:10px 0 5px}.t-elegant .sh::before,.t-elegant .sh::after{content:'—';padding:0 4px}.t-elegant .st{font-size:9.5px}.t-elegant .stag{font-size:8.5px;padding:2px 8px;margin:2px}.t-elegant .exco{font-size:10px}.t-elegant .ext{font-size:9px}.t-elegant .extd{font-size:9px}.t-elegant .exd{font-size:9px}
+  .t-tech .dh{padding:14px 12px}.t-tech .dn{font-size:15px}.t-tech .dn::before{font-size:13px}.t-tech .dr{font-size:9.5px}.t-tech .dc{font-size:8.5px;gap:6px;flex-wrap:wrap}.t-tech .db{padding:10px 12px 14px}.t-tech .sh{font-size:9px;margin:9px 0 5px}.t-tech .st{font-size:9.5px}.t-tech .stag{font-size:8.5px;padding:2px 7px}.t-tech .exco{font-size:10px}.t-tech .ext{font-size:9px}.t-tech .extd{font-size:9px}.t-tech .exd{font-size:9px}
 }
-
 @media(max-width:400px){
   .t-classic .dn,.t-bold .dn{font-size:14px}
   .t-minimal .dn,.t-elegant .dn{font-size:16px}
@@ -476,7 +417,6 @@ select.fi{cursor:pointer}
 </div>
 
 <div class="layout">
-  <!-- LEFT PANEL -->
   <div class="lpanel">
     <div class="tabs">
       <button class="tab active" onclick="showSec('info')" id="t-info">Info</button>
@@ -486,8 +426,6 @@ select.fi{cursor:pointer}
       <button class="tab" onclick="showSec('skills')" id="t-skills">Skills</button>
       <button class="tab" onclick="showSec('extra')" id="t-extra">Extra</button>
     </div>
-
-    <!-- INFO -->
     <div class="fbody" id="sec-info">
       <label class="fl">Full name</label>
       <div class="iw"><input class="fi" id="f-name" placeholder="Arjun Reddy" oninput="render()"><i class="ii fa-solid fa-user"></i></div>
@@ -504,8 +442,6 @@ select.fi{cursor:pointer}
       <label class="fl">Portfolio / Website</label>
       <div class="iw"><input class="fi" id="f-web" placeholder="yoursite.com" oninput="render()"><i class="ii fa-solid fa-globe"></i></div>
     </div>
-
-    <!-- BIO -->
     <div class="fbody" id="sec-bio" style="display:none">
       <label class="fl">Choose a summary</label>
       <div id="sum-list"></div>
@@ -514,42 +450,31 @@ select.fi{cursor:pointer}
       <label class="fl">Hobbies &amp; Interests</label>
       <input class="fi" id="f-hobbies" placeholder="Reading, Cricket, Blogging" oninput="render()">
     </div>
-
-    <!-- EXP -->
     <div class="fbody" id="sec-exp" style="display:none">
       <div id="exp-list"></div>
       <button class="add-exp" onclick="addExp()"><i class="fa-solid fa-plus"></i> Add Position</button>
     </div>
-
-    <!-- EDU -->
     <div class="fbody" id="sec-edu" style="display:none">
       <div id="edu-list"></div>
       <button class="add-exp" onclick="addEdu()"><i class="fa-solid fa-plus"></i> Add Qualification</button>
     </div>
-
-    <!-- SKILLS -->
     <div class="fbody" id="sec-skills" style="display:none">
       <label class="fl">Choose skills from a category</label>
       <div id="skill-cat-list"></div>
-
       <label class="fl" style="margin-top:6px">Or type your own</label>
       <div class="skill-row">
         <div class="iw" style="flex:1;margin-bottom:0"><input class="fi" id="skill-inp" placeholder="e.g. Python" onkeydown="if(event.key==='Enter')addSkill()"><i class="ii fa-solid fa-layer-group"></i></div>
         <button class="sadd" onclick="addSkill()">Add</button>
       </div>
       <div class="pills" id="skill-pills"></div>
-
       <label class="fl" style="margin-top:4px">Strengths</label>
       <div id="strength-list"></div>
       <div class="pills" id="strength-pills"></div>
-
       <label class="fl" style="margin-top:6px">Languages</label>
       <div class="iw"><input class="fi" id="f-langs" placeholder="English (Fluent), Telugu (Native)" oninput="render()"><i class="ii fa-solid fa-language"></i></div>
       <label class="fl">Certifications</label>
       <div class="iw-ta"><textarea class="fi" id="f-certs" style="min-height:54px" placeholder="AWS Cloud Practitioner, 2024&#10;Google Digital Marketing, 2023" oninput="render()"></textarea><i class="ii fa-solid fa-certificate"></i></div>
     </div>
-
-    <!-- EXTRA -->
     <div class="fbody" id="sec-extra" style="display:none">
       <label class="fl">Date of Birth</label>
       <div class="iw"><input class="fi" id="f-dob" placeholder="10 March 2002" oninput="render()"><i class="ii fa-solid fa-cake-candles"></i></div>
@@ -576,567 +501,307 @@ select.fi{cursor:pointer}
     </div>
   </div>
 
-  <!-- RIGHT PANEL -->
   <div class="rpanel">
     <div class="doc-wrap"><div class="doc" id="preview"></div></div>
   </div>
 </div>
 
 <script>
-let tpl = 'classic', skills = [], expBlocks = [], pickedSum = null;
+let tpl='classic',skills=[],expBlocks=[],eduBlocks=[],pickedSum=null,strengths=[],skillCatOpen=null,expId=0,eduId=0;
 
-const SUMMARIES = [
-  { cat: 'Freshers / Entry Level', color: '#2d4a3e', items: [
-    { label: 'General Fresher', text: 'Enthusiastic and detail-oriented recent graduate with a strong foundation in communication, teamwork, and problem-solving. A quick learner eager to contribute fresh perspectives and a strong work ethic to a forward-thinking organization.' },
-    { label: 'Tech / IT Fresher', text: 'Motivated Computer Science graduate with solid knowledge of programming, data structures, and web technologies. Passionate about building efficient, user-friendly software and excited to grow within a dynamic engineering team.' },
-    { label: 'Commerce Fresher', text: 'Commerce graduate with a strong grasp of financial principles, business communication, and data analysis. Ready to apply academic knowledge in a professional setting and contribute meaningfully to business operations.' },
+const SUMMARIES=[
+  {cat:'Freshers / Entry Level',color:'#2d4a3e',items:[
+    {label:'General Fresher',text:'Enthusiastic and detail-oriented recent graduate with a strong foundation in communication, teamwork, and problem-solving. A quick learner eager to contribute fresh perspectives and a strong work ethic to a forward-thinking organization.'},
+    {label:'Tech / IT Fresher',text:'Motivated Computer Science graduate with solid knowledge of programming, data structures, and web technologies. Passionate about building efficient, user-friendly software and excited to grow within a dynamic engineering team.'},
+    {label:'Commerce Fresher',text:'Commerce graduate with a strong grasp of financial principles, business communication, and data analysis. Ready to apply academic knowledge in a professional setting and contribute meaningfully to business operations.'},
   ]},
-  { cat: 'Experienced Professionals', color: '#1a2744', items: [
-    { label: 'Mid-Level Professional', text: 'Results-driven professional with 4+ years of experience delivering high-quality outcomes in fast-paced environments. Proven track record of cross-functional collaboration, process improvement, and stakeholder management.' },
-    { label: 'Senior Tech Lead', text: 'Senior software engineer with 8+ years of experience architecting scalable systems and mentoring engineering teams. Known for translating complex business requirements into robust technical solutions that drive measurable impact.' },
-    { label: 'Senior Manager', text: 'Strategic and people-focused manager with 7+ years of experience leading cross-functional teams and driving organizational growth. Adept at aligning team objectives with company vision and delivering results under pressure.' },
+  {cat:'Experienced Professionals',color:'#1a2744',items:[
+    {label:'Mid-Level Professional',text:'Results-driven professional with 4+ years of experience delivering high-quality outcomes in fast-paced environments. Proven track record of cross-functional collaboration, process improvement, and stakeholder management.'},
+    {label:'Senior Tech Lead',text:'Senior software engineer with 8+ years of experience architecting scalable systems and mentoring engineering teams. Known for translating complex business requirements into robust technical solutions that drive measurable impact.'},
+    {label:'Senior Manager',text:'Strategic and people-focused manager with 7+ years of experience leading cross-functional teams and driving organizational growth. Adept at aligning team objectives with company vision and delivering results under pressure.'},
   ]},
-  { cat: 'Skilled / Trade Professionals', color: '#b5963e', items: [
-    { label: 'Technical / Trade', text: 'Highly skilled and certified technical professional with extensive hands-on experience in precision work, quality control, and safe operational practices. Committed to excellence and continuous skill development.' },
-    { label: 'Sales & Marketing', text: 'Dynamic sales and marketing professional with a proven ability to grow revenue, build client relationships, and execute data-driven campaigns. Skilled at identifying market opportunities and converting them into business results.' },
-    { label: 'Healthcare Worker', text: 'Dedicated and compassionate healthcare professional with strong clinical knowledge and a patient-first approach. Experienced in high-pressure environments with a commitment to quality care, safety, and professional development.' },
+  {cat:'Skilled / Trade Professionals',color:'#b5963e',items:[
+    {label:'Technical / Trade',text:'Highly skilled and certified technical professional with extensive hands-on experience in precision work, quality control, and safe operational practices. Committed to excellence and continuous skill development.'},
+    {label:'Sales & Marketing',text:'Dynamic sales and marketing professional with a proven ability to grow revenue, build client relationships, and execute data-driven campaigns. Skilled at identifying market opportunities and converting them into business results.'},
+    {label:'Healthcare Worker',text:'Dedicated and compassionate healthcare professional with strong clinical knowledge and a patient-first approach. Experienced in high-pressure environments with a commitment to quality care, safety, and professional development.'},
   ]},
-  { cat: 'Career Changers', color: '#c0392b', items: [
-    { label: 'Returning to Workforce', text: 'Motivated professional returning to the workforce after a career break, bringing refreshed focus, updated skills, and a strong commitment to contributing value. Eager to leverage diverse life experience in a new professional chapter.' },
-    { label: 'Career Switcher', text: 'Ambitious professional transitioning into a new field, bringing transferable skills in communication, project management, and analytical thinking. Backed by recent upskilling and a genuine passion for this new direction.' },
+  {cat:'Career Changers',color:'#c0392b',items:[
+    {label:'Returning to Workforce',text:'Motivated professional returning to the workforce after a career break, bringing refreshed focus, updated skills, and a strong commitment to contributing value. Eager to leverage diverse life experience in a new professional chapter.'},
+    {label:'Career Switcher',text:'Ambitious professional transitioning into a new field, bringing transferable skills in communication, project management, and analytical thinking. Backed by recent upskilling and a genuine passion for this new direction.'},
   ]},
 ];
 
-function buildSumList() {
-  let html = '';
-  SUMMARIES.forEach((cat, ci) => {
-    html += `<div class="sum-cat" style="color:${cat.color}">${cat.cat}</div>`;
-    cat.items.forEach((item, ii) => {
-      const id = `s_${ci}_${ii}`;
-      html += `<div class="sum-opt${pickedSum===id?' picked':''}" onclick="pickSum('${id}','${item.text.replace(/'/g,"&#39;").replace(/\n/g,' ')}')">
+const SKILL_CATS=[
+  {cat:'💻 Software / IT',color:'#1a2744',items:['Python','Java','JavaScript','React.js','Node.js','HTML/CSS','SQL','MongoDB','Git','Docker','AWS','REST APIs','TypeScript','C++','Linux','MySQL','Machine Learning','Data Analysis']},
+  {cat:'📊 Data & Analytics',color:'#00695c',items:['Excel (Advanced)','Power BI','Tableau','SQL','Python (Pandas)','Google Analytics','Data Visualisation','Statistics','R Programming','Scikit-learn','TensorFlow','ETL Pipelines']},
+  {cat:'🎨 Design / Creative',color:'#7b4fa6',items:['Figma','Adobe XD','Photoshop','Illustrator','UI/UX Design','Prototyping','Wireframing','Canva','InDesign','Brand Design','Motion Design','Typography']},
+  {cat:'📣 Marketing',color:'#c0392b',items:['SEO/SEM','Google Ads','Social Media Marketing','Content Writing','Email Marketing','HubSpot','Copywriting','Market Research','A/B Testing','Campaign Management','Branding','CRM']},
+  {cat:'💼 Business / Finance',color:'#b5963e',items:['Financial Modelling','Budgeting','Forecasting','MS Excel','Tally ERP','SAP','Accounting','Auditing','Project Management','Business Analysis','MIS Reporting','Stakeholder Management']},
+  {cat:'🏥 Healthcare',color:'#00897b',items:['Patient Care','Clinical Documentation','First Aid','Medical Coding','EMR Systems','Pharmacology','Wound Care','Lab Techniques','Infection Control','Health & Safety']},
+  {cat:'👥 HR & People Ops',color:'#5c6bc0',items:['Recruitment','Talent Acquisition','Onboarding','HRIS (Workday)','Payroll Processing','Employee Relations','Performance Management','Training & Development','Compliance','Org Development']},
+  {cat:'⚙️ Operations / Mgmt',color:'#2d4a3e',items:['Supply Chain','Inventory Management','Process Improvement','Lean / Six Sigma','Team Leadership','Vendor Management','ERP Systems','Quality Control','Logistics','Risk Management']},
+];
+
+const STRENGTHS=['Communication','Teamwork','Problem Solving','Leadership','Time Management','Adaptability','Attention to Detail','Critical Thinking','Work Under Pressure','Initiative','Creativity','Positive Attitude','Self-Motivation','Reliability','Quick Learner','Decision Making','Conflict Resolution','Negotiation','Multitasking','Analytical Thinking','Empathy','Customer Focus','Accountability','Organisation'];
+
+function buildSumList(){
+  let h='';
+  SUMMARIES.forEach((cat,ci)=>{
+    h+=`<div class="sum-cat" style="color:${cat.color}">${cat.cat}</div>`;
+    cat.items.forEach((item,ii)=>{
+      const id=`s_${ci}_${ii}`;
+      h+=`<div class="sum-opt${pickedSum===id?' picked':''}" onclick="pickSum('${id}','${item.text.replace(/'/g,"&#39;").replace(/\n/g,' ')}')">
         <div class="so-title">${item.label}</div>
         <div class="so-preview">${item.text.slice(0,72)}...</div>
       </div>`;
     });
   });
-  document.getElementById('sum-list').innerHTML = html;
+  document.getElementById('sum-list').innerHTML=h;
 }
 
-function pickSum(id, text) {
-  pickedSum = id;
-  document.getElementById('f-summary').value = text;
-  buildSumList();
-  render();
-}
+function pickSum(id,text){pickedSum=id;document.getElementById('f-summary').value=text;buildSumList();render();}
 
-function showSec(id) {
-  ['info','bio','exp','edu','skills','extra'].forEach(s => {
-    const el = document.getElementById('sec-' + s);
-    if (el) el.style.display = s === id ? 'block' : 'none';
-    const t = document.getElementById('t-' + s);
-    if (t) t.classList.toggle('active', s === id);
+function showSec(id){
+  ['info','bio','exp','edu','skills','extra'].forEach(s=>{
+    const el=document.getElementById('sec-'+s);if(el)el.style.display=s===id?'block':'none';
+    const t=document.getElementById('t-'+s);if(t)t.classList.toggle('active',s===id);
   });
-  if (id === 'bio') buildSumList();
-  if (id === 'exp') renderExpForms();
-  if (id === 'edu') renderEduForms();
-  if (id === 'skills') { buildSkillCats(); buildStrengthList(); }
+  if(id==='bio')buildSumList();
+  if(id==='exp')renderExpForms();
+  if(id==='edu')renderEduForms();
+  if(id==='skills'){buildSkillCats();buildStrengthList();}
 }
 
-function setTpl(t) {
-  tpl = t;
-  ['classic','modern','minimal','bold','executive','creative','elegant','tech'].forEach(b => document.getElementById('btn-'+b).classList.toggle('active', b === t));
+function setTpl(t){
+  tpl=t;
+  ['classic','modern','minimal','bold','executive','creative','elegant','tech'].forEach(b=>document.getElementById('btn-'+b).classList.toggle('active',b===t));
   render();
 }
 
-function gv(id) { const el = document.getElementById(id); return el ? el.value.trim() : ''; }
+function gv(id){const el=document.getElementById(id);return el?el.value.trim():'';}
 
-function addSkill() {
-  const inp = document.getElementById('skill-inp');
-  const v = inp.value.trim();
-  if (v && !skills.includes(v)) { skills.push(v); inp.value = ''; renderPills(); render(); }
-}
-function removeSkill(s) { skills = skills.filter(x => x !== s); renderPills(); render(); }
-function renderPills() {
-  document.getElementById('skill-pills').innerHTML = skills.map(s =>
-    `<span class="pill">${s}<button onclick="removeSkill('${s.replace(/'/g,"\\'")}')" title="Remove">×</button></span>`
-  ).join('');
-}
+function addSkill(){const inp=document.getElementById('skill-inp');const v=inp.value.trim();if(v&&!skills.includes(v)){skills.push(v);inp.value='';renderPills();render();}}
+function removeSkill(s){skills=skills.filter(x=>x!==s);renderPills();render();}
+function renderPills(){document.getElementById('skill-pills').innerHTML=skills.map(s=>`<span class="pill">${s}<button onclick="removeSkill('${s.replace(/'/g,"\\'")}')">×</button></span>`).join('');}
 
-let expId = 0;
-
-function saveExpData() {
-  expBlocks.forEach(b => {
-    b._title = (document.getElementById(`et_${b.id}`)||{}).value || b._title || '';
-    b._company = (document.getElementById(`ec_${b.id}`)||{}).value || b._company || '';
-    b._dur = (document.getElementById(`ed_${b.id}`)||{}).value || b._dur || '';
-    b._loc = (document.getElementById(`el_${b.id}`)||{}).value || b._loc || '';
-    b._desc = (document.getElementById(`edesc_${b.id}`)||{}).value || b._desc || '';
-  });
+function saveExpData(){expBlocks.forEach(b=>{b._title=(document.getElementById(`et_${b.id}`)||{}).value||b._title||'';b._company=(document.getElementById(`ec_${b.id}`)||{}).value||b._company||'';b._dur=(document.getElementById(`ed_${b.id}`)||{}).value||b._dur||'';b._loc=(document.getElementById(`el_${b.id}`)||{}).value||b._loc||'';b._desc=(document.getElementById(`edesc_${b.id}`)||{}).value||b._desc||'';});}
+function addExp(){saveExpData();expBlocks.push({id:++expId,_title:'',_company:'',_dur:'',_loc:'',_desc:''});renderExpForms();render();}
+function removeExp(id){saveExpData();expBlocks=expBlocks.filter(b=>b.id!==id);renderExpForms();render();}
+function renderExpForms(){
+  const el=document.getElementById('exp-list');
+  if(!expBlocks.length){el.innerHTML='<div style="text-align:center;padding:20px 0;color:#999;font-size:13px">No positions yet.<br>Click <b>+ Add Position</b> below.</div>';return;}
+  el.innerHTML=expBlocks.map((b,i)=>`<div class="exp-card">
+    <div class="exp-ch"><span class="exp-cl"><i class="fa-solid fa-briefcase" style="font-size:11px;margin-right:5px;opacity:.6"></i>Position ${i+1}</span>
+    ${expBlocks.length>1?`<button class="exp-rem" onclick="saveExpData();removeExp(${b.id})">✕ Remove</button>`:''}</div>
+    <label class="fl">Job Title</label><input class="fi" id="et_${b.id}" placeholder="e.g. Data Analyst" value="${esc(b._title)}" oninput="saveExpData();render()">
+    <label class="fl">Company</label><input class="fi" id="ec_${b.id}" placeholder="e.g. Infosys" value="${esc(b._company)}" oninput="saveExpData();render()">
+    <label class="fl">Duration</label><input class="fi" id="ed_${b.id}" placeholder="Jan 2022 – Mar 2024" value="${esc(b._dur)}" oninput="saveExpData();render()">
+    <label class="fl">Location</label><input class="fi" id="el_${b.id}" placeholder="Hyderabad / Remote" value="${esc(b._loc)}" oninput="saveExpData();render()">
+    <label class="fl">Key Responsibilities</label>
+    <textarea class="fi" id="edesc_${b.id}" style="min-height:64px" placeholder="• Led a team of 5&#10;• Improved efficiency by 30%" oninput="saveExpData();render()">${esc(b._desc)}</textarea>
+  </div>`).join('');
 }
 
-function addExp() {
-  saveExpData();
-  expBlocks.push({ id: ++expId, _title:'', _company:'', _dur:'', _loc:'', _desc:'' });
-  renderExpForms();
-  render();
-}
-function removeExp(id) {
-  saveExpData();
-  expBlocks = expBlocks.filter(b => b.id !== id);
-  renderExpForms();
-  render();
-}
-function renderExpForms() {
-  const el = document.getElementById('exp-list');
-  if (!expBlocks.length) {
-    el.innerHTML = '<div style="text-align:center;padding:20px 0;color:#999;font-size:13px">No positions yet.<br>Click <b>+ Add Position</b> below.</div>';
-    return;
-  }
-  el.innerHTML = expBlocks.map((b, i) => `
-    <div class="exp-card">
-      <div class="exp-ch">
-        <span class="exp-cl"><i class="fa-solid fa-briefcase" style="font-size:11px;margin-right:5px;opacity:.6"></i>Position ${i+1}</span>
-        ${expBlocks.length>1?`<button class="exp-rem" onclick="saveExpData();removeExp(${b.id})">✕ Remove</button>`:''}
-      </div>
-      <label class="fl">Job Title</label><input class="fi" id="et_${b.id}" placeholder="e.g. Data Analyst" value="${esc(b._title)}" oninput="saveExpData();render()">
-      <label class="fl">Company</label><input class="fi" id="ec_${b.id}" placeholder="e.g. Infosys" value="${esc(b._company)}" oninput="saveExpData();render()">
-      <label class="fl">Duration</label><input class="fi" id="ed_${b.id}" placeholder="Jan 2022 – Mar 2024" value="${esc(b._dur)}" oninput="saveExpData();render()">
-      <label class="fl">Location</label><input class="fi" id="el_${b.id}" placeholder="Hyderabad / Remote" value="${esc(b._loc)}" oninput="saveExpData();render()">
-      <label class="fl">Key Responsibilities</label>
-      <textarea class="fi" id="edesc_${b.id}" style="min-height:64px" placeholder="• Led a team of 5&#10;• Improved efficiency by 30%" oninput="saveExpData();render()">${esc(b._desc)}</textarea>
-    </div>`).join('');
+function saveEduData(){eduBlocks.forEach(b=>{b._deg=(document.getElementById(`edeg_${b.id}`)||{}).value||b._deg||'';b._uni=(document.getElementById(`euni_${b.id}`)||{}).value||b._uni||'';b._yr=(document.getElementById(`eyr_${b.id}`)||{}).value||b._yr||'';b._gpa=(document.getElementById(`egpa_${b.id}`)||{}).value||b._gpa||'';b._cw=(document.getElementById(`ecw_${b.id}`)||{}).value||b._cw||'';});}
+function addEdu(){saveEduData();eduBlocks.push({id:++eduId,_deg:'',_uni:'',_yr:'',_gpa:'',_cw:''});renderEduForms();render();}
+function removeEdu(id){saveEduData();eduBlocks=eduBlocks.filter(b=>b.id!==id);renderEduForms();render();}
+function renderEduForms(){
+  const el=document.getElementById('edu-list');if(!el)return;
+  if(!eduBlocks.length){el.innerHTML='<div style="text-align:center;padding:20px 0;color:#999;font-size:13px">No qualifications yet.<br>Click <b>+ Add Qualification</b> below.</div>';return;}
+  el.innerHTML=eduBlocks.map((b,i)=>`<div class="exp-card">
+    <div class="exp-ch"><span class="exp-cl"><i class="fa-solid fa-graduation-cap" style="font-size:11px;margin-right:5px;opacity:.6"></i>Qualification ${i+1}</span>
+    ${eduBlocks.length>1?`<button class="exp-rem" onclick="saveEduData();removeEdu(${b.id})">✕ Remove</button>`:''}</div>
+    <label class="fl">Degree / Qualification</label>
+    <div class="iw"><input class="fi" id="edeg_${b.id}" placeholder="B.Tech / B.Com / MBA" value="${esc(b._deg)}" oninput="saveEduData();render()"><i class="ii fa-solid fa-graduation-cap"></i></div>
+    <label class="fl">Institution</label>
+    <div class="iw"><input class="fi" id="euni_${b.id}" placeholder="Osmania University" value="${esc(b._uni)}" oninput="saveEduData();render()"><i class="ii fa-solid fa-building-columns"></i></div>
+    <label class="fl">Year</label>
+    <div class="iw"><input class="fi" id="eyr_${b.id}" placeholder="2020 – 2024" value="${esc(b._yr)}" oninput="saveEduData();render()"><i class="ii fa-solid fa-calendar"></i></div>
+    <label class="fl">GPA / Percentage</label>
+    <div class="iw"><input class="fi" id="egpa_${b.id}" placeholder="8.2 / 10 or 78%" value="${esc(b._gpa)}" oninput="saveEduData();render()"><i class="ii fa-solid fa-star"></i></div>
+    <label class="fl">Relevant Coursework</label>
+    <div class="iw-ta"><textarea class="fi" id="ecw_${b.id}" style="min-height:48px" placeholder="Data Structures, DBMS, Networks..." oninput="saveEduData();render()">${esc(b._cw)}</textarea><i class="ii fa-solid fa-book"></i></div>
+  </div>`).join('');
 }
 
-/* ── Education (multi-entry, same pattern) ── */
-let eduId = 0, eduBlocks = [];
+function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function initials(n){return n?n.split(' ').map(w=>w[0]||'').join('').slice(0,2).toUpperCase():'?';}
 
-function saveEduData() {
-  eduBlocks.forEach(b => {
-    b._deg  = (document.getElementById(`edeg_${b.id}`)||{}).value || b._deg || '';
-    b._uni  = (document.getElementById(`euni_${b.id}`)||{}).value || b._uni || '';
-    b._yr   = (document.getElementById(`eyr_${b.id}`)||{}).value || b._yr || '';
-    b._gpa  = (document.getElementById(`egpa_${b.id}`)||{}).value || b._gpa || '';
-    b._cw   = (document.getElementById(`ecw_${b.id}`)||{}).value || b._cw || '';
-  });
-}
-
-function addEdu() {
-  saveEduData();
-  eduBlocks.push({ id: ++eduId, _deg:'', _uni:'', _yr:'', _gpa:'', _cw:'' });
-  renderEduForms();
-  render();
-}
-function removeEdu(id) {
-  saveEduData();
-  eduBlocks = eduBlocks.filter(b => b.id !== id);
-  renderEduForms();
-  render();
-}
-function renderEduForms() {
-  const el = document.getElementById('edu-list');
-  if (!el) return;
-  if (!eduBlocks.length) {
-    el.innerHTML = '<div style="text-align:center;padding:20px 0;color:#999;font-size:13px">No qualifications yet.<br>Click <b>+ Add Qualification</b> below.</div>';
-    return;
-  }
-  el.innerHTML = eduBlocks.map((b, i) => `
-    <div class="exp-card">
-      <div class="exp-ch">
-        <span class="exp-cl"><i class="fa-solid fa-graduation-cap" style="font-size:11px;margin-right:5px;opacity:.6"></i>Qualification ${i+1}</span>
-        ${eduBlocks.length>1?`<button class="exp-rem" onclick="saveEduData();removeEdu(${b.id})">✕ Remove</button>`:''}
-      </div>
-      <label class="fl">Degree / Qualification</label>
-      <div class="iw"><input class="fi" id="edeg_${b.id}" placeholder="B.Tech / B.Com / MBA" value="${esc(b._deg)}" oninput="saveEduData();render()"><i class="ii fa-solid fa-graduation-cap"></i></div>
-      <label class="fl">Institution</label>
-      <div class="iw"><input class="fi" id="euni_${b.id}" placeholder="Osmania University" value="${esc(b._uni)}" oninput="saveEduData();render()"><i class="ii fa-solid fa-building-columns"></i></div>
-      <label class="fl">Year</label>
-      <div class="iw"><input class="fi" id="eyr_${b.id}" placeholder="2020 – 2024" value="${esc(b._yr)}" oninput="saveEduData();render()"><i class="ii fa-solid fa-calendar"></i></div>
-      <label class="fl">GPA / Percentage</label>
-      <div class="iw"><input class="fi" id="egpa_${b.id}" placeholder="8.2 / 10 or 78%" value="${esc(b._gpa)}" oninput="saveEduData();render()"><i class="ii fa-solid fa-star"></i></div>
-      <label class="fl">Relevant Coursework</label>
-      <div class="iw-ta"><textarea class="fi" id="ecw_${b.id}" style="min-height:48px" placeholder="Data Structures, DBMS, Networks..." oninput="saveEduData();render()">${esc(b._cw)}</textarea><i class="ii fa-solid fa-book"></i></div>
-    </div>`).join('');
-}
-
-function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-function initials(n) { return n ? n.split(' ').map(w => w[0]||'').join('').slice(0,2).toUpperCase() : '?'; }
-
-function contactLine(email,phone,loc,linkedin,web,iconColor){
-  const c=iconColor||'inherit';
+function contactLine(email,phone,loc,linkedin,web,c){
+  c=c||'inherit';
   const items=[];
-  if(email)   items.push(`<span class="ci"><i class="fa-solid fa-envelope" style="color:${c}"></i>${email}</span>`);
-  if(phone)   items.push(`<span class="ci"><i class="fa-solid fa-mobile-screen" style="color:${c}"></i>${phone}</span>`);
-  if(loc)     items.push(`<span class="ci"><i class="fa-solid fa-location-dot" style="color:${c}"></i>${loc}</span>`);
+  if(email)  items.push(`<span class="ci"><i class="fa-solid fa-envelope" style="color:${c}"></i>${email}</span>`);
+  if(phone)  items.push(`<span class="ci"><i class="fa-solid fa-mobile-screen" style="color:${c}"></i>${phone}</span>`);
+  if(loc)    items.push(`<span class="ci"><i class="fa-solid fa-location-dot" style="color:${c}"></i>${loc}</span>`);
   if(linkedin)items.push(`<span class="ci"><i class="fa-brands fa-linkedin" style="color:${c}"></i>${linkedin}</span>`);
-  if(web)     items.push(`<span class="ci"><i class="fa-solid fa-globe" style="color:${c}"></i>${web}</span>`);
+  if(web)    items.push(`<span class="ci"><i class="fa-solid fa-globe" style="color:${c}"></i>${web}</span>`);
   return items.join(' &nbsp;·&nbsp; ');
 }
 
-function expSection(T) {
-  if (!expBlocks.length) return '';
-  const items = expBlocks.map(b => {
-    const t   = (document.getElementById(`et_${b.id}`)    || {}).value || b._title   || '';
-    const co  = (document.getElementById(`ec_${b.id}`)    || {}).value || b._company || '';
-    const d   = (document.getElementById(`ed_${b.id}`)    || {}).value || b._dur     || '';
-    const l   = (document.getElementById(`el_${b.id}`)    || {}).value || b._loc     || '';
-    const desc= (document.getElementById(`edesc_${b.id}`) || {}).value || b._desc    || '';
-    if (!t && !co) return '';
-    const coLine  = [co, l].filter(Boolean).join(' · ');
-    const durLine = d ? d : '';
-    return `<div style="margin-bottom:12px">
+function expSection(T){
+  if(!expBlocks.length)return'';
+  return expBlocks.map(b=>{
+    const t=(document.getElementById(`et_${b.id}`)||{}).value||b._title||'';
+    const co=(document.getElementById(`ec_${b.id}`)||{}).value||b._company||'';
+    const d=(document.getElementById(`ed_${b.id}`)||{}).value||b._dur||'';
+    const l=(document.getElementById(`el_${b.id}`)||{}).value||b._loc||'';
+    const desc=(document.getElementById(`edesc_${b.id}`)||{}).value||b._desc||'';
+    if(!t&&!co)return'';
+    return`<div style="margin-bottom:12px">
       <div style="display:flex;justify-content:space-between;align-items:baseline">
         <div class="${T}exco">${t||'Job Title'}</div>
       </div>
-      ${coLine ? `<div class="${T}ext">${coLine}</div>` : ''}
-      ${durLine ? `<div class="${T}extd"><i class="${T}dur-icon"></i>${durLine}</div>` : ''}
-      ${desc ? `<div class="${T}exd">${desc.replace(/\n/g,'<br>')}</div>` : ''}
+      ${[co,l].filter(Boolean).length?`<div class="${T}ext">${[co,l].filter(Boolean).join(' · ')}</div>`:''}
+      ${d?`<div class="${T}extd">${d}</div>`:''}
+      ${desc?`<div class="${T}exd">${desc.replace(/\n/g,'<br>')}</div>`:''}
     </div>`;
   }).join('');
-  return items;
 }
 
-/* Education multi-entry section renderer */
-function eduSection(T) {
-  if (!eduBlocks.length) return '';
-  return eduBlocks.map(b => {
-    const deg  = (document.getElementById(`edeg_${b.id}`) || {}).value || b._deg || '';
-    const uni  = (document.getElementById(`euni_${b.id}`) || {}).value || b._uni || '';
-    const yr   = (document.getElementById(`eyr_${b.id}`)  || {}).value || b._yr  || '';
-    const gpa  = (document.getElementById(`egpa_${b.id}`) || {}).value || b._gpa || '';
-    const cw   = (document.getElementById(`ecw_${b.id}`)  || {}).value || b._cw  || '';
-    if (!deg && !uni) return '';
-    const gpaStr = gpa ? ` &nbsp;·&nbsp; GPA: ${gpa}` : '';
-    return `<div style="margin-bottom:12px">
+function eduSection(T){
+  if(!eduBlocks.length)return'';
+  return eduBlocks.map(b=>{
+    const deg=(document.getElementById(`edeg_${b.id}`)||{}).value||b._deg||'';
+    const uni=(document.getElementById(`euni_${b.id}`)||{}).value||b._uni||'';
+    const yr=(document.getElementById(`eyr_${b.id}`)||{}).value||b._yr||'';
+    const gpa=(document.getElementById(`egpa_${b.id}`)||{}).value||b._gpa||'';
+    const cw=(document.getElementById(`ecw_${b.id}`)||{}).value||b._cw||'';
+    if(!deg&&!uni)return'';
+    return`<div style="margin-bottom:12px">
       <div class="${T}exco">${deg||'Degree'}</div>
-      ${uni  ? `<div class="${T}ext">${uni}</div>` : ''}
-      ${yr   ? `<div class="${T}extd">${yr}${gpaStr}</div>` : (gpa ? `<div class="${T}extd">GPA: ${gpa}</div>` : '')}
-      ${cw   ? `<div class="${T}exd" style="font-size:10px;margin-top:2px">${cw}</div>` : ''}
+      ${uni?`<div class="${T}ext">${uni}</div>`:''}
+      ${yr?`<div class="${T}extd">${yr}${gpa?` &nbsp;·&nbsp; GPA: ${gpa}`:''}</div>`:gpa?`<div class="${T}extd">GPA: ${gpa}</div>`:''}
+      ${cw?`<div class="${T}exd" style="font-size:10px;margin-top:2px">${cw}</div>`:''}
     </div>`;
   }).join('');
 }
 
-function pdGrid(T, data) {
-  const rows = data.filter(d => d[1]).map(d => `<div class="${T}pdi"><span class="${T}pdk">${d[0]}: </span>${d[1]}</div>`).join('');
-  return rows ? `<div class="${T}pdg">${rows}</div>` : '';
+function pdGrid(T,data){
+  const rows=data.filter(d=>d[1]).map(d=>`<div class="${T}pdi"><span class="${T}pdk">${d[0]}: </span>${d[1]}</div>`).join('');
+  return rows?`<div class="${T}pdg">${rows}</div>`:'';
 }
 
-function sigBlock(T) {
-  const decl=gv('f-decl'), sig=gv('f-signame'), place=gv('f-place'), date=gv('f-date');
-  if (!decl && !sig && !place && !date) return '';
-  return `
-    ${decl ? `<div class="${T}decl-txt">${decl}</div>` : ''}
+function sigBlock(T){
+  const decl=gv('f-decl'),sig=gv('f-signame'),place=gv('f-place'),date=gv('f-date');
+  if(!decl&&!sig&&!place&&!date)return'';
+  return`${decl?`<div class="${T}decl-txt">${decl}</div>`:''}
     <div class="${T}sig">
       <div class="${T}sigb"><div class="${T}sigl"></div><div>${place||'Place'}</div><div style="margin-top:2px">${date||'Date'}</div></div>
       <div class="${T}sigb"><div class="${T}sigl"></div><div>Signature</div><div style="margin-top:2px">${sig||'Your Name'}</div></div>
     </div>`;
 }
 
-function render() {
-  const name=gv('f-name')||'Your Name', role=gv('f-role')||'Your Title';
-  const email=gv('f-email'), phone=gv('f-phone'), loc=gv('f-loc'), linkedin=gv('f-linkedin'), web=gv('f-web');
-  const summary=gv('f-summary'), hobbies=gv('f-hobbies');
-  const langs=gv('f-langs'), certs=gv('f-certs');
-  const hasStrengths = strengths.length > 0;
-  const strengthHTML = (T) => hasStrengths ? `<div class="${T}sh">Strengths</div><div>${strengths.map(s=>`<span class="${T}stag">${s}</span>`).join('')}</div>` : '';
-  const dob=gv('f-dob'), father=gv('f-father'), marital=gv('f-marital'), nationality=gv('f-nationality'), religion=gv('f-religion');
-  const cl = [email,phone,loc,linkedin,web].filter(Boolean).join(' · ');
-
-  // Icon-enhanced contact line per template
-  const clClassic   = contactLine(email,phone,loc,linkedin,web,'#555');
-  const clBold      = contactLine(email,phone,loc,linkedin,web,'#ffcdd2');
-  const clExecutive = contactLine(email,phone,loc,linkedin,web,'#94b0d6');
-  const clMinimal   = contactLine(email,phone,loc,linkedin,web,'#999');
-  const clTech      = contactLine(email,phone,loc,linkedin,web,'#00ff88');
-  const clElegant   = contactLine(email,phone,loc,linkedin,web,'#9c6bc9');
-  const pdData = [['DOB',dob],['Father',father],['Marital',marital],['Nationality',nationality],['Religion',religion],['Mobile',phone],['Email',email]];
-  const hasPD = pdData.some(d => d[1]);
-  const hasEdu = eduBlocks.some(b => b._deg || b._uni || (document.getElementById(`edeg_${b.id}`)||{}).value);
-  const hasExp = expBlocks.some(b => b._title || b._company || (document.getElementById(`et_${b.id}`)||{}).value);
-
-  let html = '';
-
-  if (tpl === 'classic') {
-    const T = 't-classic ';
-    html = `<div class="t-classic">
-      <div class="dh"><div class="dn">${name}</div>${role?`<div class="dr">${role}</div>`:''}${clClassic?`<div class="dc">${clClassic}</div>`:''}</div>
-      <div class="db">
-        ${summary?`<div class="sh">Professional Summary</div><div class="st">${summary}</div>`:''}
-        ${hasExp?`<div class="sh">Work Experience</div>${expSection(T)}`:''}
-        ${hasEdu?`<div class="sh">Education</div>${eduSection(T)}`    :''}
-        ${skills.length?`<div class="sh">Skills</div><div>${skills.map(s=>`<span class="stag">${s}</span>`).join('')}</div>`:''}
-        ${strengthHTML(T)}
-        ${langs?`<div class="sh">Languages</div><div class="st">${langs}</div>`:''}
-        ${certs?`<div class="sh">Certifications</div><div class="st">${certs.replace(/\n/g,'<br>')}</div>`:''}
-        ${hasPD?`<div class="sh">Personal Details</div>${pdGrid(T,pdData)}`:''}
-        ${hobbies?`<div class="sh">Interests</div><div class="st">${hobbies}</div>`:''}
-        <div class="decl-box">${sigBlock(T)}</div>
-      </div></div>`;
-
-  } else if (tpl === 'modern') {
-    const T = 't-modern ';
-    html = `<div class="t-modern"><div class="doc" style="display:flex;min-height:600px">
-      <div class="dsb">
-        <div class="dav">${initials(name)}</div>
-        <div class="dn">${name}</div>${role?`<div class="dr">${role}</div>`:''}
-        <div class="sbh">Contact</div>
-        ${email?`<div class="sbi"><i class='fa-solid fa-envelope' style='color:#94b0d6;font-size:8px;margin-right:4px'></i>${email}</div>`:''}${phone?`<div class="sbi"><i class='fa-solid fa-mobile-screen' style='color:#94b0d6;font-size:8px;margin-right:4px'></i>${phone}</div>`:''}${loc?`<div class="sbi"><i class='fa-solid fa-location-dot' style='color:#94b0d6;font-size:8px;margin-right:4px'></i>${loc}</div>`:''}${linkedin?`<div class="sbi"><i class='fa-brands fa-linkedin' style='color:#94b0d6;font-size:8px;margin-right:4px'></i>${linkedin}</div>`:''}${web?`<div class="sbi"><i class='fa-solid fa-globe' style='color:#94b0d6;font-size:8px;margin-right:4px'></i>${web}</div>`:''}
-        ${skills.length?`<div class="sbh">Skills</div>${skills.map(s=>`<div class="sb-skill">${s}</div>`).join('')}`:''}
-        ${langs?`<div class="sbh">Languages</div><div class="sbi" style="font-size:9px;line-height:1.5">${langs}</div>`:''}
-        ${hasPD?`<div class="sbh">Personal</div>${pdData.filter(d=>d[1]).map(d=>`<div class="sbi" style="font-size:9px"><span style="color:#94b0d6">${d[0]}:</span> ${d[1]}</div>`).join('')}`:''}
-      </div>
-      <div class="dm">
-        ${summary?`<div class="sh">Profile</div><div class="st">${summary}</div>`:''}
-        ${hasExp?`<div class="sh">Experience</div>${expSection(T)}`:''}
-        ${hasEdu?`<div class="sh">Education</div>${eduSection(T)}`    :''}
-        ${strengthHTML(T)}
-        ${strengthHTML(T)}
-        ${certs?`<div class="sh">Certifications</div><div class="st">${certs.replace(/\n/g,'<br>')}</div>`:''}
-        ${hobbies?`<div class="sh">Interests</div><div class="st">${hobbies}</div>`:''}
-        ${sigBlock(T)}
-      </div></div></div>`;
-
-  } else if (tpl === 'minimal') {
-    const T = 't-minimal ';
-    html = `<div class="t-minimal">
-      <div class="dh">
-        <div class="dn">${name}</div>${role?`<div class="dr">${role}</div>`:''}
-        <div class="dc">${clMinimal}</div>
-      </div>
-      <div class="ddiv"></div>
-      <div class="db">
-        ${summary?`<div class="sh">About</div><div class="st">${summary}</div>`:''}
-        ${hasExp?`<div class="sh">Experience</div>${expSection(T)}`:''}
-        ${hasEdu?`<div class="sh">Education</div>${eduSection(T)}`    :''}
-        ${skills.length?`<div class="sh">Skills</div><div>${skills.map(s=>`<span class="stag">${s}</span>`).join('')}</div>`:''}
-        ${strengthHTML(T)}
-        ${langs?`<div class="sh">Languages</div><div class="st">${langs}</div>`:''}
-        ${certs?`<div class="sh">Certifications</div><div class="st">${certs.replace(/\n/g,'<br>')}</div>`:''}
-        ${hasPD?`<div class="sh">Personal</div>${pdGrid(T,pdData)}`:''}
-        ${hobbies?`<div class="sh">Interests</div><div class="st">${hobbies}</div>`:''}
-        ${sigBlock(T)}
-      </div></div>`;
-
-  } else if (tpl === 'bold') {
-    const T = 't-bold ';
-    html = `<div class="t-bold">
-      <div class="dh"><div class="dn">${name}</div>${role?`<div class="dr">${role}</div>`:''}${clBold?`<div class="dc">${clBold}</div>`:''}</div>
-      <div class="db">
-        ${summary?`<div class="sh">Profile</div><div class="st">${summary}</div>`:''}
-        ${hasExp?`<div class="sh">Experience</div>${expSection(T)}`:''}
-        ${hasEdu?`<div class="sh">Education</div>${eduSection(T)}`    :''}
-        ${skills.length?`<div class="sh">Skills</div><div>${skills.map(s=>`<span class="stag">${s}</span>`).join('')}</div>`:''}
-        ${strengthHTML(T)}
-        ${langs?`<div class="sh">Languages</div><div class="st">${langs}</div>`:''}
-        ${certs?`<div class="sh">Certifications</div><div class="st">${certs.replace(/\n/g,'<br>')}</div>`:''}
-        ${hasPD?`<div class="sh">Personal Details</div>${pdGrid(T,pdData)}`:''}
-        ${hobbies?`<div class="sh">Interests</div><div class="st">${hobbies}</div>`:''}
-        <div class="decl-box">${sigBlock(T)}</div>
-      </div></div>`;
-
-  } else if (tpl === 'executive') {
-    const T = 't-executive ';
-    const contactItems = [
-      email?`<div class="dci"><span><i class='fa-solid fa-envelope'></i> Email</span>${email}</div>`:'',
-      phone?`<div class="dci"><span><i class='fa-solid fa-mobile-screen'></i> Phone</span>${phone}</div>`:'',
-      loc?`<div class="dci"><span><i class='fa-solid fa-location-dot'></i> Location</span>${loc}</div>`:'',
-      linkedin?`<div class="dci"><span><i class='fa-brands fa-linkedin'></i> LinkedIn</span>${linkedin}</div>`:'',
-    ].filter(Boolean);
-    html = `<div class="t-executive">
-      <div class="dh">
-        <div class="dh-top"><div class="dn">${name}</div>${role?`<div class="dr">${role}</div>`:''}</div>
-        ${contactItems.length?`<div class="dh-contact">${contactItems.join('')}</div>`:''}
-      </div>
-      <div class="db">
-        ${summary?`<div class="sh">Professional Summary</div><div class="st">${summary}</div>`:''}
-        ${hasExp?`<div class="sh">Experience</div>${expSection(T)}`:''}
-        ${hasEdu?`<div class="sh">Education</div>${eduSection(T)}`    :''}
-        ${skills.length?`<div class="sh">Skills</div><div>${skills.map(s=>`<span class="stag">${s}</span>`).join('')}</div>`:''}
-        ${strengthHTML(T)}
-        ${langs?`<div class="sh">Languages</div><div class="st">${langs}</div>`:''}
-        ${certs?`<div class="sh">Certifications</div><div class="st">${certs.replace(/\n/g,'<br>')}</div>`:''}
-        ${hasPD?`<div class="sh">Personal Details</div>${pdGrid(T,pdData)}`:''}
-        ${hobbies?`<div class="sh">Interests</div><div class="st">${hobbies}</div>`:''}
-        ${sigBlock(T)}
-      </div></div>`;
-
-  } else if (tpl === 'creative') {
-    const T = 't-creative ';
-    html = `<div class="t-creative"><div class="doc" style="display:flex;min-height:600px">
-      <div class="dsb">
-        <div class="sb-top">
-          <div class="dav">${initials(name)}</div>
-          <div class="dn">${name}</div>${role?`<div class="dr">${role}</div>`:''}
-        </div>
-        <div class="sb-sec">
-          <div class="sbh">Contact</div>
-          ${email?`<div class="sbi"><i class='fa-solid fa-envelope' style='color:#a5d6a7;font-size:8px;margin-right:4px'></i>${email}</div>`:''}${phone?`<div class="sbi"><i class='fa-solid fa-mobile-screen' style='color:#a5d6a7;font-size:8px;margin-right:4px'></i>${phone}</div>`:''}${loc?`<div class="sbi"><i class='fa-solid fa-location-dot' style='color:#a5d6a7;font-size:8px;margin-right:4px'></i>${loc}</div>`:''}${linkedin?`<div class="sbi"><i class='fa-brands fa-linkedin' style='color:#a5d6a7;font-size:8px;margin-right:4px'></i>${linkedin}</div>`:''}
-        </div>
-        ${langs?`<div class="sb-sec"><div class="sbh">Languages</div><div class="sbi">${langs}</div></div>`:''}
-        ${skills.length?`<div class="sb-sec"><div class="sbh">Skills</div>${skills.map(s=>`<div class="sbi">${s}</div>`).join('')}</div>`:''}
-        ${hasPD?`<div class="sb-sec"><div class="sbh">Personal</div>${pdData.filter(d=>d[1]).map(d=>`<div class="sbi" style="font-size:8.5px"><span style="color:#a5d6a7">${d[0]}:</span> ${d[1]}</div>`).join('')}</div>`:''}
-      </div>
-      <div class="dm">
-        ${summary?`<div class="sh">Profile</div><div class="st">${summary}</div>`:''}
-        ${hasExp?`<div class="sh">Experience</div>${expSection(T)}`:''}
-        ${hasEdu?`<div class="sh">Education</div>${eduSection(T)}`    :''}
-        ${skills.length?`<div class="sh">Key Skills</div><div>${skills.map(s=>`<span class="stag">${s}</span>`).join('')}</div>`:''}
-        ${certs?`<div class="sh">Certifications</div><div class="st">${certs.replace(/\n/g,'<br>')}</div>`:''}
-        ${hobbies?`<div class="sh">Interests</div><div class="st">${hobbies}</div>`:''}
-        ${sigBlock(T)}
-      </div></div></div>`;
-
-  } else if (tpl === 'elegant') {
-    const T = 't-elegant ';
-    html = `<div class="t-elegant">
-      <div class="dh">
-        <div class="dn">${name}</div>
-        ${role?`<div class="dr">${role}</div>`:''}
-        <div class="dc">${clElegant}</div>
-      </div>
-      <div class="db">
-        ${summary?`<div class="sh">Profile</div><div class="st">${summary}</div>`:''}
-        ${hasExp?`<div class="sh">Experience</div>${expSection(T)}`:''}
-        ${hasEdu?`<div class="sh">Education</div>${eduSection(T)}`    :''}
-        ${skills.length?`<div class="sh">Skills</div><div style="text-align:center">${skills.map(s=>`<span class="stag">${s}</span>`).join('')}</div>`:''}
-        ${strengthHTML(T)}
-        ${langs?`<div class="sh">Languages</div><div class="st">${langs}</div>`:''}
-        ${certs?`<div class="sh">Certifications</div><div class="st">${certs.replace(/\n/g,'<br>')}</div>`:''}
-        ${hasPD?`<div class="sh">Personal Details</div>${pdGrid(T,pdData)}`:''}
-        ${hobbies?`<div class="sh">Interests</div><div class="st">${hobbies}</div>`:''}
-        ${sigBlock(T)}
-      </div></div>`;
-
-  } else if (tpl === 'tech') {
-    const T = 't-tech ';
-    html = `<div class="t-tech"><div class="doc" style="background:#0d1117;min-height:600px">
-      <div class="dh">
-        <div class="dn">${name}</div>
-        ${role?`<div class="dr">// ${role}</div>`:''}
-        <div class="dc">${clTech}</div>
-      </div>
-      <div class="db">
-        ${summary?`<div class="sh">About</div><div class="st">${summary}</div>`:''}
-        ${hasExp?`<div class="sh">Experience</div>${expSection(T)}`:''}
-        ${hasEdu?`<div class="sh">Education</div>${eduSection(T)}`    :''}
-        ${skills.length?`<div class="sh">Tech Stack</div><div>${skills.map(s=>`<span class="stag">${s}</span>`).join('')}</div>`:''}
-        ${strengthHTML(T)}
-        ${langs?`<div class="sh">Languages</div><div class="st">${langs}</div>`:''}
-        ${certs?`<div class="sh">Certifications</div><div class="st">${certs.replace(/\n/g,'<br>')}</div>`:''}
-        ${hasPD?`<div class="sh">Personal</div>${pdGrid(T,pdData)}`:''}
-        ${hobbies?`<div class="sh">Interests</div><div class="st">${hobbies}</div>`:''}
-        ${sigBlock(T)}
-      </div></div></div>`;
-  }
-
-  document.getElementById('preview').innerHTML = html;
+function strengthHTML(T){
+  return strengths.length?`<div class="${T}sh">Strengths</div><div>${strengths.map(s=>`<span class="${T}stag">${s}</span>`).join('')}</div>`:'';
 }
 
-/* ── Skill categories ── */
-const SKILL_CATS = [
-  { cat:'💻 Software / IT',       color:'#1a2744', items:['Python','Java','JavaScript','React.js','Node.js','HTML/CSS','SQL','MongoDB','Git','Docker','AWS','REST APIs','TypeScript','C++','Linux','MySQL','Machine Learning','Data Analysis'] },
-  { cat:'📊 Data & Analytics',    color:'#00695c', items:['Excel (Advanced)','Power BI','Tableau','SQL','Python (Pandas)','Google Analytics','Data Visualisation','Statistics','R Programming','Scikit-learn','TensorFlow','ETL Pipelines'] },
-  { cat:'🎨 Design / Creative',   color:'#7b4fa6', items:['Figma','Adobe XD','Photoshop','Illustrator','UI/UX Design','Prototyping','Wireframing','Canva','InDesign','Brand Design','Motion Design','Typography'] },
-  { cat:'📣 Marketing',           color:'#c0392b', items:['SEO/SEM','Google Ads','Social Media Marketing','Content Writing','Email Marketing','HubSpot','Copywriting','Market Research','A/B Testing','Campaign Management','Branding','CRM'] },
-  { cat:'💼 Business / Finance',  color:'#b5963e', items:['Financial Modelling','Budgeting','Forecasting','MS Excel','Tally ERP','SAP','Accounting','Auditing','Project Management','Business Analysis','MIS Reporting','Stakeholder Management'] },
-  { cat:'🏥 Healthcare',          color:'#00897b', items:['Patient Care','Clinical Documentation','First Aid','Medical Coding','EMR Systems','Pharmacology','Wound Care','Lab Techniques','Infection Control','Health & Safety'] },
-  { cat:'👥 HR & People Ops',     color:'#5c6bc0', items:['Recruitment','Talent Acquisition','Onboarding','HRIS (Workday)','Payroll Processing','Employee Relations','Performance Management','Training & Development','Compliance','Org Development'] },
-  { cat:'⚙️ Operations / Mgmt',  color:'#2d4a3e', items:['Supply Chain','Inventory Management','Process Improvement','Lean / Six Sigma','Team Leadership','Vendor Management','ERP Systems','Quality Control','Logistics','Risk Management'] },
-];
+function render(){
+  const name=gv('f-name')||'Your Name',role=gv('f-role')||'Your Title';
+  const email=gv('f-email'),phone=gv('f-phone'),loc=gv('f-loc'),linkedin=gv('f-linkedin'),web=gv('f-web');
+  const summary=gv('f-summary'),hobbies=gv('f-hobbies'),langs=gv('f-langs'),certs=gv('f-certs');
+  const dob=gv('f-dob'),father=gv('f-father'),marital=gv('f-marital'),nationality=gv('f-nationality'),religion=gv('f-religion');
+  const hasPD=[dob,father,marital,nationality,religion,phone,email].some(Boolean);
+  const hasExp=expBlocks.some(b=>b._title||b._company||(document.getElementById(`et_${b.id}`)||{}).value);
+  const hasEdu=eduBlocks.some(b=>b._deg||b._uni||(document.getElementById(`edeg_${b.id}`)||{}).value);
+  const pdData=[['DOB',dob],['Father',father],['Marital',marital],['Nationality',nationality],['Religion',religion],['Mobile',phone],['Email',email]];
 
-const STRENGTHS = [
-  'Communication','Teamwork','Problem Solving','Leadership','Time Management','Adaptability','Attention to Detail','Critical Thinking','Work Under Pressure','Initiative','Creativity','Positive Attitude','Self-Motivation','Reliability','Quick Learner','Decision Making','Conflict Resolution','Negotiation','Multitasking','Analytical Thinking','Empathy','Customer Focus','Accountability','Organisation'
-];
+  const clClassic=contactLine(email,phone,loc,linkedin,web,'#555');
+  const clBold=contactLine(email,phone,loc,linkedin,web,'#ffcdd2');
+  const clMinimal=contactLine(email,phone,loc,linkedin,web,'#999');
+  const clTech=contactLine(email,phone,loc,linkedin,web,'#00ff88');
+  const clElegant=contactLine(email,phone,loc,linkedin,web,'#9c6bc9');
 
-let strengths = [];
-let skillCatOpen = null;
+  let html='';
 
-function buildSkillCats() {
-  const el = document.getElementById('skill-cat-list');
-  if (!el) return;
-  el.innerHTML = SKILL_CATS.map((cat, ci) => `
-    <div style="margin-bottom:5px">
-      <div onclick="toggleCat(${ci})" style="display:flex;justify-content:space-between;align-items:center;padding:7px 10px;border:1px solid var(--border);border-radius:7px;cursor:pointer;background:${skillCatOpen===ci?'#f0f7f4':'#fff'};transition:background .12s">
-        <span style="font-size:12px;font-weight:500;color:${cat.color}">${cat.cat}</span>
-        <i class="fa-solid fa-chevron-${skillCatOpen===ci?'up':'down'}" style="font-size:10px;color:var(--muted)"></i>
-      </div>
-      ${skillCatOpen===ci?`<div style="display:flex;flex-wrap:wrap;gap:5px;padding:8px 6px;border:1px solid var(--border);border-top:none;border-radius:0 0 7px 7px;background:#fafaf8">
-        ${cat.items.map(s=>`<span onclick="toggleCatSkill('${s.replace(/'/g,"\\'")}',this)" style="font-size:11px;padding:3px 9px;border-radius:99px;cursor:pointer;border:1px solid ${cat.color};color:${skills.includes(s)?'#fff':cat.color};background:${skills.includes(s)?cat.color:'transparent'};transition:all .12s">${s}</span>`).join('')}
-      </div>`:''}
-    </div>`).join('');
+  if(tpl==='classic'){const T='t-classic ';html=`<div class="t-classic"><div class="dh"><div class="dn">${name}</div>${role?`<div class="dr">${role}</div>`:''}<div class="dc">${clClassic}</div></div><div class="db">${summary?`<div class="sh">Professional Summary</div><div class="st">${summary}</div>`:''} ${hasExp?`<div class="sh">Work Experience</div>${expSection(T)}`:''} ${hasEdu?`<div class="sh">Education</div>${eduSection(T)}`:''} ${skills.length?`<div class="sh">Skills</div><div>${skills.map(s=>`<span class="stag">${s}</span>`).join('')}</div>`:''} ${strengthHTML(T)} ${langs?`<div class="sh">Languages</div><div class="st">${langs}</div>`:''} ${certs?`<div class="sh">Certifications</div><div class="st">${certs.replace(/\n/g,'<br>')}</div>`:''} ${hasPD?`<div class="sh">Personal Details</div>${pdGrid(T,pdData)}`:''} ${hobbies?`<div class="sh">Interests</div><div class="st">${hobbies}</div>`:''}<div class="decl-box">${sigBlock(T)}</div></div></div>`;}
+
+  else if(tpl==='modern'){const T='t-modern ';html=`<div class="t-modern"><div class="doc" style="display:flex;min-height:600px"><div class="dsb"><div class="dav">${initials(name)}</div><div class="dn">${name}</div>${role?`<div class="dr">${role}</div>`:''}<div class="sbh">Contact</div>${email?`<div class="sbi"><i class='fa-solid fa-envelope' style='color:#94b0d6;font-size:8px;margin-right:4px'></i>${email}</div>`:''} ${phone?`<div class="sbi"><i class='fa-solid fa-mobile-screen' style='color:#94b0d6;font-size:8px;margin-right:4px'></i>${phone}</div>`:''} ${loc?`<div class="sbi"><i class='fa-solid fa-location-dot' style='color:#94b0d6;font-size:8px;margin-right:4px'></i>${loc}</div>`:''} ${linkedin?`<div class="sbi"><i class='fa-brands fa-linkedin' style='color:#94b0d6;font-size:8px;margin-right:4px'></i>${linkedin}</div>`:''} ${web?`<div class="sbi"><i class='fa-solid fa-globe' style='color:#94b0d6;font-size:8px;margin-right:4px'></i>${web}</div>`:''} ${skills.length?`<div class="sbh">Skills</div>${skills.map(s=>`<div class="sb-skill">${s}</div>`).join('')}`:''} ${langs?`<div class="sbh">Languages</div><div class="sbi" style="font-size:9px;line-height:1.5">${langs}</div>`:''} ${hasPD?`<div class="sbh">Personal</div>${pdData.filter(d=>d[1]).map(d=>`<div class="sbi" style="font-size:9px"><span style="color:#94b0d6">${d[0]}:</span> ${d[1]}</div>`).join('')}`:''}</div><div class="dm">${summary?`<div class="sh">Profile</div><div class="st">${summary}</div>`:''} ${hasExp?`<div class="sh">Experience</div>${expSection(T)}`:''} ${hasEdu?`<div class="sh">Education</div>${eduSection(T)}`:''} ${strengthHTML(T)} ${certs?`<div class="sh">Certifications</div><div class="st">${certs.replace(/\n/g,'<br>')}</div>`:''} ${hobbies?`<div class="sh">Interests</div><div class="st">${hobbies}</div>`:''} ${sigBlock(T)}</div></div></div>`;}
+
+  else if(tpl==='minimal'){const T='t-minimal ';html=`<div class="t-minimal"><div class="dh"><div class="dn">${name}</div>${role?`<div class="dr">${role}</div>`:''}<div class="dc">${clMinimal}</div></div><div class="ddiv"></div><div class="db">${summary?`<div class="sh">About</div><div class="st">${summary}</div>`:''} ${hasExp?`<div class="sh">Experience</div>${expSection(T)}`:''} ${hasEdu?`<div class="sh">Education</div>${eduSection(T)}`:''} ${skills.length?`<div class="sh">Skills</div><div>${skills.map(s=>`<span class="stag">${s}</span>`).join('')}</div>`:''} ${strengthHTML(T)} ${langs?`<div class="sh">Languages</div><div class="st">${langs}</div>`:''} ${certs?`<div class="sh">Certifications</div><div class="st">${certs.replace(/\n/g,'<br>')}</div>`:''} ${hasPD?`<div class="sh">Personal</div>${pdGrid(T,pdData)}`:''} ${hobbies?`<div class="sh">Interests</div><div class="st">${hobbies}</div>`:''} ${sigBlock(T)}</div></div>`;}
+
+  else if(tpl==='bold'){const T='t-bold ';html=`<div class="t-bold"><div class="dh"><div class="dn">${name}</div>${role?`<div class="dr">${role}</div>`:''}<div class="dc">${clBold}</div></div><div class="db">${summary?`<div class="sh">Profile</div><div class="st">${summary}</div>`:''} ${hasExp?`<div class="sh">Experience</div>${expSection(T)}`:''} ${hasEdu?`<div class="sh">Education</div>${eduSection(T)}`:''} ${skills.length?`<div class="sh">Skills</div><div>${skills.map(s=>`<span class="stag">${s}</span>`).join('')}</div>`:''} ${strengthHTML(T)} ${langs?`<div class="sh">Languages</div><div class="st">${langs}</div>`:''} ${certs?`<div class="sh">Certifications</div><div class="st">${certs.replace(/\n/g,'<br>')}</div>`:''} ${hasPD?`<div class="sh">Personal Details</div>${pdGrid(T,pdData)}`:''} ${hobbies?`<div class="sh">Interests</div><div class="st">${hobbies}</div>`:''}<div class="decl-box">${sigBlock(T)}</div></div></div>`;}
+
+  else if(tpl==='executive'){const T='t-executive ';const ci=[email?`<div class="dci"><span><i class='fa-solid fa-envelope'></i> Email</span>${email}</div>`:'',phone?`<div class="dci"><span><i class='fa-solid fa-mobile-screen'></i> Phone</span>${phone}</div>`:'',loc?`<div class="dci"><span><i class='fa-solid fa-location-dot'></i> Location</span>${loc}</div>`:'',linkedin?`<div class="dci"><span><i class='fa-brands fa-linkedin'></i> LinkedIn</span>${linkedin}</div>`:''].filter(Boolean);html=`<div class="t-executive"><div class="dh"><div class="dh-top"><div class="dn">${name}</div>${role?`<div class="dr">${role}</div>`:''}</div>${ci.length?`<div class="dh-contact">${ci.join('')}</div>`:''}</div><div class="db">${summary?`<div class="sh">Professional Summary</div><div class="st">${summary}</div>`:''} ${hasExp?`<div class="sh">Experience</div>${expSection(T)}`:''} ${hasEdu?`<div class="sh">Education</div>${eduSection(T)}`:''} ${skills.length?`<div class="sh">Skills</div><div>${skills.map(s=>`<span class="stag">${s}</span>`).join('')}</div>`:''} ${strengthHTML(T)} ${langs?`<div class="sh">Languages</div><div class="st">${langs}</div>`:''} ${certs?`<div class="sh">Certifications</div><div class="st">${certs.replace(/\n/g,'<br>')}</div>`:''} ${hasPD?`<div class="sh">Personal Details</div>${pdGrid(T,pdData)}`:''} ${hobbies?`<div class="sh">Interests</div><div class="st">${hobbies}</div>`:''} ${sigBlock(T)}</div></div>`;}
+
+  else if(tpl==='creative'){const T='t-creative ';html=`<div class="t-creative"><div class="doc" style="display:flex;min-height:600px"><div class="dsb"><div class="sb-top"><div class="dav">${initials(name)}</div><div><div class="dn">${name}</div>${role?`<div class="dr">${role}</div>`:''}</div></div><div class="sb-sec"><div class="sbh">Contact</div>${email?`<div class="sbi"><i class='fa-solid fa-envelope' style='color:#a5d6a7;font-size:8px;margin-right:4px'></i>${email}</div>`:''} ${phone?`<div class="sbi"><i class='fa-solid fa-mobile-screen' style='color:#a5d6a7;font-size:8px;margin-right:4px'></i>${phone}</div>`:''} ${loc?`<div class="sbi"><i class='fa-solid fa-location-dot' style='color:#a5d6a7;font-size:8px;margin-right:4px'></i>${loc}</div>`:''} ${linkedin?`<div class="sbi"><i class='fa-brands fa-linkedin' style='color:#a5d6a7;font-size:8px;margin-right:4px'></i>${linkedin}</div>`:''}</div>${langs?`<div class="sb-sec"><div class="sbh">Languages</div><div class="sbi">${langs}</div></div>`:''} ${skills.length?`<div class="sb-sec"><div class="sbh">Skills</div>${skills.map(s=>`<div class="sbi">${s}</div>`).join('')}</div>`:''} ${hasPD?`<div class="sb-sec"><div class="sbh">Personal</div>${pdData.filter(d=>d[1]).map(d=>`<div class="sbi" style="font-size:8.5px"><span style="color:#a5d6a7">${d[0]}:</span> ${d[1]}</div>`).join('')}</div>`:''}</div><div class="dm">${summary?`<div class="sh">Profile</div><div class="st">${summary}</div>`:''} ${hasExp?`<div class="sh">Experience</div>${expSection(T)}`:''} ${hasEdu?`<div class="sh">Education</div>${eduSection(T)}`:''} ${skills.length?`<div class="sh">Key Skills</div><div>${skills.map(s=>`<span class="stag">${s}</span>`).join('')}</div>`:''} ${certs?`<div class="sh">Certifications</div><div class="st">${certs.replace(/\n/g,'<br>')}</div>`:''} ${hobbies?`<div class="sh">Interests</div><div class="st">${hobbies}</div>`:''} ${sigBlock(T)}</div></div></div>`;}
+
+  else if(tpl==='elegant'){const T='t-elegant ';html=`<div class="t-elegant"><div class="dh"><div class="dn">${name}</div>${role?`<div class="dr">${role}</div>`:''}<div class="dc">${clElegant}</div></div><div class="db">${summary?`<div class="sh">Profile</div><div class="st">${summary}</div>`:''} ${hasExp?`<div class="sh">Experience</div>${expSection(T)}`:''} ${hasEdu?`<div class="sh">Education</div>${eduSection(T)}`:''} ${skills.length?`<div class="sh">Skills</div><div style="text-align:center">${skills.map(s=>`<span class="stag">${s}</span>`).join('')}</div>`:''} ${strengthHTML(T)} ${langs?`<div class="sh">Languages</div><div class="st">${langs}</div>`:''} ${certs?`<div class="sh">Certifications</div><div class="st">${certs.replace(/\n/g,'<br>')}</div>`:''} ${hasPD?`<div class="sh">Personal Details</div>${pdGrid(T,pdData)}`:''} ${hobbies?`<div class="sh">Interests</div><div class="st">${hobbies}</div>`:''} ${sigBlock(T)}</div></div>`;}
+
+  else if(tpl==='tech'){const T='t-tech ';html=`<div class="t-tech"><div class="doc" style="background:#0d1117;min-height:600px"><div class="dh"><div class="dn">${name}</div>${role?`<div class="dr">// ${role}</div>`:''}<div class="dc">${clTech}</div></div><div class="db">${summary?`<div class="sh">About</div><div class="st">${summary}</div>`:''} ${hasExp?`<div class="sh">Experience</div>${expSection(T)}`:''} ${hasEdu?`<div class="sh">Education</div>${eduSection(T)}`:''} ${skills.length?`<div class="sh">Tech Stack</div><div>${skills.map(s=>`<span class="stag">${s}</span>`).join('')}</div>`:''} ${strengthHTML(T)} ${langs?`<div class="sh">Languages</div><div class="st">${langs}</div>`:''} ${certs?`<div class="sh">Certifications</div><div class="st">${certs.replace(/\n/g,'<br>')}</div>`:''} ${hasPD?`<div class="sh">Personal</div>${pdGrid(T,pdData)}`:''} ${hobbies?`<div class="sh">Interests</div><div class="st">${hobbies}</div>`:''} ${sigBlock(T)}</div></div></div>`;}
+
+  document.getElementById('preview').innerHTML=html;
 }
 
-function toggleCat(ci) {
-  skillCatOpen = skillCatOpen === ci ? null : ci;
-  buildSkillCats();
+function buildSkillCats(){
+  const el=document.getElementById('skill-cat-list');if(!el)return;
+  el.innerHTML=SKILL_CATS.map((cat,ci)=>`<div style="margin-bottom:5px">
+    <div onclick="toggleCat(${ci})" style="display:flex;justify-content:space-between;align-items:center;padding:7px 10px;border:1px solid var(--border);border-radius:7px;cursor:pointer;background:${skillCatOpen===ci?'#f0f7f4':'#fff'}">
+      <span style="font-size:12px;font-weight:500;color:${cat.color}">${cat.cat}</span>
+      <i class="fa-solid fa-chevron-${skillCatOpen===ci?'up':'down'}" style="font-size:10px;color:var(--muted)"></i>
+    </div>
+    ${skillCatOpen===ci?`<div style="display:flex;flex-wrap:wrap;gap:5px;padding:8px 6px;border:1px solid var(--border);border-top:none;border-radius:0 0 7px 7px;background:#fafaf8">
+      ${cat.items.map(s=>`<span onclick="toggleCatSkill('${s.replace(/'/g,"\\'")}',this)" style="font-size:11px;padding:3px 9px;border-radius:99px;cursor:pointer;border:1px solid ${cat.color};color:${skills.includes(s)?'#fff':cat.color};background:${skills.includes(s)?cat.color:'transparent'}">${s}</span>`).join('')}
+    </div>`:''}
+  </div>`).join('');
 }
 
-function toggleCatSkill(s, el) {
-  if (skills.includes(s)) {
-    skills = skills.filter(x => x !== s);
-  } else {
-    skills.push(s);
-  }
-  renderPills();
-  buildSkillCats();
-  render();
-}
+function toggleCat(ci){skillCatOpen=skillCatOpen===ci?null:ci;buildSkillCats();}
+function toggleCatSkill(s){if(skills.includes(s))skills=skills.filter(x=>x!==s);else skills.push(s);renderPills();buildSkillCats();render();}
 
-function buildStrengthList() {
-  const el = document.getElementById('strength-list');
-  if (!el) return;
-  el.innerHTML = `<div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px">
-    ${STRENGTHS.map(s=>`<span onclick="toggleStrength('${s}')" style="font-size:11px;padding:3px 9px;border-radius:99px;cursor:pointer;border:1px solid #b5963e;color:${strengths.includes(s)?'#fff':'#b5963e'};background:${strengths.includes(s)?'#b5963e':'transparent'};transition:all .12s">${s}</span>`).join('')}
-  </div>`;
-  document.getElementById('strength-pills').innerHTML = ''; // rendered inline above
+function buildStrengthList(){
+  const el=document.getElementById('strength-list');if(!el)return;
+  el.innerHTML=`<div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px">${STRENGTHS.map(s=>`<span onclick="toggleStrength('${s}')" style="font-size:11px;padding:3px 9px;border-radius:99px;cursor:pointer;border:1px solid #b5963e;color:${strengths.includes(s)?'#fff':'#b5963e'};background:${strengths.includes(s)?'#b5963e':'transparent'}">${s}</span>`).join('')}</div>`;
+  document.getElementById('strength-pills').innerHTML='';
 }
+function toggleStrength(s){if(strengths.includes(s))strengths=strengths.filter(x=>x!==s);else strengths.push(s);buildStrengthList();render();}
 
-function toggleStrength(s) {
-  if (strengths.includes(s)) strengths = strengths.filter(x => x !== s);
-  else strengths.push(s);
-  buildStrengthList();
-  render();
-}
-
-/* ── Mobile switch ── */
-function mobSwitch(tab) {
-  const isMob = window.innerWidth <= 768;
-  if (!isMob) return;
-  const lp = document.querySelector('.lpanel');
+/* ══════════════════════════════════════════
+   PRINT — fixed function
+   Ensures only the resume preview prints,
+   regardless of whether form or preview tab is active
+══════════════════════════════════════════ */
+function printResume() {
+  // On mobile: make sure rpanel is visible before printing
+  // (CSS @media print will handle hiding lpanel anyway,
+  //  but rpanel display:none on mobile would still block printing)
   const rp = document.querySelector('.rpanel');
-  const ft = document.getElementById('mob-form');
-  const pt = document.getElementById('mob-preview');
-  if (tab === 'form') {
-    lp.classList.add('mob-active'); rp.classList.remove('mob-active');
-    ft.classList.add('active');     pt.classList.remove('active');
-  } else {
-    rp.classList.add('mob-active'); lp.classList.remove('mob-active');
-    pt.classList.add('active');     ft.classList.remove('active');
-  }
+  const lp = document.querySelector('.lpanel');
+
+  // Temporarily force both visible so browser can compose the print layout
+  const rpOldDisplay = rp.style.display;
+  const lpOldDisplay = lp.style.display;
+  rp.style.display = 'flex';   // ensure rpanel renders
+  lp.style.display = 'none';   // hide lpanel immediately
+
+  setTimeout(() => {
+    window.print();
+    // Restore after print dialog closes
+    setTimeout(() => {
+      rp.style.display = rpOldDisplay;
+      lp.style.display = lpOldDisplay;
+    }, 500);
+  }, 60);
 }
 
-function initMobile() {
-  if (window.innerWidth <= 768) {
+function mobSwitch(tab){
+  const isMob=window.innerWidth<=768;if(!isMob)return;
+  const lp=document.querySelector('.lpanel'),rp=document.querySelector('.rpanel');
+  const ft=document.getElementById('mob-form'),pt=document.getElementById('mob-preview');
+  if(tab==='form'){lp.classList.add('mob-active');rp.classList.remove('mob-active');ft.classList.add('active');pt.classList.remove('active');}
+  else{rp.classList.add('mob-active');lp.classList.remove('mob-active');pt.classList.add('active');ft.classList.remove('active');}
+}
+
+function initMobile(){
+  if(window.innerWidth<=768){
     document.querySelector('.lpanel').classList.add('mob-active');
     document.querySelector('.rpanel').classList.remove('mob-active');
-  } else {
-    ['lpanel','rpanel'].forEach(c => {
-      const el = document.querySelector('.'+c);
-      el.classList.remove('mob-active');
-      el.style.display = '';
-    });
+  }else{
+    ['lpanel','rpanel'].forEach(c=>{const el=document.querySelector('.'+c);el.classList.remove('mob-active');el.style.display='';});
   }
 }
 
-window.addEventListener('resize', initMobile);
-
-function printResume() { window.print(); }
-
-// Init
-addExp();
-addEdu();
-initMobile();
-render();
+window.addEventListener('resize',initMobile);
+addExp();addEdu();initMobile();render();
 </script>
 </body>
 </html>
