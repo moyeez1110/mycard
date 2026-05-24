@@ -22,10 +22,10 @@ const _CFG = {
 
 /* ── Credit prices per page (filename match) ── */
 const PAGE_CREDITS = {
-  'resume':           5,
-   'FMB-1':           2,
-   'AFFIDAVIT':       10,
-  // default fallback → 50
+  'రెజ్యూమ్ తయారు చేయండి':           10,
+   'fmb application':           2,
+   'after marriage residece certificate affidavit':       10,
+  // default fallback → 5
 };
 
 /* ── Detect credits from current page filename ── */
