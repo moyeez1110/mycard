@@ -1,8 +1,8 @@
 /* ═══════════════════════════════════════════════════════
-   జన సేవా కేంద్రం — Service Worker v2
+   జన సేవా కేంద్రం — Service Worker v3
    ═══════════════════════════════════════════════════════ */
 
-const CACHE_NAME = 'jseva-cache-v2';
+const CACHE_NAME = 'jseva-cache-v3';
 
 const STATIC_ASSETS = [
   './',
