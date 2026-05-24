@@ -25,7 +25,7 @@ const PAGE_CREDITS = {
   'resume':           5,
    'FMB-1':           2,
    'AFFIDAVIT':       10,
-  // default fallback → 5
+  // default fallback → 50
 };
 
 /* ── Detect credits from current page filename ── */
