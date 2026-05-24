@@ -22,10 +22,10 @@ const _CFG = {
 
 /* ── Credit prices per page (filename match) ── */
 const PAGE_CREDITS = {
-  'రెజ్యూమ్ తయారు చేయండి':           10,
+  'రెజ్యూమ్ తయారు చేయండి':    10,
    'fmb application':           2,
    'after marriage residece certificate affidavit':       10,
-  // default fallback → 5
+  // default fallback → 0
 };
 
 /* ── Detect credits from current page filename ── */
