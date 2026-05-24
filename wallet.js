@@ -23,6 +23,8 @@ const _CFG = {
 /* ── Credit prices per page (filename match) ── */
 const PAGE_CREDITS = {
   'resume':           5,
+   'FMB-1':           2,
+   'AFFIDAVIT':       10,
   // default fallback → 5
 };
 
