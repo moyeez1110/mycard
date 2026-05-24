@@ -2282,9 +2282,6 @@ const FB_CONFIG = {
 firebase.initializeApp(FB_CONFIG);
 const db = firebase.firestore();
 
-// Debug token — testing కోసం
-self.FIREBASE_APPCHECK_DEBUG_TOKEN = '75420D2C-E088-4F68-B3F2-8A145E6DC8B5';
-
 const appCheck = firebase.appCheck();
 appCheck.activate(
   new firebase.appCheck.ReCaptchaEnterpriseProvider('6Le6m_gsAAAAAE76lWmQb1s-z8qXd2lMyMrQJKGu'),
