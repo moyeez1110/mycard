@@ -22,19 +22,18 @@ const _CFG = {
 
 /* ── Credit prices per page (filename match) ── */
 const PAGE_CREDITS = {
-  'రెజ్యూమ్ తయారు చేయండి':    10,
-   'fmb application':           2,
-   'after marriage residece certificate affidavit':       10,
-  // default fallback → 0
+  'after_marriage_residence_affidavit.html': 10,
+  'fmb-1.html':                               2,
+  'resume.html':                             10,
 };
 
 /* ── Detect credits from current page filename ── */
 function _getCredits() {
   const fname = location.pathname.split('/').pop().toLowerCase();
   for (const [key, val] of Object.entries(PAGE_CREDITS)) {
-    if (fname.includes(key)) return val;
+    if (fname === key) return val;
   }
-  return 5; // default
+  return 0; // default — free
 }
 
 /* ── Detect service name from page title — clean suffixes ── */
