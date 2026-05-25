@@ -861,8 +861,15 @@ function clearAll() {
    PRINT
 ══════════════════════════════════════════════ */
 function doPrint() {
-  showToast('🖨 Printing...', '#1a5a3a');
-  setTimeout(() => window.print(), 300);
+  walletGate({
+    service: '🖨️ FMB Print',
+    credits: 2,
+    emoji: '🖨️',
+    onConfirm: () => {
+      showToast('🖨 Printing...', '#1a5a3a');
+      setTimeout(() => window.print(), 300);
+    }
+  });
 }
 
 /* ══════════════════════════════════════════════
