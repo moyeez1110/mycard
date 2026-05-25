@@ -23,7 +23,7 @@ const _CFG = {
 /* ── Credit prices per page (filename match) ── */
 const PAGE_CREDITS = {
   'after_marriage_residence_affidavit.html': 10,
-  ''fmb-1.html':                             2,
+  'fmb-1.html':                               2,
   'resume.html':                             10,
 };
 
