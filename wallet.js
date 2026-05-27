@@ -25,7 +25,7 @@ const PAGE_CREDITS = {
   'after_marriage_residence_affidavit.html': 10,
   'fmb-1.html':                               2,
   'resume.html':                             10,
-  'Gap Certificate / Study Gap Affidavit':   10, 
+  'gapcertificate.html':                     10, 
 };
 
 /* ── Detect credits from current page filename ── */
