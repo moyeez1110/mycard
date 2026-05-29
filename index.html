@@ -3145,9 +3145,12 @@ function renderServices() {
     const priceBadge = (credits > 0 && WALLET_AGENT_ID)
       ? `<span class="service-price-badge">₹${credits}</span>`
       : '';
-    // Always open directly — deduct happens at print/download in service page
-    return `
-    <div class="service-card ${color}" onclick="safeOpen('${s.page}')">
+    // Paid services: charge at open via wallet modal
+const _onclick = (credits > 0 && WALLET_AGENT_ID)
+  ? `openServiceWithWallet('${s.title.replace(/'/g,"\\'")}','${s.page}')`
+  : `safeOpen('${s.page}')`;
+return `
+<div class="service-card ${color}" onclick="${_onclick}">
       ${badge}${priceBadge}
       <div class="service-icon"><i class="${s.icon}"></i></div>
       <div class="service-name">${s.title}</div>
