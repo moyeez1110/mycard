@@ -144,6 +144,70 @@ select.fi{cursor:pointer}
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <script src="wallet.js"></script>
+  <script src="wallet.js"></script>
+
+<!-- ══ SELF-CONTAINED TOKEN GATE (wallet.js తో independent) ══ -->
+<script>
+(async function tokenGate() {
+  /* 1. Overlay వెంటనే show చేయి */
+  const ov = document.createElement('div');
+  ov.style.cssText = 'position:fixed;inset:0;z-index:2147483647;background:#0a0f1a;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;font-family:DM Sans,sans-serif';
+  ov.innerHTML = `
+    <style>@keyframes _sp{to{transform:rotate(360deg)}}</style>
+    <div style="width:44px;height:44px;border:3px solid rgba(79,255,176,.15);border-top-color:#4fffb0;border-radius:50%;animation:_sp .8s linear infinite"></div>
+    <p style="color:#8899aa;font-size:14px;margin:0">Access verify అవుతోంది...</p>`;
+  document.body.appendChild(ov);
+
+  /* 2. URL నుండి token తీయి */
+  const token = new URLSearchParams(location.search).get('t');
+  if (token) history.replaceState({}, '', location.pathname);
+
+  /* 3. Token లేకపోతే — deny */
+  if (!token) { deny(ov, 'Token లేదు. App నుండి service తెరవండి.'); return; }
+
+  /* 4. Firebase REST తో validate చేయి */
+  try {
+    const CFG = typeof _CFG !== 'undefined' ? _CFG : null;
+    if (!CFG) { deny(ov, 'Config error. wallet.js లోడ్ కాలేదు.'); return; }
+
+    const url = `https://firestore.googleapis.com/v1/projects/${CFG.projectId}/databases/(default)/documents/svc_tokens/${token}?key=${CFG.apiKey}`;
+    const res  = await fetch(url);
+    if (!res.ok) { deny(ov, 'Token verify కాలేదు.'); return; }
+
+    const doc = await res.json();
+    const f   = doc.fields || {};
+    const used = f.used?.booleanValue === true;
+    const exp  = Number(f.exp?.integerValue || 0);
+
+    if (used || exp < Date.now()) {
+      deny(ov, 'Token expired లేదా already used.\nApp లో మళ్ళీ pay చేయండి.'); return;
+    }
+
+    /* 5. Valid — grant access */
+    window._svcToken = token;
+    ov.remove();
+
+  } catch (e) {
+    deny(ov, 'Network error. Internet check చేయండి.');
+  }
+
+  function deny(ov, reason) {
+    ov.innerHTML = `
+      <div style="text-align:center;padding:28px 24px;max-width:320px;animation:fadeIn .4s ease">
+        <style>@keyframes fadeIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}</style>
+        <div style="font-size:52px;margin-bottom:16px">🔒</div>
+        <h2 style="color:#4fffb0;font-size:20px;font-weight:700;margin:0 0 10px">Access Denied</h2>
+        <p style="color:#8899aa;font-size:13.5px;line-height:1.7;margin:0 0 6px">
+          జన సేవా App నుండి మాత్రమే<br>ఈ సేవను access చేయగలరు.
+        </p>
+        <p style="color:#445;font-size:12px;margin:0 0 24px">${reason}</p>
+        <button onclick="window.close()" style="background:#4fffb0;color:#0a0f1a;border:none;padding:12px 32px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:DM Sans,sans-serif">
+          ← వెనక్కి వెళ్ళు
+        </button>
+      </div>`;
+  }
+})();
+</script>
 </head>
 <body>
 
