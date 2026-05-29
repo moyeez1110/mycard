@@ -2407,19 +2407,18 @@ async function confirmServiceDeduct() {
       timestamp: firebase.firestore.FieldValue.serverTimestamp(),
     });
     closeWalletConfirm();
-    closeWalletConfirm();
-// Generate one-time access token
-const _tok = ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
-  (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c/4).toString(16));
-db.collection('svc_tokens').doc(_tok).set({
-  uid:     WALLET_AGENT_ID,
-  service: title.toLowerCase(),
-  exp:     Date.now() + 2 * 60 * 60 * 1000,
-  used:    false,
-  created: firebase.firestore.FieldValue.serverTimestamp()
-}).then(() => {
-  window.open(page + '?t=' + _tok, '_blank');
-});
+    // Generate one-time access token for paid service
+    const _tok = ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+      (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c/4).toString(16));
+    db.collection('svc_tokens').doc(_tok).set({
+      uid:     WALLET_AGENT_ID,
+      service: title.toLowerCase(),
+      exp:     Date.now() + 2 * 60 * 60 * 1000,
+      used:    false,
+      created: firebase.firestore.FieldValue.serverTimestamp()
+    }).then(() => {
+      window.open(page + '?t=' + _tok, '_blank');
+    });
   } catch(e) {
     btn.textContent = e.message === 'Insufficient balance' ? '⚠ Balance తక్కువ' : '❌ Error — Retry';
     btn.disabled = false;
@@ -3145,12 +3144,12 @@ function renderServices() {
     const priceBadge = (credits > 0 && WALLET_AGENT_ID)
       ? `<span class="service-price-badge">₹${credits}</span>`
       : '';
-    // Paid services: charge at open via wallet modal
-const _onclick = (credits > 0 && WALLET_AGENT_ID)
-  ? `openServiceWithWallet('${s.title.replace(/'/g,"\\'")}','${s.page}')`
-  : `safeOpen('${s.page}')`;
-return `
-<div class="service-card ${color}" onclick="${_onclick}">
+    // Paid services → wallet modal + token. Free services → direct open.
+    const _onclick = (credits > 0 && WALLET_AGENT_ID)
+      ? `openServiceWithWallet('${s.title.replace(/'/g,"\\'")}','${s.page}')`
+      : `safeOpen('${s.page}')`;
+    return `
+    <div class="service-card ${color}" onclick="${_onclick}">
       ${badge}${priceBadge}
       <div class="service-icon"><i class="${s.icon}"></i></div>
       <div class="service-name">${s.title}</div>
