@@ -20,6 +20,126 @@ const _CFG = {
   appId:             "1:786586023405:web:b303ce1215df8d2bdca3e4"
 };
 
+/* ═══════════════════════════════════════════════════════════
+   TOKEN SECURITY — Paid page access control
+   ═══════════════════════════════════════════════════════════ */
+
+/* Stores the validated access token for this session */
+window._svcToken = null;
+
+/* Simple UUID generator */
+function _uuid() {
+  if (typeof crypto !== 'undefined' && crypto.randomUUID) return crypto.randomUUID();
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+    const r = Math.random() * 16 | 0;
+    return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+  });
+}
+
+/* Validate token via Firebase REST (no SDK needed) */
+async function _validateToken(token) {
+  try {
+    const url = `https://firestore.googleapis.com/v1/projects/${_CFG.projectId}/databases/(default)/documents/svc_tokens/${token}?key=${_CFG.apiKey}`;
+    const res = await fetch(url);
+    if (!res.ok) return false;
+    const doc = await res.json();
+    if (!doc.fields) return false;
+    const used = doc.fields.used?.booleanValue === true;
+    const exp  = Number(doc.fields.exp?.integerValue || 0);
+    if (used || exp < Date.now()) return false;
+    return true;
+  } catch (e) { return false; }
+}
+
+/* Mark token as used after print/download */
+async function _markTokenUsed(token) {
+  try {
+    const url = `https://firestore.googleapis.com/v1/projects/${_CFG.projectId}/databases/(default)/documents/svc_tokens/${token}?key=${_CFG.apiKey}&updateMask.fieldPaths=used&updateMask.fieldPaths=usedAt`;
+    await fetch(url, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        fields: {
+          used:   { booleanValue: true },
+          usedAt: { integerValue: String(Date.now()) }
+        }
+      })
+    });
+  } catch(e) { /* silent */ }
+}
+
+/* Full-screen access denied overlay */
+function _showTokDenied(overlay, reason) {
+  overlay.innerHTML = `
+    <style>
+      #_tok_denied_box { animation: _tokFadeIn 0.4s ease; }
+      @keyframes _tokFadeIn { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+    </style>
+    <div id="_tok_denied_box" style="text-align:center;padding:32px 24px;max-width:320px">
+      <div style="font-size:56px;margin-bottom:20px">🔒</div>
+      <h2 style="color:#4fffb0;font-size:22px;font-weight:700;margin:0 0 12px;font-family:'Inter',sans-serif">Access Denied</h2>
+      <p style="color:#8899aa;font-size:14px;line-height:1.7;margin:0 0 8px;font-family:'Inter',sans-serif">
+        జన సేవా App నుండి మాత్రమే<br>ఈ సేవను access చేయగలరు.
+      </p>
+      <p style="color:#445566;font-size:12px;margin:0 0 28px;font-family:'Inter',sans-serif">${reason}</p>
+      <button onclick="window.close()" style="
+        background:#4fffb0;color:#0a0f1a;border:none;
+        padding:12px 32px;border-radius:10px;font-size:14px;
+        font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;
+        transition:opacity 0.2s;
+      " onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
+        ← వెనక్కి వెళ్ళు
+      </button>
+    </div>
+  `;
+}
+
+/* Token gate — localStorage based (same-origin, no Firebase needed) */
+function _verifyTokenGate() {
+  const credits = _getCredits();
+  if (credits === 0) return; // free page — no gate
+
+  /* Build overlay immediately — blocks content while checking */
+  const overlay = document.createElement('div');
+  overlay.id = '_tok_overlay';
+  overlay.style.cssText = [
+    'position:fixed','inset:0','z-index:2147483646',
+    'background:#0a0f1a','display:flex','flex-direction:column',
+    'align-items:center','justify-content:center','gap:20px','font-family:Inter,sans-serif'
+  ].join(';');
+  overlay.innerHTML = `
+    <style>@keyframes _tspin{to{transform:rotate(360deg)}}</style>
+    <div style="width:44px;height:44px;border:3px solid rgba(79,255,176,0.15);
+      border-top-color:#4fffb0;border-radius:50%;animation:_tspin 0.8s linear infinite"></div>
+    <p style="color:#8899aa;font-size:14px;margin:0">Access verify అవుతోంది...</p>
+  `;
+  document.body.appendChild(overlay);
+
+  try {
+    /* Read token from localStorage — set by index.html after payment */
+    const raw     = localStorage.getItem('_jseva_svc');
+    const stored  = raw ? JSON.parse(raw) : null;
+
+    if (!stored || !stored.token) {
+      _showTokDenied(overlay, 'Token లేదు — App నుండి service తెరవండి.');
+      return;
+    }
+    if (stored.exp < Date.now()) {
+      localStorage.removeItem('_jseva_svc');
+      _showTokDenied(overlay, 'Token expired (2hr limit) — App లో మళ్ళీ try చేయండి.');
+      return;
+    }
+
+    /* Valid — grant access */
+    window._svcToken = stored.token;
+    localStorage.removeItem('_jseva_svc'); // single use
+    overlay.remove();
+
+  } catch(e) {
+    _showTokDenied(overlay, 'Error: ' + e.message);
+  }
+}
+
 /* ── Credit prices per page (filename match) ── */
 const PAGE_CREDITS = {
   'after_marriage_residence_affidavit.html': 10,
@@ -98,6 +218,20 @@ window.print = function() {
   if (_printHandledByBtn) { _printHandledByBtn = false; _originalPrint(); return; }
   const agentId = _getAgentId();
   if (!agentId) { _originalPrint(); return; }
+
+  /* ── Token-based access: already paid at page open ── */
+  if (window._svcToken) {
+    _markTokenUsed(window._svcToken).then(() => { window._svcToken = null; });
+    _originalPrint();
+    return;
+  }
+
+  /* ── Paid page with no valid token ── */
+  if (_getCredits() > 0) {
+    alert('⚠️ జన సేవా App నుండి service తెరవండి. Direct access allowed కాదు.');
+    return;
+  }
+
   walletGate({
     service:   '🖨️ ' + _getServiceName() + ' — Print',
     credits:   _getCredits(),
@@ -362,13 +496,33 @@ function _hookButtons() {
       const emoji  = isPrint ? '🖨️' : '📄';
       const action = isPrint ? 'Print' : 'Download';
 
+      /* ── Token present → already paid, just execute ── */
+      if (window._svcToken) {
+        _markTokenUsed(window._svcToken).then(() => { window._svcToken = null; });
+        if (isPrint) {
+          _printHandledByBtn = true;
+          _originalPrint();
+        } else if (origOnclick) {
+          origOnclick.call(btn);
+        } else if (origAttr) {
+          // eslint-disable-next-line no-new-func
+          new Function(origAttr).call(btn);
+        }
+        return;
+      }
+
+      /* ── Paid page with no token → block ── */
+      if (_getCredits() > 0) {
+        alert('⚠️ జన సేవా App నుండి service తెరవండి. Direct access allowed కాదు.');
+        return;
+      }
+
       walletGate({
         service:   `${emoji} ${serviceName} — ${action}`,
         credits,
         emoji,
         onConfirm: () => {
           if (isPrint) {
-            // Set flag so window.print intercept knows button already handled this
             _printHandledByBtn = true;
             _originalPrint();
           } else if (origOnclick) {
@@ -394,6 +548,7 @@ function _observe() {
 ══════════════════════════════════════ */
 function _boot() {
   _injectUI();
+  _verifyTokenGate(); // ← token gate first (async, shows overlay while checking)
   _hookButtons();
   _observe();
   _loadBalanceChip();
