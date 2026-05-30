@@ -336,7 +336,7 @@ select.fi{cursor:pointer}
 
 <script>
 /* ══ CONFIG ══ */
-const GAS_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQgCCtcdcRdQYX3Zdhdc_BDmZPU2tw6tKUaUmuH8w_LobsbEOXq1LK0kbNSiPSNu0Lst1J_gKX-_GPl/pub?gid=1586432148&single=true&output=csv'; // ← Replace with your GAS Web App URL
+const GAS_URL = 'YOUR_GAS_DEPLOYMENT_URL_HERE'; // ← Replace with your GAS Web App URL
 
 /* ══ STATE ══ */
 let skills=[], expBlocks=[], eduBlocks=[], pickedSum=null, strengths=[], skillCatOpen=null, expId=0, eduId=0;
@@ -611,75 +611,5 @@ async function generatePDF(){
 /* ── Init ── */
 addExp(); addEdu();
 </script>
-<!-- ══ TOKEN GATE — </body> కి just before paste చేయండి ══ -->
-<script>
-(async function() {
-  /* ── మీ Firebase credentials ఇక్కడ directly పెట్టండి ── */
-  var PROJ = 'janseva-wallet';   // ← replace
-  var KEY  = 'AIzaSyA2NnpnP2WtqhgygLF-oN12R1xQhtwEmgs';      // ← replace
-
-  /* ── Overlay create & show ── */
-  var ov = document.createElement('div');
-  ov.id = '_tok_gate';
-  ov.style.cssText = [
-    'position:fixed','inset:0','z-index:2147483647',
-    'background:#0a0f1a',
-    'display:flex','flex-direction:column',
-    'align-items:center','justify-content:center','gap:20px',
-    'font-family:sans-serif'
-  ].join(';');
-  ov.innerHTML =
-    '<style>@keyframes _sp{to{transform:rotate(360deg)}}</style>' +
-    '<div style="width:44px;height:44px;border:3px solid rgba(79,255,176,.15);' +
-      'border-top-color:#4fffb0;border-radius:50%;animation:_sp .8s linear infinite"></div>' +
-    '<p style="color:#8899aa;font-size:14px;margin:0">Access verify అవుతోంది...</p>';
-  document.body.appendChild(ov);
-
-  /* ── Token extract from URL ── */
-  var token = new URLSearchParams(window.location.search).get('t');
-  if (token) history.replaceState({}, '', window.location.pathname);
-
-  if (!token) { _deny('Token లేదు. App నుండి service తెరవండి.'); return; }
-
-  /* ── Firebase REST validate ── */
-  try {
-    var url = 'https://firestore.googleapis.com/v1/projects/' + PROJ +
-              '/databases/(default)/documents/svc_tokens/' + token +
-              '?key=' + KEY;
-    var res  = await fetch(url);
-    if (!res.ok) { _deny('Server error: ' + res.status); return; }
-
-    var doc  = await res.json();
-    var f    = doc.fields || {};
-    var used = (f.used && f.used.booleanValue === true);
-    var exp  = Number((f.exp && f.exp.integerValue) || 0);
-
-    if (used)             { _deny('Token already used. App లో మళ్ళీ pay చేయండి.'); return; }
-    if (exp < Date.now()) { _deny('Token expired (2hr limit). App లో మళ్ళీ try చేయండి.'); return; }
-
-    /* ── VALID — grant access ── */
-    window._svcToken = token;
-    document.getElementById('_tok_gate').remove();
-
-  } catch(e) {
-    _deny('Network error: ' + e.message);
-  }
-
-  function _deny(reason) {
-    document.getElementById('_tok_gate').innerHTML =
-      '<div style="text-align:center;padding:28px 20px;max-width:300px">' +
-        '<div style="font-size:52px;margin-bottom:16px">🔒</div>' +
-        '<h2 style="color:#4fffb0;font-size:20px;font-weight:700;margin:0 0 10px;font-family:sans-serif">Access Denied</h2>' +
-        '<p style="color:#8899aa;font-size:13px;line-height:1.7;margin:0 0 6px;font-family:sans-serif">' +
-          'జన సేవా App నుండి మాత్రమే<br>ఈ సేవను access చేయగలరు.</p>' +
-        '<p style="color:#556;font-size:11.5px;margin:0 0 24px;font-family:sans-serif">' + reason + '</p>' +
-        '<button onclick="window.close()" style="background:#4fffb0;color:#0a0f1a;border:none;' +
-          'padding:12px 32px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer">← వెనక్కి వెళ్ళు</button>' +
-      '</div>';
-  }
-})();
-</script>
-</body>
-</html>
 </body>
 </html>
