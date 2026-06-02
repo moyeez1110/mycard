@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Caste Affidavit – Jana Seva Kendra</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   CSS VARIABLES – change once, applies everywhere
+   ============================================================ */
+:root {
+  --brand:        #1a56a0;
+  --brand-dark:   #0f3870;
+  --accent:       #e8a020;
+  --bg-panel:     #f0f4f9;
+  --bg-input:     #ffffff;
+  --border:       #d1d8e8;
+  --text-dark:    #1a202c;
+  --text-muted:   #64748b;
+  --success:      #16a34a;
+  --panel-w:      340px;
+  --doc-font:     'Noto Serif', 'Times New Roman', serif;
+  --ui-font:      'Inter', sans-serif;
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; font-family: var(--ui-font); color: var(--text-dark); }
+
+/* ============================================================
+   LAYOUT – desktop: sidebar + preview
+   ============================================================ */
+.app-shell {
+  display: flex;
+  height: 100dvh;
+  overflow: hidden;
+  background: var(--bg-panel);
+}
+
+/* ── SIDEBAR ── */
+.sidebar {
+  width: var(--panel-w);
+  min-width: var(--panel-w);
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--border);
+  overflow: hidden;
+  transition: transform 0.3s ease;
+  z-index: 100;
+}
+
+.sidebar-head {
+  background: var(--brand);
+  color: #fff;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.sidebar-logo {
+  width: 36px; height: 36px;
+  background: var(--accent);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 13px; color: #fff; letter-spacing: -0.5px;
+}
+
+.sidebar-title { font-size: 14px; font-weight: 700; }
+.sidebar-sub   { font-size: 11px; opacity: 0.75; }
+
+.sidebar-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ── FIELD GROUPS ── */
+.field-group {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.field-group-title {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--brand);
+  background: #e8eef7;
+  padding: 6px 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.field-group-body {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+
+/* ── INPUT FIELDS ── */
+.f-wrap { display: flex; flex-direction: column; gap: 3px; }
+.f-wrap label {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.f-wrap input,
+.f-wrap select,
+.f-wrap textarea {
+  background: var(--bg-input);
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  padding: 7px 10px;
+  font-size: 13px;
+  font-family: var(--ui-font);
+  color: var(--text-dark);
+  width: 100%;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.f-wrap input:focus,
+.f-wrap select:focus,
+.f-wrap textarea:focus { border-color: var(--brand); box-shadow: 0 0 0 3px rgba(26,86,160,0.1); }
+.f-wrap textarea { resize: vertical; min-height: 60px; }
+
+/* ── ACTION BUTTONS ── */
+.sidebar-actions {
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.btn {
+  display: flex; align-items: center; justify-content: center;
+  gap: 7px; border: none; border-radius: 8px;
+  font-family: var(--ui-font); font-weight: 600;
+  cursor: pointer; transition: all 0.2s; font-size: 13px;
+  padding: 10px 14px;
+}
+.btn-primary {
+  background: var(--brand); color: #fff;
+}
+.btn-primary:hover   { background: var(--brand-dark); }
+.btn-primary:active  { transform: scale(0.98); }
+
+.btn-secondary {
+  background: #f1f5f9; color: var(--text-dark);
+  border: 1px solid var(--border);
+}
+.btn-secondary:hover { background: #e2e8f0; }
+
+.btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+/* ── PREVIEW AREA ── */
+.preview-area {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 16px;
+  background: #4a5568;
+  gap: 12px;
+}
+
+.preview-toolbar {
+  display: flex; align-items: center; gap: 10px;
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(4px);
+  border-radius: 10px;
+  padding: 8px 14px;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  width: 100%;
+  max-width: 820px;
+}
+
+.preview-label { opacity: 0.7; font-size: 11px; }
+
+/* Mobile toggle button */
+.mobile-toggle {
+  display: none;
+  position: fixed;
+  bottom: 20px; right: 20px;
+  z-index: 200;
+  background: var(--brand);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 52px; height: 52px;
+  font-size: 22px;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  align-items: center; justify-content: center;
+}
+
+/* ============================================================
+   A4 DOCUMENT STYLES
+   ============================================================ */
+.a4 {
+  width: 210mm;
+  min-height: 297mm;
+  background: #fff;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  padding: 0;
+  position: relative;
+  font-family: var(--doc-font);
+  color: #000;
+  font-size: 11.5pt;
+  line-height: 1.65;
+}
+
+/* stamp area placeholder (screen only) */
+.stamp-zone {
+  height: 3.5in;
+  border-bottom: 2px dashed #b0bec5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: repeating-linear-gradient(
+    -45deg,
+    #f8fafc,
+    #f8fafc 10px,
+    #f0f4f8 10px,
+    #f0f4f8 20px
+  );
+}
+
+.stamp-zone-label {
+  font-family: var(--ui-font);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #94a3b8;
+  border: 1px dashed #94a3b8;
+  padding: 6px 16px;
+  border-radius: 4px;
+}
+
+.doc-body {
+  padding: 18mm 18mm 14mm 20mm;
+}
+
+/* Document title */
+.doc-title {
+  text-align: center;
+  font-size: 16pt;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  margin-bottom: 22px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* Blank fields in document */
+.blank {
+  font-weight: 700;
+  border-bottom: 1.5px solid #333;
+  display: inline;
+  min-width: 80px;
+  padding: 0 2px;
+}
+
+.blank.lg  { min-width: 200px; }
+.blank.xl  { min-width: 340px; }
+.blank.sm  { min-width: 60px;  }
+.blank.xs  { min-width: 40px;  }
+
+/* Numbered clauses */
+.clauses { display: flex; flex-direction: column; gap: 14px; margin: 14px 0; }
+.clause  { display: flex; gap: 12px; text-align: justify; }
+.cl-num  { min-width: 22px; font-weight: 700; }
+
+/* Signature row */
+.sig-row {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 40px;
+  gap: 20px;
+}
+.sig-block { text-align: center; }
+.sig-line {
+  width: 180px;
+  border-bottom: 1.5px solid #000;
+  margin: 0 auto 4px;
+}
+.sig-label { font-size: 9.5pt; font-weight: 700; letter-spacing: 0.08em; }
+
+/* Sworn block */
+.sworn-block {
+  margin-top: 20px;
+  font-size: 10.5pt;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* ============================================================
+   TOAST NOTIFICATION
+   ============================================================ */
+.toast {
+  position: fixed;
+  bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px);
+  background: #1e293b; color: #fff;
+  padding: 10px 22px; border-radius: 100px;
+  font-size: 13px; font-weight: 600;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  transition: transform 0.3s cubic-bezier(.22,1,.36,1);
+  z-index: 9999;
+  white-space: nowrap;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* ============================================================
+   MOBILE – stacked layout
+   ============================================================ */
+@media (max-width: 768px) {
+  .app-shell { flex-direction: column; overflow: visible; height: auto; }
+
+  .sidebar {
+    width: 100%;
+    min-width: unset;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 100dvh;
+    transform: translateY(-100%);
+  }
+
+  .sidebar.open { transform: translateY(0); }
+
+  .mobile-toggle { display: flex; }
+
+  .preview-area {
+    padding: 12px 8px;
+    min-height: 100dvh;
+  }
+
+  .a4 {
+    width: 100%;
+    min-width: unset;
+    transform-origin: top left;
+  }
+
+  .preview-toolbar { max-width: 100%; }
+
+  /* Scale A4 to fit mobile screen */
+  .a4-scaler {
+    width: 100%;
+    overflow-x: auto;
+  }
+}
+
+/* ============================================================
+   PRINT STYLES
+   ============================================================ */
+@media print {
+  @page { size: A4; margin: 0; }
+
+  html, body { height: auto; overflow: visible; }
+
+  .sidebar,
+  .preview-area > *:not(.a4-scaler),
+  .preview-toolbar,
+  .mobile-toggle,
+  .stamp-zone,
+  .toast { display: none !important; }
+
+  .app-shell { display: block; background: white; }
+  .preview-area { background: white; padding: 0; display: block; overflow: visible; }
+  .a4-scaler { width: auto; overflow: visible; }
+
+  .a4 {
+    width: 210mm;
+    min-height: 297mm;
+    box-shadow: none;
+    padding: 0;
+  }
+
+  .doc-body {
+    padding: 3.5in 18mm 14mm 20mm; /* top = stamp area */
+  }
+
+  .blank { border-bottom: 1.2px solid #000; }
+}
+</style>
+</head>
+<body>
+
+<div class="app-shell">
+
+  <!-- ══════════════ SIDEBAR ══════════════ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-head">
+      <div class="sidebar-logo">జన</div>
+      <div>
+        <div class="sidebar-title">Jana Seva Kendra</div>
+        <div class="sidebar-sub">Caste Affidavit</div>
+      </div>
+    </div>
+
+    <div class="sidebar-body">
+
+      <!-- DEPONENT -->
+      <div class="field-group">
+        <div class="field-group-title">👤 Deponent Details</div>
+        <div class="field-group-body">
+          <div class="f-wrap">
+            <label>Full Name</label>
+            <input id="i-name" type="text" placeholder="e.g. RAJU KUMAR" oninput="live()" style="text-transform:uppercase">
+          </div>
+          <div class="row-2">
+            <div class="f-wrap">
+              <label>Relation</label>
+              <select id="i-rel" onchange="live()">
+                <option value="S/o.">S/o. (Son)</option>
+                <option value="D/o.">D/o. (Daughter)</option>
+                <option value="W/o.">W/o. (Wife)</option>
+              </select>
+            </div>
+            <div class="f-wrap">
+              <label>Father / Husband</label>
+              <input id="i-father" type="text" placeholder="Father's Name" oninput="live()" style="text-transform:uppercase">
+            </div>
+          </div>
+          <div class="row-3">
+            <div class="f-wrap">
+              <label>Age</label>
+              <input id="i-age" type="number" placeholder="30" oninput="live()">
+            </div>
+            <div class="f-wrap">
+              <label>DOB</label>
+              <input id="i-dob" type="text" placeholder="DD-MM-YYYY" oninput="live()">
+            </div>
+            <div class="f-wrap">
+              <label>Aadhar No.</label>
+              <input id="i-aadhar" type="text" placeholder="XXXX XXXX XXXX" oninput="live()">
+            </div>
+          </div>
+          <div class="f-wrap">
+            <label>Occupation</label>
+            <input id="i-occ" type="text" placeholder="Agriculture / Business…" oninput="live()" style="text-transform:uppercase">
+          </div>
+        </div>
+      </div>
+
+      <!-- ADDRESS -->
+      <div class="field-group">
+        <div class="field-group-title">🏠 Address</div>
+        <div class="field-group-body">
+          <div class="row-2">
+            <div class="f-wrap">
+              <label>H.No.</label>
+              <input id="i-hno" type="text" placeholder="4-78/A" oninput="live()">
+            </div>
+            <div class="f-wrap">
+              <label>Colony / Street</label>
+              <input id="i-colony" type="text" placeholder="Main Road" oninput="live()" style="text-transform:uppercase">
+            </div>
+          </div>
+          <div class="row-2">
+            <div class="f-wrap">
+              <label>Village / Town</label>
+              <input id="i-village" type="text" placeholder="Narayanapuram" oninput="live()" style="text-transform:uppercase">
+            </div>
+            <div class="f-wrap">
+              <label>Mandal</label>
+              <input id="i-mandal" type="text" placeholder="Mandal" oninput="live()" style="text-transform:uppercase">
+            </div>
+          </div>
+          <div class="row-3">
+            <div class="f-wrap">
+              <label>District</label>
+              <input id="i-dist" type="text" placeholder="District" oninput="live()" style="text-transform:uppercase">
+            </div>
+            <div class="f-wrap">
+              <label>State</label>
+              <input id="i-state" type="text" placeholder="Telangana" oninput="live()" value="Telangana" style="text-transform:uppercase">
+            </div>
+            <div class="f-wrap">
+              <label>Pincode</label>
+              <input id="i-pin" type="text" placeholder="500001" oninput="live()">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CASTE DETAILS -->
+      <div class="field-group">
+        <div class="field-group-title">📋 Caste / Community Details</div>
+        <div class="field-group-body">
+          <div class="f-wrap">
+            <label>Caste Name</label>
+            <input id="i-caste" type="text" placeholder="e.g. BC-D MUDIRAJ" oninput="live()" style="text-transform:uppercase">
+          </div>
+          <div class="row-3">
+            <div class="f-wrap">
+              <label>Sl.No.</label>
+              <input id="i-slno" type="text" placeholder="22" oninput="live()">
+            </div>
+            <div class="f-wrap">
+              <label>G.O.MS No.</label>
+              <input id="i-go" type="text" placeholder="58" oninput="live()">
+            </div>
+            <div class="f-wrap">
+              <label>G.O. Date</label>
+              <input id="i-godate" type="text" placeholder="DD-MM-YYYY" oninput="live()">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- EXECUTION -->
+      <div class="field-group">
+        <div class="field-group-title">✍️ Execution / Swearing</div>
+        <div class="field-group-body">
+          <div class="row-2">
+            <div class="f-wrap">
+              <label>Date</label>
+              <input id="i-vdate" type="text" placeholder="DD-MM-YYYY" oninput="live()">
+            </div>
+            <div class="f-wrap">
+              <label>Place</label>
+              <input id="i-vplace" type="text" placeholder="Hyderabad" oninput="live()" style="text-transform:uppercase">
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /sidebar-body -->
+
+    <!-- ACTION BUTTONS -->
+    <div class="sidebar-actions">
+      <button class="btn btn-primary" onclick="window.print()">
+        🖨️ Print A4 Document
+      </button>
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="copyText()">📋 Copy Text</button>
+        <button class="btn btn-secondary" onclick="clearAll()">🗑️ Clear All</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ══════════════ PREVIEW AREA ══════════════ -->
+  <main class="preview-area">
+    <div class="preview-toolbar">
+      <span>📄</span>
+      <span>Live Preview — A4 Document</span>
+      <span class="preview-label" style="margin-left:auto">Fill fields on left → prints perfectly</span>
+    </div>
+
+    <div class="a4-scaler">
+      <div class="a4" id="doc">
+
+        <!-- STAMP PAPER ZONE (screen only) -->
+        <div class="stamp-zone">
+          <div class="stamp-zone-label">⬆ 3.5" Non-Judicial Stamp Paper Area ⬆</div>
+        </div>
+
+        <!-- DOCUMENT BODY -->
+        <div class="doc-body">
+
+          <div class="doc-title">AFFIDAVIT</div>
+
+          <!-- OPENING PARAGRAPH -->
+          <p style="text-align:justify; margin-bottom:16px;">
+            I, <span class="blank lg" id="o-name">____________________</span>,
+            <span id="o-rel">S/o.</span>
+            <span class="blank lg" id="o-father">____________________</span>,
+            aged about <span class="blank xs" id="o-age">____</span> years,
+            Occupation: <span class="blank" id="o-occ">______________</span>,
+            R/o, <span class="blank xl" id="o-address">__________________________________________________________</span>,
+            Aadhar No. <span class="blank" id="o-aadhar">________________</span>,
+            do hereby solemnly affirm and state on oath as under:
+          </p>
+
+          <!-- CLAUSES -->
+          <div class="clauses">
+
+            <div class="clause">
+              <span class="cl-num">1.</span>
+              <span>That I am the deponent herein and as such well acquainted with the facts of this Affidavit and fit to depose as under.</span>
+            </div>
+
+            <div class="clause">
+              <span class="cl-num">2.</span>
+              <span>
+                I state that I belong to
+                <span class="blank" id="o-caste">__________________</span> Caste,
+                Sl.No. <span class="blank xs" id="o-slno">___</span>,
+                G.O.MS. No. <span class="blank xs" id="o-go">___</span>,
+                SC ACT. dt: <span class="blank sm" id="o-godate">__________</span>
+                which is recognized by the Government of
+                <span id="o-state">Telangana State</span>.
+                My Date of Birth is <span class="blank sm" id="o-dob">__________</span>.
+              </span>
+            </div>
+
+            <div class="clause">
+              <span class="cl-num">3.</span>
+              <span>
+                That I am in need of Caste Certificate / Nativity / Community Certificate in the name of
+                <span class="blank lg" id="o-name2">____________________</span>
+                <span id="o-rel2">S/o.</span>
+                <span class="blank lg" id="o-father2">____________________</span>
+                for my further use.
+              </span>
+            </div>
+
+          </div>
+
+          <p style="text-align:justify; margin-top:16px;">
+            Hence, I request the Authority to kindly issue Caste Certificate to self, consider the same and oblige.
+          </p>
+
+          <p style="text-align:justify; margin-top:12px;">
+            That the above contents are true and correct to the best of my knowledge, belief and trust.
+          </p>
+
+          <!-- SIGNATURE ROW -->
+          <div class="sig-row">
+            <div class="sig-block">
+              <div style="font-size:10.5pt; font-weight:700; margin-bottom:40px; text-transform:uppercase;">
+                Sworn and signed before me<br>
+                on this <span class="blank sm" id="o-vdate">__________</span><br>
+                at <span class="blank sm" id="o-vplace">__________</span>.
+              </div>
+              <div class="sig-line"></div>
+              <div class="sig-label">NOTARY / 1ST CLASS MAGISTRATE</div>
+            </div>
+            <div class="sig-block">
+              <div style="height:40px; margin-bottom:24px;"></div>
+              <div class="sig-line"></div>
+              <div class="sig-label">DEPONENT</div>
+              <div style="font-size:9pt; margin-top:4px;" id="o-name3"></div>
+            </div>
+          </div>
+
+        </div><!-- /doc-body -->
+      </div><!-- /a4 -->
+    </div><!-- /a4-scaler -->
+  </main>
+
+</div><!-- /app-shell -->
+
+<!-- Mobile toggle -->
+<button class="mobile-toggle" id="mobileBtn" onclick="toggleSidebar()" title="Open Form">✏️</button>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ── Live field → document mapping ──
+const MAP = [
+  { i:'i-name',   o:['o-name','o-name2','o-name3'], def:'____________________',  up:true },
+  { i:'i-rel',    o:['o-rel','o-rel2'],              def:'S/o.',                  up:false },
+  { i:'i-father', o:['o-father','o-father2'],        def:'____________________',  up:true },
+  { i:'i-age',    o:'o-age',                         def:'____',                  up:false },
+  { i:'i-dob',    o:'o-dob',                         def:'__________',            up:false },
+  { i:'i-aadhar', o:'o-aadhar',                      def:'________________',      up:false },
+  { i:'i-occ',    o:'o-occ',                         def:'______________',         up:true  },
+  { i:'i-caste',  o:'o-caste',                       def:'__________________',    up:true  },
+  { i:'i-slno',   o:'o-slno',                        def:'___',                   up:false },
+  { i:'i-go',     o:'o-go',                          def:'___',                   up:false },
+  { i:'i-godate', o:'o-godate',                      def:'__________',            up:false },
+  { i:'i-state',  o:'o-state',                       def:'Telangana State',       up:true  },
+  { i:'i-vdate',  o:'o-vdate',                       def:'__________',            up:false },
+  { i:'i-vplace', o:'o-vplace',                      def:'__________',            up:true  },
+];
+
+function live() {
+  MAP.forEach(m => {
+    const el = document.getElementById(m.i);
+    if (!el) return;
+    let val = el.value.trim();
+    if (m.up && val) val = val.toUpperCase();
+    const targets = Array.isArray(m.o) ? m.o : [m.o];
+    targets.forEach(id => {
+      const t = document.getElementById(id);
+      if (t) t.textContent = val || m.def;
+    });
+  });
+
+  // Build address
+  const parts = [];
+  const hno    = v('i-hno');
+  const colony = v('i-colony');
+  const vill   = v('i-village');
+  const mand   = v('i-mandal');
+  const dist   = v('i-dist');
+  const state  = v('i-state');
+  const pin    = v('i-pin');
+
+  if (hno)    parts.push('H.No. ' + hno);
+  if (colony) parts.push(colony.toUpperCase());
+  if (vill)   parts.push(vill.toUpperCase());
+  if (mand)   parts.push(mand.toUpperCase() + ' Mandal');
+  if (dist)   parts.push(dist.toUpperCase() + ' District');
+  if (state)  parts.push(state.toUpperCase());
+  if (pin)    parts.push('– ' + pin);
+
+  const addr = document.getElementById('o-address');
+  if (addr) addr.textContent = parts.length
+    ? parts.join(', ')
+    : '__________________________________________________________';
+}
+
+function v(id) {
+  const el = document.getElementById(id);
+  return el ? el.value.trim() : '';
+}
+
+function copyText() {
+  const doc = document.getElementById('doc');
+  const text = doc.innerText
+    .replace(/⬆ 3\.5" Non-Judicial Stamp Paper Area ⬆/g, '')
+    .trim();
+  navigator.clipboard.writeText(text).then(() => toast('✅ Text copied!'));
+}
+
+function clearAll() {
+  document.querySelectorAll('.sidebar input, .sidebar select, .sidebar textarea')
+    .forEach(el => { el.value = el.tagName === 'SELECT' ? el.options[0].value : ''; });
+  document.getElementById('i-state').value = 'Telangana';
+  live();
+  toast('🗑️ Form cleared');
+}
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// Mobile sidebar toggle
+function toggleSidebar() {
+  const s = document.getElementById('sidebar');
+  const b = document.getElementById('mobileBtn');
+  const open = s.classList.toggle('open');
+  b.textContent = open ? '✕' : '✏️';
+}
+
+// Mobile A4 scaling
+function scaleA4() {
+  const scaler = document.querySelector('.a4-scaler');
+  const a4     = document.querySelector('.a4');
+  if (!scaler || !a4) return;
+  if (window.innerWidth <= 768) {
+    const ratio = scaler.offsetWidth / 794; // 210mm ≈ 794px at 96dpi
+    a4.style.transform = `scale(${ratio})`;
+    a4.style.transformOrigin = 'top left';
+    a4.style.width = '794px';
+    scaler.style.height = (297 * ratio * 3.7795) + 'px'; // maintain aspect
+  } else {
+    a4.style.transform = '';
+    a4.style.width = '';
+    scaler.style.height = '';
+  }
+}
+
+window.addEventListener('resize', scaleA4);
+
+// Init
+live();
+scaleA4();
+</script>
+</body>
+</html>
