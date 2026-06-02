@@ -155,7 +155,7 @@ const PAGE_CREDITS = {
    '07_police_verification_affidavit.html':       10,
    '08_pancard_affidavit.html':                   10,
    '09_late_birth_affidavit.html':                10,
-   '10_child_name_inclusion.html':                10,
+   
    '11_income_application.html':                  10,
    '12_rental_agreement.html':                    10,
    '13_rta_late_registration.html':               10,
