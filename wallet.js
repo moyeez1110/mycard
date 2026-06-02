@@ -146,8 +146,30 @@ const PAGE_CREDITS = {
   'fmb-1.html':                               2,
   'resume.html':                             10,
   'gapcertificate.html':                     10,
-  '02_death_affidavit.html                   10, 
-};
+   '01_caste_affidavit.html                   10,
+   '02_death_affidavit.html                   10,
+   '03_ews_affidavit.html                   10,
+   '04_obc_affidavit.html                   10,
+   '05_minority_affidavit.html                   10,
+   '06_residence_affidavit.html                   10,
+   '07_police_verification_affidavit.html                   10,
+   '08_pancard_affidavit.html                   10,
+   '09_late_birth_affidavit.html                   10,
+   '10_child_name_inclusion.html                   10,
+   '11_income_application.html                   10,
+   '12_rental_agreement.html                   10,
+   '13_rta_late_registration.html                   10,
+   '14_rta_multiple_vehicle.html                   10,
+   '15_rta_vehicle_sale.html                   10,
+   '16_police_missing_docs.html                   10,
+   '17_birth_correction.html                   10,
+   '18_residential_general.html                   10,
+   '19_gap_certificate.html                   10,
+   '20_family_member_legal_heirs.html                   10,
+   '21_bce_non_creamy_layer.html                   10,
+   'resume.html                   10,
+   'resume-builder.html                   10,
+  };
 
 /* ── Detect credits from current page filename ── */
 function _getCredits() {
