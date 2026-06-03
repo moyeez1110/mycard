@@ -169,6 +169,7 @@ const PAGE_CREDITS = {
    '21_bce_non_creamy_layer.html':                10,
    'resume.html':                                 10,
    'resume-builder.html':                         10,
+   '31_rental_agreement_2page.html':               5,
   };
 
 /* ── Detect credits from current page filename ── */
