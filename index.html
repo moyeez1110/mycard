@@ -14,6 +14,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root {
   --accent:#4fffb0; --accent-dim:#1adb7a;
@@ -2529,6 +2530,12 @@ function walletCleanup() {
 }
 
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxrd4UBac7zPuBWHfgnRVcJ8akmMS2oO4n9J_uSpJZ-08ZWTwvmuTtGiZlmkQXqeK90kw/exec';
+
+/* ═══ Supabase (replacing Google Sheets + Apps Script for content & login) ═══ */
+const SUPABASE_URL = 'https://pusmroyftjzdkcwuwsph.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB1c21yb3lmdGp6ZGtjd3V3c3BoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUwNTIzNjcsImV4cCI6MjEwMDYyODM2N30.FTL-p8QLjcdErof1-Usolqudh1aUoKkKBw1UkvrkMNI';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
 let SHEET_URL = '';
 let AGENT_TAB  = '';   // ✅ NEW: agent sheet tab name — used for direct API fetch
 let AGENT_TOKEN = '';
@@ -2558,26 +2565,45 @@ function showAlErr(msg) {
 }
 function hideAlErr() { document.getElementById('al-err').classList.remove('show'); }
 
-/* ── STEP 1: Login ── */
+/* ── STEP 1: Login (now via Supabase Auth — the input labeled
+   "Username" is used as the Email from here on) ── */
 async function doAgentLogin() {
-  const username = document.getElementById('al-username').value.trim();
+  const email = document.getElementById('al-username').value.trim();
   const password = document.getElementById('al-password').value;
-  if (!username || !password) { showAlErr('Username మరియు Password రెండూ enter చేయండి'); return; }
+  if (!email || !password) { showAlErr('Email మరియు Password రెండూ enter చేయండి'); return; }
   hideAlErr();
   const btn = document.getElementById('al-btn');
   btn.disabled = true;
   btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Verifying…';
   try {
-    const res  = await fetch(SCRIPT_URL, { method:'POST', body: JSON.stringify({ action:'agentLogin', username, password }) });
-    const data = await res.json();
-    if (data.ok && data.token && data.agentTab) {
-      localStorage.setItem('agent_session', JSON.stringify({ token: data.token, csvUrl: data.csvUrl || '', agentTab: data.agentTab, username: data.username }));
-      AGENT_TOKEN = data.token;
-      walletInit(data.username || username);
-      startApp(data.csvUrl, data.agentTab);
-    } else {
-      showAlErr(data.error || 'తప్పు username లేదా password');
+    const { data: authData, error: authErr } = await sb.auth.signInWithPassword({ email, password });
+    if (authErr) {
+      showAlErr(authErr.message === 'Invalid login credentials' ? 'తప్పు email లేదా password' : authErr.message);
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-right-to-bracket"></i> Login చేయండి';
+      return;
     }
+
+    const { data: agent, error: agentErr } = await sb
+      .from('agents')
+      .select('tab')
+      .eq('auth_user_id', authData.user.id)
+      .single();
+
+    if (agentErr || !agent) {
+      showAlErr('ఈ ఖాతాకి ఏ shop అనుసంధానం కాలేదు. Admin ని సంప్రదించండి.');
+      await sb.auth.signOut();
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-right-to-bracket"></i> Login చేయండి';
+      return;
+    }
+
+    localStorage.setItem('agent_session', JSON.stringify({ agentTab: agent.tab, email }));
+    walletInit(agent.tab); // NOTE: for your real existing agents, use whatever
+                           // identifier their current Firebase wallet already
+                           // uses, so their wallet balance isn't "lost" under
+                           // a new id. Ask before migrating a real agent.
+    startApp('', agent.tab);
   } catch(e) {
     showAlErr('Connection failed. Internet check చేయండి.');
   }
@@ -2645,6 +2671,7 @@ async function doResetPassword() {
 function doAgentLogout() {
   if (!confirm('Logout చేయాలా?')) return;
   walletCleanup();
+  sb.auth.signOut();
   localStorage.removeItem('agent_session');
   AGENT_TOKEN = '';
   location.reload();
@@ -2703,33 +2730,33 @@ function startApp(csvUrl, agentTab) {
   loadData();
 }
 
-/* ── Session check on page load (verify token with server) ── */
+/* ── Session check on page load (Supabase keeps its own session
+   in localStorage automatically — we just ask it who's logged in) ── */
 (async function checkSession() {
-  // Safety timeout: if Apps Script hangs >10s, fall through to login
+  // Safety timeout: if this hangs >10s, fall through to login
   const safetyTimer = setTimeout(() => {
-    localStorage.removeItem('agent_session');
     document.getElementById('loading-screen').style.display = 'none';
   }, 10000);
 
-  const raw = localStorage.getItem('agent_session');
-  if (raw) {
-    try {
-      const s = JSON.parse(raw);
-      if (s && s.token) {
-        const res  = await fetch(`${SCRIPT_URL}?action=agentVerify&agentToken=${encodeURIComponent(s.token)}`).catch(() => null);
-        const data = res ? await res.json().catch(() => null) : null;
-        if (data && data.ok && data.agentTab) {
-          clearTimeout(safetyTimer);
-          AGENT_TOKEN = s.token;
-          localStorage.setItem('agent_session', JSON.stringify({ ...s, csvUrl: data.csvUrl||'', agentTab: data.agentTab }));
-          walletInit(s.username || '');
-          startApp(data.csvUrl, data.agentTab);
-          return;
-        }
-        localStorage.removeItem('agent_session');
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    if (session && session.user) {
+      const { data: agent } = await sb
+        .from('agents')
+        .select('tab')
+        .eq('auth_user_id', session.user.id)
+        .single();
+      if (agent && agent.tab) {
+        clearTimeout(safetyTimer);
+        localStorage.setItem('agent_session', JSON.stringify({ agentTab: agent.tab, email: session.user.email }));
+        walletInit(agent.tab);
+        startApp('', agent.tab);
+        return;
       }
-    } catch(e) {}
-  }
+    }
+  } catch(e) {}
+
+  localStorage.removeItem('agent_session');
   clearTimeout(safetyTimer);
   document.getElementById('loading-screen').style.display = 'none';
 })();
@@ -2810,7 +2837,56 @@ function buildClient(rows) {
 async function loadData() {
   document.getElementById('error-banner').classList.remove('show');
 
-  // PRIMARY: fetch rows directly via Apps Script (no publish needed)
+  // PRIMARY: fetch agent profile + content rows from Supabase
+  if (AGENT_TAB) {
+    try {
+      const { data: agent, error: agentErr } = await sb
+        .from('agents')
+        .select('*')
+        .eq('tab', AGENT_TAB)
+        .eq('is_active', true)
+        .single();
+      if (agentErr || !agent) throw new Error('Agent not found in Supabase');
+
+      const { data: rowsRaw, error: rowsErr } = await sb
+        .from('agent_rows')
+        .select('*')
+        .eq('agent_id', agent.id)
+        .order('display_order', { ascending: true });
+      if (rowsErr) throw rowsErr;
+
+      // Profile fields as plain kv rows (buildClient reads these by key)
+      const profileRows = [
+        { key: 'shopName',    value: agent.shop_name },
+        { key: 'tagline',     value: agent.tagline },
+        { key: 'city',        value: agent.city },
+        { key: 'phone',       value: agent.phone },
+        { key: 'whatsapp',    value: agent.whatsapp },
+        { key: 'logoIcon',    value: agent.logo_icon },
+        { key: 'logoUrl',     value: agent.logo_url },
+        { key: 'accentColor', value: agent.accent_color },
+        { key: 'coverUrl',    value: agent.cover_url },
+        { key: 'mapEmbedUrl', value: agent.map_embed_url },
+        { key: 'footerText',  value: agent.footer_text },
+      ];
+
+      // Content rows reshaped to match what buildClient() already expects
+      const contentRows = (rowsRaw || []).map(r => ({
+        key: r.key, title: r.title, value: r.value, link: r.link,
+        icon: r.icon, extra: r.extra, desc: r.description, badge: r.badge,
+        share: r.share, isnew: r.isnew,
+      }));
+
+      CLIENT = buildClient([...profileRows, ...contentRows]);
+      if (CLIENT) { renderAll(); return; }
+      throw new Error('No data from Supabase');
+    } catch(e) {
+      console.warn('Supabase fetch failed:', e.message);
+    }
+  }
+
+  // OLD: Apps Script (kept temporarily as a safety net during testing —
+  // safe to delete once Supabase is confirmed working for all agents)
   if (AGENT_TAB) {
     try {
       const url = `${SCRIPT_URL}?action=getAgent&tab=${encodeURIComponent(AGENT_TAB)}`;
