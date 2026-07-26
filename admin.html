@@ -402,6 +402,7 @@ input,textarea,select{font-family:var(--font);outline:none}
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
@@ -413,6 +414,12 @@ input,textarea,select{font-family:var(--font);outline:none}
     <div class="login-sub">Citizen Digital Seva — Admin Portal</div>
     <div class="login-err" id="login-err"><i class="fas fa-circle-xmark"></i> <span id="login-err-msg">Wrong password</span></div>
     <div class="field-row">
+      <div class="field-label">Admin Email</div>
+      <div class="field-wrap">
+        <input type="email" id="email-input" class="field-input" placeholder="admin@example.com" onkeydown="if(event.key==='Enter')doLogin()"/>
+      </div>
+    </div>
+    <div class="field-row">
       <div class="field-label">Admin Password</div>
       <div class="field-wrap">
         <input type="password" id="pass-input" class="field-input" placeholder="Enter password…" onkeydown="if(event.key==='Enter')doLogin()"/>
@@ -422,7 +429,7 @@ input,textarea,select{font-family:var(--font);outline:none}
     <button class="login-btn" id="login-btn" onclick="doLogin()">
       <i class="fas fa-right-to-bracket"></i> Login
     </button>
-    <p style="font-size:11px;color:var(--text3);text-align:center;margin-top:16px">Default password: admin@123 (Sheet లో మార్చుకోండి)</p>
+    <p style="font-size:11px;color:var(--text3);text-align:center;margin-top:16px">Supabase Auth ద్వారా లాగిన్ అవుతుంది</p>
   </div>
 </div>
 
@@ -711,11 +718,24 @@ input,textarea,select{font-family:var(--font);outline:none}
    ⚙️ CONFIG — Apps Script URL ఇక్కడ పెట్టండి
    ═══════════════════════════════════════════════════ */
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby4yRN74pL8JUpMJmLN99eCrgQb0sir1UlHr4yHh7a8w17Ubt4c5g3_-13HmmcBX_BTdw/exec';
+
+/* ═══ Supabase (replacing Google Sheets + Apps Script) ═══ */
+const SUPABASE_URL = 'https://pusmroyftjzdkcwuwsph.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB1c21yb3lmdGp6ZGtjd3V3c3BoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUwNTIzNjcsImV4cCI6MjEwMDYyODM2N30.FTL-p8QLjcdErof1-Usolqudh1aUoKkKBw1UkvrkMNI';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const CONTENT_KEYS_ALL = ['update','service','pdf','doc','ticker','voice','tts','poster','pdf_notice','canva','req_service','req_doc','popup'];
+const PROFILE_FIELD_MAP = {
+  shopName: 'shop_name', tagline: 'tagline', city: 'city', phone: 'phone',
+  whatsapp: 'whatsapp', footerText: 'footer_text', logoIcon: 'logo_icon',
+  accentColor: 'accent_color', coverUrl: 'cover_url', mapEmbedUrl: 'map_embed_url',
+};
 /* ═════════════════════════════════════════════════ */
 
 let TOKEN       = localStorage.getItem('admin_token') || '';
 let AGENTS      = [];
 let CURRENT_TAB = null;
+let CURRENT_AGENT_DB = null;
 let DIRTY       = false;
 let ALL_ROWS    = [];
 
@@ -735,24 +755,32 @@ async function apiGet(params) {
 
 /* ═══ Login ═══ */
 async function doLogin() {
+  const email = document.getElementById('email-input').value.trim();
   const pass = document.getElementById('pass-input').value;
-  if (!pass) return;
+  if (!email || !pass) return;
   const btn = document.getElementById('login-btn');
   btn.disabled = true; btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Logging in…';
   try {
-    const data = await api({ action: 'login', password: pass });
-    if (data.ok) {
-      TOKEN = data.token;
-      localStorage.setItem('admin_token', TOKEN);
-      document.getElementById('login-screen').classList.add('hide');
-      document.getElementById('app').classList.add('show');
-      document.getElementById('script-url-display').textContent = SCRIPT_URL;
-      await loadAgents();
-    } else {
-      showLoginErr(data.error || 'Wrong password');
+    const { data: authData, error: authErr } = await sb.auth.signInWithPassword({ email, password: pass });
+    if (authErr) {
+      showLoginErr(authErr.message === 'Invalid login credentials' ? 'తప్పు email లేదా password' : authErr.message);
+      btn.disabled = false; btn.innerHTML = '<i class="fas fa-right-to-bracket"></i> Login';
+      return;
     }
+    const { data: adminRow } = await sb.from('admins').select('id').eq('id', authData.user.id).single();
+    if (!adminRow) {
+      showLoginErr('ఈ ఖాతాకి admin access లేదు.');
+      await sb.auth.signOut();
+      btn.disabled = false; btn.innerHTML = '<i class="fas fa-right-to-bracket"></i> Login';
+      return;
+    }
+    localStorage.setItem('admin_email', email);
+    document.getElementById('login-screen').classList.add('hide');
+    document.getElementById('app').classList.add('show');
+    document.getElementById('script-url-display').textContent = SUPABASE_URL;
+    await loadAgents();
   } catch(e) {
-    showLoginErr('Connection failed. Script URL సరిగా ఉందా?');
+    showLoginErr('Connection failed.');
   }
   btn.disabled = false; btn.innerHTML = '<i class="fas fa-right-to-bracket"></i> Login';
 }
@@ -769,40 +797,43 @@ function togglePassVis() {
 }
 
 function doLogout() {
-  localStorage.removeItem('admin_token');
+  sb.auth.signOut();
+  localStorage.removeItem('admin_email');
   TOKEN = '';
   location.reload();
 }
 
-/* Auto-login if token exists */
+/* Auto-login if a Supabase session already exists */
 window.addEventListener('DOMContentLoaded', async () => {
-  if (SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') {
-    document.getElementById('login-err-msg').textContent = 'SCRIPT_URL set చేయలేదు. admin.html లో SCRIPT_URL పెట్టండి.';
-    document.getElementById('login-err').classList.add('show');
-    return;
-  }
-  if (TOKEN) {
-    const data = await apiGet({ action: 'agents' }).catch(() => null);
-    if (data && data.ok) {
+  const { data: { session } } = await sb.auth.getSession();
+  if (session && session.user) {
+    const { data: adminRow } = await sb.from('admins').select('id').eq('id', session.user.id).single();
+    if (adminRow) {
       document.getElementById('login-screen').classList.add('hide');
       document.getElementById('app').classList.add('show');
-      AGENTS = data.agents;
-      renderSidebar();
-      renderOverview();
-    } else {
-      localStorage.removeItem('admin_token');
-      TOKEN = '';
+      document.getElementById('script-url-display').textContent = SUPABASE_URL;
+      await loadAgents();
+      return;
     }
+    await sb.auth.signOut();
   }
 });
 
 /* ═══ Agents ═══ */
 async function loadAgents() {
   showLoader('Agents లోడ్ అవుతున్నాయి…');
-  const data = await apiGet({ action: 'agents' }).catch(() => null);
+  const { data: agentsRaw, error } = await sb.from('agents').select('*').order('created_at', { ascending: true });
+  let rowCounts = {};
+  if (agentsRaw && agentsRaw.length) {
+    const { data: allRows } = await sb.from('agent_rows').select('agent_id');
+    (allRows || []).forEach(r => { rowCounts[r.agent_id] = (rowCounts[r.agent_id] || 0) + 1; });
+  }
   hideLoader();
-  if (!data || !data.ok) { showToast('Agents load failed', 'error'); return; }
-  AGENTS = data.agents;
+  if (error) { showToast('Agents load failed', 'error'); return; }
+  AGENTS = (agentsRaw || []).map(a => ({
+    id: a.tab, shopName: a.shop_name, city: a.city, phone: a.phone,
+    accentColor: a.accent_color || '#4fffb0', rows: rowCounts[a.id] || 0, _dbId: a.id,
+  }));
   renderSidebar();
   renderOverview();
 }
@@ -852,37 +883,44 @@ async function loadAgent(tabId) {
   DIRTY = false;
   CURRENT_TAB = tabId;
 
-  // Mark active in sidebar
   document.querySelectorAll('.agent-item').forEach(el => el.classList.remove('active'));
   const sbEl = document.getElementById('sb_' + tabId);
   if (sbEl) sbEl.classList.add('active');
 
   showLoader('Agent data లోడ్ అవుతోంది…');
-  const data = await apiGet({ action: 'getAgent', tab: tabId }).catch(() => null);
+  const { data: agent, error: agentErr } = await sb.from('agents').select('*').eq('tab', tabId).single();
+  if (agentErr || !agent) { hideLoader(); showToast('Load failed', 'error'); return; }
+  const { data: rowsRaw, error: rowsErr } = await sb.from('agent_rows').select('*').eq('agent_id', agent.id).order('display_order', { ascending: true });
   hideLoader();
-  if (!data || !data.ok) { showToast('Load failed', 'error'); return; }
+  if (rowsErr) { showToast('Load failed', 'error'); return; }
 
-  ALL_ROWS = data.rows || [];
+  CURRENT_AGENT_DB = agent; // keep the raw Supabase row around for saveAgent()
 
-  // Populate basic fields
-  const kv = {};
-  ALL_ROWS.forEach(r => { if (r.key && !['update','service','pdf','doc','ticker','voice','tts','poster','pdf_notice','canva','req_service','req_doc','popup'].includes(r.key)) kv[r.key] = r.value || ''; });
+  ALL_ROWS = (rowsRaw || []).map(r => ({
+    key: r.key, title: r.title, value: r.value, link: r.link, icon: r.icon,
+    extra: r.extra, desc: r.description, badge: r.badge, share: r.share,
+    isnew: r.isnew, _dbId: r.id, display_order: r.display_order,
+  }));
+
+  const kv = {
+    shopName: agent.shop_name, tagline: agent.tagline, city: agent.city,
+    phone: agent.phone, whatsapp: agent.whatsapp, footerText: agent.footer_text,
+    logoIcon: agent.logo_icon, accentColor: agent.accent_color, coverUrl: agent.cover_url,
+    mapEmbedUrl: agent.map_embed_url, popup_show: agent.popup_show ? 'true' : 'false',
+  };
   ['shopName','tagline','city','phone','whatsapp','footerText','logoIcon','accentColor','coverUrl','mapEmbedUrl','popup_show','popup_title','popup_subtitle','popup_imageUrl'].forEach(k => {
     const el = document.getElementById('f-'+k);
-    if (el) el.value = kv[k] || (k==='accentColor'?'#4fffb0':'') || (k==='popup_show'?'false':'') || '';
+    if (el) el.value = kv[k] || (k==='accentColor'?'#4fffb0':'') || '';
   });
   updateColorSwatch();
 
-  // Render rows table
   renderRowsTable();
 
-  // CSV URL
-  document.getElementById('csv-url-text').textContent = data.csvUrl || '—';
-  document.getElementById('code-snippet-text').textContent = `const SHEET_URL = '${data.csvUrl}';`;
+  document.getElementById('csv-url-text').textContent = '(Supabase — no CSV needed)';
+  document.getElementById('code-snippet-text').textContent = `Agent tab: '${tabId}' (Supabase)`;
 
-  // Switch to agent view
-  const agent = AGENTS.find(a => a.id === tabId);
-  document.getElementById('topbar-title').textContent = agent ? agent.shopName : tabId;
+  const agentSb = AGENTS.find(a => a.id === tabId);
+  document.getElementById('topbar-title').textContent = agentSb ? agentSb.shopName : tabId;
   document.getElementById('topbar-badge').textContent = tabId;
   document.getElementById('topbar-badge').style.display = 'inline-flex';
   document.getElementById('topbar-actions').innerHTML = `
@@ -1362,31 +1400,43 @@ function renderRowsTable() { renderCatGrid(); }
 
 /* ═══ Save Agent ═══ */
 async function saveAgent() {
-  if (!CURRENT_TAB) return;
+  if (!CURRENT_TAB || !CURRENT_AGENT_DB) return;
 
-  // Collect basic field values
-  const CONFIG_KEYS = ['shopName','tagline','city','phone','whatsapp','footerText','logoIcon','accentColor','coverUrl','mapEmbedUrl','popup_show','popup_title','popup_subtitle','popup_imageUrl'];
-  // Remove old config rows from ALL_ROWS, then rebuild
-  let rows = ALL_ROWS.filter(r => CONTENT_KEYS.includes(r.key));
-
+  const CONFIG_KEYS = ['shopName','tagline','city','phone','whatsapp','footerText','logoIcon','accentColor','coverUrl','mapEmbedUrl'];
+  const profileUpdate = {};
   CONFIG_KEYS.forEach(k => {
     const el = document.getElementById('f-'+k);
-    if (el) rows.unshift({ key: k, value: el.value||'', title:'', link:'', icon:'', extra:'' });
+    if (el) profileUpdate[PROFILE_FIELD_MAP[k]] = el.value || '';
   });
 
+  const contentRows = ALL_ROWS.filter(r => CONTENT_KEYS_ALL.includes(r.key));
+
   showLoader('Saving…');
-  const data = await api({ action: 'updateAgent', tab: CURRENT_TAB, rows }).catch(() => null);
+  const { error: profileErr } = await sb.from('agents').update(profileUpdate).eq('id', CURRENT_AGENT_DB.id);
+
+  // Full replace of content rows (delete then re-insert), same behaviour
+  // as the old "rewrite the whole sheet tab" approach.
+  const { error: delErr } = await sb.from('agent_rows').delete().eq('agent_id', CURRENT_AGENT_DB.id);
+  let insertErr = null;
+  if (!delErr && contentRows.length) {
+    const toInsert = contentRows.map((r, i) => ({
+      agent_id: CURRENT_AGENT_DB.id, key: r.key, title: r.title || '', value: r.value || '',
+      link: r.link || '', icon: r.icon || '', extra: r.extra || '', description: r.desc || '',
+      badge: r.badge || '', share: r.share || 'yes', isnew: r.isnew || 'no', display_order: i,
+    }));
+    const { error } = await sb.from('agent_rows').insert(toInsert);
+    insertErr = error;
+  }
   hideLoader();
-  if (data && data.ok) {
+
+  if (!profileErr && !delErr && !insertErr) {
     DIRTY = false;
     showToast('Saved ✓', 'success');
-    // Refresh agents list
     await loadAgents();
-    // Re-highlight active
     const sbEl = document.getElementById('sb_' + CURRENT_TAB);
     if (sbEl) sbEl.classList.add('active');
   } else {
-    showToast('Save failed: ' + (data?.error||'unknown'), 'error');
+    showToast('Save failed: ' + (profileErr?.message || delErr?.message || insertErr?.message || 'unknown'), 'error');
   }
 }
 
@@ -1403,11 +1453,11 @@ function confirmDelete(tabId) {
 async function doDelete(tabId) {
   closeModal();
   showLoader('Deleting…');
-  const data = await api({ action: 'deleteAgent', tab: tabId }).catch(() => null);
+  const { error } = await sb.from('agents').delete().eq('tab', tabId);
   hideLoader();
-  if (data && data.ok) {
+  if (!error) {
     showToast('Deleted', 'success');
-    CURRENT_TAB = null; DIRTY = false;
+    CURRENT_TAB = null; CURRENT_AGENT_DB = null; DIRTY = false;
     await loadAgents();
     showView('overview');
     document.getElementById('topbar-badge').style.display = 'none';
@@ -1451,14 +1501,16 @@ async function doAddAgent() {
   if (!id) { showToast('Agent ID required', 'error'); return; }
   closeModal();
   showLoader('Creating agent…');
-  const data = await api({ action:'addAgent', agentId:id, shopName:name, phone, city }).catch(()=>null);
+  const { error } = await sb.from('agents').insert({
+    tab: id, shop_name: name || 'Seva Kendra', phone, city,
+  });
   hideLoader();
-  if (data && data.ok) {
-    showToast('Agent created ✓', 'success');
+  if (!error) {
+    showToast('Agent profile created ✓ — ఇప్పుడు Supabase Dashboard → Authentication లో ఈ ఏజెంట్ కోసం login (email+password) create చేసి, auth_user_id ని agents టేబుల్‌లో లింక్ చేయండి.', 'success');
     await loadAgents();
     loadAgent(id);
   } else {
-    showToast(data?.error||'Failed', 'error');
+    showToast(error.message || 'Failed', 'error');
   }
 }
 
