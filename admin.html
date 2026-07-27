@@ -508,12 +508,18 @@ input,textarea,select{font-family:var(--font);outline:none}
       <div id="view-users" class="view">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px">
           <div>
-            <div style="font-size:17px;font-weight:700">Agent Users</div>
-            <div style="font-size:12px;color:var(--text2);margin-top:2px">Agents కి login credentials create చేయండి</div>
+            <div style="font-size:17px;font-weight:700">Agent Logins</div>
+            <div style="font-size:12px;color:var(--text2);margin-top:2px">ప్రతి agent కి login ఏమేరకు అనుసంధానం అయ్యిందో ఇక్కడ చూడండి</div>
           </div>
           <button class="topbar-btn primary" onclick="showCreateUserModal()">
-            <i class="fas fa-user-plus"></i> New User
+            <i class="fas fa-circle-info"></i> కొత్త Login ఎలా క్రియేట్ చేయాలి?
           </button>
+        </div>
+        <div style="background:var(--bg2,rgba(0,0,0,0.03));border:1px solid var(--border,rgba(0,0,0,0.08));border-radius:10px;padding:14px 16px;margin-bottom:16px;font-size:12.5px;line-height:1.7;color:var(--text2)">
+          <b>కొత్త ఏజెంట్ కోసం login create చేయడం (ప్రస్తుతానికి మాన్యువల్):</b><br/>
+          1. Supabase Dashboard → Authentication → Add User → ఆ ఏజెంట్ ఇమెయిల్ + password పెట్టి create చేయండి<br/>
+          2. వచ్చిన UUID కాపీ చేయండి<br/>
+          3. SQL Editor లో: <code>update agents set auth_user_id = 'UUID' where tab = 'AGENT_TAB';</code>
         </div>
         <div id="users-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px">
           <div style="padding:20px;color:var(--text3);font-size:13px">లోడ్ అవుతోంది…</div>
@@ -676,18 +682,18 @@ input,textarea,select{font-family:var(--font);outline:none}
           <div class="field-row"><label>Current Password</label><input type="password" id="curr-pass" class="field-input"/></div>
           <div class="field-row"><label>New Password</label><input type="password" id="new-pass" class="field-input"/></div>
           <div class="field-row"><label>Confirm New Password</label><input type="password" id="conf-pass" class="field-input"/></div>
-          <p style="font-size:12px;color:var(--text2);margin-bottom:12px">Password Sheet లో _admin tab లో నేరుగా కూడా మార్చవచ్చు.</p>
+          <p style="font-size:12px;color:var(--text2);margin-bottom:12px">Admin password మార్చాలంటే Supabase Dashboard → Authentication → Users లో మార్చండి.</p>
           <button class="topbar-btn primary" onclick="showToast('Feature coming soon','info')">
             <i class="fas fa-floppy-disk"></i> Update Password
           </button>
         </div>
         <div class="editor-card" style="max-width:440px;margin-top:16px">
-          <div class="editor-card-title"><i class="fas fa-circle-info"></i> Apps Script Info</div>
-          <div class="field-row"><label>Script URL</label>
+          <div class="editor-card-title"><i class="fas fa-circle-info"></i> Supabase Project Info</div>
+          <div class="field-row"><label>Project URL</label>
             <div class="csv-url-box"><i class="fas fa-link"></i><span id="script-url-display" style="word-break:break-all;font-size:11px"></span></div>
           </div>
           <p style="font-size:12px;color:var(--text2);margin-top:10px;line-height:1.6">
-            Apps Script URL మార్చాలంటే ఈ admin.html లో పైన <code style="background:var(--bg3);padding:1px 5px;border-radius:4px">SCRIPT_URL</code> update చేయండి.
+            Project URL/Key మార్చాలంటే ఈ admin.html లో పైన <code style="background:var(--bg3);padding:1px 5px;border-radius:4px">SUPABASE_URL</code> / <code style="background:var(--bg3);padding:1px 5px;border-radius:4px">SUPABASE_ANON_KEY</code> update చేయండి.
           </p>
         </div>
       </div>
@@ -715,11 +721,10 @@ input,textarea,select{font-family:var(--font);outline:none}
 
 <script>
 /* ═══════════════════════════════════════════════════
-   ⚙️ CONFIG — Apps Script URL ఇక్కడ పెట్టండి
+   ⚙️ CONFIG
    ═══════════════════════════════════════════════════ */
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby4yRN74pL8JUpMJmLN99eCrgQb0sir1UlHr4yHh7a8w17Ubt4c5g3_-13HmmcBX_BTdw/exec';
 
-/* ═══ Supabase (replacing Google Sheets + Apps Script) ═══ */
+/* ═══ Supabase (fully replaces Google Sheets + Apps Script) ═══ */
 const SUPABASE_URL = 'https://pusmroyftjzdkcwuwsph.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB1c21yb3lmdGp6ZGtjd3V3c3BoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUwNTIzNjcsImV4cCI6MjEwMDYyODM2N30.FTL-p8QLjcdErof1-Usolqudh1aUoKkKBw1UkvrkMNI';
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -732,26 +737,11 @@ const PROFILE_FIELD_MAP = {
 };
 /* ═════════════════════════════════════════════════ */
 
-let TOKEN       = localStorage.getItem('admin_token') || '';
 let AGENTS      = [];
 let CURRENT_TAB = null;
 let CURRENT_AGENT_DB = null;
 let DIRTY       = false;
 let ALL_ROWS    = [];
-
-/* ═══ API helpers ═══ */
-async function api(body) {
-  const res = await fetch(SCRIPT_URL, {
-    method: 'POST',
-    body: JSON.stringify({ ...body, token: TOKEN }),
-  });
-  return res.json();
-}
-async function apiGet(params) {
-  const url = SCRIPT_URL + '?' + new URLSearchParams(params);
-  const res = await fetch(url);
-  return res.json();
-}
 
 /* ═══ Login ═══ */
 async function doLogin() {
@@ -799,7 +789,6 @@ function togglePassVis() {
 function doLogout() {
   sb.auth.signOut();
   localStorage.removeItem('admin_email');
-  TOKEN = '';
   location.reload();
 }
 
@@ -1713,9 +1702,9 @@ function copyCodeSnippet() {
 let ALL_USERS = [];
 
 async function loadUsers() {
-  const data = await api({ action: 'listAgentUsers' }).catch(() => null);
-  if (!data || !data.ok) { showToast('Users load failed', 'error'); return; }
-  ALL_USERS = data.users || [];
+  const { data: agentsRaw, error } = await sb.from('agents').select('tab, shop_name, auth_user_id').order('tab');
+  if (error) { showToast('Load failed', 'error'); return; }
+  ALL_USERS = agentsRaw || [];
   renderUsersGrid();
 }
 
@@ -1724,122 +1713,39 @@ function renderUsersGrid() {
   if (!ALL_USERS.length) {
     grid.innerHTML = `<div style="padding:32px;color:var(--text3);font-size:13px;grid-column:1/-1;text-align:center">
       <i class="fas fa-user-slash" style="font-size:28px;margin-bottom:10px;display:block"></i>
-      Users లేరు. "New User" click చేసి create చేయండి.</div>`;
+      ఇంకా ఏ agent లేదు.</div>`;
     return;
   }
-  grid.innerHTML = ALL_USERS.map(u => `
+  grid.innerHTML = ALL_USERS.map(a => {
+    const linked = !!a.auth_user_id;
+    return `
     <div class="stat-card" style="display:flex;flex-direction:column;gap:8px">
       <div style="display:flex;align-items:center;gap:10px">
-        <div style="width:38px;height:38px;border-radius:10px;background:rgba(79,255,176,0.1);border:1.5px solid var(--accent);display:flex;align-items:center;justify-content:center;color:var(--accent)">
-          <i class="fas fa-user"></i>
+        <div style="width:38px;height:38px;border-radius:10px;background:${linked?'rgba(79,255,176,0.1)':'rgba(248,113,113,0.1)'};border:1.5px solid ${linked?'var(--accent)':'var(--red)'};display:flex;align-items:center;justify-content:center;color:${linked?'var(--accent)':'var(--red)'}">
+          <i class="fas fa-${linked?'user-check':'user-slash'}"></i>
         </div>
         <div style="flex:1;min-width:0">
-          <div style="font-weight:600;font-size:14px">${u.username}</div>
-          <div style="font-size:11px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${u.email || 'No email'}</div>
+          <div style="font-weight:600;font-size:14px">${a.shop_name || a.tab}</div>
+          <div style="font-size:11px;color:var(--text3)">${a.tab}</div>
         </div>
       </div>
-      <div style="font-size:11px;color:var(--text3);background:var(--bg3);padding:4px 8px;border-radius:6px">
-        <i class="fas fa-table-cells"></i> ${u.agentTab}
+      <div style="font-size:11.5px;color:${linked?'var(--accent)':'var(--red)'};font-weight:600">
+        ${linked ? '✓ Login అనుసంధానం అయ్యింది' : '✗ Login లేదు — పైన ఉన్న స్టెప్స్ ఫాలో అవ్వండి'}
       </div>
-      <div style="display:flex;gap:6px;margin-top:4px">
-        <button class="add-row-btn" style="flex:1" onclick="showEditUserModal('${u.username}','${u.email}','${u.agentTab}')">
-          <i class="fas fa-pen"></i> Edit
-        </button>
-        <button class="add-row-btn" style="background:rgba(248,113,113,0.12);border-color:var(--red);color:var(--red)" onclick="confirmDeleteUser('${u.username}')">
-          <i class="fas fa-trash"></i>
-        </button>
-      </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 
 function showCreateUserModal() {
-  const agentOptions = AGENTS.map(a => `<option value="${a.id}">${a.shopName} (${a.id})</option>`).join('');
-  showModal('New Agent User', 'Agent కి login credentials create చేయండి', `
-    <div class="field-row"><label>Username</label><input type="text" id="mu-username" class="field-input" placeholder="agent1"/></div>
-    <div class="field-row"><label>Password</label><input type="password" id="mu-password" class="field-input" placeholder="min 6 characters"/></div>
-    <div class="field-row"><label>Email (forgot password కోసం)</label><input type="email" id="mu-email" class="field-input" placeholder="agent@gmail.com"/></div>
-    <div class="field-row"><label>Agent Tab</label>
-      <select id="mu-agenttab" class="field-input">
-        <option value="">-- Select Agent --</option>
-        ${agentOptions}
-      </select>
+  showModal('కొత్త Agent Login', 'ప్రస్తుతానికి ఇది Supabase Dashboard నుండి మాన్యువల్‌గా చేయాలి', `
+    <div style="font-size:12.5px;line-height:1.8">
+      1. Supabase Dashboard → <b>Authentication</b> → <b>Add User</b><br/>
+      2. ఆ ఏజెంట్ email + password పెట్టి create చేయండి (Auto Confirm ✅)<br/>
+      3. వచ్చిన UUID కాపీ చేయండి<br/>
+      4. SQL Editor లో ఇది రన్ చేయండి:<br/>
+      <code style="display:block;background:var(--bg3);padding:8px;border-radius:6px;margin-top:6px;word-break:break-all">update agents set auth_user_id = 'UUID' where tab = 'AGENT_TAB';</code>
     </div>
-    <div style="display:flex;gap:8px;margin-top:8px">
-      <button class="topbar-btn primary" style="flex:1" onclick="doCreateUser()"><i class="fas fa-save"></i> Create User</button>
-      <button class="add-row-btn" onclick="closeModal()">Cancel</button>
-    </div>`, true);
-}
-
-async function doCreateUser() {
-  const username = document.getElementById('mu-username').value.trim();
-  const password = document.getElementById('mu-password').value;
-  const email    = document.getElementById('mu-email').value.trim();
-  const agentTab = document.getElementById('mu-agenttab').value;
-  if (!username || !password || !agentTab) { showToast('Username, Password, Agent Tab required','error'); return; }
-  if (password.length < 6) { showToast('Password minimum 6 characters','error'); return; }
-  showLoader('Creating user…');
-  const data = await api({ action:'createAgentUser', username, password, email, agentTab }).catch(() => null);
-  hideLoader(); closeModal();
-  if (!data || !data.ok) { showToast(data?.error || 'Create failed','error'); return; }
-  showToast('User created successfully!','success');
-  await loadUsers();
-}
-
-function showEditUserModal(username, email, agentTab) {
-  const agentOptions = AGENTS.map(a =>
-    `<option value="${a.id}" ${a.id===agentTab?'selected':''}>${a.shopName} (${a.id})</option>`).join('');
-  showModal('Edit User — ' + username, 'Password blank వదిలితే change కాదు', `
-    <div class="field-row"><label>Username</label>
-      <input type="text" class="field-input" value="${username}" disabled style="opacity:.5"/>
-    </div>
-    <div class="field-row"><label>New Password (optional)</label>
-      <input type="password" id="eu-password" class="field-input" placeholder="blank = no change"/>
-    </div>
-    <div class="field-row"><label>Email</label>
-      <input type="email" id="eu-email" class="field-input" value="${email}"/>
-    </div>
-    <div class="field-row"><label>Agent Tab</label>
-      <select id="eu-agenttab" class="field-input"><option value="">-- Select Agent --</option>${agentOptions}</select>
-    </div>
-    <div style="display:flex;gap:8px;margin-top:8px">
-      <button class="topbar-btn primary" style="flex:1" onclick="doUpdateUser('${username}')"><i class="fas fa-save"></i> Update</button>
-      <button class="add-row-btn" onclick="closeModal()">Cancel</button>
-    </div>`, true);
-}
-
-async function doUpdateUser(username) {
-  const newPassword = document.getElementById('eu-password').value;
-  const email       = document.getElementById('eu-email').value.trim();
-  const agentTab    = document.getElementById('eu-agenttab').value;
-  const payload     = { action:'updateAgentUser', username, email, agentTab };
-  if (newPassword) {
-    if (newPassword.length < 6) { showToast('Password minimum 6 characters','error'); return; }
-    payload.newPassword = newPassword;
-  }
-  showLoader('Updating…');
-  const data = await api(payload).catch(() => null);
-  hideLoader(); closeModal();
-  if (!data || !data.ok) { showToast(data?.error || 'Update failed','error'); return; }
-  showToast('User updated!','success');
-  await loadUsers();
-}
-
-function confirmDeleteUser(username) {
-  showModal('Delete User', `"${username}" ని delete చేయాలా?`, `
-    <button class="topbar-btn" style="background:var(--red)" onclick="doDeleteUser('${username}')">
-      <i class="fas fa-trash"></i> Delete
-    </button>
-    <button class="add-row-btn" onclick="closeModal()">Cancel</button>`);
-}
-
-async function doDeleteUser(username) {
-  closeModal();
-  showLoader('Deleting…');
-  const data = await api({ action:'deleteAgentUser', username }).catch(() => null);
-  hideLoader();
-  if (!data || !data.ok) { showToast(data?.error || 'Delete failed','error'); return; }
-  showToast('User deleted','success');
-  await loadUsers();
+    <button class="add-row-btn" style="width:100%;margin-top:12px" onclick="closeModal()">సరే, అర్థమైంది</button>`, true);
 }
 
 
