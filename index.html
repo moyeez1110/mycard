@@ -2242,7 +2242,13 @@ function checkSubscriptionGate(agentRow) {
 function showSubscriptionBlockedScreen(daysLeft) {
   document.getElementById('loading-screen').style.display = 'none';
   document.getElementById('agent-login-screen').style.display = 'none';
-  const appEl = document.getElementById('app') || document.body;
+  // Hide the header entirely too — otherwise its fixed/sticky position
+  // makes its buttons float on top of this full-screen block.
+  const headerEl = document.getElementById('app-header');
+  if (headerEl) headerEl.style.display = 'none';
+  const tickerEl = document.getElementById('ticker-bar');
+  if (tickerEl) tickerEl.style.display = 'none';
+
   const overlay = document.createElement('div');
   overlay.id = 'sub-blocked-overlay';
   overlay.style.cssText = 'position:fixed;inset:0;background:#0f1420;color:#fff;display:flex;align-items:center;justify-content:center;z-index:99999;padding:24px;text-align:center;font-family:var(--font-te), sans-serif';
@@ -2257,15 +2263,25 @@ function showSubscriptionBlockedScreen(daysLeft) {
         Logout
       </button>
     </div>`;
-  appEl.appendChild(overlay);
+  document.body.appendChild(overlay);
 }
 
+/* Inserted as a normal in-flow element right after the header (same
+   pattern as #error-banner) — NOT sticky/fixed, so it can never
+   overlap the header's buttons regardless of screen size. */
 function showSubExpiryBanner(daysLeft) {
+  const old = document.getElementById('sub-expiry-banner');
+  if (old) old.remove();
   const bar = document.createElement('div');
   bar.id = 'sub-expiry-banner';
-  bar.style.cssText = 'position:sticky;top:0;z-index:500;background:#f0b429;color:#1a1a1a;font-size:12.5px;font-weight:600;text-align:center;padding:8px 14px';
+  bar.style.cssText = 'background:#f0b429;color:#1a1a1a;font-size:12.5px;font-weight:600;text-align:center;padding:8px 14px;margin:0';
   bar.textContent = `⚠️ మీ subscription ${daysLeft} రోజుల్లో ముగుస్తుంది — renew చేసుకోండి`;
-  document.body.prepend(bar);
+  const headerEl = document.getElementById('app-header');
+  if (headerEl && headerEl.parentNode) {
+    headerEl.insertAdjacentElement('afterend', bar);
+  } else {
+    document.body.prepend(bar);
+  }
 }
 
 /* ═══ Supabase (fully replaces Google Sheets + Apps Script) ═══ */
