@@ -1702,9 +1702,6 @@ button{border:none;cursor:pointer;font-family:var(--font)}
 }
 </style>
 <!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-check-compat.js"></script>
 <style>
 /* ══════════════════════════════════════
    WALLET SYSTEM STYLES
@@ -1870,7 +1867,7 @@ body.light-mode .wc-btn-confirm { color:#fff;background:#0a8a5a; }
     <!-- STEP 2: Forgot — enter email -->
     <div id="al-step-forgot" style="display:none">
       <div style="font-size:12px;color:var(--text2);margin-bottom:16px;font-family:var(--font-te);line-height:1.6">
-        మీ registered email enter చేయండి. OTP పంపబడుతుంది.
+        మీ registered email enter చేయండి. Password reset లింక్ ఆ email కి పంపబడుతుంది.
       </div>
       <div class="al-field">
         <label class="al-label">Email</label>
@@ -1878,7 +1875,7 @@ body.light-mode .wc-btn-confirm { color:#fff;background:#0a8a5a; }
           onkeydown="if(event.key==='Enter')doSendOtp()"/>
       </div>
       <button class="al-btn" id="al-otp-btn" onclick="doSendOtp()">
-        <i class="fas fa-paper-plane"></i> OTP పంపండి
+        <i class="fas fa-paper-plane"></i> Reset లింక్ పంపండి
       </button>
       <div style="text-align:center;margin-top:14px">
         <span class="al-link" onclick="alGoStep('login')">
@@ -1887,16 +1884,10 @@ body.light-mode .wc-btn-confirm { color:#fff;background:#0a8a5a; }
       </div>
     </div>
 
-    <!-- STEP 3: Reset — OTP + new password -->
+    <!-- STEP 3: Reset — new password (reached automatically after clicking the emailed link) -->
     <div id="al-step-reset" style="display:none">
       <div style="font-size:12px;color:var(--text2);margin-bottom:16px;font-family:var(--font-te);line-height:1.6">
-        Email లో వచ్చిన OTP మరియు new password enter చేయండి.
-      </div>
-      <div class="al-field">
-        <label class="al-label">OTP (6 digits)</label>
-        <input type="text" id="al-otp" class="al-input" placeholder="123456"
-          maxlength="6" inputmode="numeric"
-          onkeydown="if(event.key==='Enter')document.getElementById('al-np1').focus()"/>
+        కొత్త password enter చేయండి.
       </div>
       <div class="al-field">
         <label class="al-label">New Password</label>
@@ -1998,10 +1989,6 @@ body.light-mode .wc-btn-confirm { color:#fff;background:#0a8a5a; }
     </button>
     <a id="fab-call" href="#" class="hbtn"><i class="fas fa-phone"></i></a>
     <a id="fab-wa" href="#" target="_blank" class="hbtn" style="color:#25d366"><i class="fab fa-whatsapp"></i></a>
-    <div id="wallet-badge" onclick="showWalletPage()" title="నా Wallet">
-      <i class="fas fa-wallet"></i>
-      <span id="wallet-badge-amt">0</span>
-    </div>
     <button id="chpass-btn" onclick="openCpModal()" title="Password మార్చండి"><i class="fas fa-key"></i></button>
     <button id="logout-btn" onclick="doAgentLogout()" title="Logout"><i class="fas fa-right-from-bracket"></i></button>
   </div>
@@ -2091,51 +2078,6 @@ body.light-mode .wc-btn-confirm { color:#fff;background:#0a8a5a; }
   </div>
 </div>
 
-<!-- WALLET CONFIRM OVERLAY -->
-<div id="wallet-confirm-overlay">
-  <div id="wallet-confirm-box">
-    <div class="wc-icon" id="wc-icon">🛎️</div>
-    <div class="wc-title" id="wc-title">సేవ వినియోగించాలా?</div>
-    <div class="wc-sub" id="wc-sub">ఈ సేవ కోసం credits అవసరం</div>
-    <div class="wc-credits">
-      <div class="wc-credits-num" id="wc-credits-num">0</div>
-      <div class="wc-credits-lbl">credits (= ₹<span id="wc-rupees">0</span>)</div>
-    </div>
-    <div class="wc-balance-after" id="wc-balance-after">మీ balance తర్వాత: 0 credits</div>
-    <div class="wc-btns">
-      <button class="wc-btn-cancel" onclick="closeWalletConfirm()">రద్దు చేయి</button>
-      <button class="wc-btn-confirm" id="wc-confirm-btn" onclick="confirmServiceDeduct()">✓ Confirm</button>
-    </div>
-  </div>
-</div>
-
-<!-- WALLET PAGE -->
-<div id="wallet-page" class="page">
-  <div class="section-head" style="padding-top:8px">
-    <h2>💰 నా Wallet</h2><div class="section-line"></div>
-  </div>
-
-  <!-- Balance hero -->
-  <div class="wallet-hero">
-    <div class="wallet-balance-label">అందుబాటులో ఉన్న Credits</div>
-    <div class="wallet-balance-amt" id="wp-balance">—</div>
-    <div class="wallet-balance-sub" id="wp-balance-rs">లోడ్ అవుతోంది...</div>
-  </div>
-
-  <!-- Low balance warning -->
-  <div class="wallet-low-banner" id="wp-low-banner">
-    <i class="fas fa-exclamation-triangle"></i>
-    <span>మీ wallet balance తక్కువగా ఉంది. Admin ద్వారా recharge చేయించుకోండి.</span>
-  </div>
-
-  <!-- Transaction history -->
-  <div class="section-head">
-    <h2>📋 లావాదేవీల చరిత్ర</h2><div class="section-line"></div>
-  </div>
-  <div id="wp-txn-list" class="txn-list">
-    <div style="color:var(--text2);font-size:13px;font-family:var(--font-te);padding:16px 0">లోడ్ అవుతోంది...</div>
-  </div>
-</div>
 
 <!-- DOCS -->
 <div id="docs-page" class="page">
@@ -2259,7 +2201,6 @@ body.light-mode .wc-btn-confirm { color:#fff;background:#0a8a5a; }
   <button class="nav-btn" onclick="showPage('docs-page',this)"><i class="fas fa-file-alt"></i>పత్రాలు</button>
   <button class="nav-btn" onclick="showPage('voice-page',this)"><i class="fas fa-bullhorn"></i>నోటీసులు</button>
   <button class="nav-btn" onclick="showPage('contact-page',this)"><i class="fas fa-map-marker-alt"></i>చిరునామా</button>
-  <button class="nav-btn" id="wallet-nav-btn" onclick="showWalletPage(this)" style="display:none"><i class="fas fa-wallet"></i>Wallet</button>
   <button class="nav-btn" onclick="openInstallModal()"><i class="fas fa-download"></i>Install</button>
 </nav>
 
@@ -2270,268 +2211,64 @@ body.light-mode .wc-btn-confirm { color:#fff;background:#0a8a5a; }
    CONFIG
    ═══════════════════════════════════════════════════ */
 /* ═══════════════════════════════════════════════════
-   FIREBASE WALLET ENGINE
+   SUBSCRIPTION ENGINE (replaces the old Firebase wallet)
    ═══════════════════════════════════════════════════ */
-const FB_CONFIG = {
-  apiKey: "AIzaSyA2NnpnP2WtqhgygLF-oN12R1xQhtwEmgs",
-  authDomain: "janseva-wallet.firebaseapp.com",
-  projectId: "janseva-wallet",
-  storageBucket: "janseva-wallet.firebasestorage.app",
-  messagingSenderId: "786586023405",
-  appId: "1:786586023405:web:b303ce1215df8d2bdca3e4"
-};
-firebase.initializeApp(FB_CONFIG);
-const db = firebase.firestore();
+let SUB_INFO = null; // { plan_name, subscription_end }
 
-const appCheck = firebase.appCheck();
-appCheck.activate(
-  new firebase.appCheck.ReCaptchaEnterpriseProvider('6Le6m_gsAAAAAE76lWmQb1s-z8qXd2lMyMrQJKGu'),
-  true
-);
-
-/* Credit prices — service title (lowercase) → credits */
-const SERVICE_CREDITS = {
-  'resume':         10,
-  'fmb':             2,
-  'fmb application': 2,
-  'after marriage': 10,
-  'affidavit':      10,
-  'gapcertificate':  10,
-};
-
-let WALLET_AGENT_ID  = '';  // set from agent session username
-let WALLET_BALANCE   = 0;
-let WALLET_LISTENER  = null; // real-time snapshot
-let PENDING_SERVICE  = null; // { title, page, credits }
-
-/* ── Init wallet after login ── */
-async function walletInit(agentUsername) {
-  WALLET_AGENT_ID = agentUsername || '';
-  if (!WALLET_AGENT_ID) return;
-
-  // Ensure wallet doc exists
-  const ref = db.collection('wallets').doc(WALLET_AGENT_ID);
-  const snap = await ref.get().catch(() => null);
-  if (!snap || !snap.exists) {
-    await ref.set({ balance: 0, agentId: WALLET_AGENT_ID, createdAt: firebase.firestore.FieldValue.serverTimestamp() }).catch(() => {});
-  }
-
-  // Real-time balance listener
-  if (WALLET_LISTENER) WALLET_LISTENER();
-  WALLET_LISTENER = ref.onSnapshot(doc => {
-    if (doc.exists) {
-      WALLET_BALANCE = doc.data().balance || 0;
-      updateWalletBadge();
-    }
-  }, () => {});
-
-  // Show wallet UI elements
-  const badge = document.getElementById('wallet-badge');
-  const navBtn = document.getElementById('wallet-nav-btn');
-  if (badge)  badge.classList.add('show');
-  if (navBtn) navBtn.style.display = '';
+function subDaysLeft(endDateStr) {
+  if (!endDateStr) return null;
+  const end = new Date(endDateStr + 'T00:00:00');
+  const today = new Date(); today.setHours(0,0,0,0);
+  return Math.round((end - today) / 86400000);
 }
 
-/* ── Update header badge ── */
-function updateWalletBadge() {
-  const badge = document.getElementById('wallet-badge');
-  const amt   = document.getElementById('wallet-badge-amt');
-  if (!badge || !amt) return;
-  amt.textContent = WALLET_BALANCE + ' ₹';
-  badge.classList.remove('low','empty');
-  if (WALLET_BALANCE === 0)       badge.classList.add('empty');
-  else if (WALLET_BALANCE <= 20)  badge.classList.add('low');
+/* Called right after a successful login/session-restore, before
+   showing the main app. Blocks access if expired, warns if <=10 days. */
+function checkSubscriptionGate(agentRow) {
+  SUB_INFO = { plan_name: agentRow.plan_name || null, subscription_end: agentRow.subscription_end || null };
+  const daysLeft = subDaysLeft(SUB_INFO.subscription_end);
 
-  // Update wallet page if open
-  const wp = document.getElementById('wp-balance');
-  const wpRs = document.getElementById('wp-balance-rs');
-  const lowBanner = document.getElementById('wp-low-banner');
-  if (wp) wp.textContent = WALLET_BALANCE;
-  if (wpRs) wpRs.textContent = `₹${WALLET_BALANCE} సమానం`;
-  if (lowBanner) lowBanner.classList.toggle('show', WALLET_BALANCE <= 20);
-}
-
-/* ── Service click — check credits & confirm ── */
-function openServiceWithWallet(title, page) {
-  const credits = getServiceCredits(title);
-  if (!WALLET_AGENT_ID || credits === 0) {
-    safeOpen(page);
-    return;
-  }
-  // Show confirm dialog
-  PENDING_SERVICE = { title, page, credits };
-  document.getElementById('wc-icon').textContent      = getServiceIcon(title);
-  document.getElementById('wc-title').textContent     = title;
-  document.getElementById('wc-sub').textContent       = 'ఈ సేవ వినియోగించడానికి మీ wallet నుండి credits తీసివేయబడతాయి';
-  document.getElementById('wc-credits-num').textContent = credits;
-  document.getElementById('wc-rupees').textContent    = credits;
-  const after = WALLET_BALANCE - credits;
-  document.getElementById('wc-balance-after').textContent = `మీ balance తర్వాత: ${Math.max(0,after)} credits`;
-  const confirmBtn = document.getElementById('wc-confirm-btn');
-  if (WALLET_BALANCE < credits) {
-    confirmBtn.textContent = '⚠ Balance తక్కువ';
-    confirmBtn.disabled    = true;
-    confirmBtn.style.opacity = '0.5';
-  } else {
-    confirmBtn.textContent = '✓ Confirm & తెరవండి';
-    confirmBtn.disabled    = false;
-    confirmBtn.style.opacity = '';
-  }
-  document.getElementById('wallet-confirm-overlay').classList.add('show');
-}
-
-function closeWalletConfirm() {
-  document.getElementById('wallet-confirm-overlay').classList.remove('show');
-  PENDING_SERVICE = null;
-}
-
-async function confirmServiceDeduct() {
-  if (!PENDING_SERVICE) return;
-  const { title, page, credits } = PENDING_SERVICE;
-  const btn = document.getElementById('wc-confirm-btn');
-  btn.disabled = true;
-  btn.textContent = '⏳ Processing...';
-  try {
-    const ref = db.collection('wallets').doc(WALLET_AGENT_ID);
-    await db.runTransaction(async tx => {
-      const doc = await tx.get(ref);
-      const bal = doc.exists ? (doc.data().balance || 0) : 0;
-      if (bal < credits) throw new Error('Insufficient balance');
-      tx.update(ref, { balance: firebase.firestore.FieldValue.increment(-credits) });
-    });
-    // Save transaction
-    await db.collection('transactions').add({
-      agentId:   WALLET_AGENT_ID,
-      service:   title,
-      credits:   -credits,
-      type:      'debit',
-      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-    });
-    closeWalletConfirm();
-    // Store token in localStorage — same origin only, no Firebase needed
-    const _tok = Date.now().toString(36) + Math.random().toString(36).slice(2);
-    localStorage.setItem('_jseva_svc', JSON.stringify({
-      token:   _tok,
-      service: title.toLowerCase(),
-      exp:     Date.now() + 7200000
-    }));
-    window.open(page, '_blank');
-  } catch(e) {
-    btn.textContent = e.message === 'Insufficient balance' ? '⚠ Balance తక్కువ' : '❌ Error — Retry';
-    btn.disabled = false;
-    setTimeout(() => { btn.textContent = '✓ Confirm & తెరవండి'; btn.disabled = false; }, 2000);
-  }
-}
-
-function getServiceCredits(title) {
-  const t = (title || '').toLowerCase().trim();
-  for (const [k, v] of Object.entries(SERVICE_CREDITS)) {
-    if (t.includes(k)) return v;
-  }
-  return 0;
-}
-
-function getServiceIcon(title) {
-  const t = (title||'').toLowerCase();
-  if (t.includes('resume'))   return '📄';
-  if (t.includes('family'))   return '👨‍👩‍👧';
-  if (t.includes('ration'))   return '🏠';
-  if (t.includes('aadhar'))   return '🪪';
-  if (t.includes('pan'))      return '💳';
-  if (t.includes('passport')) return '📕';
-  if (t.includes('voter'))    return '🗳️';
-  return '🛎️';
-}
-
-/* ── Show wallet page ── */
-async function showWalletPage(navEl) {
-  // Use same classList approach as showPage — no conflict
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('wallet-page').classList.add('active');
-  const walletNavBtn = document.getElementById('wallet-nav-btn');
-  if (navEl && navEl !== walletNavBtn) {
-    // called from header badge — activate wallet nav btn
-    if (walletNavBtn) walletNavBtn.classList.add('active');
-  } else if (navEl) {
-    navEl.classList.add('active');
-  } else {
-    if (walletNavBtn) walletNavBtn.classList.add('active');
-  }
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-
-  // Update balance display
-  updateWalletBadge();
-
-  // Load transactions
-  const list = document.getElementById('wp-txn-list');
-  list.innerHTML = '<div style="color:var(--text2);font-size:13px;font-family:var(--font-te);padding:16px 0;text-align:center"><i class="fas fa-spinner fa-spin"></i> లోడ్ అవుతోంది...</div>';
-
-  if (!WALLET_AGENT_ID) {
-    list.innerHTML = '<div style="color:var(--text2);font-size:13px;font-family:var(--font-te);padding:16px 0;text-align:center">Login అవ్వలేదు</div>';
-    return;
+  if (daysLeft === null || daysLeft < 0) {
+    showSubscriptionBlockedScreen(daysLeft);
+    return false; // caller should stop here — do NOT render the app
   }
 
-  try {
-    // orderBy తో index అవసరం — దాని బదులు client-side sort చేస్తాం
-    const snap = await db.collection('transactions')
-      .where('agentId', '==', WALLET_AGENT_ID)
-      .limit(50)
-      .get();
+  if (daysLeft <= 10) {
+    showSubExpiryBanner(daysLeft);
+  }
+  return true;
+}
 
-    if (snap.empty) {
-      list.innerHTML = '<div style="color:var(--text2);font-size:13px;font-family:var(--font-te);padding:24px 0;text-align:center">లావాదేవీలు ఏమీ లేవు</div>';
-      return;
-    }
-
-    // Client-side sort by timestamp desc
-    const docs = snap.docs
-      .map(d => ({ ...d.data(), _id: d.id }))
-      .sort((a, b) => {
-        const ta = a.timestamp?.toMillis?.() || 0;
-        const tb = b.timestamp?.toMillis?.() || 0;
-        return tb - ta;
-      })
-      .slice(0, 30);
-
-    list.innerHTML = docs.map(t => {
-      const isDebit = t.type === 'debit';
-      const amt  = Math.abs(t.credits || 0);
-      const date = t.timestamp
-        ? t.timestamp.toDate().toLocaleDateString('te-IN', { day: 'numeric', month: 'short', year: 'numeric' })
-        : '—';
-      return `<div class="txn-item">
-        <div class="txn-icon ${t.type}">${isDebit ? '🛎️' : '💰'}</div>
-        <div class="txn-body">
-          <div class="txn-name">${t.service || (isDebit ? 'సేవ' : 'Recharge')}</div>
-          <div class="txn-date">${date}</div>
-        </div>
-        <div class="txn-amt ${t.type}">${isDebit ? '-' : '+'}${amt} ₹</div>
-      </div>`;
-    }).join('');
-
-  } catch(e) {
-    console.error('Wallet txn error:', e);
-    list.innerHTML = `<div style="color:var(--text2);font-size:13px;font-family:var(--font-te);padding:16px 0;text-align:center">
-      లోడ్ కాలేదు — <a href="https://console.firebase.google.com/project/janseva-wallet/firestore/indexes" target="_blank" style="color:var(--accent)">Firestore index</a> check చేయండి.
+function showSubscriptionBlockedScreen(daysLeft) {
+  document.getElementById('loading-screen').style.display = 'none';
+  document.getElementById('agent-login-screen').style.display = 'none';
+  const appEl = document.getElementById('app') || document.body;
+  const overlay = document.createElement('div');
+  overlay.id = 'sub-blocked-overlay';
+  overlay.style.cssText = 'position:fixed;inset:0;background:#0f1420;color:#fff;display:flex;align-items:center;justify-content:center;z-index:99999;padding:24px;text-align:center;font-family:var(--font-te), sans-serif';
+  overlay.innerHTML = `
+    <div style="max-width:340px">
+      <div style="font-size:44px;margin-bottom:14px">🔒</div>
+      <div style="font-size:18px;font-weight:700;margin-bottom:10px">Subscription Expired</div>
+      <div style="font-size:14px;color:rgba(255,255,255,0.75);line-height:1.7;margin-bottom:20px">
+        మీ subscription ${daysLeft === null ? 'లేదు' : 'ముగిసింది'}. కొనసాగించడానికి renew చేసుకోండి — Admin ని సంప్రదించండి.
+      </div>
+      <button onclick="doAgentLogout()" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.3);color:#fff;padding:10px 22px;border-radius:10px;font-size:14px">
+        Logout
+      </button>
     </div>`;
-  }
+  appEl.appendChild(overlay);
 }
 
-/* ── Logout: cleanup wallet listener ── */
-function walletCleanup() {
-  if (WALLET_LISTENER) { WALLET_LISTENER(); WALLET_LISTENER = null; }
-  WALLET_AGENT_ID = '';
-  WALLET_BALANCE  = 0;
-  const badge = document.getElementById('wallet-badge');
-  const navBtn = document.getElementById('wallet-nav-btn');
-  if (badge)  { badge.classList.remove('show','low','empty'); }
-  if (navBtn) navBtn.style.display = 'none';
+function showSubExpiryBanner(daysLeft) {
+  const bar = document.createElement('div');
+  bar.id = 'sub-expiry-banner';
+  bar.style.cssText = 'position:sticky;top:0;z-index:500;background:#f0b429;color:#1a1a1a;font-size:12.5px;font-weight:600;text-align:center;padding:8px 14px';
+  bar.textContent = `⚠️ మీ subscription ${daysLeft} రోజుల్లో ముగుస్తుంది — renew చేసుకోండి`;
+  document.body.prepend(bar);
 }
 
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxrd4UBac7zPuBWHfgnRVcJ8akmMS2oO4n9J_uSpJZ-08ZWTwvmuTtGiZlmkQXqeK90kw/exec';
-
-/* ═══ Supabase (replacing Google Sheets + Apps Script for content & login) ═══ */
+/* ═══ Supabase (fully replaces Google Sheets + Apps Script) ═══ */
 const SUPABASE_URL = 'https://pusmroyftjzdkcwuwsph.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB1c21yb3lmdGp6ZGtjd3V3c3BoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUwNTIzNjcsImV4cCI6MjEwMDYyODM2N30.FTL-p8QLjcdErof1-Usolqudh1aUoKkKBw1UkvrkMNI';
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -2586,7 +2323,7 @@ async function doAgentLogin() {
 
     const { data: agent, error: agentErr } = await sb
       .from('agents')
-      .select('tab')
+      .select('tab, plan_name, subscription_end')
       .eq('auth_user_id', authData.user.id)
       .single();
 
@@ -2599,10 +2336,7 @@ async function doAgentLogin() {
     }
 
     localStorage.setItem('agent_session', JSON.stringify({ agentTab: agent.tab, email }));
-    walletInit(agent.tab); // NOTE: for your real existing agents, use whatever
-                           // identifier their current Firebase wallet already
-                           // uses, so their wallet balance isn't "lost" under
-                           // a new id. Ask before migrating a real agent.
+    if (!checkSubscriptionGate(agent)) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-right-to-bracket"></i> Login చేయండి'; return; }
     startApp('', agent.tab);
   } catch(e) {
     showAlErr('Connection failed. Internet check చేయండి.');
@@ -2611,7 +2345,7 @@ async function doAgentLogin() {
   btn.innerHTML = '<i class="fas fa-right-to-bracket"></i> Login చేయండి';
 }
 
-/* ── STEP 2: Forgot — send OTP ── */
+/* ── STEP 2: Forgot — send Supabase password-reset link ── */
 async function doSendOtp() {
   const email = document.getElementById('al-fp-email').value.trim();
   if (!email) { showAlErr('Email enter చేయండి'); return; }
@@ -2620,27 +2354,37 @@ async function doSendOtp() {
   btn.disabled = true;
   btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Sending…';
   try {
-    const res  = await fetch(SCRIPT_URL, { method:'POST', body: JSON.stringify({ action:'forgotPassword', email }) });
-    const data = await res.json();
-    if (data.ok) {
-      alGoStep('reset');
+    const { error } = await sb.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.href.split('#')[0].split('?')[0],
+    });
+    if (!error) {
+      showAlErr('✅ Reset లింక్ మీ email కి పంపబడింది. Email చెక్ చేసి, లింక్ క్లిక్ చేయండి.');
+      document.getElementById('al-err').style.background = 'rgba(52,211,153,0.1)';
+      document.getElementById('al-err').style.borderColor = 'rgba(52,211,153,0.3)';
+      document.getElementById('al-err').style.color = '#34d399';
     } else {
-      showAlErr(data.error || 'OTP పంపలేకపోయాము');
+      showAlErr(error.message || 'లింక్ పంపలేకపోయాము');
     }
   } catch(e) {
     showAlErr('Connection failed.');
   }
   btn.disabled = false;
-  btn.innerHTML = '<i class="fas fa-paper-plane"></i> OTP పంపండి';
+  btn.innerHTML = '<i class="fas fa-paper-plane"></i> Reset లింక్ పంపండి';
 }
 
-/* ── STEP 3: Reset password with OTP ── */
+/* ── Supabase redirects back here with a recovery session after the
+   emailed link is clicked — jump straight to the "set new password"
+   step, no OTP needed. ── */
+sb.auth.onAuthStateChange((event, session) => {
+  if (event === 'PASSWORD_RECOVERY') {
+    alGoStep('reset');
+  }
+});
+
+/* ── STEP 3: Set new password (recovery session already active) ── */
 async function doResetPassword() {
-  const email       = document.getElementById('al-fp-email').value.trim();
-  const otp         = document.getElementById('al-otp').value.trim();
   const newPassword = document.getElementById('al-np1').value;
-  const confirm     = document.getElementById('al-np2').value;
-  if (!otp)         { showAlErr('OTP enter చేయండి'); return; }
+  const confirm      = document.getElementById('al-np2').value;
   if (!newPassword) { showAlErr('New password enter చేయండి'); return; }
   if (newPassword.length < 6) { showAlErr('Password minimum 6 characters'); return; }
   if (newPassword !== confirm) { showAlErr('Passwords match కావడం లేదు'); return; }
@@ -2649,16 +2393,16 @@ async function doResetPassword() {
   btn.disabled = true;
   btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Resetting…';
   try {
-    const res  = await fetch(SCRIPT_URL, { method:'POST', body: JSON.stringify({ action:'resetPassword', email, otp, newPassword }) });
-    const data = await res.json();
-    if (data.ok) {
+    const { error } = await sb.auth.updateUser({ password: newPassword });
+    if (!error) {
+      await sb.auth.signOut();
       alGoStep('login');
       showAlErr('✅ Password reset అయింది! Login చేయండి.');
       document.getElementById('al-err').style.background = 'rgba(52,211,153,0.1)';
       document.getElementById('al-err').style.borderColor = 'rgba(52,211,153,0.3)';
       document.getElementById('al-err').style.color = '#34d399';
     } else {
-      showAlErr(data.error || 'Reset failed');
+      showAlErr(error.message || 'Reset failed');
     }
   } catch(e) {
     showAlErr('Connection failed.');
@@ -2670,7 +2414,6 @@ async function doResetPassword() {
 /* ── Logout ── */
 function doAgentLogout() {
   if (!confirm('Logout చేయాలా?')) return;
-  walletCleanup();
   sb.auth.signOut();
   localStorage.removeItem('agent_session');
   AGENT_TOKEN = '';
@@ -2699,17 +2442,29 @@ async function doChangePassword() {
   btn.disabled = true;
   btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Updating…';
   try {
-    const res  = await fetch(SCRIPT_URL, { method:'POST', body: JSON.stringify({ action:'agentChangePassword', agentToken: AGENT_TOKEN, oldPassword, newPassword }) });
-    const data = await res.json();
-    if (data.ok) {
+    const { data: { user } } = await sb.auth.getUser();
+    if (!user || !user.email) throw new Error('Session expired, please login again');
+
+    // Re-check the OLD password is correct before allowing the change
+    const { error: verifyErr } = await sb.auth.signInWithPassword({ email: user.email, password: oldPassword });
+    if (verifyErr) {
+      errMsg.textContent = 'పాత password తప్పు';
+      errEl.classList.add('show');
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-lock"></i> Update Password';
+      return;
+    }
+
+    const { error } = await sb.auth.updateUser({ password: newPassword });
+    if (!error) {
       closeCpModal();
       alert('✅ Password successfully మార్చబడింది!');
     } else {
-      errMsg.textContent = data.error || 'Failed';
+      errMsg.textContent = error.message || 'Failed';
       errEl.classList.add('show');
     }
   } catch(e) {
-    errMsg.textContent = 'Connection failed.';
+    errMsg.textContent = e.message || 'Connection failed.';
     errEl.classList.add('show');
   }
   btn.disabled = false;
@@ -2743,13 +2498,13 @@ function startApp(csvUrl, agentTab) {
     if (session && session.user) {
       const { data: agent } = await sb
         .from('agents')
-        .select('tab')
+        .select('tab, plan_name, subscription_end')
         .eq('auth_user_id', session.user.id)
         .single();
       if (agent && agent.tab) {
         clearTimeout(safetyTimer);
         localStorage.setItem('agent_session', JSON.stringify({ agentTab: agent.tab, email: session.user.email }));
-        walletInit(agent.tab);
+        if (!checkSubscriptionGate(agent)) return;
         startApp('', agent.tab);
         return;
       }
@@ -3194,17 +2949,10 @@ function renderServices() {
       ? `<span class="service-badge ${s.badge === 'new' || s.badge === 'కొత్తది' ? 'new' : 'hot'}">${s.badge === 'new' ? '✦ NEW' : s.badge === 'hot' ? '🔥 HOT' : s.badge}</span>`
       : '';
     const desc = s.desc ? `<div class="service-desc">${s.desc}</div>` : '';
-    const credits = getServiceCredits(s.title);
-    const priceBadge = (credits > 0 && WALLET_AGENT_ID)
-      ? `<span class="service-price-badge">₹${credits}</span>`
-      : '';
-    // Paid services → wallet modal + token. Free services → direct open.
-    const _onclick = (credits > 0 && WALLET_AGENT_ID)
-      ? `openServiceWithWallet('${s.title.replace(/'/g,"\\'")}','${s.page}')`
-      : `safeOpen('${s.page}')`;
+    const _onclick = `safeOpen('${s.page}')`;
     return `
     <div class="service-card ${color}" onclick="${_onclick}">
-      ${badge}${priceBadge}
+      ${badge}
       <div class="service-icon"><i class="${s.icon}"></i></div>
       <div class="service-name">${s.title}</div>
       ${desc}
