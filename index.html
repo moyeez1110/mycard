@@ -1987,6 +1987,9 @@ body.light-mode .wc-btn-confirm { color:#fff;background:#0a8a5a; }
     <button class="hbtn" id="theme-toggle-btn" onclick="toggleTheme()" title="Light/Dark Mode">
       <i class="fas fa-moon" id="theme-icon"></i>
     </button>
+    <button class="hbtn" id="mycontent-btn" onclick="openMyContentModal()" title="నా కంటెంట్ యాడ్ చేయండి">
+      <i class="fas fa-cloud-arrow-up"></i>
+    </button>
     <a id="fab-call" href="#" class="hbtn"><i class="fas fa-phone"></i></a>
     <a id="fab-wa" href="#" target="_blank" class="hbtn" style="color:#25d366"><i class="fab fa-whatsapp"></i></a>
     <button id="chpass-btn" onclick="openCpModal()" title="Password మార్చండి"><i class="fas fa-key"></i></button>
@@ -2200,6 +2203,42 @@ body.light-mode .wc-btn-confirm { color:#fff;background:#0a8a5a; }
   </div>
 </div>
 
+<!-- ═══ MY CONTENT MODAL (agent self-upload) ═══ -->
+<div id="mycontent-modal" style="display:none;position:fixed;inset:0;z-index:850;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);align-items:flex-end;justify-content:center;padding:0" onclick="if(event.target===this) closeMyContentModal()">
+  <div id="mycontent-sheet" style="background:var(--bg2);border-radius:20px 20px 0 0;width:100%;max-width:560px;max-height:88vh;overflow-y:auto;padding:20px 20px 32px;border-top:1px solid var(--border)">
+    <div style="width:40px;height:4px;background:var(--border);border-radius:4px;margin:0 auto 16px"></div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+      <div style="width:40px;height:40px;border-radius:11px;background:rgba(79,255,176,0.12);border:1.5px solid var(--accent);display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:17px;flex-shrink:0">
+        <i class="fas fa-cloud-arrow-up"></i>
+      </div>
+      <div style="flex:1">
+        <div style="font-size:15px;font-weight:700;font-family:var(--font-te)">నా కంటెంట్</div>
+        <div style="font-size:11.5px;color:var(--text2);font-family:var(--font-te)">మీరే content యాడ్ చేసుకోండి</div>
+      </div>
+      <button onclick="closeMyContentModal()" style="background:var(--bg3);border:1px solid var(--border);color:var(--text2);width:32px;height:32px;border-radius:9px;cursor:pointer"><i class="fas fa-times"></i></button>
+    </div>
+
+    <!-- Type picker -->
+    <div id="mc-type-picker" style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:16px"></div>
+
+    <!-- Dynamic add/edit form -->
+    <div id="mc-form-wrap" style="display:none;background:var(--bg3);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:18px">
+      <div id="mc-form-title" style="font-size:13px;font-weight:700;margin-bottom:12px;font-family:var(--font-te)"></div>
+      <div id="mc-form-fields"></div>
+      <div id="mc-form-err" class="al-err"></div>
+      <div style="display:flex;gap:8px;margin-top:6px">
+        <button class="al-btn" style="flex:1" onclick="submitMyContentForm()"><i class="fas fa-check"></i> Save</button>
+        <button onclick="closeMyContentForm()" style="flex:0 0 auto;padding:0 18px;border-radius:11px;background:var(--bg2);border:1px solid var(--border);color:var(--text2);cursor:pointer;font-family:var(--font-te)">Cancel</button>
+      </div>
+    </div>
+
+    <div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:10px;font-family:var(--font-te)">నా అప్‌లోడ్‌లు</div>
+    <div id="mc-my-list" style="display:flex;flex-direction:column;gap:8px">
+      <div style="font-size:12.5px;color:var(--text2);font-family:var(--font-te)">Loading…</div>
+    </div>
+  </div>
+</div>
+
 <nav id="bottom-nav">
   <button class="nav-btn active" onclick="showPage('home',this)"><i class="fas fa-home"></i>హోమ్</button>
   <button class="nav-btn" onclick="showPage('docs-page',this)"><i class="fas fa-file-alt"></i>పత్రాలు</button>
@@ -2297,6 +2336,67 @@ let SHEET_URL = '';
 let AGENT_TAB  = '';   // ✅ NEW: agent sheet tab name — used for direct API fetch
 let AGENT_TOKEN = '';
 let CLIENT = null;
+
+/* ── My Content (agent self-upload) ── */
+let AGENT_DB = null;            // the logged-in agent's row from `agents`
+let ALL_AGENT_ROWS_RAW = [];    // every agent_rows row for this agent, unfiltered
+let MY_ROWS = [];               // rows where source === 'agent' (this agent's own uploads)
+let CONTENT_TYPE_SETTINGS = {}; // { [key]: requiresApprovalBoolean }
+let MC_EDITING_ID = null;       // db id currently being edited in the form, or null for "new"
+let MC_CURRENT_TYPE = null;
+
+const MC_TYPES = [
+  { key:'ticker', label:'Ticker',  icon:'fa-scroll' },
+  { key:'update', label:'Update',  icon:'fa-bullhorn' },
+  { key:'service',label:'Service', icon:'fa-hand-holding-hand' },
+  { key:'pdf',    label:'PDF',     icon:'fa-file-pdf' },
+  { key:'doc',    label:'Doc',     icon:'fa-file-lines' },
+  { key:'poster', label:'Poster',  icon:'fa-image' },
+  { key:'voice',  label:'Voice',   icon:'fa-microphone' },
+  { key:'tts',    label:'TTS',     icon:'fa-closed-captioning' },
+];
+
+// Field layout per type — matches the columns index.html/admin.html already use
+// for each content key (title/value/link/icon/extra/description/share/isnew).
+const MC_FIELD_DEFS = {
+  ticker:  [{ id:'value', label:'సందేశం (Ticker Text)', type:'text', required:true }],
+  update:  [
+    { id:'title', label:'శీర్షిక (Title)', type:'text', required:true },
+    { id:'value', label:'వివరణ (Description)', type:'textarea' },
+    { id:'link',  label:'లింక్ (optional)', type:'url' },
+    { id:'icon',  label:'Icon (fas fa-…, optional)', type:'text', placeholder:'fas fa-bullhorn' },
+  ],
+  service: [
+    { id:'title', label:'సర్వీస్ పేరు', type:'text', required:true },
+    { id:'value', label:'వివరణ (optional)', type:'textarea' },
+    { id:'link',  label:'లింక్ (optional)', type:'url' },
+    { id:'icon',  label:'Icon (fas fa-…, optional)', type:'text', placeholder:'fas fa-hand-holding-hand' },
+  ],
+  pdf: [
+    { id:'title', label:'PDF పేరు', type:'text', required:true },
+    { id:'link',  label:'PDF URL', type:'url', required:true },
+    { id:'icon',  label:'Icon (fas fa-…, optional)', type:'text', placeholder:'fas fa-file-pdf' },
+  ],
+  doc: [
+    { id:'title', label:'Document పేరు', type:'text', required:true },
+    { id:'link',  label:'Document URL', type:'url', required:true },
+    { id:'icon',  label:'Icon (fas fa-…, optional)', type:'text', placeholder:'fas fa-file-lines' },
+  ],
+  poster: [
+    { id:'title', label:'Caption (optional)', type:'text' },
+    { id:'link',  label:'Image URL', type:'url', required:true },
+    { id:'extra', label:'తేదీ (optional)', type:'text', placeholder:'e.g. 23 May' },
+  ],
+  voice: [
+    { id:'title', label:'Title / పేరు', type:'text', required:true },
+    { id:'link',  label:'Audio URL', type:'url', required:true },
+    { id:'extra', label:'తేదీ (optional)', type:'text', placeholder:'e.g. 23 May' },
+  ],
+  tts: [
+    { id:'value', label:'నోటీసు Text', type:'textarea', required:true },
+    { id:'extra', label:'తేదీ (optional)', type:'text', placeholder:'e.g. 23 May' },
+  ],
+};
 
 /* ═══════════════════════════════════════════════════
    LOGIN SCREEN — STEP MANAGEMENT
@@ -2624,6 +2724,7 @@ async function loadData() {
         .eq('is_active', true)
         .single();
       if (agentErr || !agent) throw new Error('Agent not found in Supabase');
+      AGENT_DB = agent; // used by the "My Content" self-upload feature
 
       const { data: rowsRaw, error: rowsErr } = await sb
         .from('agent_rows')
@@ -2631,6 +2732,11 @@ async function loadData() {
         .eq('agent_id', agent.id)
         .order('display_order', { ascending: true });
       if (rowsErr) throw rowsErr;
+
+      ALL_AGENT_ROWS_RAW = rowsRaw || [];
+      // Rows this agent submitted themselves — shown/managed in the My Content modal
+      MY_ROWS = ALL_AGENT_ROWS_RAW.filter(r => r.source === 'agent');
+      await loadContentTypeSettings();
 
       // Profile fields as plain kv rows (buildClient reads these by key)
       const profileRows = [
@@ -2647,12 +2753,16 @@ async function loadData() {
         { key: 'footerText',  value: agent.footer_text },
       ];
 
-      // Content rows reshaped to match what buildClient() already expects
-      const contentRows = (rowsRaw || []).map(r => ({
-        key: r.key, title: r.title, value: r.value, link: r.link,
-        icon: r.icon, extra: r.extra, desc: r.description, badge: r.badge,
-        share: r.share, isnew: r.isnew,
-      }));
+      // Only content that is 'live' (default for older rows) shows on the
+      // public-facing page — agent-submitted rows awaiting approval stay
+      // hidden here but still show in the "My Content" modal with a Pending badge.
+      const contentRows = ALL_AGENT_ROWS_RAW
+        .filter(r => (r.status || 'live') === 'live')
+        .map(r => ({
+          key: r.key, title: r.title, value: r.value, link: r.link,
+          icon: r.icon, extra: r.extra, desc: r.description, badge: r.badge,
+          share: r.share, isnew: r.isnew,
+        }));
 
       CLIENT = buildClient([...profileRows, ...contentRows]);
       if (CLIENT) { renderAll(); return; }
@@ -2691,6 +2801,169 @@ async function loadData() {
   banner.innerHTML = '⚠️ Data లోడ్ కాలేదు. Apps Script deploy చేశారా? Agent Tab name correct గా ఉందా? Admin లో confirm చేయండి.';
   banner.classList.add('show');
   hideLoader();
+}
+
+/* ═══════════════════════════════════════════════════
+   MY CONTENT — agent self-upload
+   ═══════════════════════════════════════════════════ */
+async function loadContentTypeSettings() {
+  try {
+    const { data, error } = await sb.from('content_type_settings').select('*');
+    if (error) throw error;
+    CONTENT_TYPE_SETTINGS = {};
+    (data || []).forEach(row => { CONTENT_TYPE_SETTINGS[row.key] = !!row.requires_approval; });
+  } catch (e) {
+    console.warn('content_type_settings load failed:', e.message);
+    CONTENT_TYPE_SETTINGS = {};
+  }
+}
+
+function openMyContentModal() {
+  if (!AGENT_DB) return;
+  renderMcTypePicker();
+  renderMyContentList();
+  document.getElementById('mycontent-modal').style.display = 'flex';
+}
+function closeMyContentModal() {
+  document.getElementById('mycontent-modal').style.display = 'none';
+  closeMyContentForm();
+}
+
+function renderMcTypePicker() {
+  const wrap = document.getElementById('mc-type-picker');
+  wrap.innerHTML = MC_TYPES.map(t => `
+    <button onclick="openMcForm('${t.key}')" style="padding:8px 13px;border-radius:10px;background:var(--bg3);border:1px solid var(--border);color:var(--text);font-size:12.5px;font-family:var(--font-te);cursor:pointer;display:flex;align-items:center;gap:6px">
+      <i class="fas ${t.icon}" style="color:var(--accent)"></i> ${t.label}
+    </button>`).join('');
+}
+
+function openMcForm(type, editId) {
+  MC_CURRENT_TYPE = type;
+  MC_EDITING_ID = editId || null;
+  const defs = MC_FIELD_DEFS[type] || [];
+  const existing = editId ? MY_ROWS.find(r => r.id === editId) : null;
+
+  const fieldsHtml = defs.map(f => {
+    const val = existing ? (existing[f.id === 'value' ? 'value' : f.id] || '') : '';
+    if (f.type === 'textarea') {
+      return `<div class="al-field"><label class="al-label">${f.label}</label>
+        <textarea class="al-input" id="mc-f-${f.id}" rows="3" placeholder="${f.placeholder||''}">${escMc(val)}</textarea></div>`;
+    }
+    return `<div class="al-field"><label class="al-label">${f.label}</label>
+      <input class="al-input" id="mc-f-${f.id}" type="${f.type==='url'?'url':'text'}" placeholder="${f.placeholder||''}" value="${escMc(val)}"/></div>`;
+  }).join('');
+
+  document.getElementById('mc-form-title').textContent =
+    (editId ? 'Edit — ' : 'కొత్తది Add చేయండి — ') + (MC_TYPES.find(t=>t.key===type)||{}).label;
+  document.getElementById('mc-form-fields').innerHTML = fieldsHtml;
+  document.getElementById('mc-form-err').classList.remove('show');
+  document.getElementById('mc-form-wrap').style.display = 'block';
+  document.getElementById('mc-form-wrap').scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+function closeMyContentForm() {
+  document.getElementById('mc-form-wrap').style.display = 'none';
+  MC_EDITING_ID = null;
+  MC_CURRENT_TYPE = null;
+}
+
+function escMc(s) {
+  return (s == null ? '' : String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+async function submitMyContentForm() {
+  const type = MC_CURRENT_TYPE;
+  const defs = MC_FIELD_DEFS[type] || [];
+  const errEl = document.getElementById('mc-form-err');
+  errEl.classList.remove('show');
+
+  const values = {};
+  for (const f of defs) {
+    const el = document.getElementById('mc-f-' + f.id);
+    const v = el ? el.value.trim() : '';
+    if (f.required && !v) {
+      errEl.innerHTML = `<i class="fas fa-circle-exclamation"></i><span>"${f.label}" ఖాళీగా ఉంచకూడదు</span>`;
+      errEl.classList.add('show');
+      return;
+    }
+    values[f.id] = v;
+  }
+
+  const requiresApproval = !!CONTENT_TYPE_SETTINGS[type];
+  const payload = {
+    key: type,
+    title: values.title || '', value: values.value || '', link: values.link || '',
+    icon: values.icon || '', extra: values.extra || '', description: values.desc || '',
+    share: 'yes', isnew: 'no',
+  };
+
+  try {
+    if (MC_EDITING_ID) {
+      // Editing an existing self-uploaded row — if it was already live, re-submitting
+      // for approval-required types sends it back to pending so admin re-checks it.
+      const existing = MY_ROWS.find(r => r.id === MC_EDITING_ID);
+      const newStatus = requiresApproval ? 'pending' : 'live';
+      const { error } = await sb.from('agent_rows').update({ ...payload, status: newStatus }).eq('id', MC_EDITING_ID);
+      if (error) throw error;
+    } else {
+      const maxOrder = ALL_AGENT_ROWS_RAW.reduce((m, r) => Math.max(m, r.display_order || 0), 0);
+      const { error } = await sb.from('agent_rows').insert({
+        ...payload, agent_id: AGENT_DB.id, source: 'agent',
+        status: requiresApproval ? 'pending' : 'live', display_order: maxOrder + 1,
+      });
+      if (error) throw error;
+    }
+  } catch (e) {
+    errEl.innerHTML = `<i class="fas fa-circle-exclamation"></i><span>Save విఫలమైంది: ${escMc(e.message)}</span>`;
+    errEl.classList.add('show');
+    return;
+  }
+
+  const wentLive = !requiresApproval;
+  closeMyContentForm();
+  await loadData();       // refresh public content (in case it went straight live)
+  renderMyContentList();  // refresh the management list in the still-open modal
+  showShareToast(wentLive ? '✓ Live అయ్యింది!' : '✓ Admin approval కోసం పంపబడింది');
+}
+
+function renderMyContentList() {
+  const list = document.getElementById('mc-my-list');
+  if (!MY_ROWS.length) {
+    list.innerHTML = `<div style="font-size:12.5px;color:var(--text2);font-family:var(--font-te);text-align:center;padding:16px 0">
+      ఇంకా మీరు ఏమీ add చేయలేదు.</div>`;
+    return;
+  }
+  list.innerHTML = MY_ROWS.map(r => {
+    const status = r.status || 'live';
+    const badge = status === 'pending'
+      ? `<span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px;background:rgba(251,191,36,0.15);color:#fbbf24">Pending</span>`
+      : status === 'rejected'
+      ? `<span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px;background:rgba(248,113,113,0.15);color:#f87171">Rejected</span>`
+      : `<span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px;background:rgba(79,255,176,0.12);color:var(--accent)">Live</span>`;
+    const label = r.title || r.value || '(no title)';
+    return `<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg3);border-radius:11px">
+      <div style="flex:1;min-width:0">
+        <div style="display:flex;align-items:center;gap:7px;margin-bottom:2px">
+          ${badge}<span style="font-size:12px;color:var(--text2);font-family:var(--font-te)">${r.key}</span>
+        </div>
+        <div style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:var(--font-te)">${escMc(label)}</div>
+      </div>
+      <button onclick="openMcForm('${r.key}', ${r.id})" style="background:none;border:none;color:var(--text2);cursor:pointer;padding:6px"><i class="fas fa-pen"></i></button>
+      <button onclick="deleteMyRow(${r.id})" style="background:none;border:none;color:#f87171;cursor:pointer;padding:6px"><i class="fas fa-trash"></i></button>
+    </div>`;
+  }).join('');
+}
+
+async function deleteMyRow(id) {
+  if (!confirm('ఈ content delete చేయాలా?')) return;
+  try {
+    const { error } = await sb.from('agent_rows').delete().eq('id', id).eq('source', 'agent');
+    if (error) throw error;
+    await loadData();
+    renderMyContentList();
+  } catch (e) {
+    alert('Delete failed: ' + e.message);
+  }
 }
 
 /* RENDER ALL */
