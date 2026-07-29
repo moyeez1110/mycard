@@ -2354,7 +2354,16 @@ const MC_TYPES = [
   { key:'poster', label:'Poster',  icon:'fa-image' },
   { key:'voice',  label:'Voice',   icon:'fa-microphone' },
   { key:'tts',    label:'TTS',     icon:'fa-closed-captioning' },
+  { key:'popup',  label:'Popup',   icon:'fa-bell' },
+  { key:'req_service',   label:'అవసరమైన Documents గ్రూప్', icon:'fa-clipboard-list' },
+  { key:'service_group', label:'ధరల ప్యాకేజీ', icon:'fa-layer-group' },
 ];
+
+// Types whose entry is a "parent" row with a dynamic list of child rows below it.
+const MC_GROUP_TYPES = {
+  req_service:   { childKey:'req_doc',     childLabel:'Document',      groupLabel:'అవసరమైన Documents' },
+  service_group: { childKey:'sub_service', childLabel:'సబ్-సర్వీస్',   groupLabel:'సబ్-సర్వీసులు' },
+};
 
 // Field layout per type — matches the columns index.html/admin.html already use
 // for each content key (title/value/link/icon/extra/description/share/isnew).
@@ -2395,6 +2404,22 @@ const MC_FIELD_DEFS = {
   tts: [
     { id:'value', label:'నోటీసు Text', type:'textarea', required:true },
     { id:'extra', label:'తేదీ (optional)', type:'text', placeholder:'e.g. 23 May' },
+  ],
+  popup: [
+    { id:'title', label:'Title', type:'text', required:true },
+    { id:'value', label:'Subtitle / Message', type:'textarea' },
+    { id:'link',  label:'Image URL (optional)', type:'url' },
+    { id:'extra', label:'Show on Open?', type:'select', options:[['yes','Yes — వెంటనే చూపించు'],['no','No — దాచు']] },
+  ],
+  // req_service / service_group only define their own "parent" fields here —
+  // their child list (documents / sub-services) is rendered separately below.
+  req_service: [
+    { id:'title', label:'సర్వీస్ పేరు (ఉదా: PAN Card)', type:'text', required:true },
+    { id:'icon',  label:'Icon (fas fa-…, optional)', type:'text', placeholder:'fas fa-file-alt' },
+  ],
+  service_group: [
+    { id:'title', label:'ప్యాకేజీ పేరు (ఉదా: PAN Card Services)', type:'text', required:true },
+    { id:'icon',  label:'Icon (fas fa-…, optional)', type:'text', placeholder:'fas fa-layer-group' },
   ],
 };
 
@@ -2837,34 +2862,115 @@ function renderMcTypePicker() {
     </button>`).join('');
 }
 
+let MC_CHILDREN = []; // working list of child rows (docs / sub-services) while a group form is open
+
 function openMcForm(type, editId) {
   MC_CURRENT_TYPE = type;
   MC_EDITING_ID = editId || null;
   const defs = MC_FIELD_DEFS[type] || [];
   const existing = editId ? MY_ROWS.find(r => r.id === editId) : null;
+  const group = MC_GROUP_TYPES[type];
 
   const fieldsHtml = defs.map(f => {
-    const val = existing ? (existing[f.id === 'value' ? 'value' : f.id] || '') : '';
+    const val = existing ? (existing[f.id] ?? (f.id === 'desc' ? existing.description : '') ?? '') : '';
     if (f.type === 'textarea') {
       return `<div class="al-field"><label class="al-label">${f.label}</label>
         <textarea class="al-input" id="mc-f-${f.id}" rows="3" placeholder="${f.placeholder||''}">${escMc(val)}</textarea></div>`;
+    }
+    if (f.type === 'select') {
+      const opts = f.options.map(([v,l]) => `<option value="${v}" ${val===v?'selected':''}>${l}</option>`).join('');
+      return `<div class="al-field"><label class="al-label">${f.label}</label>
+        <select class="al-input" id="mc-f-${f.id}">${opts}</select></div>`;
     }
     return `<div class="al-field"><label class="al-label">${f.label}</label>
       <input class="al-input" id="mc-f-${f.id}" type="${f.type==='url'?'url':'text'}" placeholder="${f.placeholder||''}" value="${escMc(val)}"/></div>`;
   }).join('');
 
+  let childrenHtml = '';
+  if (group) {
+    MC_CHILDREN = editId ? mcFindGroupChildren(editId, type, group.childKey).map(r =>
+        type === 'req_service'
+          ? { value: r.value || r.title || '' }
+          : { title: r.title || r.value || '', value: r.value || '', desc: r.description || '' }
+      ) : [];
+    childrenHtml = `
+      <div style="margin-top:4px">
+        <label class="al-label">${group.groupLabel}</label>
+        <div id="mc-children-wrap" style="margin-top:6px"></div>
+        <button type="button" onclick="mcSyncChildFromInputs();mcAddChild()" style="width:100%;padding:9px;border-radius:10px;background:rgba(79,255,176,0.1);border:1px solid rgba(79,255,176,0.25);color:var(--accent);font-size:12.5px;cursor:pointer;margin-top:4px;font-family:var(--font-te)">
+          <i class="fas fa-plus"></i> ${group.childLabel} Add చేయండి
+        </button>
+      </div>`;
+  }
+
   document.getElementById('mc-form-title').textContent =
     (editId ? 'Edit — ' : 'కొత్తది Add చేయండి — ') + (MC_TYPES.find(t=>t.key===type)||{}).label;
-  document.getElementById('mc-form-fields').innerHTML = fieldsHtml;
+  document.getElementById('mc-form-fields').innerHTML = fieldsHtml + childrenHtml;
   document.getElementById('mc-form-err').classList.remove('show');
   document.getElementById('mc-form-wrap').style.display = 'block';
   document.getElementById('mc-form-wrap').scrollIntoView({ behavior:'smooth', block:'nearest' });
+  if (group) mcRenderChildren();
+}
+
+// Scan MY_ROWS (already ordered by display_order) for the child rows that
+// belong to a given group parent — mirrors the same scan admin.html does.
+function mcFindGroupChildren(parentId, parentKey, childKey) {
+  const idx = MY_ROWS.findIndex(r => r.id === parentId);
+  if (idx === -1) return [];
+  const out = [];
+  for (let i = idx + 1; i < MY_ROWS.length; i++) {
+    if (MY_ROWS[i].key === parentKey) break;
+    if (MY_ROWS[i].key === childKey) out.push(MY_ROWS[i]);
+  }
+  return out;
+}
+
+function mcAddChild() {
+  if (MC_CURRENT_TYPE === 'req_service') MC_CHILDREN.push({ value: '' });
+  else if (MC_CURRENT_TYPE === 'service_group') MC_CHILDREN.push({ title: '', value: '', desc: '' });
+  mcRenderChildren();
+}
+function mcRemoveChild(i) { MC_CHILDREN.splice(i, 1); mcRenderChildren(); }
+
+function mcSyncChildFromInputs() {
+  if (MC_CURRENT_TYPE === 'req_service') {
+    document.querySelectorAll('.mc-child-doc').forEach((el, i) => { if (MC_CHILDREN[i]) MC_CHILDREN[i].value = el.value; });
+  } else if (MC_CURRENT_TYPE === 'service_group') {
+    document.querySelectorAll('.mc-child-sub').forEach(wrap => {
+      const i = parseInt(wrap.dataset.idx, 10);
+      if (!MC_CHILDREN[i]) return;
+      MC_CHILDREN[i].title = wrap.querySelector('.mc-sub-title').value;
+      MC_CHILDREN[i].value = wrap.querySelector('.mc-sub-price').value;
+      MC_CHILDREN[i].desc  = wrap.querySelector('.mc-sub-docs').value;
+    });
+  }
+}
+
+function mcRenderChildren() {
+  const wrap = document.getElementById('mc-children-wrap');
+  if (!wrap) return;
+  if (MC_CURRENT_TYPE === 'req_service') {
+    wrap.innerHTML = MC_CHILDREN.map((c, i) => `
+      <div style="display:flex;gap:6px;margin-bottom:6px">
+        <input class="al-input mc-child-doc" style="flex:1" placeholder="Document ${i+1}" value="${escMc(c.value)}"/>
+        <button type="button" onclick="mcSyncChildFromInputs();mcRemoveChild(${i})" style="background:rgba(248,113,113,0.12);border:1px solid rgba(248,113,113,0.3);color:#f87171;border-radius:9px;padding:0 12px;cursor:pointer"><i class="fas fa-trash"></i></button>
+      </div>`).join('') || `<div style="font-size:12px;color:var(--text2);font-family:var(--font-te)">ఇంకా ఏమీ లేవు</div>`;
+  } else if (MC_CURRENT_TYPE === 'service_group') {
+    wrap.innerHTML = MC_CHILDREN.map((c, i) => `
+      <div class="mc-child-sub" data-idx="${i}" style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:10px;margin-bottom:8px">
+        <input class="al-input mc-sub-title" placeholder="సబ్-సర్వీస్ పేరు" value="${escMc(c.title)}" style="margin-bottom:6px"/>
+        <input class="al-input mc-sub-price" placeholder="ధర (₹, optional)" value="${escMc(c.value)}" style="margin-bottom:6px"/>
+        <textarea class="al-input mc-sub-docs" placeholder="అవసరమైన డాక్యుమెంట్‌లు (optional)" rows="2">${escMc(c.desc)}</textarea>
+        <button type="button" onclick="mcSyncChildFromInputs();mcRemoveChild(${i})" style="margin-top:6px;background:rgba(248,113,113,0.12);border:1px solid rgba(248,113,113,0.3);color:#f87171;border-radius:9px;padding:5px 12px;cursor:pointer;font-size:12px;font-family:var(--font-te)"><i class="fas fa-trash"></i> Remove</button>
+      </div>`).join('') || `<div style="font-size:12px;color:var(--text2);font-family:var(--font-te)">ఇంకా ఏమీ లేవు</div>`;
+  }
 }
 
 function closeMyContentForm() {
   document.getElementById('mc-form-wrap').style.display = 'none';
   MC_EDITING_ID = null;
   MC_CURRENT_TYPE = null;
+  MC_CHILDREN = [];
 }
 
 function escMc(s) {
@@ -2874,6 +2980,7 @@ function escMc(s) {
 async function submitMyContentForm() {
   const type = MC_CURRENT_TYPE;
   const defs = MC_FIELD_DEFS[type] || [];
+  const group = MC_GROUP_TYPES[type];
   const errEl = document.getElementById('mc-form-err');
   errEl.classList.remove('show');
 
@@ -2890,28 +2997,70 @@ async function submitMyContentForm() {
   }
 
   const requiresApproval = !!CONTENT_TYPE_SETTINGS[type];
-  const payload = {
-    key: type,
-    title: values.title || '', value: values.value || '', link: values.link || '',
-    icon: values.icon || '', extra: values.extra || '', description: values.desc || '',
-    share: 'yes', isnew: 'no',
-  };
+  const status = requiresApproval ? 'pending' : 'live';
 
   try {
-    if (MC_EDITING_ID) {
-      // Editing an existing self-uploaded row — if it was already live, re-submitting
-      // for approval-required types sends it back to pending so admin re-checks it.
-      const existing = MY_ROWS.find(r => r.id === MC_EDITING_ID);
-      const newStatus = requiresApproval ? 'pending' : 'live';
-      const { error } = await sb.from('agent_rows').update({ ...payload, status: newStatus }).eq('id', MC_EDITING_ID);
-      if (error) throw error;
-    } else {
+    if (group) {
+      mcSyncChildFromInputs();
       const maxOrder = ALL_AGENT_ROWS_RAW.reduce((m, r) => Math.max(m, r.display_order || 0), 0);
-      const { error } = await sb.from('agent_rows').insert({
-        ...payload, agent_id: AGENT_DB.id, source: 'agent',
-        status: requiresApproval ? 'pending' : 'live', display_order: maxOrder + 1,
-      });
-      if (error) throw error;
+      const parentRow = {
+        agent_id: AGENT_DB.id, source: 'agent', status, key: type,
+        title: values.title || '', value: values.title || '', icon: values.icon || '',
+        link: '', extra: '', description: '', share: 'yes', isnew: 'no',
+      };
+      const childRows = MC_CHILDREN
+        .filter(c => (type === 'req_service' ? c.value : c.title || '').trim())
+        .map(c => type === 'req_service'
+          ? { agent_id: AGENT_DB.id, source: 'agent', status, key: group.childKey,
+              title: c.value.trim(), value: c.value.trim(), link:'', icon:'', extra:'', description:'', share:'yes', isnew:'no' }
+          : { agent_id: AGENT_DB.id, source: 'agent', status, key: group.childKey,
+              title: (c.title||'').trim(), value: (c.value||'').trim(), description: (c.desc||'').trim(),
+              link:'', icon:'', extra:'', share:'yes', isnew:'no' });
+
+      if (MC_EDITING_ID) {
+        // Full-replace approach for the child list (simplest way to keep parent+children
+        // consistently ordered together). We also move the whole group to the end of the
+        // ordering so a newly-edited group can never end up interleaved with another
+        // group that was created in between — see comments in the migration notes.
+        const oldChildIds = mcFindGroupChildren(MC_EDITING_ID, type, group.childKey).map(r => r.id);
+        if (oldChildIds.length) {
+          const { error: delErr } = await sb.from('agent_rows').delete().in('id', oldChildIds);
+          if (delErr) throw delErr;
+        }
+        const { error: updErr } = await sb.from('agent_rows')
+          .update({ ...parentRow, agent_id: undefined, display_order: maxOrder + 1 })
+          .eq('id', MC_EDITING_ID);
+        if (updErr) throw updErr;
+        if (childRows.length) {
+          const toInsert = childRows.map((c, i) => ({ ...c, display_order: maxOrder + 2 + i }));
+          const { error: insErr } = await sb.from('agent_rows').insert(toInsert);
+          if (insErr) throw insErr;
+        }
+      } else {
+        const rowsToInsert = [
+          { ...parentRow, display_order: maxOrder + 1 },
+          ...childRows.map((c, i) => ({ ...c, display_order: maxOrder + 2 + i })),
+        ];
+        const { error } = await sb.from('agent_rows').insert(rowsToInsert);
+        if (error) throw error;
+      }
+    } else {
+      const payload = {
+        key: type,
+        title: values.title || '', value: values.value || '', link: values.link || '',
+        icon: values.icon || '', extra: values.extra || '', description: values.desc || '',
+        share: 'yes', isnew: 'no',
+      };
+      if (MC_EDITING_ID) {
+        const { error } = await sb.from('agent_rows').update({ ...payload, status }).eq('id', MC_EDITING_ID);
+        if (error) throw error;
+      } else {
+        const maxOrder = ALL_AGENT_ROWS_RAW.reduce((m, r) => Math.max(m, r.display_order || 0), 0);
+        const { error } = await sb.from('agent_rows').insert({
+          ...payload, agent_id: AGENT_DB.id, source: 'agent', status, display_order: maxOrder + 1,
+        });
+        if (error) throw error;
+      }
     }
   } catch (e) {
     errEl.innerHTML = `<i class="fas fa-circle-exclamation"></i><span>Save విఫలమైంది: ${escMc(e.message)}</span>`;
