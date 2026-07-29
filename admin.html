@@ -514,10 +514,12 @@ input,textarea,select{font-family:var(--font);outline:none}
           </button>
         </div>
         <div style="background:var(--bg2,rgba(0,0,0,0.03));border:1px solid var(--border,rgba(0,0,0,0.08));border-radius:10px;padding:14px 16px;margin-bottom:16px;font-size:12.5px;line-height:1.7;color:var(--text2)">
-          <b>కొత్త ఏజెంట్ కోసం login create చేయడం (ప్రస్తుతానికి మాన్యువల్):</b><br/>
-          1. Supabase Dashboard → Authentication → Add User → ఆ ఏజెంట్ ఇమెయిల్ + password పెట్టి create చేయండి<br/>
-          2. వచ్చిన UUID కాపీ చేయండి<br/>
-          3. SQL Editor లో: <code>update agents set auth_user_id = 'UUID' where tab = 'AGENT_TAB';</code>
+          <b><i class="fas fa-circle-check" style="color:var(--accent)"></i> ఇప్పుడు ఇది ఆటోమేటిక్:</b> Overview → "+ Add Agent" వాడితే profile + login రెండూ ఒకే క్లిక్‌లో create అవుతాయి.<br/>
+          <span style="color:var(--text3);font-size:11.5px">Fallback (మాన్యువల్‌గా అవసరమైతే):</span> Dashboard → Authentication → Add User → UUID కాపీ → SQL Editor లో:
+          <code id="users-view-sql-snippet">update agents set auth_user_id = 'UUID' where tab = 'AGENT_TAB';</code>
+          <button class="add-row-btn" style="margin-top:8px;padding:5px 12px;font-size:11.5px" onclick="copySqlSnippet('users-view-sql-snippet', this)">
+            <i class="fas fa-copy"></i> కాపీ చేయండి
+          </button>
         </div>
         <div id="users-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px">
           <div style="padding:20px;color:var(--text3);font-size:13px">లోడ్ అవుతోంది…</div>
@@ -1043,10 +1045,14 @@ function buildCard(r, gi, cat) {
   // sub_service rows: show as indented sub-item, price + docs preview
   if (r.key === 'sub_service') {
     const priceStr = r.value ? ` — ₹${r.value}` : '';
+    const childBadge = r.source === 'agent'
+      ? `<span style="font-size:9px;font-weight:700;padding:1px 5px;border-radius:4px;margin-right:4px;
+          background:${r.status==='pending'?'rgba(251,191,36,0.15)':'rgba(79,255,176,0.12)'};
+          color:${r.status==='pending'?'var(--yellow)':'var(--accent)'}"><i class="fas fa-user"></i></span>` : '';
     return `<div class="row-card req-doc-card" id="rc_${gi}" style="margin-left:16px;border-left:2px solid #8b5cf6;opacity:0.85">
       <span class="row-card-drag"><i class="fas fa-grip-vertical"></i></span>
       <div class="row-card-body">
-        <div class="row-card-value" style="font-size:12px">🏷️ ${esc(label)}${priceStr}</div>
+        <div class="row-card-value" style="font-size:12px">${childBadge}🏷️ ${esc(label)}${priceStr}</div>
         ${r.desc ? `<div class="row-card-sub">${esc(r.desc)}</div>` : ''}
       </div>
       <button class="row-card-edit" onclick="editRowInline(${gi})" title="Edit"><i class="fas fa-pen"></i></button>
@@ -1056,10 +1062,14 @@ function buildCard(r, gi, cat) {
 
   // req_doc rows: show as sub-item (indented, no drag, no share/new)
   if (r.key === 'req_doc') {
+    const childBadge = r.source === 'agent'
+      ? `<span style="font-size:9px;font-weight:700;padding:1px 5px;border-radius:4px;margin-right:4px;
+          background:${r.status==='pending'?'rgba(251,191,36,0.15)':'rgba(79,255,176,0.12)'};
+          color:${r.status==='pending'?'var(--yellow)':'var(--accent)'}"><i class="fas fa-user"></i></span>` : '';
     return `<div class="row-card req-doc-card" id="rc_${gi}" style="margin-left:16px;border-left:2px solid #22d3ee;opacity:0.85">
       <span class="row-card-drag"><i class="fas fa-grip-vertical"></i></span>
       <div class="row-card-body">
-        <div class="row-card-value" style="font-size:12px">📄 ${esc(label)}</div>
+        <div class="row-card-value" style="font-size:12px">${childBadge}📄 ${esc(label)}</div>
       </div>
       <button class="row-card-del" onclick="deleteRow(${gi})" title="Delete"><i class="fas fa-trash"></i></button>
     </div>`;
@@ -1104,15 +1114,32 @@ function buildCard(r, gi, cat) {
   </div>`;
 }
 
+/* Find the gi indices of child rows (req_doc / sub_service) that belong to a
+   parent row at gi, i.e. everything of childKey between it and the next
+   row of the same parentKey. */
+function getChildGis(gi, parentKey, childKey) {
+  const out = [];
+  for (let i = gi + 1; i < ALL_ROWS.length; i++) {
+    if (ALL_ROWS[i].key === parentKey) break;
+    if (ALL_ROWS[i].key === childKey) out.push(i);
+  }
+  return out;
+}
+
 /* ── Approve / Reject agent-submitted content (immediate, not tied to Save) ── */
 async function approveRow(gi) {
   const r = ALL_ROWS[gi];
   if (!r || !r._dbId) return;
+  const childGis = r.key === 'req_service' ? getChildGis(gi, 'req_service', 'req_doc')
+                  : r.key === 'service_group' ? getChildGis(gi, 'service_group', 'sub_service')
+                  : [];
+  const ids = [r._dbId, ...childGis.map(cgi => ALL_ROWS[cgi]._dbId).filter(Boolean)];
   showLoader('Approving…');
-  const { error } = await sb.from('agent_rows').update({ status: 'live' }).eq('id', r._dbId);
+  const { error } = await sb.from('agent_rows').update({ status: 'live' }).in('id', ids);
   hideLoader();
   if (error) return showToast('Failed: ' + error.message, 'error');
   r.status = 'live';
+  childGis.forEach(cgi => { ALL_ROWS[cgi].status = 'live'; });
   renderCatGrid();
   showToast('Approved ✓ — ఇప్పుడు live', 'success');
 }
@@ -1120,11 +1147,16 @@ async function approveRow(gi) {
 async function rejectRow(gi) {
   const r = ALL_ROWS[gi];
   if (!r || !r._dbId) return;
+  const childGis = r.key === 'req_service' ? getChildGis(gi, 'req_service', 'req_doc')
+                  : r.key === 'service_group' ? getChildGis(gi, 'service_group', 'sub_service')
+                  : [];
+  const ids = [r._dbId, ...childGis.map(cgi => ALL_ROWS[cgi]._dbId).filter(Boolean)];
   showLoader('Rejecting…');
-  const { error } = await sb.from('agent_rows').update({ status: 'rejected' }).eq('id', r._dbId);
+  const { error } = await sb.from('agent_rows').update({ status: 'rejected' }).in('id', ids);
   hideLoader();
   if (error) return showToast('Failed: ' + error.message, 'error');
   r.status = 'rejected';
+  childGis.forEach(cgi => { ALL_ROWS[cgi].status = 'rejected'; });
   renderCatGrid();
   showToast('Reject చేయబడింది', 'info');
 }
@@ -1565,6 +1597,8 @@ const AGENT_UPLOAD_TYPES = [
   { key:'service', label:'Service' }, { key:'pdf', label:'PDF' },
   { key:'doc', label:'Doc' }, { key:'poster', label:'Poster' },
   { key:'voice', label:'Voice' }, { key:'tts', label:'TTS' },
+  { key:'popup', label:'Popup' }, { key:'req_service', label:'Req. Service' },
+  { key:'service_group', label:'Service Package' },
 ];
 
 async function loadContentTypeSettings() {
@@ -1693,49 +1727,105 @@ async function doDelete(tabId) {
   }
 }
 
-/* ═══ Add New Agent ═══ */
+/* ═══ Add New Agent (one click — profile + login, both) ═══ */
 function showAddAgent() {
   showModal(
     'New Agent Add చేయండి',
-    'Agent tab create అవుతుంది. తర్వాత edit చేయవచ్చు.',
+    'ఒకే క్లిక్‌లో agent profile + login రెండూ create అవుతాయి.',
     `<div class="field-row"><label>Agent ID (e.g. agent_003)</label>
       <input type="text" id="new-agent-id" class="field-input" placeholder="agent_003" style="margin-bottom:10px"/>
      </div>
      <div class="field-row"><label>Shop Name</label>
-      <input type="text" id="new-agent-name" class="field-input" placeholder="Seva Kendra"/>
+      <input type="text" id="new-agent-name" class="field-input" placeholder="Seva Kendra" style="margin-bottom:10px"/>
      </div>
      <div class="field-row"><label>Phone</label>
-      <input type="tel" id="new-agent-phone" class="field-input" placeholder="9999999999"/>
+      <input type="tel" id="new-agent-phone" class="field-input" placeholder="9999999999" style="margin-bottom:10px"/>
      </div>
      <div class="field-row"><label>City</label>
-      <input type="text" id="new-agent-city" class="field-input" placeholder="Hyderabad"/>
+      <input type="text" id="new-agent-city" class="field-input" placeholder="Hyderabad" style="margin-bottom:10px"/>
+     </div>
+     <div style="border-top:1px solid var(--border);margin:6px 0 12px;padding-top:12px">
+       <div style="font-size:11.5px;color:var(--text3);margin-bottom:8px"><i class="fas fa-key"></i> Login (agent ఇది వాడి index.html లో సైన్ ఇన్ అవుతారు)</div>
+       <div class="field-row"><label>Email</label>
+        <input type="email" id="new-agent-email" class="field-input" placeholder="agent003@example.com" style="margin-bottom:10px"/>
+       </div>
+       <div class="field-row"><label>Password</label>
+        <div style="display:flex;gap:8px">
+          <input type="text" id="new-agent-password" class="field-input" placeholder="కనీసం 6 అక్షరాలు" style="flex:1"/>
+          <button type="button" class="topbar-btn secondary" onclick="genAgentPassword()" title="Random password generate చేయండి"><i class="fas fa-dice"></i></button>
+        </div>
+       </div>
      </div>
      <div style="display:flex;gap:10px;margin-top:4px">
-      <button class="topbar-btn primary" style="flex:1" onclick="doAddAgent()"><i class="fas fa-plus"></i> Create</button>
+      <button class="topbar-btn primary" style="flex:1" id="new-agent-create-btn" onclick="doAddAgent()"><i class="fas fa-plus"></i> Create</button>
       <button class="topbar-btn secondary" style="flex:1" onclick="closeModal()">Cancel</button>
      </div>`,
     true
   );
 }
 
+function genAgentPassword() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789';
+  let out = '';
+  for (let i = 0; i < 10; i++) out += chars[Math.floor(Math.random() * chars.length)];
+  document.getElementById('new-agent-password').value = out;
+}
+
 async function doAddAgent() {
-  const id   = document.getElementById('new-agent-id').value.trim();
-  const name = document.getElementById('new-agent-name').value.trim();
-  const phone= document.getElementById('new-agent-phone').value.trim();
-  const city = document.getElementById('new-agent-city').value.trim();
-  if (!id) { showToast('Agent ID required', 'error'); return; }
-  closeModal();
-  showLoader('Creating agent…');
-  const { error } = await sb.from('agents').insert({
-    tab: id, shop_name: name || 'Seva Kendra', phone, city,
+  const id       = document.getElementById('new-agent-id').value.trim();
+  const name     = document.getElementById('new-agent-name').value.trim();
+  const phone    = document.getElementById('new-agent-phone').value.trim();
+  const city     = document.getElementById('new-agent-city').value.trim();
+  const email    = document.getElementById('new-agent-email').value.trim();
+  const password = document.getElementById('new-agent-password').value;
+
+  if (!id)       { showToast('Agent ID అవసరం', 'error'); return; }
+  if (!email)    { showToast('Email అవసరం', 'error'); return; }
+  if (!password || password.length < 6) { showToast('Password కనీసం 6 అక్షరాలు ఉండాలి', 'error'); return; }
+
+  showLoader('Agent + login create చేస్తున్నాం…');
+  const { data, error } = await sb.functions.invoke('create-agent', {
+    body: { tab: id, shop_name: name || 'Seva Kendra', phone, city, email, password },
   });
   hideLoader();
-  if (!error) {
-    showToast('Agent profile created ✓ — ఇప్పుడు Supabase Dashboard → Authentication లో ఈ ఏజెంట్ కోసం login (email+password) create చేసి, auth_user_id ని agents టేబుల్‌లో లింక్ చేయండి.', 'success');
-    await loadAgents();
-    loadAgent(id);
-  } else {
-    showToast(error.message || 'Failed', 'error');
+
+  // supabase-js puts a non-2xx response body in `data` too (not just thrown),
+  // so check both the transport error and the function's own { ok:false }.
+  if (error || !data || data.ok === false) {
+    const msg = (data && data.error) || error?.message || 'Failed';
+    showToast(msg, 'error');
+    return;
+  }
+
+  closeModal();
+  showModal('Agent Ready ✓', 'ఈ credentials ఏజెంట్‌కి పంపండి — వాళ్ళు వెంటనే login అవ్వొచ్చు.', `
+    <div style="font-size:12.5px;line-height:1.9">
+      <div><b>Shop:</b> ${esc(name || 'Seva Kendra')} (${esc(id)})</div>
+      <div><b>Email:</b> <code id="new-agent-created-email" style="background:var(--bg3);padding:3px 7px;border-radius:5px">${esc(email)}</code></div>
+      <div><b>Password:</b> <code id="new-agent-created-pass" style="background:var(--bg3);padding:3px 7px;border-radius:5px">${esc(password)}</code></div>
+    </div>
+    <button class="add-row-btn" style="width:100%;margin-top:10px" onclick="copyAgentCreds('${esc(email)}','${esc(password)}', this)"><i class="fas fa-copy"></i> Email + Password కాపీ చేయండి</button>
+    <button class="add-row-btn" style="width:100%;margin-top:8px" onclick="closeModal()">సరే</button>`, true);
+
+  await loadAgents();
+  loadAgent(id);
+}
+
+async function copyAgentCreds(email, password, btnEl) {
+  const text = `Email: ${email}\nPassword: ${password}`;
+  try { await navigator.clipboard.writeText(text); }
+  catch (e) {
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); } catch (e2) {}
+    document.body.removeChild(ta);
+  }
+  showToast('కాపీ చేయబడింది ✓', 'success');
+  if (btnEl) {
+    const original = btnEl.innerHTML;
+    btnEl.innerHTML = '<i class="fas fa-check"></i> కాపీ అయ్యింది!';
+    setTimeout(() => { btnEl.innerHTML = original; }, 1800);
   }
 }
 
@@ -1961,15 +2051,47 @@ function renderUsersGrid() {
 }
 
 function showCreateUserModal() {
-  showModal('కొత్త Agent Login', 'ప్రస్తుతానికి ఇది Supabase Dashboard నుండి మాన్యువల్‌గా చేయాలి', `
+  showModal('Agent Login ఎలా క్రియేట్ అవుతుంది', 'ఇప్పుడు ఇది ఆటోమేటిక్ — మాన్యువల్ స్టెప్స్ అవసరం లేదు', `
     <div style="font-size:12.5px;line-height:1.8">
+      <div style="background:rgba(79,255,176,0.1);border:1px solid rgba(79,255,176,0.3);border-radius:8px;padding:10px;margin-bottom:12px">
+        <i class="fas fa-circle-check" style="color:var(--accent)"></i>
+        Overview → <b>"+ Add Agent"</b> బటన్ వాడితే, profile + login రెండూ ఒకే క్లిక్‌లో create అవుతాయి — ఇక్కడ ఇచ్చిన Email/Password తో ఏజెంట్ వెంటనే index.html లో login అవ్వొచ్చు.
+      </div>
+      <div style="color:var(--text3);font-size:11.5px;margin-bottom:6px"><b>Fallback</b> (ఏదైనా ప్రత్యేక కారణంతో మాన్యువల్‌గా చేయాలంటే):</div>
       1. Supabase Dashboard → <b>Authentication</b> → <b>Add User</b><br/>
       2. ఆ ఏజెంట్ email + password పెట్టి create చేయండి (Auto Confirm ✅)<br/>
       3. వచ్చిన UUID కాపీ చేయండి<br/>
       4. SQL Editor లో ఇది రన్ చేయండి:<br/>
-      <code style="display:block;background:var(--bg3);padding:8px;border-radius:6px;margin-top:6px;word-break:break-all">update agents set auth_user_id = 'UUID' where tab = 'AGENT_TAB';</code>
+      <code id="new-agent-sql-snippet" style="display:block;background:var(--bg3);padding:8px;border-radius:6px;margin-top:6px;word-break:break-all">update agents set auth_user_id = 'UUID' where tab = 'AGENT_TAB';</code>
+      <button class="add-row-btn" style="width:100%;margin-top:8px" onclick="copySqlSnippet('new-agent-sql-snippet', this)">
+        <i class="fas fa-copy"></i> SQL కాపీ చేయండి
+      </button>
     </div>
     <button class="add-row-btn" style="width:100%;margin-top:12px" onclick="closeModal()">సరే, అర్థమైంది</button>`, true);
+}
+
+// Copies the plain-text SQL out of a <code> block and briefly flips the
+// clicked button's label to confirm the copy worked.
+async function copySqlSnippet(codeElId, btnEl) {
+  const codeEl = document.getElementById(codeElId);
+  if (!codeEl) return;
+  const sql = codeEl.textContent.trim();
+  try {
+    await navigator.clipboard.writeText(sql);
+  } catch (e) {
+    // Fallback for browsers/contexts without Clipboard API permission
+    const ta = document.createElement('textarea');
+    ta.value = sql; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); } catch (e2) {}
+    document.body.removeChild(ta);
+  }
+  showToast('SQL కాపీ చేయబడింది ✓', 'success');
+  if (btnEl) {
+    const original = btnEl.innerHTML;
+    btnEl.innerHTML = '<i class="fas fa-check"></i> కాపీ అయ్యింది!';
+    setTimeout(() => { btnEl.innerHTML = original; }, 1800);
+  }
 }
 
 
