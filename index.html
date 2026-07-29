@@ -2087,6 +2087,10 @@ body.light-mode .wc-btn-confirm { color:#fff;background:#0a8a5a; }
       <div id="pdf-list"></div>
     </div>
     <div>
+      <div class="req-section" id="service-groups-section" style="display:none">
+        <div class="section-head"><h2>📦 సర్వీస్ ప్యాకేజీలు</h2><div class="section-line"></div></div>
+        <div id="service-groups-list"></div>
+      </div>
       <div class="req-section" id="req-docs-section" style="display:none">
         <div class="section-head"><h2>📋 అవసరమైన పత్రాలు</h2><div class="section-line"></div></div>
         <div id="req-docs-list"></div>
@@ -2562,7 +2566,7 @@ function splitCSVLine(line) {
 function buildClient(rows) {
   if (!rows.length) return null;
   const kv={}, updates=[], services=[], pdfs=[], docs=[];
-  const tickers=[], announcements=[], reqServices=[], popups=[], banners=[];
+  const tickers=[], announcements=[], reqServices=[], popups=[], banners=[], serviceGroups=[];
 
   rows.forEach(r => {
     const key = (r.key||'').trim();
@@ -2579,6 +2583,8 @@ function buildClient(rows) {
     else if (key==='canva')       announcements.push({type:'canva',   title:r.title||'Canva Template', desc:r.value||'Template తెరవండి', link:r.link||'#', date:r.extra||'', share:(r.share||'yes').toLowerCase().trim(), isnew:(r.isnew||'no').toLowerCase().trim()});
     else if (key==='req_service') reqServices.push({name:r.value||r.title, icon:r.icon||'fas fa-file-alt', docs:[]});
     else if (key==='req_doc')     { if (reqServices.length) reqServices[reqServices.length-1].docs.push(r.value||r.title); }
+    else if (key==='service_group') serviceGroups.push({name:r.title||r.value, icon:r.icon||'fas fa-layer-group', subs:[]});
+    else if (key==='sub_service')   { if (serviceGroups.length) serviceGroups[serviceGroups.length-1].subs.push({name:r.title||r.value, price:r.value||'', docs:r.desc||''}); }
     else if (key==='popup')       popups.push({title:r.title||'', subtitle:r.value||'', imageUrl:r.link||'', show:(r.extra||'yes').toLowerCase().trim()});
     else if (key==='banner')      banners.push({
       imgUrl:   r.link  || '',           // image URL
@@ -2595,7 +2601,7 @@ function buildClient(rows) {
     logoUrl: kv.logoUrl || '',
     city:kv.city||'', phone:kv.phone||'', whatsapp:kv.whatsapp||'',
     mapEmbedUrl:kv.mapEmbedUrl||'', footerText:kv.footerText||'',
-    popups, updates, services, pdfs, docs, tickers, announcements, reqServices, banners,
+    popups, updates, services, pdfs, docs, tickers, announcements, reqServices, serviceGroups, banners,
     coverUrl: kv.coverUrl || '',
   };
 }
@@ -2691,7 +2697,7 @@ async function loadData() {
 function renderAll() {
   applyTheme(); renderHeader(); renderTicker();
   renderHero(); renderBanner(); renderUpdates(); renderServices();
-  renderPDFs(); renderDocs(); renderReqDocs();
+  renderPDFs(); renderDocs(); renderReqDocs(); renderServiceGroups();
   renderVoice(); renderContact(); renderFooter();
   showPopup(); hideLoader();
 }
@@ -3035,6 +3041,43 @@ function accToggle(i) {
   if (!item) return;
   const wasOpen = item.classList.contains('open');
   document.querySelectorAll('.acc-item.open').forEach(el=>el.classList.remove('open'));
+  if (!wasOpen) item.classList.add('open');
+}
+
+/* Grouped services (e.g. "PAN Card" → New/Correction/Reprint/PVC),
+   each sub-service showing its own price + required documents.
+   Reuses the same accordion CSS as req-docs — informational only,
+   no click action per sub-service. */
+function renderServiceGroups() {
+  const groups = CLIENT.serviceGroups || [];
+  if (!groups.length) return;
+  document.getElementById('service-groups-section').style.display = 'block';
+  document.getElementById('service-groups-list').innerHTML = groups.map((g,i) => `
+    <div class="acc-item" id="sg_${i}">
+      <div class="acc-header" onclick="sgToggle(${i})">
+        <div class="acc-icon"><i class="${g.icon}"></i></div>
+        <div class="acc-label">${g.name}</div>
+        <span class="acc-count">${g.subs.length} options</span>
+        <i class="fas fa-chevron-down acc-arrow"></i>
+      </div>
+      <div class="acc-body"><div class="acc-inner">
+        ${g.subs.map(s => `
+          <div class="req-doc-item" style="align-items:flex-start;justify-content:space-between;gap:10px">
+            <div style="flex:1;min-width:0">
+              <div style="font-weight:600">${s.name}</div>
+              ${s.docs ? `<div style="font-size:12px;color:var(--text2);margin-top:2px">${s.docs}</div>` : ''}
+            </div>
+            ${s.price ? `<div style="font-weight:700;color:var(--accent);white-space:nowrap">₹${s.price}</div>` : ''}
+          </div>`).join('') || '<div class="req-doc-item" style="color:var(--text2)">సబ్-సర్వీసులు add చేయబడలేదు</div>'}
+      </div></div>
+    </div>`).join('');
+}
+
+function sgToggle(i) {
+  const item = document.getElementById('sg_'+i);
+  if (!item) return;
+  const wasOpen = item.classList.contains('open');
+  document.querySelectorAll('#service-groups-list .acc-item.open').forEach(el=>el.classList.remove('open'));
   if (!wasOpen) item.classList.add('open');
 }
 
