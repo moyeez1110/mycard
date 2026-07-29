@@ -63,6 +63,29 @@
   .empty{font-size:13px;color:var(--text2);text-align:center;padding:20px 0}
   .footer{text-align:center;font-size:11px;color:var(--text2);margin-top:30px}
   .loading{display:flex;align-items:center;justify-content:center;min-height:70vh;font-size:13px;color:var(--text2)}
+
+  /* Ticker */
+  .ticker-bar{display:none;background:var(--bg3);border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+    overflow:hidden;white-space:nowrap;padding:9px 0}
+  .ticker-bar.show{display:block}
+  .ticker-track{display:inline-block;padding-left:100%;animation:ticker-scroll 22s linear infinite;font-size:12.5px;font-weight:600;color:var(--accent)}
+  .ticker-track i{margin-right:8px}
+  @keyframes ticker-scroll{0%{transform:translateX(0)}100%{transform:translateX(-100%)}}
+
+  /* Announcements */
+  .ann-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:13px;margin-bottom:9px}
+  .ann-head{display:flex;align-items:center;gap:8px;margin-bottom:2px}
+  .ann-head i{color:var(--accent);width:16px;text-align:center}
+  .ann-title{font-size:13.5px;font-weight:700;flex:1}
+  .ann-date{font-size:10.5px;color:var(--text2)}
+  .ann-body{font-size:12.5px;color:var(--text2);margin-top:4px;line-height:1.5}
+  .ann-new{font-size:9.5px;font-weight:700;background:rgba(79,255,176,0.15);color:var(--accent);padding:1px 6px;border-radius:5px}
+  .ann-audio{width:100%;margin-top:8px;height:36px}
+  .ann-poster-img{width:100%;border-radius:10px;margin-top:8px;display:block;cursor:pointer}
+  .ann-link-btn{display:inline-flex;align-items:center;gap:6px;margin-top:8px;background:rgba(79,255,176,0.1);
+    color:var(--accent);border:1px solid rgba(79,255,176,0.3);padding:7px 13px;border-radius:9px;font-size:12px;font-weight:600;text-decoration:none}
+  .tts-speak-btn{display:inline-flex;align-items:center;gap:6px;margin-top:8px;background:var(--bg3);border:1px solid var(--border);
+    color:var(--text);padding:7px 13px;border-radius:9px;font-size:12px;font-weight:600;cursor:pointer}
 </style>
 </head>
 <body>
@@ -80,6 +103,10 @@
     </div>
   </div>
 
+  <div id="ticker-bar" class="ticker-bar">
+    <div class="ticker-track" id="ticker-track"></div>
+  </div>
+
   <div id="install-bar" class="install-bar">
     <i class="fas fa-download" style="color:var(--accent)"></i>
     <span>ఈ షాప్ యాప్‌ని install చేసుకోండి — updates వెంటనే తెలుసుకోండి</span>
@@ -90,6 +117,11 @@
     <div class="section" id="sec-updates" style="display:none">
       <div class="section-head"><h2>📢 తాజా అప్‌డేట్‌లు</h2><div class="section-line"></div></div>
       <div id="updates-list"></div>
+    </div>
+
+    <div class="section" id="sec-ann" style="display:none">
+      <div class="section-head"><h2>🔔 ప్రకటనలు</h2><div class="section-line"></div></div>
+      <div id="ann-list"></div>
     </div>
 
     <div class="section" id="sec-services" style="display:none">
@@ -188,6 +220,58 @@ function renderShop(agent, rows) {
       </a>`).join('');
   }
 
+  // Ticker — scrolling strip built from every 'ticker' row, joined together
+  const tickers = rows.filter(r => r.key === 'ticker').map(r => (r.value || r.title || '').trim()).filter(Boolean);
+  if (tickers.length) {
+    document.getElementById('ticker-bar').classList.add('show');
+    document.getElementById('ticker-track').innerHTML =
+      tickers.map(t => `<i class="fas fa-circle" style="font-size:5px"></i>${esc(t)}`).join('&nbsp;&nbsp;&nbsp;&nbsp;');
+  }
+
+  // Announcements — voice notes, TTS notices, posters, canva templates, PDF notices
+  const announcements = [];
+  rows.forEach(r => {
+    if (r.key === 'voice')       announcements.push({ type:'voice',  title:r.title||r.value, link:r.link||'', date:r.extra||'', isnew:(r.isnew||'no')==='yes' });
+    else if (r.key === 'tts')    announcements.push({ type:'tts',    text:r.value||r.title,   date:r.extra||'', isnew:(r.isnew||'no')==='yes' });
+    else if (r.key === 'poster') announcements.push({ type:'poster', title:r.title||'',       link:r.link||'', date:r.extra||'', isnew:(r.isnew||'no')==='yes' });
+    else if (r.key === 'canva')  announcements.push({ type:'canva',  title:r.title||'Canva Template', desc:r.value||'Template తెరవండి', link:r.link||'#', date:r.extra||'', isnew:(r.isnew||'no')==='yes' });
+    else if (r.key === 'pdf_notice') announcements.push({ type:'pdf', title:r.title||r.value, desc:r.value||'PDF డౌన్‌లోడ్', link:r.link||'#', date:r.extra||'', isnew:(r.isnew||'no')==='yes' });
+  });
+  if (announcements.length) {
+    document.getElementById('sec-ann').style.display = 'block';
+    document.getElementById('ann-list').innerHTML = announcements.map((a, i) => {
+      const newBadge = a.isnew ? `<span class="ann-new">కొత్తది</span>` : '';
+      const dateHtml = a.date ? `<span class="ann-date">${esc(a.date)}</span>` : '';
+      if (a.type === 'voice') {
+        return `<div class="ann-card">
+          <div class="ann-head"><i class="fas fa-microphone"></i><div class="ann-title">${esc(a.title)}</div>${newBadge}${dateHtml}</div>
+          ${a.link ? `<audio class="ann-audio" controls src="${esc(a.link)}"></audio>` : ''}
+        </div>`;
+      }
+      if (a.type === 'tts') {
+        return `<div class="ann-card">
+          <div class="ann-head"><i class="fas fa-closed-captioning"></i><div class="ann-title">నోటీసు</div>${newBadge}${dateHtml}</div>
+          <div class="ann-body">${esc(a.text)}</div>
+          <button class="tts-speak-btn" onclick="speakTts(${i})"><i class="fas fa-volume-high"></i> వినండి</button>
+        </div>`;
+      }
+      if (a.type === 'poster') {
+        return `<div class="ann-card">
+          <div class="ann-head"><i class="fas fa-image"></i><div class="ann-title">${esc(a.title || 'పోస్టర్')}</div>${newBadge}${dateHtml}</div>
+          ${a.link ? `<img class="ann-poster-img" src="${esc(a.link)}" onclick="window.open('${esc(a.link)}','_blank')"/>` : ''}
+        </div>`;
+      }
+      // canva / pdf
+      const icon = a.type === 'canva' ? 'fa-palette' : 'fa-file-pdf';
+      return `<div class="ann-card">
+        <div class="ann-head"><i class="fas ${icon}"></i><div class="ann-title">${esc(a.title)}</div>${newBadge}${dateHtml}</div>
+        ${a.desc ? `<div class="ann-body">${esc(a.desc)}</div>` : ''}
+        <a class="ann-link-btn" href="${esc(a.link)}" target="_blank"><i class="fas fa-arrow-up-right-from-square"></i> తెరవండి</a>
+      </div>`;
+    }).join('');
+    window._ANN_DATA = announcements; // used by speakTts()
+  }
+
   const services = rows.filter(r => r.key === 'service');
   if (services.length) {
     document.getElementById('sec-services').style.display = 'block';
@@ -252,6 +336,15 @@ function grpToggle(i) {
   const wasOpen = item.classList.contains('open');
   document.querySelectorAll('#groups-list .acc-item.open').forEach(el=>el.classList.remove('open'));
   if (!wasOpen) item.classList.add('open');
+}
+
+function speakTts(i) {
+  const a = (window._ANN_DATA || [])[i];
+  if (!a || !a.text || !('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel(); // stop anything already playing
+  const u = new SpeechSynthesisUtterance(a.text);
+  u.lang = 'te-IN';
+  window.speechSynthesis.speak(u);
 }
 
 /* ── PWA: one shared app, but each install remembers the shop the
