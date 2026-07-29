@@ -588,6 +588,16 @@ input,textarea,select{font-family:var(--font);outline:none}
             <button class="add-row-btn" style="margin-top:0;border-color:rgba(251,146,60,0.4);color:#fb923c" onclick="addRow('poster')"><i class="fas fa-plus"></i> Poster</button>
             <button class="add-row-btn" style="margin-top:0;border-color:rgba(244,114,182,0.4);color:#f472b6" onclick="addRow('popup')"><i class="fas fa-plus"></i> Popup</button>
           </div>
+          <!-- Agent self-upload approval settings -->
+          <div style="padding:12px 14px;background:var(--bg2);border-radius:10px;border:1px solid var(--border);margin-bottom:14px">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+              <i class="fas fa-user-check" style="color:var(--accent)"></i>
+              <span style="font-size:12.5px;font-weight:700">Agent Self-Upload Settings</span>
+              <span style="font-size:11px;color:var(--text3)">— ఏ content types కి admin approval కావాలో select చేయండి</span>
+            </div>
+            <div id="cts-grid" style="display:flex;flex-wrap:wrap;gap:8px">Loading…</div>
+          </div>
+
           <!-- Category columns -->
           <div class="cat-grid" id="cat-grid"></div>
         </div>
@@ -741,6 +751,8 @@ let CURRENT_TAB = null;
 let CURRENT_AGENT_DB = null;
 let DIRTY       = false;
 let ALL_ROWS    = [];
+let ORIGINAL_ROW_IDS = []; // _dbId values present when this agent was last loaded (used for safe diff-save)
+let CONTENT_TYPE_SETTINGS = {}; // { key: requiresApprovalBoolean }
 
 /* ═══ Login ═══ */
 async function doLogin() {
@@ -888,7 +900,11 @@ async function loadAgent(tabId) {
     key: r.key, title: r.title, value: r.value, link: r.link, icon: r.icon,
     extra: r.extra, desc: r.description, badge: r.badge, share: r.share,
     isnew: r.isnew, _dbId: r.id, display_order: r.display_order,
+    source: r.source || 'admin', status: r.status || 'live',
   }));
+  ORIGINAL_ROW_IDS = ALL_ROWS.map(r => r._dbId).filter(Boolean);
+
+  await loadContentTypeSettings();
 
   const kv = {
     shopName: agent.shop_name, tagline: agent.tagline, city: agent.city,
@@ -1055,21 +1071,62 @@ function buildCard(r, gi, cat) {
     sub   = r.extra === 'yes' ? '✅ Show on open' : '❌ Hidden';
   }
 
-  return `<div class="row-card" id="rc_${gi}"
+  const isAgentSrc = r.source === 'agent';
+  const status = r.status || 'live';
+  const statusBadge = isAgentSrc
+    ? `<span style="font-size:9.5px;font-weight:700;padding:2px 6px;border-radius:5px;margin-right:4px;
+        background:${status==='pending'?'rgba(251,191,36,0.15)':status==='rejected'?'rgba(248,113,113,0.15)':'rgba(79,255,176,0.12)'};
+        color:${status==='pending'?'var(--yellow)':status==='rejected'?'var(--red)':'var(--accent)'}">
+        <i class="fas fa-user" style="margin-right:3px"></i>${status==='pending'?'Pending':status==='rejected'?'Rejected':'Agent · Live'}
+      </span>`
+    : '';
+  const approveRejectBtns = (isAgentSrc && status === 'pending')
+    ? `<button class="flag-btn" style="color:var(--green,#34d399)" onclick="approveRow(${gi})" title="Approve"><i class="fas fa-check"></i></button>
+       <button class="flag-btn" style="color:var(--red)" onclick="rejectRow(${gi})" title="Reject"><i class="fas fa-xmark"></i></button>`
+    : '';
+  const cardBorder = isAgentSrc && status === 'pending' ? 'border:1px solid rgba(251,191,36,0.4)' :
+                      isAgentSrc && status === 'rejected' ? 'border:1px solid rgba(248,113,113,0.3);opacity:0.7' : '';
+
+  return `<div class="row-card" id="rc_${gi}" style="${cardBorder}"
     draggable="true"
     ondragstart="onDragStart(event,${gi})"
     ondragend="onDragEnd(event)">
     <span class="row-card-drag"><i class="fas fa-grip-vertical"></i></span>
     <div class="row-card-body">
-      <div class="row-card-value">${esc(label)}</div>
+      <div class="row-card-value">${statusBadge}${esc(label)}</div>
       ${sub ? `<div class="row-card-sub">${esc(sub)}</div>` : ''}
     </div>
     <div class="row-card-flags">
-      ${shareBtn}${newBtn}
+      ${approveRejectBtns}${shareBtn}${newBtn}
     </div>
     <button class="row-card-edit" onclick="editRowInline(${gi})" title="Edit"><i class="fas fa-pen"></i></button>
     <button class="row-card-del" onclick="deleteRow(${gi})" title="Delete"><i class="fas fa-trash"></i></button>
   </div>`;
+}
+
+/* ── Approve / Reject agent-submitted content (immediate, not tied to Save) ── */
+async function approveRow(gi) {
+  const r = ALL_ROWS[gi];
+  if (!r || !r._dbId) return;
+  showLoader('Approving…');
+  const { error } = await sb.from('agent_rows').update({ status: 'live' }).eq('id', r._dbId);
+  hideLoader();
+  if (error) return showToast('Failed: ' + error.message, 'error');
+  r.status = 'live';
+  renderCatGrid();
+  showToast('Approved ✓ — ఇప్పుడు live', 'success');
+}
+
+async function rejectRow(gi) {
+  const r = ALL_ROWS[gi];
+  if (!r || !r._dbId) return;
+  showLoader('Rejecting…');
+  const { error } = await sb.from('agent_rows').update({ status: 'rejected' }).eq('id', r._dbId);
+  hideLoader();
+  if (error) return showToast('Failed: ' + error.message, 'error');
+  r.status = 'rejected';
+  renderCatGrid();
+  showToast('Reject చేయబడింది', 'info');
 }
 
 /* ── Drag handlers ── */
@@ -1501,6 +1558,43 @@ function addRow(key) {
 // Keep renderRowsTable as alias for backward compat
 function renderRowsTable() { renderCatGrid(); }
 
+/* ═══ Agent self-upload: which content types need admin approval ═══
+   Types agents are allowed to self-upload (matches index.html):        */
+const AGENT_UPLOAD_TYPES = [
+  { key:'ticker', label:'Ticker' }, { key:'update', label:'Update' },
+  { key:'service', label:'Service' }, { key:'pdf', label:'PDF' },
+  { key:'doc', label:'Doc' }, { key:'poster', label:'Poster' },
+  { key:'voice', label:'Voice' }, { key:'tts', label:'TTS' },
+];
+
+async function loadContentTypeSettings() {
+  const { data, error } = await sb.from('content_type_settings').select('*');
+  CONTENT_TYPE_SETTINGS = {};
+  (data || []).forEach(row => { CONTENT_TYPE_SETTINGS[row.key] = !!row.requires_approval; });
+  renderContentTypeSettings();
+}
+
+function renderContentTypeSettings() {
+  const grid = document.getElementById('cts-grid');
+  if (!grid) return;
+  grid.innerHTML = AGENT_UPLOAD_TYPES.map(t => {
+    const needsApproval = !!CONTENT_TYPE_SETTINGS[t.key];
+    return `<button class="add-row-btn" style="margin-top:0;${needsApproval ? 'border-color:rgba(251,191,36,0.5);color:var(--yellow)' : 'border-color:rgba(79,255,176,0.4);color:var(--accent)'}"
+        onclick="toggleApprovalSetting('${t.key}')" title="Click to toggle">
+        <i class="fas ${needsApproval ? 'fa-lock' : 'fa-bolt'}"></i> ${t.label}: ${needsApproval ? 'Approval అవసరం' : 'Direct Live'}
+      </button>`;
+  }).join('');
+}
+
+async function toggleApprovalSetting(key) {
+  const newVal = !CONTENT_TYPE_SETTINGS[key];
+  const { error } = await sb.from('content_type_settings').upsert({ key, requires_approval: newVal });
+  if (error) return showToast('Failed: ' + error.message, 'error');
+  CONTENT_TYPE_SETTINGS[key] = newVal;
+  renderContentTypeSettings();
+  showToast(`${key}: ${newVal ? 'ఇప్పుడు admin approval అవసరం' : 'ఇప్పుడు direct live అవుతుంది'}`, 'success');
+}
+
 /* ═══ Save Agent ═══ */
 async function saveAgent() {
   if (!CURRENT_TAB || !CURRENT_AGENT_DB) return;
@@ -1517,29 +1611,57 @@ async function saveAgent() {
   showLoader('Saving…');
   const { error: profileErr } = await sb.from('agents').update(profileUpdate).eq('id', CURRENT_AGENT_DB.id);
 
-  // Full replace of content rows (delete then re-insert), same behaviour
-  // as the old "rewrite the whole sheet tab" approach.
-  const { error: delErr } = await sb.from('agent_rows').delete().eq('agent_id', CURRENT_AGENT_DB.id);
-  let insertErr = null;
-  if (!delErr && contentRows.length) {
-    const toInsert = contentRows.map((r, i) => ({
+  // Diff-based save: update rows that already have a DB id, insert rows that
+  // don't, and delete only rows that were present when we loaded this agent
+  // and are no longer in ALL_ROWS. This is deliberately NOT a delete-all-then-
+  // reinsert, because agents can now add their own content rows directly from
+  // index.html at any time — a blanket delete would wipe those out if an admin
+  // happens to hit Save around the same time.
+  const stillPresentIds = contentRows.map(r => r._dbId).filter(Boolean);
+  const idsToDelete = ORIGINAL_ROW_IDS.filter(id => !stillPresentIds.includes(id));
+
+  let saveErr = null;
+
+  if (idsToDelete.length) {
+    const { error } = await sb.from('agent_rows').delete().in('id', idsToDelete);
+    if (error) saveErr = error;
+  }
+
+  if (!saveErr) {
+    const toInsert = contentRows.filter(r => !r._dbId).map((r, i) => ({
       agent_id: CURRENT_AGENT_DB.id, key: r.key, title: r.title || '', value: r.value || '',
       link: r.link || '', icon: r.icon || '', extra: r.extra || '', description: r.desc || '',
-      badge: r.badge || '', share: r.share || 'yes', isnew: r.isnew || 'no', display_order: i,
+      badge: r.badge || '', share: r.share || 'yes', isnew: r.isnew || 'no',
+      display_order: contentRows.indexOf(r), source: 'admin', status: 'live',
     }));
-    const { error } = await sb.from('agent_rows').insert(toInsert);
-    insertErr = error;
+    if (toInsert.length) {
+      const { error } = await sb.from('agent_rows').insert(toInsert);
+      if (error) saveErr = error;
+    }
   }
+
+  if (!saveErr) {
+    const toUpdate = contentRows.filter(r => r._dbId);
+    for (const r of toUpdate) {
+      const { error } = await sb.from('agent_rows').update({
+        key: r.key, title: r.title || '', value: r.value || '',
+        link: r.link || '', icon: r.icon || '', extra: r.extra || '', description: r.desc || '',
+        badge: r.badge || '', share: r.share || 'yes', isnew: r.isnew || 'no',
+        display_order: contentRows.indexOf(r),
+      }).eq('id', r._dbId);
+      if (error) { saveErr = error; break; }
+    }
+  }
+
   hideLoader();
 
-  if (!profileErr && !delErr && !insertErr) {
+  if (!profileErr && !saveErr) {
     DIRTY = false;
     showToast('Saved ✓', 'success');
     await loadAgents();
-    const sbEl = document.getElementById('sb_' + CURRENT_TAB);
-    if (sbEl) sbEl.classList.add('active');
+    await loadAgent(CURRENT_TAB); // reload fresh from DB so _dbId/source/status stay accurate
   } else {
-    showToast('Save failed: ' + (profileErr?.message || delErr?.message || insertErr?.message || 'unknown'), 'error');
+    showToast('Save failed: ' + (profileErr?.message || saveErr?.message || 'unknown'), 'error');
   }
 }
 
