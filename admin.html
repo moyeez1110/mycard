@@ -579,6 +579,7 @@ input,textarea,select{font-family:var(--font);outline:none}
             <button class="add-row-btn" style="margin-top:0" onclick="addRow('service')"><i class="fas fa-plus"></i> Service</button>
             <button class="add-row-btn" style="margin-top:0" onclick="addRow('canva')"><i class="fas fa-plus"></i> Canva</button>
             <button class="add-row-btn" style="margin-top:0" onclick="addRow('req_service')"><i class="fas fa-plus"></i> Req Service</button>
+            <button class="add-row-btn" style="margin-top:0;border-color:rgba(139,92,246,0.4);color:#8b5cf6" onclick="addRow('service_group')"><i class="fas fa-plus"></i> Service Package</button>
             <button class="add-row-btn" style="margin-top:0" onclick="addRow('pdf')"><i class="fas fa-plus"></i> PDF</button>
             <button class="add-row-btn" style="margin-top:0" onclick="addRow('req_doc')"><i class="fas fa-plus"></i> Req Doc</button>
             <button class="add-row-btn" style="margin-top:0" onclick="addRow('doc')"><i class="fas fa-plus"></i> Doc</button>
@@ -727,7 +728,7 @@ const SUPABASE_URL = 'https://pusmroyftjzdkcwuwsph.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB1c21yb3lmdGp6ZGtjd3V3c3BoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUwNTIzNjcsImV4cCI6MjEwMDYyODM2N30.FTL-p8QLjcdErof1-Usolqudh1aUoKkKBw1UkvrkMNI';
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-const CONTENT_KEYS_ALL = ['update','service','pdf','doc','ticker','voice','tts','poster','pdf_notice','canva','req_service','req_doc','popup'];
+const CONTENT_KEYS_ALL = ['update','service','pdf','doc','ticker','voice','tts','poster','pdf_notice','canva','req_service','req_doc','popup','service_group','sub_service'];
 const PROFILE_FIELD_MAP = {
   shopName: 'shop_name', tagline: 'tagline', city: 'city', phone: 'phone',
   whatsapp: 'whatsapp', footerText: 'footer_text', logoIcon: 'logo_icon',
@@ -920,11 +921,12 @@ async function loadAgent(tabId) {
 }
 
 /* ═══ Category Drag-Drop Rows ═══ */
-const CONTENT_KEYS = ['update','service','pdf','doc','ticker','voice','tts','poster','pdf_notice','canva','req_service','req_doc','popup'];
+const CONTENT_KEYS = ['update','service','pdf','doc','ticker','voice','tts','poster','pdf_notice','canva','req_service','req_doc','popup','service_group','sub_service'];
 const KB_CLASS = {
   update:'kb-update', service:'kb-service', pdf:'kb-pdf', doc:'kb-doc',
   ticker:'kb-ticker', voice:'kb-voice', tts:'kb-voice', poster:'kb-update',
-  pdf_notice:'kb-pdf', canva:'kb-service', req_service:'kb-service', req_doc:'kb-doc', popup:'kb-popup'
+  pdf_notice:'kb-pdf', canva:'kb-service', req_service:'kb-service', req_doc:'kb-doc', popup:'kb-popup',
+  service_group:'kb-service', sub_service:'kb-doc'
 };
 
 // Category definitions — order and color
@@ -932,6 +934,7 @@ const CATEGORIES = [
   { key:'ticker',      label:'Ticker',            icon:'fa-scroll',            color:'#a78bfa', keys:['ticker'] },
   { key:'update',      label:'Updates',           icon:'fa-bullhorn',          color:'var(--yellow)', keys:['update','poster'] },
   { key:'service',     label:'Services',          icon:'fa-hand-holding-hand', color:'var(--blue)',   keys:['service','canva'] },
+  { key:'servicegroup',label:'Service Packages',  icon:'fa-layer-group',      color:'#8b5cf6',       keys:['service_group','sub_service'] },
   { key:'reqservice',  label:'Required Services', icon:'fa-clipboard-list',    color:'#22d3ee',       keys:['req_service','req_doc'] },
   { key:'pdf',         label:'PDFs',              icon:'fa-file-pdf',          color:'var(--red)',    keys:['pdf','pdf_notice'] },
   { key:'doc',         label:'Documents',         icon:'fa-file-lines',        color:'var(--green)',  keys:['doc'] },
@@ -1009,6 +1012,30 @@ function buildCard(r, gi, cat) {
       if (ALL_ROWS[i].key === 'req_doc') docCount++;
     }
     sub = `📋 ${docCount} document${docCount !== 1 ? 's' : ''}`;
+  }
+
+  if (r.key === 'service_group') {
+    let subCount = 0;
+    for (let i = gi + 1; i < ALL_ROWS.length; i++) {
+      if (ALL_ROWS[i].key === 'service_group') break;
+      if (ALL_ROWS[i].key === 'sub_service') subCount++;
+    }
+    label = r.title || r.value || '(Service Package)';
+    sub = `📦 ${subCount} sub-service${subCount !== 1 ? 's' : ''}`;
+  }
+
+  // sub_service rows: show as indented sub-item, price + docs preview
+  if (r.key === 'sub_service') {
+    const priceStr = r.value ? ` — ₹${r.value}` : '';
+    return `<div class="row-card req-doc-card" id="rc_${gi}" style="margin-left:16px;border-left:2px solid #8b5cf6;opacity:0.85">
+      <span class="row-card-drag"><i class="fas fa-grip-vertical"></i></span>
+      <div class="row-card-body">
+        <div class="row-card-value" style="font-size:12px">🏷️ ${esc(label)}${priceStr}</div>
+        ${r.desc ? `<div class="row-card-sub">${esc(r.desc)}</div>` : ''}
+      </div>
+      <button class="row-card-edit" onclick="editRowInline(${gi})" title="Edit"><i class="fas fa-pen"></i></button>
+      <button class="row-card-del" onclick="deleteRow(${gi})" title="Delete"><i class="fas fa-trash"></i></button>
+    </div>`;
   }
 
   // req_doc rows: show as sub-item (indented, no drag, no share/new)
@@ -1120,6 +1147,53 @@ function editRowInline(gi) {
       </div>
       <div style="display:flex;gap:8px;margin-top:16px">
         <button class="topbar-btn primary" style="flex:1" onclick="saveReqServiceEdit(${gi})"><i class="fas fa-check"></i> Save</button>
+        <button class="add-row-btn" onclick="closeModal()">Cancel</button>
+      </div>`, true);
+    return;
+  }
+
+  /* ── service_group: parent "package" — name + icon + its sub_services below ── */
+  if (r.key === 'service_group') {
+    const startIdx = gi + 1;
+    const subRows  = [];
+    for (let i = startIdx; i < ALL_ROWS.length; i++) {
+      if (ALL_ROWS[i].key === 'service_group') break;
+      if (ALL_ROWS[i].key === 'sub_service') subRows.push({ gi: i, row: ALL_ROWS[i] });
+    }
+    const subList = subRows.map(({gi:sgi, row}) =>
+      `<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--bg3);border-radius:8px;margin-bottom:6px">
+        <div style="flex:1;min-width:0">
+          <div style="font-size:13px;font-weight:600">${esc(row.title||'(పేరు లేదు)')}${row.value ? ' — ₹'+esc(row.value) : ''}</div>
+          ${row.desc ? `<div style="font-size:11px;color:var(--text2)">${esc(row.desc)}</div>` : ''}
+        </div>
+        <button onclick="editRowInline(${sgi})" style="background:none;border:none;color:var(--text2);cursor:pointer"><i class="fas fa-pen"></i></button>
+        <button onclick="deleteRow(${sgi})" style="background:none;border:none;color:var(--red);cursor:pointer"><i class="fas fa-trash"></i></button>
+      </div>`
+    ).join('');
+
+    showModal('Service Package Edit', 'ఉదా: "PAN Card" గ్రూప్ పేరు పెట్టి, లోపల New/Correction/Reprint సబ్-సర్వీసులు యాడ్ చేయండి', `
+      <div class="field-row"><label>Package పేరు (ఉదా: PAN Card)</label><input type="text" id="er-sg-title" class="field-input" value="${esc(r.title||r.value)}"/></div>
+      <div class="field-row"><label>Icon (fas fa-…)</label><input type="text" id="er-sg-icon" class="field-input" value="${esc(r.icon)}" placeholder="fas fa-id-card"/></div>
+      <div style="margin-top:12px">
+        <label style="font-size:12px;color:var(--text2);font-weight:600">సబ్-సర్వీసులు (ధర + డాక్స్‌తో)</label>
+        <div id="sg-sub-list" style="margin-top:8px">${subList || '<div style="font-size:12px;color:var(--text3)">ఇంకా ఏమీ లేవు</div>'}</div>
+        <button onclick="addSubService(${gi})" class="add-row-btn" style="margin-top:6px;font-size:12px"><i class="fas fa-plus"></i> సబ్-సర్వీస్ Add చేయండి</button>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:16px">
+        <button class="topbar-btn primary" style="flex:1" onclick="saveServiceGroupEdit(${gi})"><i class="fas fa-check"></i> Save</button>
+        <button class="add-row-btn" onclick="closeModal()">Cancel</button>
+      </div>`, true);
+    return;
+  }
+
+  /* ── sub_service: name + price + required docs ── */
+  if (r.key === 'sub_service') {
+    showModal('సబ్-సర్వీస్ Edit', 'పేరు, ధర, అవసరమైన డాక్యుమెంట్‌లు enter చేయండి', `
+      <div class="field-row"><label>సబ్-సర్వీస్ పేరు (ఉదా: New PAN Card)</label><input type="text" id="er-ss-title" class="field-input" value="${esc(r.title||r.value)}"/></div>
+      <div class="field-row"><label>ధర (₹)</label><input type="number" id="er-ss-price" class="field-input" value="${esc(r.value)}" placeholder="ఉదా: 150"/></div>
+      <div class="field-row"><label>అవసరమైన డాక్యుమెంట్‌లు</label><textarea id="er-ss-docs" class="field-input" rows="3" placeholder="ఉదా: ఆధార్ కాపీ, ఫోటో">${esc(r.desc)}</textarea></div>
+      <div style="display:flex;gap:8px;margin-top:16px">
+        <button class="topbar-btn primary" style="flex:1" onclick="saveSubServiceEdit(${gi})"><i class="fas fa-check"></i> Save</button>
         <button class="add-row-btn" onclick="closeModal()">Cancel</button>
       </div>`, true);
     return;
@@ -1262,6 +1336,48 @@ function saveReqServiceEdit(gi) {
   closeModal();
   renderCatGrid();
   showToast('Saved!', 'success');
+}
+
+/* ── service_group / sub_service helpers ── */
+function addSubService(groupGi) {
+  let insertAfter = groupGi;
+  for (let i = groupGi + 1; i < ALL_ROWS.length; i++) {
+    if (ALL_ROWS[i].key === 'service_group') break;
+    if (ALL_ROWS[i].key === 'sub_service') insertAfter = i;
+  }
+  const newRow = { key:'sub_service', value:'', title:'', link:'', icon:'', extra:'', desc:'' };
+  ALL_ROWS.splice(insertAfter + 1, 0, newRow);
+  markDirty();
+  closeModal();
+  setTimeout(() => editRowInline(groupGi), 100);
+}
+
+function saveServiceGroupEdit(gi) {
+  const r = ALL_ROWS[gi];
+  if (!r) return;
+  r.title = document.getElementById('er-sg-title').value;
+  r.value = r.title;
+  r.icon  = document.getElementById('er-sg-icon').value;
+  markDirty();
+  closeModal();
+  renderCatGrid();
+  showToast('Saved!', 'success');
+}
+
+function saveSubServiceEdit(gi) {
+  const r = ALL_ROWS[gi];
+  if (!r) return;
+  r.title = document.getElementById('er-ss-title').value;
+  r.value = document.getElementById('er-ss-price').value;
+  r.desc  = document.getElementById('er-ss-docs').value;
+  markDirty();
+  closeModal();
+  renderCatGrid();
+  showToast('Saved!', 'success');
+  // Return to the parent group's modal
+  let parentGi = gi - 1;
+  while (parentGi >= 0 && ALL_ROWS[parentGi].key !== 'service_group') parentGi--;
+  if (parentGi >= 0) setTimeout(() => editRowInline(parentGi), 150);
 }
 
 /* ── popup edit save ── */
