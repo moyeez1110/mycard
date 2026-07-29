@@ -326,6 +326,8 @@ input,textarea,select{font-family:var(--font);outline:none}
   margin-top:8px;
 }
 .add-row-btn:hover{border-color:var(--accent);color:var(--accent)}
+.add-grp-label{font-size:10px;color:var(--text3);font-weight:700;letter-spacing:0.6px;text-transform:uppercase;
+  margin-right:2px;flex-basis:100%;font-family:var(--font-te);text-transform:none}
 
 /* CSV URL box */
 .csv-url-box{
@@ -574,21 +576,41 @@ input,textarea,select{font-family:var(--font);outline:none}
         <!-- Content Tab -->
         <div id="tab-content" style="display:none">
           <!-- Add Row Bar -->
-          <div style="padding:10px 14px;background:var(--bg2);border-radius:10px;border:1px solid var(--border);margin-bottom:14px;display:flex;align-items:center;flex-wrap:wrap;gap:6px">
-            <span style="font-size:10px;color:var(--text3);font-weight:700;letter-spacing:0.8px;text-transform:uppercase;margin-right:4px">+ Add</span>
-            <button class="add-row-btn" style="margin-top:0" onclick="addRow('ticker')"><i class="fas fa-plus"></i> Ticker</button>
-            <button class="add-row-btn" style="margin-top:0" onclick="addRow('update')"><i class="fas fa-plus"></i> Update</button>
-            <button class="add-row-btn" style="margin-top:0" onclick="addRow('service')"><i class="fas fa-plus"></i> Service</button>
-            <button class="add-row-btn" style="margin-top:0" onclick="addRow('canva')"><i class="fas fa-plus"></i> Canva</button>
-            <button class="add-row-btn" style="margin-top:0" onclick="addRow('req_service')"><i class="fas fa-plus"></i> Req Service</button>
-            <button class="add-row-btn" style="margin-top:0;border-color:rgba(139,92,246,0.4);color:#8b5cf6" onclick="addRow('service_group')"><i class="fas fa-plus"></i> Service Package</button>
-            <button class="add-row-btn" style="margin-top:0" onclick="addRow('pdf')"><i class="fas fa-plus"></i> PDF</button>
-            <button class="add-row-btn" style="margin-top:0" onclick="addRow('req_doc')"><i class="fas fa-plus"></i> Req Doc</button>
-            <button class="add-row-btn" style="margin-top:0" onclick="addRow('doc')"><i class="fas fa-plus"></i> Doc</button>
-            <button class="add-row-btn" style="margin-top:0;border-color:rgba(251,146,60,0.4);color:#fb923c" onclick="addRow('voice')"><i class="fas fa-plus"></i> Voice</button>
-            <button class="add-row-btn" style="margin-top:0;border-color:rgba(251,146,60,0.4);color:#fb923c" onclick="addRow('tts')"><i class="fas fa-plus"></i> TTS</button>
-            <button class="add-row-btn" style="margin-top:0;border-color:rgba(251,146,60,0.4);color:#fb923c" onclick="addRow('poster')"><i class="fas fa-plus"></i> Poster</button>
-            <button class="add-row-btn" style="margin-top:0;border-color:rgba(244,114,182,0.4);color:#f472b6" onclick="addRow('popup')"><i class="fas fa-plus"></i> Popup</button>
+          <div style="padding:12px 14px;background:var(--bg2);border-radius:10px;border:1px solid var(--border);margin-bottom:14px">
+            <div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-bottom:10px">
+              <span class="add-grp-label">సాధారణ</span>
+              <button class="add-row-btn" style="margin-top:0" onclick="addRow('ticker')" title="పైన scroll అయ్యే చిన్న message (ఉదా: 'ఈ వారం సెలవు')"><i class="fas fa-plus"></i> Ticker</button>
+              <button class="add-row-btn" style="margin-top:0" onclick="addRow('update')" title="వార్త/announcement card — శీర్షిక+వివరణ+లింక్"><i class="fas fa-plus"></i> Update</button>
+              <button class="add-row-btn" style="margin-top:0" onclick="addRow('service')" title="మీరు అందించే ఒక్క సర్వీస్ (వివరణ మాత్రమే, ధర ఉండదు)"><i class="fas fa-plus"></i> Service</button>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-bottom:10px">
+              <span class="add-grp-label">ఫైల్స్</span>
+              <button class="add-row-btn" style="margin-top:0" onclick="addRow('pdf')" title="డౌన్‌లోడ్ చేసుకునే PDF ఫారం లింక్"><i class="fas fa-plus"></i> PDF</button>
+              <button class="add-row-btn" style="margin-top:0" onclick="addRow('doc')" title="ఏదైనా document లింక్ (PDF కాకుండా ఇతరత్రా)"><i class="fas fa-plus"></i> Doc</button>
+              <button class="add-row-btn" style="margin-top:0" onclick="addRow('canva')" title="Canva/design template లింక్"><i class="fas fa-plus"></i> Canva</button>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-bottom:10px">
+              <span class="add-grp-label">ప్యాకేజీలు (ధరలు/డాక్స్ లిస్ట్‌తో)</span>
+              <button class="add-row-btn" style="margin-top:0;border-color:rgba(34,211,238,0.4);color:#22d3ee" onclick="addRow('req_service')" title="ఒక సర్వీస్ కి 'ఏ డాక్యుమెంట్లు కావాలో' లిస్ట్ చూపించడానికి. Add చేశాక, తెరుచుకునే మోడల్‌లో documents add చేయండి.">
+                <i class="fas fa-plus"></i> అవసరమైన Documents గ్రూప్
+              </button>
+              <button class="add-row-btn" style="margin-top:0;border-color:rgba(139,92,246,0.4);color:#8b5cf6" onclick="addRow('service_group')" title="ఒక సర్వీస్ కి వేర్వేరు ధరలున్న సబ్-టైప్‌లు చూపించడానికి (ఉదా: PAN Card — New/Correction). Add చేశాక, తెరుచుకునే మోడల్‌లో సబ్-సర్వీసులు add చేయండి.">
+                <i class="fas fa-plus"></i> ధరల ప్యాకేజీ
+              </button>
+              <span style="font-size:10.5px;color:var(--text3);font-family:var(--font-te)">
+                <i class="fas fa-circle-info"></i> Documents/సబ్-సర్వీసులు విడిగా add చేయలేరు — పైన 2 బటన్లలో ఒకటి నొక్కి, ఆ కార్డ్ లోపలే add చేయండి.
+              </span>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-bottom:10px">
+              <span class="add-grp-label">మీడియా అలర్ట్స్</span>
+              <button class="add-row-btn" style="margin-top:0;border-color:rgba(251,146,60,0.4);color:#fb923c" onclick="addRow('voice')" title="వాయిస్ మెసేజ్ (ఆడియో లింక్)"><i class="fas fa-plus"></i> Voice</button>
+              <button class="add-row-btn" style="margin-top:0;border-color:rgba(251,146,60,0.4);color:#fb923c" onclick="addRow('tts')" title="టెక్స్ట్ — customer దాన్ని 'వినండి' బటన్‌తో వినొచ్చు (audio file అవసరం లేదు)"><i class="fas fa-plus"></i> TTS</button>
+              <button class="add-row-btn" style="margin-top:0;border-color:rgba(251,146,60,0.4);color:#fb923c" onclick="addRow('poster')" title="ఇమేజ్/పోస్టర్ (ఉదా: ఆఫర్ బ్యానర్)"><i class="fas fa-plus"></i> Poster</button>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px">
+              <span class="add-grp-label">పాపప్</span>
+              <button class="add-row-btn" style="margin-top:0;border-color:rgba(244,114,182,0.4);color:#f472b6" onclick="addRow('popup')" title="Customer app తెరిచిన వెంటనే కనిపించే పాపప్ (ఆఫర్/నోటీసు)"><i class="fas fa-plus"></i> Popup</button>
+            </div>
           </div>
           <!-- Agent self-upload approval settings -->
           <div style="padding:12px 14px;background:var(--bg2);border-radius:10px;border:1px solid var(--border);margin-bottom:14px">
@@ -1597,8 +1619,8 @@ const AGENT_UPLOAD_TYPES = [
   { key:'service', label:'Service' }, { key:'pdf', label:'PDF' },
   { key:'doc', label:'Doc' }, { key:'poster', label:'Poster' },
   { key:'voice', label:'Voice' }, { key:'tts', label:'TTS' },
-  { key:'popup', label:'Popup' }, { key:'req_service', label:'Req. Service' },
-  { key:'service_group', label:'Service Package' },
+  { key:'popup', label:'Popup' }, { key:'req_service', label:'Documents గ్రూప్' },
+  { key:'service_group', label:'ధరల ప్యాకేజీ' },
 ];
 
 async function loadContentTypeSettings() {
