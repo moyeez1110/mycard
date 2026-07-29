@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="te">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<title>Seva Kendra</title>
+<link rel="icon" href="/icon-192.png"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root{
+    --accent:#4fffb0; --accent-dim:#1adb7a;
+    --bg:#0a0f1a; --bg2:#111827; --bg3:#1a2235; --card:#141e2e;
+    --border:rgba(255,255,255,0.08);
+    --text:#e8edf5; --text2:#8899aa;
+    --radius:14px; --shadow:0 4px 24px rgba(0,0,0,0.4);
+    --font-te:'Noto Sans Telugu',sans-serif;
+    --font:'Inter',sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:var(--font-te),var(--font);min-height:100vh;padding-bottom:40px}
+  .wrap{max-width:640px;margin:0 auto;padding:0 16px}
+  .hero{background:var(--bg2);border-bottom:1px solid var(--border);padding:28px 16px 20px;text-align:center}
+  .hero-avatar{width:64px;height:64px;border-radius:16px;background:var(--bg3);border:2px solid var(--accent);
+    display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:var(--accent);margin:0 auto 12px}
+  .hero-name{font-size:19px;font-weight:700}
+  .hero-tag{font-size:13px;color:var(--text2);margin-top:3px}
+  .contact-row{display:flex;gap:8px;justify-content:center;margin-top:16px;flex-wrap:wrap}
+  .cbtn{display:flex;align-items:center;gap:6px;padding:9px 16px;border-radius:20px;font-size:13px;font-weight:600;
+    text-decoration:none;color:var(--text);background:var(--bg3);border:1px solid var(--border)}
+  .cbtn.wa{background:rgba(37,211,102,0.12);border-color:rgba(37,211,102,0.3);color:#25d366}
+  .install-bar{display:none;align-items:center;gap:10px;background:rgba(79,255,176,0.1);border:1px solid rgba(79,255,176,0.3);
+    border-radius:12px;padding:10px 14px;margin:14px 16px 0;font-size:12.5px}
+  .install-bar.show{display:flex}
+  .install-bar button{margin-left:auto;background:var(--accent);color:#0a0f1a;border:none;padding:7px 14px;border-radius:8px;font-weight:700;font-size:12.5px}
+  .section{margin-top:22px}
+  .section-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+  .section-head h2{font-size:15px;font-weight:700}
+  .section-line{flex:1;height:1px;background:var(--border)}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px}
+  .services-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+  .service-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 10px;text-align:center}
+  .service-card i{font-size:20px;color:var(--accent);margin-bottom:6px;display:block}
+  .service-name{font-size:12.5px;font-weight:600}
+  .list-item{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--border);
+    border-radius:11px;padding:11px 13px;margin-bottom:8px;text-decoration:none;color:var(--text)}
+  .list-item i{color:var(--accent);width:18px;text-align:center}
+  .acc-item{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:8px;overflow:hidden}
+  .acc-header{display:flex;align-items:center;gap:10px;padding:13px;cursor:pointer}
+  .acc-header i.grp{color:#8b5cf6}
+  .acc-header .name{flex:1;font-weight:600;font-size:13.5px}
+  .acc-count{font-size:11px;color:var(--text2)}
+  .acc-arrow{transition:transform .2s}
+  .acc-item.open .acc-arrow{transform:rotate(180deg)}
+  .acc-body{display:none;padding:0 13px 13px}
+  .acc-item.open .acc-body{display:block}
+  .sub-row{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-top:1px solid var(--border)}
+  .sub-row:first-child{border-top:none}
+  .sub-name{font-size:13px;font-weight:600}
+  .sub-docs{font-size:11px;color:var(--text2);margin-top:2px}
+  .sub-price{font-weight:700;color:var(--accent);white-space:nowrap}
+  .empty{font-size:13px;color:var(--text2);text-align:center;padding:20px 0}
+  .footer{text-align:center;font-size:11px;color:var(--text2);margin-top:30px}
+  .loading{display:flex;align-items:center;justify-content:center;min-height:70vh;font-size:13px;color:var(--text2)}
+</style>
+</head>
+<body>
+
+<div id="loading" class="loading">లోడ్ అవుతోంది…</div>
+<div id="app" style="display:none">
+  <div class="hero">
+    <div class="hero-avatar" id="h-avatar">SK</div>
+    <div class="hero-name" id="h-name">—</div>
+    <div class="hero-tag" id="h-tag" style="display:none"></div>
+    <div class="contact-row">
+      <a id="h-call" class="cbtn" href="#"><i class="fas fa-phone"></i> కాల్</a>
+      <a id="h-wa" class="cbtn wa" href="#" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+      <a id="h-map" class="cbtn" href="#" target="_blank" style="display:none"><i class="fas fa-location-dot"></i> Map</a>
+    </div>
+  </div>
+
+  <div id="install-bar" class="install-bar">
+    <i class="fas fa-download" style="color:var(--accent)"></i>
+    <span>ఈ షాప్ యాప్‌ని install చేసుకోండి — updates వెంటనే తెలుసుకోండి</span>
+    <button id="install-btn">Install</button>
+  </div>
+
+  <div class="wrap">
+    <div class="section" id="sec-updates" style="display:none">
+      <div class="section-head"><h2>📢 తాజా అప్‌డేట్‌లు</h2><div class="section-line"></div></div>
+      <div id="updates-list"></div>
+    </div>
+
+    <div class="section" id="sec-services" style="display:none">
+      <div class="section-head"><h2>🛎️ సర్వీసులు</h2><div class="section-line"></div></div>
+      <div class="services-grid" id="services-list"></div>
+    </div>
+
+    <div class="section" id="sec-groups" style="display:none">
+      <div class="section-head"><h2>📦 సర్వీస్ ప్యాకేజీలు</h2><div class="section-line"></div></div>
+      <div id="groups-list"></div>
+    </div>
+
+    <div class="section" id="sec-pdfs" style="display:none">
+      <div class="section-head"><h2>📄 PDF ఫారాలు</h2><div class="section-line"></div></div>
+      <div id="pdfs-list"></div>
+    </div>
+
+    <div class="section" id="sec-docs" style="display:none">
+      <div class="section-head"><h2>📋 డాక్యుమెంట్‌లు</h2><div class="section-line"></div></div>
+      <div id="docs-list"></div>
+    </div>
+
+    <div class="footer">Powered by Citizen Digital Seva</div>
+  </div>
+</div>
+<div id="notfound" style="display:none" class="loading">ఈ షాప్ ప్రొఫైల్ కనిపించడం లేదు.</div>
+
+<script>
+const SUPABASE_URL = 'https://pusmroyftjzdkcwuwsph.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB1c21yb3lmdGp6ZGtjd3V3c3BoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUwNTIzNjcsImV4cCI6MjEwMDYyODM2N30.FTL-p8QLjcdErof1-Usolqudh1aUoKkKBw1UkvrkMNI';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+function getSlugFromPath() {
+  // Works whether the repo is served at the domain root or under /mycard/
+  const parts = window.location.pathname.split('/').filter(Boolean);
+  // Drop a trailing "404.html" if present, and a leading "mycard" repo folder if present
+  const cleaned = parts.filter(p => p.toLowerCase() !== '404.html');
+  return cleaned[cleaned.length - 1] || '';
+}
+
+function esc(s) {
+  return (s == null ? '' : String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+async function loadShop() {
+  const slug = getSlugFromPath();
+  if (!slug) { showNotFound(); return; }
+
+  const { data: agent, error: agentErr } = await sb
+    .from('agents').select('*').eq('tab', slug).eq('is_active', true).single();
+  if (agentErr || !agent) { showNotFound(); return; }
+
+  const { data: rows } = await sb
+    .from('agent_rows').select('*').eq('agent_id', agent.id)
+    .eq('status', 'live').order('display_order', { ascending: true });
+
+  renderShop(agent, rows || []);
+  setupInstall(agent, slug);
+}
+
+function showNotFound() {
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('notfound').style.display = 'flex';
+}
+
+function renderShop(agent, rows) {
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  document.title = agent.shop_name || 'Seva Kendra';
+
+  document.getElementById('h-name').textContent = agent.shop_name || '';
+  const initials = (agent.shop_name || 'SK').trim().split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
+  document.getElementById('h-avatar').textContent = initials;
+  if (agent.tagline) {
+    const t = document.getElementById('h-tag');
+    t.textContent = agent.tagline; t.style.display = 'block';
+  }
+  if (agent.phone) document.getElementById('h-call').href = 'tel:' + agent.phone;
+  if (agent.whatsapp) document.getElementById('h-wa').href = 'https://wa.me/' + agent.whatsapp +
+    '?text=' + encodeURIComponent('Namaste, naaku meeku service kavali gurinchi enquiry cheyali.');
+  if (agent.map_embed_url) {
+    const m = document.getElementById('h-map');
+    m.href = agent.map_embed_url; m.style.display = 'flex';
+  }
+
+  const updates = rows.filter(r => r.key === 'update');
+  if (updates.length) {
+    document.getElementById('sec-updates').style.display = 'block';
+    document.getElementById('updates-list').innerHTML = updates.map(u => `
+      <a class="list-item" href="${u.link && u.link !== '#' ? u.link : '#'}" ${u.link && u.link!=='#' ? 'target="_blank"' : 'onclick="return false"'}>
+        <i class="fas fa-bullhorn"></i>
+        <div style="flex:1">
+          <div style="font-weight:600;font-size:13px">${esc(u.title)}</div>
+          ${u.value ? `<div style="font-size:12px;color:var(--text2)">${esc(u.value)}</div>` : ''}
+        </div>
+      </a>`).join('');
+  }
+
+  const services = rows.filter(r => r.key === 'service');
+  if (services.length) {
+    document.getElementById('sec-services').style.display = 'block';
+    document.getElementById('services-list').innerHTML = services.map(s => `
+      <div class="service-card">
+        <i class="${s.icon || 'fas fa-star'}"></i>
+        <div class="service-name">${esc(s.title || s.value)}</div>
+      </div>`).join('');
+  }
+
+  const groups = [];
+  rows.forEach(r => {
+    if (r.key === 'service_group') groups.push({ name: r.title || r.value, icon: r.icon || 'fas fa-layer-group', subs: [] });
+    else if (r.key === 'sub_service' && groups.length) groups[groups.length-1].subs.push({ name: r.title || r.value, price: r.value, docs: r.description });
+  });
+  if (groups.length) {
+    document.getElementById('sec-groups').style.display = 'block';
+    document.getElementById('groups-list').innerHTML = groups.map((g,i) => `
+      <div class="acc-item" id="grp_${i}">
+        <div class="acc-header" onclick="grpToggle(${i})">
+          <i class="grp ${g.icon}"></i>
+          <div class="name">${esc(g.name)}</div>
+          <span class="acc-count">${g.subs.length} options</span>
+          <i class="fas fa-chevron-down acc-arrow"></i>
+        </div>
+        <div class="acc-body">
+          ${g.subs.map(s => `
+            <div class="sub-row">
+              <div>
+                <div class="sub-name">${esc(s.name)}</div>
+                ${s.docs ? `<div class="sub-docs">${esc(s.docs)}</div>` : ''}
+              </div>
+              ${s.price ? `<div class="sub-price">₹${esc(s.price)}</div>` : ''}
+            </div>`).join('') || '<div class="empty">వివరాలు లేవు</div>'}
+        </div>
+      </div>`).join('');
+  }
+
+  const pdfs = rows.filter(r => r.key === 'pdf');
+  if (pdfs.length) {
+    document.getElementById('sec-pdfs').style.display = 'block';
+    document.getElementById('pdfs-list').innerHTML = pdfs.map(p => `
+      <a class="list-item" href="${p.link || '#'}" target="_blank">
+        <i class="fas fa-file-pdf"></i><div style="flex:1;font-size:13px;font-weight:600">${esc(p.title || p.value)}</div>
+        <i class="fas fa-arrow-up-right-from-square" style="font-size:11px;color:var(--text2)"></i>
+      </a>`).join('');
+  }
+
+  const docs = rows.filter(r => r.key === 'doc');
+  if (docs.length) {
+    document.getElementById('sec-docs').style.display = 'block';
+    document.getElementById('docs-list').innerHTML = docs.map(d => `
+      <a class="list-item" href="${d.link || '#'}" target="_blank">
+        <i class="fas fa-file-lines"></i><div style="flex:1;font-size:13px;font-weight:600">${esc(d.title || d.value)}</div>
+      </a>`).join('');
+  }
+}
+
+function grpToggle(i) {
+  const item = document.getElementById('grp_'+i);
+  if (!item) return;
+  const wasOpen = item.classList.contains('open');
+  document.querySelectorAll('#groups-list .acc-item.open').forEach(el=>el.classList.remove('open'));
+  if (!wasOpen) item.classList.add('open');
+}
+
+/* ── PWA: one shared app, but each install remembers the shop the
+   customer installed it from (start_url = that shop's own URL). We
+   generate the manifest per-page as a Blob since GitHub Pages can't
+   generate one dynamically per request. ── */
+function setupInstall(agent, slug) {
+  const manifest = {
+    name: agent.shop_name || 'Seva Kendra',
+    short_name: (agent.shop_name || 'Seva').slice(0, 12),
+    start_url: window.location.pathname,
+    scope: window.location.pathname,
+    display: 'standalone',
+    background_color: '#0a0f1a',
+    theme_color: '#0a0f1a',
+    icons: [
+      { src: '/icon-192.png', sizes: '192x192', type: 'image/png' },
+      { src: '/icon-512.png', sizes: '512x512', type: 'image/png' },
+    ],
+  };
+  const blob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
+  const link = document.createElement('link');
+  link.rel = 'manifest';
+  link.href = URL.createObjectURL(blob);
+  document.head.appendChild(link);
+
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/customer-sw.js').catch(()=>{});
+  }
+
+  let deferredPrompt = null;
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    document.getElementById('install-bar').classList.add('show');
+  });
+  document.getElementById('install-btn').addEventListener('click', async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    await deferredPrompt.userChoice;
+    deferredPrompt = null;
+    document.getElementById('install-bar').classList.remove('show');
+  });
+  // iOS Safari has no beforeinstallprompt — show a manual hint instead
+  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+  if (isIOS && !isStandalone) {
+    const bar = document.getElementById('install-bar');
+    bar.classList.add('show');
+    bar.querySelector('span').textContent = 'Install చేసుకోవడానికి: Share బటన్ → "Add to Home Screen"';
+    bar.querySelector('button').style.display = 'none';
+  }
+}
+
+loadShop();
+</script>
+</body>
+</html>
