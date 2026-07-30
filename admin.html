@@ -454,6 +454,9 @@ input,textarea,select{font-family:var(--font);outline:none}
     <button class="sb-nav-btn" onclick="showView('users',this)">
       <i class="fas fa-user-lock"></i> Agent Users
     </button>
+    <button class="sb-nav-btn" onclick="showView('categories',this)">
+      <i class="fas fa-folder-tree"></i> Categories
+    </button>
     <button class="sb-nav-btn" onclick="showView('settings',this)">
       <i class="fas fa-gear"></i> Settings
     </button>
@@ -529,6 +532,17 @@ input,textarea,select{font-family:var(--font);outline:none}
       </div>
 
       <!-- CREATE USER MODAL BODY (injected dynamically) -->
+
+      <!-- CATEGORIES VIEW -->
+      <div id="view-categories" class="view">
+        <div style="margin-bottom:16px">
+          <div style="font-size:17px;font-weight:700">Categories</div>
+          <div style="font-size:12px;color:var(--text2);margin-top:2px">MeeSeva, Revenue, Transport, Police... — Service Master, Downloads, Posters, Notifications, Schemes అన్నీ ఈ categories మీదే ఆధారపడతాయి</div>
+        </div>
+        <div id="categories-grid" style="display:flex;flex-direction:column;gap:8px">
+          <div style="padding:20px;color:var(--text3);font-size:13px">లోడ్ అవుతోంది…</div>
+        </div>
+      </div>
 
       <div id="view-agent" class="view">
         <div class="tab-bar">
@@ -1881,6 +1895,15 @@ function showView(name, btn) {
     CURRENT_TAB = null; DIRTY = false;
     loadUsers();
   }
+  if (name === 'categories') {
+    document.getElementById('topbar-title').textContent = 'Categories';
+    document.getElementById('topbar-badge').style.display = 'none';
+    document.getElementById('topbar-actions').innerHTML =
+      '<button class="topbar-btn primary" onclick="showAddCategory()"><i class="fas fa-plus"></i> Add Category</button>';
+    document.querySelectorAll('.agent-item').forEach(e => e.classList.remove('active'));
+    CURRENT_TAB = null; DIRTY = false;
+    loadCategories();
+  }
   if (name === 'settings') {
     document.getElementById('topbar-title').textContent = 'Settings';
     document.getElementById('topbar-badge').style.display = 'none';
@@ -2070,6 +2093,133 @@ function renderUsersGrid() {
       </div>
     </div>`;
   }).join('');
+}
+
+/* ═══════════════════════════════════════════════════
+   CATEGORIES — global taxonomy (MeeSeva/Revenue/Transport/...)
+   used by Service Master, Downloads, Posters, Notifications,
+   Schemes. Supports one level of sub-categories via parent_id.
+   ═══════════════════════════════════════════════════ */
+let ALL_CATEGORIES = [];
+
+async function loadCategories() {
+  const { data, error } = await sb.from('categories').select('*').order('sort_order').order('id');
+  if (error) { showToast('Load failed: ' + error.message, 'error'); return; }
+  ALL_CATEGORIES = data || [];
+  renderCategoriesGrid();
+}
+
+function renderCategoriesGrid() {
+  const grid = document.getElementById('categories-grid');
+  if (!ALL_CATEGORIES.length) {
+    grid.innerHTML = `<div style="padding:32px;color:var(--text3);font-size:13px;text-align:center">
+      <i class="fas fa-folder-open" style="font-size:28px;margin-bottom:10px;display:block"></i>
+      ఇంకా ఏ category లేదు — పైన "+ Add Category" నొక్కండి.</div>`;
+    return;
+  }
+  const topLevel = ALL_CATEGORIES.filter(c => !c.parent_id);
+  const childrenOf = (pid) => ALL_CATEGORIES.filter(c => c.parent_id === pid);
+
+  const catCard = (c, indent) => `
+    <div class="stat-card" style="display:flex;align-items:center;gap:12px;margin-left:${indent*24}px;${c.is_active ? '' : 'opacity:0.55'}">
+      <div style="width:36px;height:36px;border-radius:9px;background:rgba(79,255,176,0.1);border:1.5px solid var(--accent);
+        display:flex;align-items:center;justify-content:center;color:var(--accent);flex-shrink:0">
+        <i class="${c.icon || 'fas fa-folder'}"></i>
+      </div>
+      <div style="flex:1;min-width:0">
+        <div style="font-weight:600;font-size:13.5px">${esc(c.name_te)} ${c.name_en ? `<span style="color:var(--text3);font-weight:400">(${esc(c.name_en)})</span>` : ''}</div>
+        <div style="font-size:11px;color:var(--text3)">key: ${esc(c.key)} · sort: ${c.sort_order}${c.is_active ? '' : ' · <span style="color:var(--red)">Inactive</span>'}</div>
+      </div>
+      <button class="row-card-edit" onclick='toggleCategoryActive(${c.id}, ${c.is_active})' title="${c.is_active ? 'Deactivate' : 'Activate'}">
+        <i class="fas fa-${c.is_active ? 'toggle-on' : 'toggle-off'}" style="color:${c.is_active ? 'var(--accent)' : 'var(--text3)'}"></i>
+      </button>
+      <button class="row-card-edit" onclick="showAddCategory(${c.id})" title="Edit"><i class="fas fa-pen"></i></button>
+      <button class="row-card-del" onclick="deleteCategory(${c.id})" title="Delete"><i class="fas fa-trash"></i></button>
+    </div>`;
+
+  let html = '';
+  topLevel.forEach(c => {
+    html += catCard(c, 0);
+    childrenOf(c.id).forEach(sub => { html += catCard(sub, 1); });
+  });
+  grid.innerHTML = html;
+}
+
+function showAddCategory(editId) {
+  const existing = editId ? ALL_CATEGORIES.find(c => c.id === editId) : null;
+  const topLevelOptions = ALL_CATEGORIES.filter(c => !c.parent_id && c.id !== editId)
+    .map(c => `<option value="${c.id}" ${existing && existing.parent_id === c.id ? 'selected' : ''}>${esc(c.name_te)}</option>`).join('');
+
+  showModal(
+    existing ? 'Category Edit చేయండి' : 'కొత్త Category',
+    'Service Master, Downloads, Posters అన్నీ దీని మీద ఆధారపడతాయి',
+    `<div class="field-row"><label>Key (unique, e.g. revenue)</label>
+      <input type="text" id="cat-key" class="field-input" value="${existing ? esc(existing.key) : ''}" placeholder="revenue" style="margin-bottom:10px"/>
+     </div>
+     <div class="field-row"><label>పేరు (తెలుగు)</label>
+      <input type="text" id="cat-name-te" class="field-input" value="${existing ? esc(existing.name_te) : ''}" placeholder="రెవెన్యూ" style="margin-bottom:10px"/>
+     </div>
+     <div class="field-row"><label>పేరు (English, optional)</label>
+      <input type="text" id="cat-name-en" class="field-input" value="${existing ? esc(existing.name_en || '') : ''}" placeholder="Revenue" style="margin-bottom:10px"/>
+     </div>
+     <div class="field-row"><label>Icon (Font Awesome class)</label>
+      <input type="text" id="cat-icon" class="field-input" value="${existing ? esc(existing.icon || '') : 'fas fa-folder'}" placeholder="fas fa-folder" style="margin-bottom:10px"/>
+     </div>
+     <div class="field-row"><label>Parent Category (సబ్-కేటగిరీ అయితే)</label>
+      <select id="cat-parent" class="field-input" style="margin-bottom:10px">
+        <option value="">— Top level —</option>
+        ${topLevelOptions}
+      </select>
+     </div>
+     <div class="field-row"><label>Sort Order</label>
+      <input type="number" id="cat-sort" class="field-input" value="${existing ? existing.sort_order : ALL_CATEGORIES.length}" style="margin-bottom:10px"/>
+     </div>
+     <div style="display:flex;gap:10px;margin-top:4px">
+      <button class="topbar-btn primary" style="flex:1" onclick="doSaveCategory(${editId || 'null'})"><i class="fas fa-check"></i> ${existing ? 'Update' : 'Create'}</button>
+      <button class="topbar-btn secondary" style="flex:1" onclick="closeModal()">Cancel</button>
+     </div>`,
+    true
+  );
+}
+
+async function doSaveCategory(editId) {
+  const key      = document.getElementById('cat-key').value.trim();
+  const name_te  = document.getElementById('cat-name-te').value.trim();
+  const name_en  = document.getElementById('cat-name-en').value.trim();
+  const icon     = document.getElementById('cat-icon').value.trim() || 'fas fa-folder';
+  const parentId = document.getElementById('cat-parent').value || null;
+  const sortOrd  = parseInt(document.getElementById('cat-sort').value, 10) || 0;
+
+  if (!key)     { showToast('Key అవసరం', 'error'); return; }
+  if (!name_te) { showToast('తెలుగు పేరు అవసరం', 'error'); return; }
+
+  showLoader('Saving…');
+  const payload = { key, name_te, name_en: name_en || null, icon, parent_id: parentId ? parseInt(parentId, 10) : null, sort_order: sortOrd };
+  const { error } = editId
+    ? await sb.from('categories').update(payload).eq('id', editId)
+    : await sb.from('categories').insert(payload);
+  hideLoader();
+
+  if (error) { showToast(error.message || 'Failed', 'error'); return; }
+  closeModal();
+  showToast(editId ? 'Category Updated ✓' : 'Category Created ✓', 'success');
+  await loadCategories();
+}
+
+async function toggleCategoryActive(id, currentVal) {
+  const { error } = await sb.from('categories').update({ is_active: !currentVal }).eq('id', id);
+  if (error) { showToast(error.message || 'Failed', 'error'); return; }
+  await loadCategories();
+}
+
+async function deleteCategory(id) {
+  const hasChildren = ALL_CATEGORIES.some(c => c.parent_id === id);
+  if (hasChildren) { showToast('ఇది తీసేయలేం — ముందు దాని సబ్-కేటగిరీలు తీసేయండి', 'error'); return; }
+  if (!confirm('ఈ category delete చేయాలా?')) return;
+  const { error } = await sb.from('categories').delete().eq('id', id);
+  if (error) { showToast(error.message || 'Failed', 'error'); return; }
+  showToast('Deleted ✓', 'success');
+  await loadCategories();
 }
 
 function showCreateUserModal() {
