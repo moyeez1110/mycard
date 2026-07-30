@@ -457,6 +457,9 @@ input,textarea,select{font-family:var(--font);outline:none}
     <button class="sb-nav-btn" onclick="showView('categories',this)">
       <i class="fas fa-folder-tree"></i> Categories
     </button>
+    <button class="sb-nav-btn" onclick="showView('services',this)">
+      <i class="fas fa-book-open"></i> Service Master
+    </button>
     <button class="sb-nav-btn" onclick="showView('settings',this)">
       <i class="fas fa-gear"></i> Settings
     </button>
@@ -540,6 +543,17 @@ input,textarea,select{font-family:var(--font);outline:none}
           <div style="font-size:12px;color:var(--text2);margin-top:2px">MeeSeva, Revenue, Transport, Police... — Service Master, Downloads, Posters, Notifications, Schemes అన్నీ ఈ categories మీదే ఆధారపడతాయి</div>
         </div>
         <div id="categories-grid" style="display:flex;flex-direction:column;gap:8px">
+          <div style="padding:20px;color:var(--text3);font-size:13px">లోడ్ అవుతోంది…</div>
+        </div>
+      </div>
+
+      <!-- SERVICE MASTER VIEW -->
+      <div id="view-services" class="view">
+        <div style="margin-bottom:16px">
+          <div style="font-size:17px;font-weight:700">Service Master</div>
+          <div style="font-size:12px;color:var(--text2);margin-top:2px">ఒక్కసారి రాస్తే, అన్ని agents కి ఒకటే సరైన సమాచారం కనిపిస్తుంది (Passport, PAN Card వంటివి)</div>
+        </div>
+        <div id="services-grid" style="display:flex;flex-direction:column;gap:20px">
           <div style="padding:20px;color:var(--text3);font-size:13px">లోడ్ అవుతోంది…</div>
         </div>
       </div>
@@ -1904,6 +1918,15 @@ function showView(name, btn) {
     CURRENT_TAB = null; DIRTY = false;
     loadCategories();
   }
+  if (name === 'services') {
+    document.getElementById('topbar-title').textContent = 'Service Master';
+    document.getElementById('topbar-badge').style.display = 'none';
+    document.getElementById('topbar-actions').innerHTML =
+      '<button class="topbar-btn primary" onclick="showAddService()"><i class="fas fa-plus"></i> Add Service</button>';
+    document.querySelectorAll('.agent-item').forEach(e => e.classList.remove('active'));
+    CURRENT_TAB = null; DIRTY = false;
+    loadServices();
+  }
   if (name === 'settings') {
     document.getElementById('topbar-title').textContent = 'Settings';
     document.getElementById('topbar-badge').style.display = 'none';
@@ -2220,6 +2243,290 @@ async function deleteCategory(id) {
   if (error) { showToast(error.message || 'Failed', 'error'); return; }
   showToast('Deleted ✓', 'success');
   await loadCategories();
+}
+
+/* ═══════════════════════════════════════════════════
+   SERVICE MASTER — global, admin-owned canonical service pages
+   (Passport, PAN Card, ...). `services.key` also lives in
+   `service_catalog` (upserted together here) so the marketplace
+   taxonomy and the rich master-content stay in sync automatically.
+   ═══════════════════════════════════════════════════ */
+let ALL_SERVICES = [];
+let CURRENT_SERVICE_ID = null; // service currently open in the Details modal
+
+async function loadServices() {
+  const { data, error } = await sb.from('services').select('*, service_catalog(name_te, name_en, icon), categories(name_te)').order('id');
+  if (error) { showToast('Load failed: ' + error.message, 'error'); return; }
+  ALL_SERVICES = data || [];
+  renderServicesGrid();
+}
+
+function renderServicesGrid() {
+  const grid = document.getElementById('services-grid');
+  if (!ALL_SERVICES.length) {
+    grid.innerHTML = `<div style="padding:32px;color:var(--text3);font-size:13px;text-align:center">
+      <i class="fas fa-book" style="font-size:28px;margin-bottom:10px;display:block"></i>
+      ఇంకా ఏ service లేదు — పైన "+ Add Service" నొక్కండి.</div>`;
+    return;
+  }
+  // Group by category name for readability
+  const byCat = {};
+  ALL_SERVICES.forEach(s => {
+    const catName = (s.categories && s.categories.name_te) || 'Category లేదు';
+    (byCat[catName] = byCat[catName] || []).push(s);
+  });
+
+  grid.innerHTML = Object.keys(byCat).map(catName => `
+    <div>
+      <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:8px">${esc(catName)}</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        ${byCat[catName].map(s => {
+          const cat = s.service_catalog || {};
+          return `<div class="stat-card" style="display:flex;align-items:center;gap:12px;${s.is_active ? '' : 'opacity:0.55'}">
+            <div style="width:38px;height:38px;border-radius:10px;background:rgba(79,255,176,0.1);border:1.5px solid var(--accent);
+              display:flex;align-items:center;justify-content:center;color:var(--accent);flex-shrink:0">
+              <i class="${cat.icon || 'fas fa-file-alt'}"></i>
+            </div>
+            <div style="flex:1;min-width:0">
+              <div style="font-weight:600;font-size:13.5px">${esc(cat.name_te || s.key)} ${cat.name_en ? `<span style="color:var(--text3);font-weight:400">(${esc(cat.name_en)})</span>` : ''}</div>
+              <div style="font-size:11px;color:var(--text3)">
+                key: ${esc(s.key)}${s.govt_fee ? ` · ₹${s.govt_fee}` : ''}${s.processing_time ? ` · ${esc(s.processing_time)}` : ''}
+                ${s.is_active ? '' : ' · <span style="color:var(--red)">Inactive</span>'}
+              </div>
+            </div>
+            <button class="row-card-edit" onclick="toggleServiceActive(${s.id}, ${s.is_active})" title="${s.is_active ? 'Deactivate' : 'Activate'}">
+              <i class="fas fa-${s.is_active ? 'toggle-on' : 'toggle-off'}" style="color:${s.is_active ? 'var(--accent)' : 'var(--text3)'}"></i>
+            </button>
+            <button class="add-row-btn" style="margin-top:0" onclick="showServiceDetails(${s.id})"><i class="fas fa-layer-group"></i> Details</button>
+            <button class="row-card-edit" onclick="showAddService(${s.id})" title="Edit"><i class="fas fa-pen"></i></button>
+            <button class="row-card-del" onclick="deleteService(${s.id})" title="Delete"><i class="fas fa-trash"></i></button>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`).join('');
+}
+
+function showAddService(editId) {
+  const existing = editId ? ALL_SERVICES.find(s => s.id === editId) : null;
+  const cat = existing ? (existing.service_catalog || {}) : {};
+  const catOptions = ALL_CATEGORIES.map(c =>
+    `<option value="${c.id}" ${existing && existing.category_id === c.id ? 'selected' : ''}>${esc(c.name_te)}</option>`).join('');
+
+  showModal(
+    existing ? 'Service Edit చేయండి' : 'కొత్త Service',
+    'Key కొత్తది అయితే, అదే పేరుతో ఒక marketplace-searchable entry కూడా create అవుతుంది',
+    `<div class="field-row"><label>Key (unique, e.g. passport)</label>
+      <input type="text" id="svc-key" class="field-input" value="${existing ? esc(existing.key) : ''}" placeholder="passport" ${existing ? 'disabled' : ''} style="margin-bottom:10px"/>
+     </div>
+     <div class="field-row"><label>పేరు (తెలుగు)</label>
+      <input type="text" id="svc-name-te" class="field-input" value="${esc(cat.name_te || '')}" placeholder="పాస్‌పోర్ట్" style="margin-bottom:10px"/>
+     </div>
+     <div class="field-row"><label>పేరు (English, optional)</label>
+      <input type="text" id="svc-name-en" class="field-input" value="${esc(cat.name_en || '')}" placeholder="Passport" style="margin-bottom:10px"/>
+     </div>
+     <div class="field-row"><label>Icon (Font Awesome class)</label>
+      <input type="text" id="svc-icon" class="field-input" value="${esc(cat.icon || 'fas fa-file-alt')}" style="margin-bottom:10px"/>
+     </div>
+     <div class="field-row"><label>Category</label>
+      <select id="svc-category" class="field-input" style="margin-bottom:10px">
+        <option value="">— select —</option>${catOptions}
+      </select>
+     </div>
+     <div class="field-row"><label>Overview</label>
+      <textarea id="svc-overview" class="field-input" rows="2" style="margin-bottom:10px">${existing ? esc(existing.overview || '') : ''}</textarea>
+     </div>
+     <div class="field-row"><label>Benefits</label>
+      <textarea id="svc-benefits" class="field-input" rows="2" style="margin-bottom:10px">${existing ? esc(existing.benefits || '') : ''}</textarea>
+     </div>
+     <div class="field-row"><label>Eligibility</label>
+      <textarea id="svc-eligibility" class="field-input" rows="2" style="margin-bottom:10px">${existing ? esc(existing.eligibility || '') : ''}</textarea>
+     </div>
+     <div style="display:flex;gap:10px">
+       <div class="field-row" style="flex:1"><label>Govt Fee (₹)</label>
+        <input type="number" id="svc-fee" class="field-input" value="${existing ? (existing.govt_fee||'') : ''}" style="margin-bottom:10px"/>
+       </div>
+       <div class="field-row" style="flex:1"><label>Processing Time</label>
+        <input type="text" id="svc-time" class="field-input" value="${existing ? esc(existing.processing_time || '') : ''}" placeholder="7-10 days" style="margin-bottom:10px"/>
+       </div>
+     </div>
+     <div class="field-row"><label>Important Notes</label>
+      <textarea id="svc-notes" class="field-input" rows="2" style="margin-bottom:10px">${existing ? esc(existing.important_notes || '') : ''}</textarea>
+     </div>
+     <div style="display:flex;gap:10px;margin-top:4px">
+      <button class="topbar-btn primary" style="flex:1" onclick="doSaveService(${editId || 'null'})"><i class="fas fa-check"></i> ${existing ? 'Update' : 'Create'}</button>
+      <button class="topbar-btn secondary" style="flex:1" onclick="closeModal()">Cancel</button>
+     </div>`,
+    true
+  );
+}
+
+async function doSaveService(editId) {
+  const key         = document.getElementById('svc-key').value.trim();
+  const name_te     = document.getElementById('svc-name-te').value.trim();
+  const name_en     = document.getElementById('svc-name-en').value.trim();
+  const icon        = document.getElementById('svc-icon').value.trim() || 'fas fa-file-alt';
+  const category_id = document.getElementById('svc-category').value || null;
+  const overview    = document.getElementById('svc-overview').value.trim();
+  const benefits    = document.getElementById('svc-benefits').value.trim();
+  const eligibility = document.getElementById('svc-eligibility').value.trim();
+  const govt_fee    = document.getElementById('svc-fee').value ? parseFloat(document.getElementById('svc-fee').value) : null;
+  const processing_time = document.getElementById('svc-time').value.trim();
+  const important_notes = document.getElementById('svc-notes').value.trim();
+
+  if (!key)     { showToast('Key అవసరం', 'error'); return; }
+  if (!name_te) { showToast('తెలుగు పేరు అవసరం', 'error'); return; }
+
+  showLoader('Saving…');
+
+  // 1) Keep the lightweight marketplace taxonomy entry (service_catalog) in
+  //    sync with this service's display name/icon.
+  const { error: catErr } = await sb.from('service_catalog')
+    .upsert({ key, name_te, name_en: name_en || null, icon }, { onConflict: 'key' });
+  if (catErr) { hideLoader(); showToast(catErr.message, 'error'); return; }
+
+  // 2) Create/update the rich master-content row.
+  const payload = {
+    key, category_id: category_id ? parseInt(category_id, 10) : null,
+    overview: overview || null, benefits: benefits || null, eligibility: eligibility || null,
+    govt_fee, processing_time: processing_time || null, important_notes: important_notes || null,
+    last_updated: new Date().toISOString().slice(0, 10),
+  };
+  const { error } = editId
+    ? await sb.from('services').update(payload).eq('id', editId)
+    : await sb.from('services').insert(payload);
+  hideLoader();
+
+  if (error) { showToast(error.message || 'Failed', 'error'); return; }
+  closeModal();
+  showToast(editId ? 'Service Updated ✓' : 'Service Created ✓', 'success');
+  await loadServices();
+}
+
+async function toggleServiceActive(id, currentVal) {
+  const { error } = await sb.from('services').update({ is_active: !currentVal }).eq('id', id);
+  if (error) { showToast(error.message || 'Failed', 'error'); return; }
+  await loadServices();
+}
+
+async function deleteService(id) {
+  if (!confirm('ఈ service (దాని documents/steps/FAQ/videos అన్నీ) delete చేయాలా?')) return;
+  const { error } = await sb.from('services').delete().eq('id', id);
+  if (error) { showToast(error.message || 'Failed', 'error'); return; }
+  showToast('Deleted ✓', 'success');
+  await loadServices();
+}
+
+/* ── Service Details modal: Documents / Process / FAQ / Videos ── */
+async function showServiceDetails(serviceId) {
+  CURRENT_SERVICE_ID = serviceId;
+  const s = ALL_SERVICES.find(x => x.id === serviceId);
+  const cat = (s && s.service_catalog) || {};
+  showModal(
+    (cat.name_te || 'Service') + ' — Details',
+    'Required Documents, Steps, FAQ, Videos ఇక్కడ manage చేయండి',
+    `<div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap">
+      <button class="add-row-btn" style="margin-top:0" onclick="renderSvcDetailTab('docs')"><i class="fas fa-file-lines"></i> Documents</button>
+      <button class="add-row-btn" style="margin-top:0" onclick="renderSvcDetailTab('process')"><i class="fas fa-list-ol"></i> Steps</button>
+      <button class="add-row-btn" style="margin-top:0" onclick="renderSvcDetailTab('faq')"><i class="fas fa-circle-question"></i> FAQ</button>
+      <button class="add-row-btn" style="margin-top:0" onclick="renderSvcDetailTab('videos')"><i class="fas fa-video"></i> Videos</button>
+     </div>
+     <div id="svc-detail-body">లోడ్ అవుతోంది…</div>
+     <button class="add-row-btn" style="width:100%;margin-top:12px" onclick="closeModal()">మూసివేయండి</button>`,
+    true
+  );
+  renderSvcDetailTab('docs');
+}
+
+async function renderSvcDetailTab(tab) {
+  const body = document.getElementById('svc-detail-body');
+  if (!body) return;
+  body.innerHTML = 'లోడ్ అవుతోంది…';
+  const sid = CURRENT_SERVICE_ID;
+
+  if (tab === 'docs') {
+    const { data } = await sb.from('service_documents').select('*').eq('service_id', sid).order('sort_order');
+    body.innerHTML = `
+      <div id="svc-docs-list" style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px">
+        ${(data||[]).map(d => `<div style="display:flex;align-items:center;gap:8px;background:var(--bg2);padding:8px 10px;border-radius:8px">
+          <span style="flex:1;font-size:13px">${esc(d.doc_name)}</span>
+          <button class="row-card-del" onclick="delChildRow('service_documents', ${d.id}, 'docs')"><i class="fas fa-trash"></i></button>
+        </div>`).join('') || '<div style="color:var(--text3);font-size:12.5px">ఇంకా ఏమీ లేవు</div>'}
+      </div>
+      <div style="display:flex;gap:8px">
+        <input id="svc-doc-input" class="field-input" placeholder="Document పేరు" style="flex:1"/>
+        <button class="topbar-btn primary" onclick="addChildRow('service_documents', {doc_name: document.getElementById('svc-doc-input').value, sort_order: ${(data||[]).length}}, 'docs')"><i class="fas fa-plus"></i></button>
+      </div>`;
+  } else if (tab === 'process') {
+    const { data } = await sb.from('service_process').select('*').eq('service_id', sid).order('step_no');
+    body.innerHTML = `
+      <div id="svc-process-list" style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px">
+        ${(data||[]).map(p => `<div style="background:var(--bg2);padding:8px 10px;border-radius:8px">
+          <div style="display:flex;align-items:center;gap:8px">
+            <span style="font-weight:700;color:var(--accent);font-size:12px">Step ${p.step_no}</span>
+            <span style="flex:1;font-size:13px;font-weight:600">${esc(p.title)}</span>
+            <button class="row-card-del" onclick="delChildRow('service_process', ${p.id}, 'process')"><i class="fas fa-trash"></i></button>
+          </div>
+          ${p.description ? `<div style="font-size:12px;color:var(--text2);margin-top:4px">${esc(p.description)}</div>` : ''}
+        </div>`).join('') || '<div style="color:var(--text3);font-size:12.5px">ఇంకా ఏమీ లేవు</div>'}
+      </div>
+      <input id="svc-step-title" class="field-input" placeholder="Step title" style="margin-bottom:6px"/>
+      <textarea id="svc-step-desc" class="field-input" placeholder="వివరణ (optional)" rows="2" style="margin-bottom:6px"></textarea>
+      <button class="topbar-btn primary" style="width:100%"
+        onclick="addChildRow('service_process', {step_no: ${(data||[]).length + 1}, title: document.getElementById('svc-step-title').value, description: document.getElementById('svc-step-desc').value}, 'process')">
+        <i class="fas fa-plus"></i> Step Add చేయండి
+      </button>`;
+  } else if (tab === 'faq') {
+    const { data } = await sb.from('service_faq').select('*').eq('service_id', sid).order('sort_order');
+    body.innerHTML = `
+      <div id="svc-faq-list" style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px">
+        ${(data||[]).map(f => `<div style="background:var(--bg2);padding:8px 10px;border-radius:8px">
+          <div style="display:flex;align-items:center;gap:8px">
+            <span style="flex:1;font-size:13px;font-weight:600">Q: ${esc(f.question)}</span>
+            <button class="row-card-del" onclick="delChildRow('service_faq', ${f.id}, 'faq')"><i class="fas fa-trash"></i></button>
+          </div>
+          <div style="font-size:12px;color:var(--text2);margin-top:4px">A: ${esc(f.answer)}</div>
+        </div>`).join('') || '<div style="color:var(--text3);font-size:12.5px">ఇంకా ఏమీ లేవు</div>'}
+      </div>
+      <input id="svc-faq-q" class="field-input" placeholder="Question" style="margin-bottom:6px"/>
+      <textarea id="svc-faq-a" class="field-input" placeholder="Answer" rows="2" style="margin-bottom:6px"></textarea>
+      <button class="topbar-btn primary" style="width:100%"
+        onclick="addChildRow('service_faq', {question: document.getElementById('svc-faq-q').value, answer: document.getElementById('svc-faq-a').value, sort_order: ${(data||[]).length}}, 'faq')">
+        <i class="fas fa-plus"></i> FAQ Add చేయండి
+      </button>`;
+  } else if (tab === 'videos') {
+    const { data } = await sb.from('service_videos').select('*').eq('service_id', sid);
+    body.innerHTML = `
+      <div id="svc-videos-list" style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px">
+        ${(data||[]).map(v => `<div style="display:flex;align-items:center;gap:8px;background:var(--bg2);padding:8px 10px;border-radius:8px">
+          <span style="flex:1;font-size:13px">${esc(v.title || v.video_url)}</span>
+          <button class="row-card-del" onclick="delChildRow('service_videos', ${v.id}, 'videos')"><i class="fas fa-trash"></i></button>
+        </div>`).join('') || '<div style="color:var(--text3);font-size:12.5px">ఇంకా ఏమీ లేవు</div>'}
+      </div>
+      <input id="svc-vid-title" class="field-input" placeholder="Title (optional)" style="margin-bottom:6px"/>
+      <input id="svc-vid-url" class="field-input" placeholder="Video URL" style="margin-bottom:6px"/>
+      <button class="topbar-btn primary" style="width:100%"
+        onclick="addChildRow('service_videos', {title: document.getElementById('svc-vid-title').value, video_url: document.getElementById('svc-vid-url').value}, 'videos')">
+        <i class="fas fa-plus"></i> Video Add చేయండి
+      </button>`;
+  }
+}
+
+async function addChildRow(table, fields, tab) {
+  const cleaned = {};
+  Object.keys(fields).forEach(k => { cleaned[k] = typeof fields[k] === 'string' ? fields[k].trim() : fields[k]; });
+  // simple required-field guard: at least one populated text field besides service_id
+  const hasContent = Object.values(cleaned).some(v => (typeof v === 'string' ? v.length : v !== null && v !== undefined));
+  if (!hasContent) { showToast('ఖాళీగా ఉంచకూడదు', 'error'); return; }
+
+  const { error } = await sb.from(table).insert({ ...cleaned, service_id: CURRENT_SERVICE_ID });
+  if (error) { showToast(error.message || 'Failed', 'error'); return; }
+  renderSvcDetailTab(tab);
+}
+
+async function delChildRow(table, id, tab) {
+  const { error } = await sb.from(table).delete().eq('id', id);
+  if (error) { showToast(error.message || 'Failed', 'error'); return; }
+  renderSvcDetailTab(tab);
 }
 
 function showCreateUserModal() {
