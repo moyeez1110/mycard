@@ -86,6 +86,21 @@
     color:var(--accent);border:1px solid rgba(79,255,176,0.3);padding:7px 13px;border-radius:9px;font-size:12px;font-weight:600;text-decoration:none}
   .tts-speak-btn{display:inline-flex;align-items:center;gap:6px;margin-top:8px;background:var(--bg3);border:1px solid var(--border);
     color:var(--text);padding:7px 13px;border-radius:9px;font-size:12px;font-weight:600;cursor:pointer}
+
+  /* Popup */
+  #popup-overlay{position:fixed;inset:0;z-index:900;background:rgba(0,0,0,0.7);backdrop-filter:blur(6px);
+    display:flex;align-items:center;justify-content:center;padding:20px}
+  #popup-overlay.hidden{display:none}
+  #popup-box{background:var(--card);border:1px solid var(--border);border-radius:16px;max-width:400px;width:100%;overflow:hidden;box-shadow:var(--shadow)}
+  #popup-img{width:100%;max-height:220px;object-fit:cover;display:none}
+  #popup-img.show{display:block}
+  .popup-body{padding:20px}
+  .popup-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+  .popup-badge{font-size:10px;font-weight:700;background:rgba(79,255,176,0.12);color:var(--accent);padding:3px 8px;border-radius:6px;display:inline-flex;align-items:center;gap:4px}
+  .popup-counter{font-size:11px;color:var(--text2);margin-left:auto}
+  #popup-title{font-size:16px;font-weight:700;font-family:var(--font-te)}
+  #popup-subtitle{font-size:13px;color:var(--text2);margin-top:6px;line-height:1.6;font-family:var(--font-te)}
+  #popup-close{width:100%;margin-top:14px;background:var(--accent);color:#0a0f1a;border:none;padding:11px;border-radius:10px;font-weight:700;font-size:13px;cursor:pointer;font-family:var(--font-te)}
 </style>
 </head>
 <body>
@@ -134,6 +149,11 @@
       <div id="groups-list"></div>
     </div>
 
+    <div class="section" id="sec-reqdocs" style="display:none">
+      <div class="section-head"><h2>📑 అవసరమైన Documents</h2><div class="section-line"></div></div>
+      <div id="reqdocs-list"></div>
+    </div>
+
     <div class="section" id="sec-pdfs" style="display:none">
       <div class="section-head"><h2>📄 PDF ఫారాలు</h2><div class="section-line"></div></div>
       <div id="pdfs-list"></div>
@@ -148,6 +168,21 @@
   </div>
 </div>
 <div id="notfound" style="display:none" class="loading">ఈ షాప్ ప్రొఫైల్ కనిపించడం లేదు.</div>
+
+<div id="popup-overlay" class="hidden">
+  <div id="popup-box">
+    <img id="popup-img" src="" alt="popup"/>
+    <div class="popup-body">
+      <div class="popup-head">
+        <span class="popup-badge"><i class="fas fa-bell"></i> ప్రకటన</span>
+        <span class="popup-counter" id="popup-counter" style="display:none"></span>
+      </div>
+      <div id="popup-title"></div>
+      <div id="popup-subtitle"></div>
+      <button id="popup-close">అర్థమైంది ✓</button>
+    </div>
+  </div>
+</div>
 
 <script>
 const SUPABASE_URL = 'https://pusmroyftjzdkcwuwsph.supabase.co';
@@ -179,6 +214,7 @@ async function loadShop() {
     .eq('status', 'live').order('display_order', { ascending: true });
 
   renderShop(agent, rows || []);
+  showPopups(rows || []);
   setupInstall(agent, slug);
 }
 
@@ -310,6 +346,30 @@ function renderShop(agent, rows) {
       </div>`).join('');
   }
 
+  const reqServices = [];
+  rows.forEach(r => {
+    if (r.key === 'req_service') reqServices.push({ name: r.title || r.value, icon: r.icon || 'fas fa-file-alt', docs: [] });
+    else if (r.key === 'req_doc' && reqServices.length) reqServices[reqServices.length-1].docs.push(r.title || r.value);
+  });
+  if (reqServices.length) {
+    document.getElementById('sec-reqdocs').style.display = 'block';
+    document.getElementById('reqdocs-list').innerHTML = reqServices.map((g,i) => `
+      <div class="acc-item" id="reqdoc_${i}">
+        <div class="acc-header" onclick="reqDocToggle(${i})">
+          <i class="grp ${g.icon}" style="color:#22d3ee"></i>
+          <div class="name">${esc(g.name)}</div>
+          <span class="acc-count">${g.docs.length} docs</span>
+          <i class="fas fa-chevron-down acc-arrow"></i>
+        </div>
+        <div class="acc-body">
+          ${g.docs.filter(Boolean).map(d => `
+            <div class="sub-row">
+              <div class="sub-name"><i class="fas fa-check" style="color:var(--accent);margin-right:6px;font-size:11px"></i>${esc(d)}</div>
+            </div>`).join('') || '<div class="empty">వివరాలు లేవు</div>'}
+        </div>
+      </div>`).join('');
+  }
+
   const pdfs = rows.filter(r => r.key === 'pdf');
   if (pdfs.length) {
     document.getElementById('sec-pdfs').style.display = 'block';
@@ -336,6 +396,58 @@ function grpToggle(i) {
   const wasOpen = item.classList.contains('open');
   document.querySelectorAll('#groups-list .acc-item.open').forEach(el=>el.classList.remove('open'));
   if (!wasOpen) item.classList.add('open');
+}
+
+function reqDocToggle(i) {
+  const item = document.getElementById('reqdoc_'+i);
+  if (!item) return;
+  const wasOpen = item.classList.contains('open');
+  document.querySelectorAll('#reqdocs-list .acc-item.open').forEach(el=>el.classList.remove('open'));
+  if (!wasOpen) item.classList.add('open');
+}
+
+// Popups — shown one at a time, in order, right after the shop loads.
+// extra !== 'no' means "show"; multiple popups get a "1/3" style counter.
+function showPopups(rows) {
+  const popups = rows
+    .filter(r => r.key === 'popup' && (r.extra || 'yes').toLowerCase().trim() !== 'no')
+    .map(r => ({ title: r.title || '', subtitle: r.value || '', imageUrl: r.link || '' }));
+  if (!popups.length) return;
+
+  let idx = 0;
+  const total = popups.length;
+
+  function show() {
+    const p = popups[idx];
+    const img = document.getElementById('popup-img');
+    document.getElementById('popup-title').textContent = p.title;
+    document.getElementById('popup-subtitle').textContent = p.subtitle;
+    img.src = p.imageUrl || '';
+    p.imageUrl ? img.classList.add('show') : img.classList.remove('show');
+
+    const counter = document.getElementById('popup-counter');
+    if (total > 1) {
+      counter.textContent = (idx + 1) + ' / ' + total;
+      counter.style.display = 'inline-flex';
+    } else {
+      counter.style.display = 'none';
+    }
+    const isLast = idx === total - 1;
+    document.getElementById('popup-close').textContent = isLast ? 'అర్థమైంది ✓' : 'తదుపరి → (' + (idx + 1) + '/' + total + ')';
+    document.getElementById('popup-overlay').classList.remove('hidden');
+  }
+
+  function next() {
+    document.getElementById('popup-overlay').classList.add('hidden');
+    idx++;
+    if (idx < total) setTimeout(show, 350);
+  }
+
+  document.getElementById('popup-close').onclick = next;
+  document.getElementById('popup-overlay').onclick = e => {
+    if (e.target === document.getElementById('popup-overlay')) next();
+  };
+  show();
 }
 
 function speakTts(i) {
