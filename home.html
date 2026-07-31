@@ -19,9 +19,28 @@
     --font:'Inter',sans-serif;
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  body{background:var(--bg);color:var(--text);font-family:var(--font-te),var(--font);min-height:100vh;padding-bottom:50px}
+  body{background:var(--bg);color:var(--text);font-family:var(--font-te),var(--font);min-height:100vh;padding-bottom:78px}
   .wrap{max-width:720px;margin:0 auto;padding:0 16px}
   a{color:inherit}
+
+  .page{display:none}
+  .page.active{display:block}
+
+  #bottom-nav{
+    position:fixed;bottom:0;left:0;right:0;z-index:100;
+    background:var(--bg2);border-top:1px solid var(--border);
+    display:flex;padding:0 0 env(safe-area-inset-bottom);
+    max-width:720px;margin:0 auto
+  }
+  .nav-btn{
+    flex:1;padding:10px 0;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:4px;color:var(--text2);
+    background:transparent;border:none;font-size:10px;font-weight:600;
+    font-family:var(--font-te);cursor:pointer;letter-spacing:0.3px
+  }
+  .nav-btn i{font-size:18px}
+  .nav-btn.active{color:var(--accent)}
+  .nav-btn.active i{filter:drop-shadow(0 0 4px var(--accent))}
 
   /* ── Hero / search — this page's job is finding, so the search bar IS the hero ── */
   .hero{background:linear-gradient(180deg, var(--bg2) 0%, var(--bg) 100%);border-bottom:1px solid var(--border);padding:34px 16px 22px;text-align:center}
@@ -117,58 +136,118 @@
 <div id="loading" class="loading">లోడ్ అవుతోంది…</div>
 
 <div id="app" style="display:none">
-  <div class="hero">
-    <div class="hero-eyebrow">Digital Seva Platform</div>
-    <div class="hero-title">ఏ సర్వీస్ కావాలో వెతకండి</div>
-    <div class="hero-sub">Passport, PAN Card, Aadhaar, Certificates — పూర్తి సమాచారం, ఉచితంగా</div>
-    <div class="search-box">
-      <input id="search-input" type="text" placeholder="ఉదా: Passport, PAN Card, జనన ధృవీకరణ..." oninput="onSearch()"/>
-      <i class="fas fa-magnifying-glass"></i>
+
+  <!-- ═══ HOME PAGE ═══ -->
+  <div id="page-home" class="page active">
+    <div class="hero">
+      <div class="hero-eyebrow">Digital Seva Platform</div>
+      <div class="hero-title">ఏ సర్వీస్ కావాలో వెతకండి</div>
+      <div class="hero-sub">Passport, PAN Card, Aadhaar, Certificates — పూర్తి సమాచారం, ఉచితంగా</div>
+      <div class="search-box" onclick="goToServicesSearch()" style="cursor:pointer">
+        <input type="text" placeholder="ఉదా: Passport, PAN Card, జనన ధృవీకరణ..." readonly style="cursor:pointer"/>
+        <i class="fas fa-magnifying-glass"></i>
+      </div>
     </div>
-    <div class="search-hint" id="search-hint" style="display:none"></div>
+    <div class="wrap">
+      <div class="cats-row" id="cats-row-home"></div>
+
+      <div class="section" id="sec-notifications" style="display:none">
+        <div class="section-head"><h2>📢 తాజా నోటిఫికేషన్‌లు</h2><div class="section-line"></div></div>
+        <div id="notifications-list"></div>
+      </div>
+
+      <div class="section" id="sec-news" style="display:none">
+        <div class="section-head"><h2>📰 వార్తలు</h2><div class="section-line"></div></div>
+        <div id="news-list"></div>
+      </div>
+
+      <div class="section" id="sec-greetings" style="display:none">
+        <div class="section-head"><h2>🎉 శుభాకాంక్షలు</h2><div class="section-line"></div></div>
+        <div class="thumb-strip" id="greetings-strip"></div>
+      </div>
+
+      <div class="footer">Powered by Digital Seva Platform</div>
+    </div>
   </div>
 
-  <div class="wrap">
-    <div class="cats-row" id="cats-row"></div>
-
-    <div class="section" id="sec-services">
-      <div class="section-head"><h2 id="services-heading">సర్వీసులు</h2><div class="section-line"></div><span class="section-count" id="services-count"></span></div>
-      <div class="svc-grid" id="services-grid"></div>
+  <!-- ═══ CATEGORIES PAGE ═══ -->
+  <div id="page-categories" class="page">
+    <div class="wrap" style="padding-top:22px">
+      <div class="section-head" style="margin-bottom:14px"><h2>అన్ని Categories</h2><div class="section-line"></div></div>
+      <div class="svc-grid" id="cat-grid-full"></div>
+      <div class="footer">Powered by Digital Seva Platform</div>
     </div>
-
-    <div class="section" id="sec-notifications" style="display:none">
-      <div class="section-head"><h2>📢 తాజా నోటిఫికేషన్‌లు</h2><div class="section-line"></div></div>
-      <div id="notifications-list"></div>
-    </div>
-
-    <div class="section" id="sec-schemes" style="display:none">
-      <div class="section-head"><h2>🏛️ ప్రభుత్వ పథకాలు</h2><div class="section-line"></div></div>
-      <div id="schemes-list"></div>
-    </div>
-
-    <div class="section" id="sec-downloads" style="display:none">
-      <div class="section-head"><h2>📥 డౌన్‌లోడ్‌లు</h2><div class="section-line"></div></div>
-      <div id="downloads-list"></div>
-    </div>
-
-    <div class="section" id="sec-posters" style="display:none">
-      <div class="section-head"><h2>🖼️ పోస్టర్‌లు</h2><div class="section-line"></div></div>
-      <div class="thumb-strip" id="posters-strip"></div>
-    </div>
-
-    <div class="section" id="sec-news" style="display:none">
-      <div class="section-head"><h2>📰 వార్తలు</h2><div class="section-line"></div></div>
-      <div id="news-list"></div>
-    </div>
-
-    <div class="section" id="sec-greetings" style="display:none">
-      <div class="section-head"><h2>🎉 శుభాకాంక్షలు</h2><div class="section-line"></div></div>
-      <div class="thumb-strip" id="greetings-strip"></div>
-    </div>
-
-    <div class="footer">Powered by Digital Seva Platform</div>
   </div>
+
+  <!-- ═══ SERVICES PAGE ═══ -->
+  <div id="page-services" class="page">
+    <div class="wrap" style="padding-top:22px">
+      <div class="search-box" style="margin:0 0 14px;max-width:none">
+        <input id="search-input" type="text" placeholder="సర్వీస్ వెతకండి..." oninput="onSearch()"/>
+        <i class="fas fa-magnifying-glass"></i>
+      </div>
+      <div class="search-hint" id="search-hint" style="display:none"></div>
+      <div class="cats-row" id="cats-row"></div>
+
+      <div class="section" id="sec-services">
+        <div class="section-head"><h2 id="services-heading">సర్వీసులు</h2><div class="section-line"></div><span class="section-count" id="services-count"></span></div>
+        <div class="svc-grid" id="services-grid"></div>
+      </div>
+
+      <div class="section" id="sec-schemes" style="display:none">
+        <div class="section-head"><h2>🏛️ ప్రభుత్వ పథకాలు</h2><div class="section-line"></div></div>
+        <div id="schemes-list"></div>
+      </div>
+
+      <div class="section" id="sec-downloads" style="display:none">
+        <div class="section-head"><h2>📥 డౌన్‌లోడ్‌లు</h2><div class="section-line"></div></div>
+        <div id="downloads-list"></div>
+      </div>
+
+      <div class="section" id="sec-posters" style="display:none">
+        <div class="section-head"><h2>🖼️ పోస్టర్‌లు</h2><div class="section-line"></div></div>
+        <div class="thumb-strip" id="posters-strip"></div>
+      </div>
+
+      <div class="footer">Powered by Digital Seva Platform</div>
+    </div>
+  </div>
+
+  <!-- ═══ CONTACT PAGE ═══ -->
+  <div id="page-contact" class="page">
+    <div class="wrap" style="padding-top:22px">
+      <div class="section-head" style="margin-bottom:14px"><h2>Contact / గురించి</h2><div class="section-line"></div></div>
+      <div class="list-item" style="cursor:default">
+        <i class="fas fa-circle-info lead"></i>
+        <div class="body">
+          <div class="title">Digital Seva Platform</div>
+          <div class="sub">MeeSeva/CSC సెంటర్ల కోసం ఒక digital information &amp; promotion వేదిక — ఇక్కడ ఉన్న సమాచారం అన్ని సెంటర్లకూ ఉమ్మడిగా ఉపయోగపడేలా తయారు చేయబడింది.</div>
+        </div>
+      </div>
+      <div class="list-item" style="cursor:default;margin-top:8px">
+        <i class="fas fa-headset lead"></i>
+        <div class="body">
+          <div class="title">Support</div>
+          <div class="sub">ఏదైనా సమాచారం తప్పు అనిపిస్తే, లేదా ఒక సర్వీస్ మిస్సయినట్టు అనిపిస్తే — దయచేసి మా బృందానికి తెలియజేయండి.</div>
+        </div>
+      </div>
+      <div class="cta-note" style="margin-top:16px">
+        <i class="fas fa-circle-info" style="color:var(--accent);margin-right:6px"></i>
+        ఒక నిర్దిష్ట సర్వీస్ కోసం అప్లై చేసుకోవాలంటే, మీ దగ్గరి Seva Kendra యొక్క సొంత పేజీని సందర్శించండి (వారి QR / లింక్ ద్వారా).
+      </div>
+      <div class="footer">Powered by Digital Seva Platform</div>
+    </div>
+  </div>
+
 </div>
+
+<nav id="bottom-nav">
+  <button class="nav-btn active" onclick="showPage('page-home',this)"><i class="fas fa-house"></i>హోమ్</button>
+  <button class="nav-btn" onclick="showPage('page-categories',this)"><i class="fas fa-folder-tree"></i>Categories</button>
+  <button class="nav-btn" onclick="showPage('page-services',this)"><i class="fas fa-list-check"></i>Services</button>
+  <button class="nav-btn" onclick="showPage('page-contact',this)"><i class="fas fa-address-card"></i>Contact</button>
+</nav>
+
 
 <!-- Service Detail slide-up -->
 <div id="detail-overlay" onclick="if(event.target===this) closeDetail()">
@@ -227,20 +306,64 @@ async function loadHome() {
 }
 
 function renderCategories() {
-  const row = document.getElementById('cats-row');
-  row.innerHTML = `<div class="cat-chip ${!ACTIVE_CATEGORY?'active':''}" onclick="filterByCategory(null)"><i class="fas fa-grid-2"></i> అన్నీ</div>` +
+  const chipsHtml = (activeStyle) => `<div class="cat-chip ${!ACTIVE_CATEGORY?'active':''}" onclick="filterByCategory(null)"><i class="fas fa-grid-2"></i> అన్నీ</div>` +
     CATEGORIES.filter(c => !c.parent_id).map(c => `
       <div class="cat-chip ${ACTIVE_CATEGORY===c.id?'active':''}" onclick="filterByCategory(${c.id})">
         <i class="${c.icon || 'fas fa-folder'}"></i> ${esc(c.name_te)}
       </div>`).join('');
+
+  const homeRow = document.getElementById('cats-row-home');
+  if (homeRow) homeRow.innerHTML = chipsHtml();
+  const svcRow = document.getElementById('cats-row');
+  if (svcRow) svcRow.innerHTML = chipsHtml();
+
+  const fullGrid = document.getElementById('cat-grid-full');
+  if (fullGrid) {
+    fullGrid.innerHTML = CATEGORIES.filter(c => !c.parent_id).map(c => {
+      const svcCount = SERVICES.filter(s => s.category_id === c.id).length;
+      return `<div class="svc-card" onclick="filterByCategory(${c.id})">
+        <i class="${c.icon || 'fas fa-folder'}"></i>
+        <div class="svc-name">${esc(c.name_te)}</div>
+        <div class="svc-cat">${svcCount} services</div>
+      </div>`;
+    }).join('');
+  }
 }
 
+// Tapping any category (chip or card) filters the catalog AND takes you
+// to the Services tab, since that's the only place the filtered grid lives.
 function filterByCategory(catId) {
   ACTIVE_CATEGORY = catId;
-  document.getElementById('search-input').value = '';
-  document.getElementById('search-hint').style.display = 'none';
+  const searchInput = document.getElementById('search-input');
+  if (searchInput) searchInput.value = '';
+  const hint = document.getElementById('search-hint');
+  if (hint) hint.style.display = 'none';
   renderCategories();
   renderServices();
+  showPage('page-services');
+}
+
+function goToServicesSearch() {
+  showPage('page-services');
+  setTimeout(() => { const el = document.getElementById('search-input'); if (el) el.focus(); }, 200);
+}
+
+function showPage(id, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const target = document.getElementById(id);
+  if (target) target.classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  else {
+    // Called programmatically (e.g. from a category tap) — sync the nav highlight too.
+    const map = { 'page-home':0, 'page-categories':1, 'page-services':2, 'page-contact':3 };
+    const idx = map[id];
+    if (idx !== undefined) {
+      const navBtns = document.querySelectorAll('.nav-btn');
+      if (navBtns[idx]) navBtns[idx].classList.add('active');
+    }
+  }
+  window.scrollTo(0, 0);
 }
 
 function renderServices(filtered) {
