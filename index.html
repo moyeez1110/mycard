@@ -2207,7 +2207,7 @@ body.light-mode .wc-btn-confirm { color:#fff;background:#0a8a5a; }
 <div id="mycontent-modal" style="display:none;position:fixed;inset:0;z-index:850;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);align-items:flex-end;justify-content:center;padding:0" onclick="if(event.target===this) closeMyContentModal()">
   <div id="mycontent-sheet" style="background:var(--bg2);border-radius:20px 20px 0 0;width:100%;max-width:560px;max-height:88vh;overflow-y:auto;padding:20px 20px 32px;border-top:1px solid var(--border)">
     <div style="width:40px;height:4px;background:var(--border);border-radius:4px;margin:0 auto 16px"></div>
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
       <div style="width:40px;height:40px;border-radius:11px;background:rgba(79,255,176,0.12);border:1.5px solid var(--accent);display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:17px;flex-shrink:0">
         <i class="fas fa-cloud-arrow-up"></i>
       </div>
@@ -2217,6 +2217,7 @@ body.light-mode .wc-btn-confirm { color:#fff;background:#0a8a5a; }
       </div>
       <button onclick="closeMyContentModal()" style="background:var(--bg3);border:1px solid var(--border);color:var(--text2);width:32px;height:32px;border-radius:9px;cursor:pointer"><i class="fas fa-times"></i></button>
     </div>
+    <div id="mc-usage-line" style="font-size:11px;color:var(--text2);margin-bottom:14px;font-family:var(--font-te)"></div>
 
     <!-- Type picker -->
     <div id="mc-type-picker" style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:16px"></div>
@@ -2843,10 +2844,32 @@ async function loadContentTypeSettings() {
   }
 }
 
+// Basic (no plan) → 5 self-uploaded items · Pro (yearly plan) → 20 · Premium → unlimited.
+// Reuses the existing agents.plan_name field (already managed in admin.html's
+// Subscription tab) rather than introducing a separate tier system.
+function getMyContentLimit() {
+  const plan = (AGENT_DB && AGENT_DB.plan_name) || '';
+  if (plan === 'premium') return Infinity;
+  if (plan === 'yearly') return 20;
+  return 5;
+}
+
+function renderMcUsageLine() {
+  const el = document.getElementById('mc-usage-line');
+  if (!el) return;
+  const limit = getMyContentLimit();
+  const count = MY_ROWS.filter(r => !['req_doc','sub_service'].includes(r.key)).length;
+  const planLabel = limit === Infinity ? 'Premium' : limit === 20 ? 'Pro' : 'Basic';
+  el.textContent = limit === Infinity
+    ? `${count} items వాడారు — ${planLabel} ప్లాన్ (unlimited)`
+    : `${count} / ${limit} items వాడారు — ${planLabel} ప్లాన్`;
+}
+
 function openMyContentModal() {
   if (!AGENT_DB) return;
   renderMcTypePicker();
   renderMyContentList();
+  renderMcUsageLine();
   document.getElementById('mycontent-modal').style.display = 'flex';
 }
 function closeMyContentModal() {
@@ -2984,6 +3007,17 @@ async function submitMyContentForm() {
   const errEl = document.getElementById('mc-form-err');
   errEl.classList.remove('show');
 
+  // Subscription-tier limit — only applies to brand-new items, not edits.
+  if (!MC_EDITING_ID) {
+    const limit = getMyContentLimit();
+    const currentCount = MY_ROWS.filter(r => !['req_doc','sub_service'].includes(r.key)).length;
+    if (limit !== Infinity && currentCount >= limit) {
+      errEl.innerHTML = `<i class="fas fa-circle-exclamation"></i><span>మీ ప్లాన్‌లో గరిష్టంగా ${limit} items మాత్రమే — పెంచుకోవడానికి subscription upgrade గురించి అడ్మిన్‌ని సంప్రదించండి.</span>`;
+      errEl.classList.add('show');
+      return;
+    }
+  }
+
   const values = {};
   for (const f of defs) {
     const el = document.getElementById('mc-f-' + f.id);
@@ -3072,6 +3106,7 @@ async function submitMyContentForm() {
   closeMyContentForm();
   await loadData();       // refresh public content (in case it went straight live)
   renderMyContentList();  // refresh the management list in the still-open modal
+  renderMcUsageLine();
   showShareToast(wentLive ? '✓ Live అయ్యింది!' : '✓ Admin approval కోసం పంపబడింది');
 }
 
@@ -3110,6 +3145,7 @@ async function deleteMyRow(id) {
     if (error) throw error;
     await loadData();
     renderMyContentList();
+    renderMcUsageLine();
   } catch (e) {
     alert('Delete failed: ' + e.message);
   }
