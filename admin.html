@@ -460,6 +460,12 @@ input,textarea,select{font-family:var(--font);outline:none}
     <button class="sb-nav-btn" onclick="showView('services',this)">
       <i class="fas fa-book-open"></i> Service Master
     </button>
+    <button class="sb-nav-btn" onclick="showView('downloads',this)">
+      <i class="fas fa-download"></i> Downloads
+    </button>
+    <button class="sb-nav-btn" onclick="showView('posters',this)">
+      <i class="fas fa-image"></i> Poster Library
+    </button>
     <button class="sb-nav-btn" onclick="showView('settings',this)">
       <i class="fas fa-gear"></i> Settings
     </button>
@@ -554,6 +560,28 @@ input,textarea,select{font-family:var(--font);outline:none}
           <div style="font-size:12px;color:var(--text2);margin-top:2px">ఒక్కసారి రాస్తే, అన్ని agents కి ఒకటే సరైన సమాచారం కనిపిస్తుంది (Passport, PAN Card వంటివి)</div>
         </div>
         <div id="services-grid" style="display:flex;flex-direction:column;gap:20px">
+          <div style="padding:20px;color:var(--text3);font-size:13px">లోడ్ అవుతోంది…</div>
+        </div>
+      </div>
+
+      <!-- DOWNLOADS VIEW -->
+      <div id="view-downloads" class="view">
+        <div style="margin-bottom:16px">
+          <div style="font-size:17px;font-weight:700">Download Center</div>
+          <div style="font-size:12px;color:var(--text2);margin-top:2px">Forms, Affidavits, Checklists, GOs, Circulars, Manuals — అన్ని agents/customers కి ఒకటే</div>
+        </div>
+        <div id="downloads-grid" style="display:flex;flex-direction:column;gap:8px">
+          <div style="padding:20px;color:var(--text3);font-size:13px">లోడ్ అవుతోంది…</div>
+        </div>
+      </div>
+
+      <!-- POSTERS VIEW -->
+      <div id="view-posters" class="view">
+        <div style="margin-bottom:16px">
+          <div style="font-size:17px;font-weight:700">Poster Library</div>
+          <div style="font-size:12px;color:var(--text2);margin-top:2px">Awareness/WhatsApp/Facebook/Instagram/Printable posters — global library</div>
+        </div>
+        <div id="posters-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px">
           <div style="padding:20px;color:var(--text3);font-size:13px">లోడ్ అవుతోంది…</div>
         </div>
       </div>
@@ -1927,6 +1955,24 @@ function showView(name, btn) {
     CURRENT_TAB = null; DIRTY = false;
     loadServices();
   }
+  if (name === 'downloads') {
+    document.getElementById('topbar-title').textContent = 'Downloads';
+    document.getElementById('topbar-badge').style.display = 'none';
+    document.getElementById('topbar-actions').innerHTML =
+      '<button class="topbar-btn primary" onclick="showAddDownload()"><i class="fas fa-plus"></i> Add Download</button>';
+    document.querySelectorAll('.agent-item').forEach(e => e.classList.remove('active'));
+    CURRENT_TAB = null; DIRTY = false;
+    loadDownloads();
+  }
+  if (name === 'posters') {
+    document.getElementById('topbar-title').textContent = 'Poster Library';
+    document.getElementById('topbar-badge').style.display = 'none';
+    document.getElementById('topbar-actions').innerHTML =
+      '<button class="topbar-btn primary" onclick="showAddPoster()"><i class="fas fa-plus"></i> Add Poster</button>';
+    document.querySelectorAll('.agent-item').forEach(e => e.classList.remove('active'));
+    CURRENT_TAB = null; DIRTY = false;
+    loadPosters();
+  }
   if (name === 'settings') {
     document.getElementById('topbar-title').textContent = 'Settings';
     document.getElementById('topbar-badge').style.display = 'none';
@@ -2527,6 +2573,217 @@ async function delChildRow(table, id, tab) {
   const { error } = await sb.from(table).delete().eq('id', id);
   if (error) { showToast(error.message || 'Failed', 'error'); return; }
   renderSvcDetailTab(tab);
+}
+
+/* ═══════════════════════════════════════════════════
+   Shared helper — Downloads/Posters modals need category + service
+   dropdowns even if the admin never opened those views this session.
+   ═══════════════════════════════════════════════════ */
+async function ensureCategoriesAndServicesLoaded() {
+  if (!ALL_CATEGORIES.length) {
+    const { data } = await sb.from('categories').select('*').order('sort_order');
+    ALL_CATEGORIES = data || [];
+  }
+  if (!ALL_SERVICES.length) {
+    const { data } = await sb.from('services').select('*, service_catalog(name_te, name_en, icon)').order('id');
+    ALL_SERVICES = data || [];
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+   DOWNLOAD CENTER
+   ═══════════════════════════════════════════════════ */
+let ALL_DOWNLOADS = [];
+const DOC_TYPE_LABELS = { form:'Form', affidavit:'Affidavit', checklist:'Checklist', go:'G.O.', circular:'Circular', manual:'Manual', sample:'Sample Filled' };
+
+async function loadDownloads() {
+  const { data, error } = await sb.from('downloads').select('*, categories(name_te), services(key, service_catalog(name_te))').order('sort_order');
+  if (error) { showToast('Load failed: ' + error.message, 'error'); return; }
+  ALL_DOWNLOADS = data || [];
+  renderDownloadsGrid();
+}
+
+function renderDownloadsGrid() {
+  const grid = document.getElementById('downloads-grid');
+  if (!ALL_DOWNLOADS.length) {
+    grid.innerHTML = `<div style="padding:32px;color:var(--text3);font-size:13px;text-align:center">
+      <i class="fas fa-download" style="font-size:28px;margin-bottom:10px;display:block"></i>
+      ఇంకా ఏ download లేదు — పైన "+ Add Download" నొక్కండి.</div>`;
+    return;
+  }
+  grid.innerHTML = ALL_DOWNLOADS.map(d => {
+    const svcName = d.services && d.services.service_catalog ? d.services.service_catalog.name_te : '';
+    return `<div class="stat-card" style="display:flex;align-items:center;gap:12px;${d.is_active ? '' : 'opacity:0.55'}">
+      <div style="width:36px;height:36px;border-radius:9px;background:rgba(79,255,176,0.1);border:1.5px solid var(--accent);
+        display:flex;align-items:center;justify-content:center;color:var(--accent);flex-shrink:0">
+        <i class="fas fa-file-arrow-down"></i>
+      </div>
+      <div style="flex:1;min-width:0">
+        <div style="font-weight:600;font-size:13.5px">${esc(d.title)}</div>
+        <div style="font-size:11px;color:var(--text3)">
+          ${DOC_TYPE_LABELS[d.doc_type] || d.doc_type}${d.categories ? ` · ${esc(d.categories.name_te)}` : ''}${svcName ? ` · ${esc(svcName)}` : ''}
+          ${d.is_active ? '' : ' · <span style="color:var(--red)">Inactive</span>'}
+        </div>
+      </div>
+      <button class="row-card-edit" onclick="toggleDownloadActive(${d.id}, ${d.is_active})" title="${d.is_active ? 'Deactivate' : 'Activate'}">
+        <i class="fas fa-${d.is_active ? 'toggle-on' : 'toggle-off'}" style="color:${d.is_active ? 'var(--accent)' : 'var(--text3)'}"></i>
+      </button>
+      <a class="row-card-edit" href="${esc(d.file_url)}" target="_blank" title="Open"><i class="fas fa-arrow-up-right-from-square"></i></a>
+      <button class="row-card-edit" onclick="showAddDownload(${d.id})" title="Edit"><i class="fas fa-pen"></i></button>
+      <button class="row-card-del" onclick="deleteDownload(${d.id})" title="Delete"><i class="fas fa-trash"></i></button>
+    </div>`;
+  }).join('');
+}
+
+async function showAddDownload(editId) {
+  await ensureCategoriesAndServicesLoaded();
+  const existing = editId ? ALL_DOWNLOADS.find(d => d.id === editId) : null;
+  const catOptions = ALL_CATEGORIES.map(c => `<option value="${c.id}" ${existing && existing.category_id===c.id?'selected':''}>${esc(c.name_te)}</option>`).join('');
+  const svcOptions = ALL_SERVICES.map(s => `<option value="${s.id}" ${existing && existing.service_id===s.id?'selected':''}>${esc((s.service_catalog&&s.service_catalog.name_te)||s.key)}</option>`).join('');
+  const typeOptions = Object.keys(DOC_TYPE_LABELS).map(k => `<option value="${k}" ${existing && existing.doc_type===k?'selected':''}>${DOC_TYPE_LABELS[k]}</option>`).join('');
+
+  showModal(existing ? 'Download Edit చేయండి' : 'కొత్త Download', 'Category/Service ఐచ్ఛికం (optional)', `
+    <div class="field-row"><label>Title</label>
+      <input type="text" id="dl-title" class="field-input" value="${existing?esc(existing.title):''}" style="margin-bottom:10px"/></div>
+    <div class="field-row"><label>File URL</label>
+      <input type="url" id="dl-url" class="field-input" value="${existing?esc(existing.file_url):''}" style="margin-bottom:10px"/></div>
+    <div class="field-row"><label>Type</label>
+      <select id="dl-type" class="field-input" style="margin-bottom:10px">${typeOptions}</select></div>
+    <div class="field-row"><label>Category (optional)</label>
+      <select id="dl-category" class="field-input" style="margin-bottom:10px"><option value="">— None —</option>${catOptions}</select></div>
+    <div class="field-row"><label>Service (optional)</label>
+      <select id="dl-service" class="field-input" style="margin-bottom:10px"><option value="">— None —</option>${svcOptions}</select></div>
+    <div style="display:flex;gap:10px;margin-top:4px">
+      <button class="topbar-btn primary" style="flex:1" onclick="doSaveDownload(${editId||'null'})"><i class="fas fa-check"></i> ${existing?'Update':'Create'}</button>
+      <button class="topbar-btn secondary" style="flex:1" onclick="closeModal()">Cancel</button>
+    </div>`, true);
+}
+
+async function doSaveDownload(editId) {
+  const title = document.getElementById('dl-title').value.trim();
+  const file_url = document.getElementById('dl-url').value.trim();
+  const doc_type = document.getElementById('dl-type').value;
+  const category_id = document.getElementById('dl-category').value || null;
+  const service_id = document.getElementById('dl-service').value || null;
+  if (!title) { showToast('Title అవసరం', 'error'); return; }
+  if (!file_url) { showToast('File URL అవసరం', 'error'); return; }
+
+  showLoader('Saving…');
+  const payload = { title, file_url, doc_type, category_id: category_id?parseInt(category_id,10):null, service_id: service_id?parseInt(service_id,10):null };
+  const { error } = editId
+    ? await sb.from('downloads').update(payload).eq('id', editId)
+    : await sb.from('downloads').insert({ ...payload, sort_order: ALL_DOWNLOADS.length });
+  hideLoader();
+  if (error) { showToast(error.message||'Failed','error'); return; }
+  closeModal();
+  showToast(editId?'Updated ✓':'Created ✓','success');
+  await loadDownloads();
+}
+
+async function toggleDownloadActive(id, currentVal) {
+  const { error } = await sb.from('downloads').update({ is_active: !currentVal }).eq('id', id);
+  if (error) { showToast(error.message||'Failed','error'); return; }
+  await loadDownloads();
+}
+
+async function deleteDownload(id) {
+  if (!confirm('ఈ download delete చేయాలా?')) return;
+  const { error } = await sb.from('downloads').delete().eq('id', id);
+  if (error) { showToast(error.message||'Failed','error'); return; }
+  showToast('Deleted ✓','success');
+  await loadDownloads();
+}
+
+/* ═══════════════════════════════════════════════════
+   POSTER LIBRARY
+   ═══════════════════════════════════════════════════ */
+let ALL_POSTERS = [];
+const POSTER_TYPE_LABELS = { awareness:'Awareness', whatsapp:'WhatsApp', facebook:'Facebook', instagram:'Instagram', printable:'Printable' };
+
+async function loadPosters() {
+  const { data, error } = await sb.from('posters').select('*, categories(name_te)').order('sort_order');
+  if (error) { showToast('Load failed: ' + error.message, 'error'); return; }
+  ALL_POSTERS = data || [];
+  renderPostersGrid();
+}
+
+function renderPostersGrid() {
+  const grid = document.getElementById('posters-grid');
+  if (!ALL_POSTERS.length) {
+    grid.innerHTML = `<div style="padding:32px;color:var(--text3);font-size:13px;text-align:center;grid-column:1/-1">
+      <i class="fas fa-image" style="font-size:28px;margin-bottom:10px;display:block"></i>
+      ఇంకా ఏ poster లేదు — పైన "+ Add Poster" నొక్కండి.</div>`;
+    return;
+  }
+  grid.innerHTML = ALL_POSTERS.map(p => `
+    <div class="stat-card" style="padding:0;overflow:hidden;${p.is_active?'':'opacity:0.55'}">
+      <img src="${esc(p.image_url)}" style="width:100%;height:120px;object-fit:cover;display:block" onerror="this.style.display='none'"/>
+      <div style="padding:10px">
+        <div style="font-weight:600;font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(p.title||'(no title)')}</div>
+        <div style="font-size:10.5px;color:var(--text3);margin:3px 0 8px">${POSTER_TYPE_LABELS[p.poster_type]||p.poster_type}${p.categories?` · ${esc(p.categories.name_te)}`:''}</div>
+        <div style="display:flex;gap:6px">
+          <button class="row-card-edit" style="flex:0" onclick="togglePosterActive(${p.id}, ${p.is_active})" title="Toggle">
+            <i class="fas fa-${p.is_active?'toggle-on':'toggle-off'}" style="color:${p.is_active?'var(--accent)':'var(--text3)'}"></i>
+          </button>
+          <button class="row-card-edit" style="flex:0" onclick="showAddPoster(${p.id})" title="Edit"><i class="fas fa-pen"></i></button>
+          <button class="row-card-del" style="flex:0" onclick="deletePoster(${p.id})" title="Delete"><i class="fas fa-trash"></i></button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+async function showAddPoster(editId) {
+  await ensureCategoriesAndServicesLoaded();
+  const existing = editId ? ALL_POSTERS.find(p => p.id === editId) : null;
+  const catOptions = ALL_CATEGORIES.map(c => `<option value="${c.id}" ${existing && existing.category_id===c.id?'selected':''}>${esc(c.name_te)}</option>`).join('');
+  const typeOptions = Object.keys(POSTER_TYPE_LABELS).map(k => `<option value="${k}" ${existing && existing.poster_type===k?'selected':''}>${POSTER_TYPE_LABELS[k]}</option>`).join('');
+
+  showModal(existing ? 'Poster Edit చేయండి' : 'కొత్త Poster', 'Global poster library', `
+    <div class="field-row"><label>Title (optional)</label>
+      <input type="text" id="pst-title" class="field-input" value="${existing?esc(existing.title||''):''}" style="margin-bottom:10px"/></div>
+    <div class="field-row"><label>Image URL</label>
+      <input type="url" id="pst-url" class="field-input" value="${existing?esc(existing.image_url):''}" style="margin-bottom:10px"/></div>
+    <div class="field-row"><label>Type</label>
+      <select id="pst-type" class="field-input" style="margin-bottom:10px">${typeOptions}</select></div>
+    <div class="field-row"><label>Category (optional)</label>
+      <select id="pst-category" class="field-input" style="margin-bottom:10px"><option value="">— None —</option>${catOptions}</select></div>
+    <div style="display:flex;gap:10px;margin-top:4px">
+      <button class="topbar-btn primary" style="flex:1" onclick="doSavePoster(${editId||'null'})"><i class="fas fa-check"></i> ${existing?'Update':'Create'}</button>
+      <button class="topbar-btn secondary" style="flex:1" onclick="closeModal()">Cancel</button>
+    </div>`, true);
+}
+
+async function doSavePoster(editId) {
+  const title = document.getElementById('pst-title').value.trim();
+  const image_url = document.getElementById('pst-url').value.trim();
+  const poster_type = document.getElementById('pst-type').value;
+  const category_id = document.getElementById('pst-category').value || null;
+  if (!image_url) { showToast('Image URL అవసరం', 'error'); return; }
+
+  showLoader('Saving…');
+  const payload = { title: title || null, image_url, poster_type, category_id: category_id?parseInt(category_id,10):null };
+  const { error } = editId
+    ? await sb.from('posters').update(payload).eq('id', editId)
+    : await sb.from('posters').insert({ ...payload, sort_order: ALL_POSTERS.length });
+  hideLoader();
+  if (error) { showToast(error.message||'Failed','error'); return; }
+  closeModal();
+  showToast(editId?'Updated ✓':'Created ✓','success');
+  await loadPosters();
+}
+
+async function togglePosterActive(id, currentVal) {
+  const { error } = await sb.from('posters').update({ is_active: !currentVal }).eq('id', id);
+  if (error) { showToast(error.message||'Failed','error'); return; }
+  await loadPosters();
+}
+
+async function deletePoster(id) {
+  if (!confirm('ఈ poster delete చేయాలా?')) return;
+  const { error } = await sb.from('posters').delete().eq('id', id);
+  if (error) { showToast(error.message||'Failed','error'); return; }
+  showToast('Deleted ✓','success');
+  await loadPosters();
 }
 
 function showCreateUserModal() {
