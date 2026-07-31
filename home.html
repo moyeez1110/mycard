@@ -192,6 +192,11 @@ let ACTIVE_CATEGORY = null;
 
 function esc(s) { return (s == null ? '' : String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
+// Fire-and-forget event log — never blocks the UI, never surfaces errors to the user.
+function logEvent(event_type, fields) {
+  sb.from('analytics_events').insert({ event_type, ...fields }).then(() => {}, () => {});
+}
+
 async function loadHome() {
   const [cats, svcs, ntfs, schemes, dls, psts, news, grts] = await Promise.all([
     sb.from('categories').select('*').eq('is_active', true).order('sort_order'),
@@ -256,6 +261,7 @@ function renderServices(filtered) {
   }).join('');
 }
 
+let _searchLogTimer = null;
 function onSearch() {
   const q = document.getElementById('search-input').value.trim().toLowerCase();
   const hint = document.getElementById('search-hint');
@@ -275,6 +281,12 @@ function onSearch() {
   hint.style.display = 'block';
   hint.textContent = `"${document.getElementById('search-input').value}" కోసం ${matched.length} ఫలితాలు`;
   renderServices(matched);
+
+  // Log the search only after the person pauses typing for a moment,
+  // so we get "what they searched for" rather than every keystroke.
+  clearTimeout(_searchLogTimer);
+  const rawQuery = document.getElementById('search-input').value.trim();
+  _searchLogTimer = setTimeout(() => { if (rawQuery) logEvent('search', { query_text: rawQuery }); }, 800);
 }
 
 function renderNotifications() {
@@ -309,7 +321,7 @@ function renderDownloads() {
   if (!DOWNLOADS.length) return;
   document.getElementById('sec-downloads').style.display = 'block';
   document.getElementById('downloads-list').innerHTML = DOWNLOADS.map(d => `
-    <a class="list-item" href="${esc(d.file_url)}" target="_blank">
+    <a class="list-item" href="${esc(d.file_url)}" target="_blank" onclick="logEvent('download_click', {service_key: ${d.service_id ? `'${esc((SERVICES.find(s=>s.id===d.service_id)||{}).key||'')}'` : 'null'}})">
       <i class="fas fa-file-arrow-down lead"></i>
       <div class="body"><div class="title">${esc(d.title)}</div></div>
       <i class="fas fa-arrow-up-right-from-square trail"></i>
@@ -349,6 +361,7 @@ function renderGreetings() {
 async function openServiceDetail(id) {
   const s = SERVICES.find(x => x.id === id);
   if (!s) return;
+  logEvent('service_view', { service_key: s.key });
   const cat = s.service_catalog || {};
   document.getElementById('dt-icon').innerHTML = `<i class="${cat.icon || 'fas fa-file-alt'}"></i>`;
   document.getElementById('dt-title').textContent = cat.name_te || s.key;
@@ -390,7 +403,7 @@ async function openServiceDetail(id) {
 
   if (relatedDownloads.length) {
     html += `<div class="dblock"><h3>Downloads</h3>${relatedDownloads.map(d => `
-      <a class="list-item" href="${esc(d.file_url)}" target="_blank" style="margin-bottom:6px">
+      <a class="list-item" href="${esc(d.file_url)}" target="_blank" style="margin-bottom:6px" onclick="logEvent('download_click', {service_key: '${esc(s.key)}'})">
         <i class="fas fa-file-arrow-down lead"></i><div class="body"><div class="title">${esc(d.title)}</div></div>
         <i class="fas fa-arrow-up-right-from-square trail"></i></a>`).join('')}</div>`;
   }
@@ -453,7 +466,35 @@ function closeDetail() {
   document.getElementById('detail-overlay').classList.remove('show');
 }
 
+/* ── PWA install — same shared service worker as the per-agent pages,
+   but a fixed manifest scoped to this global home page. ── */
+function setupInstall() {
+  const manifest = {
+    name: 'Digital Seva Platform',
+    short_name: 'Digital Seva',
+    start_url: window.location.pathname,
+    scope: window.location.pathname,
+    display: 'standalone',
+    background_color: '#0a0f1a',
+    theme_color: '#0a0f1a',
+    icons: [
+      { src: '/icon-192.png', sizes: '192x192', type: 'image/png' },
+      { src: '/icon-512.png', sizes: '512x512', type: 'image/png' },
+    ],
+  };
+  const blob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
+  const link = document.createElement('link');
+  link.rel = 'manifest';
+  link.href = URL.createObjectURL(blob);
+  document.head.appendChild(link);
+
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/customer-sw.js').catch(() => {});
+  }
+}
+
 loadHome();
+setupInstall();
 </script>
 </body>
 </html>
