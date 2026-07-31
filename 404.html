@@ -201,6 +201,11 @@ function esc(s) {
   return (s == null ? '' : String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
+// Fire-and-forget analytics — never blocks the UI, never surfaces errors to the visitor.
+function logEvent(event_type, fields) {
+  sb.from('analytics_events').insert({ event_type, ...fields }).then(() => {}, () => {});
+}
+
 async function loadShop() {
   const slug = getSlugFromPath();
   if (!slug) { showNotFound(); return; }
@@ -235,9 +240,15 @@ function renderShop(agent, rows) {
     const t = document.getElementById('h-tag');
     t.textContent = agent.tagline; t.style.display = 'block';
   }
-  if (agent.phone) document.getElementById('h-call').href = 'tel:' + agent.phone;
-  if (agent.whatsapp) document.getElementById('h-wa').href = 'https://wa.me/' + agent.whatsapp +
-    '?text=' + encodeURIComponent('Namaste, naaku meeku service kavali gurinchi enquiry cheyali.');
+  if (agent.phone) {
+    document.getElementById('h-call').href = 'tel:' + agent.phone;
+    document.getElementById('h-call').addEventListener('click', () => logEvent('call_click', { agent_id: agent.id }));
+  }
+  if (agent.whatsapp) {
+    document.getElementById('h-wa').href = 'https://wa.me/' + agent.whatsapp +
+      '?text=' + encodeURIComponent('Namaste, naaku meeku service kavali gurinchi enquiry cheyali.');
+    document.getElementById('h-wa').addEventListener('click', () => logEvent('whatsapp_click', { agent_id: agent.id }));
+  }
   if (agent.map_embed_url) {
     const m = document.getElementById('h-map');
     m.href = agent.map_embed_url; m.style.display = 'flex';
