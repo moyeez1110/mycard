@@ -261,6 +261,22 @@
   </div>
 </div>
 
+<!-- Request Callback (lead) form -->
+<div id="lead-overlay" style="position:fixed;inset:0;z-index:950;background:rgba(0,0,0,0.75);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:20px" onclick="if(event.target===this) closeLeadForm()">
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;max-width:380px;width:100%;padding:20px">
+    <div style="font-size:15px;font-weight:700;margin-bottom:4px">Callback Request చేయండి</div>
+    <div id="lead-form-sub" style="font-size:12px;color:var(--text2);margin-bottom:14px"></div>
+    <input id="lead-name" type="text" placeholder="మీ పేరు" style="width:100%;padding:11px 13px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg3);color:var(--text);font-size:13px;font-family:var(--font-te);margin-bottom:10px;outline:none"/>
+    <input id="lead-phone" type="tel" placeholder="మొబైల్ నంబర్" style="width:100%;padding:11px 13px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg3);color:var(--text);font-size:13px;font-family:var(--font-te);margin-bottom:10px;outline:none"/>
+    <textarea id="lead-message" rows="2" placeholder="మెసేజ్ (optional)" style="width:100%;padding:11px 13px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg3);color:var(--text);font-size:13px;font-family:var(--font-te);margin-bottom:6px;outline:none;resize:none"></textarea>
+    <div id="lead-form-err" style="color:#f87171;font-size:11.5px;margin-bottom:8px;display:none"></div>
+    <div style="display:flex;gap:8px">
+      <button onclick="submitLeadForm()" style="flex:1;background:var(--accent);color:#0a0f1a;border:none;padding:11px;border-radius:10px;font-weight:700;font-size:13px;cursor:pointer;font-family:var(--font-te)">పంపండి</button>
+      <button onclick="closeLeadForm()" style="flex:0 0 auto;padding:0 18px;border-radius:10px;background:var(--bg3);border:1px solid var(--border);color:var(--text2);cursor:pointer;font-family:var(--font-te)">Cancel</button>
+    </div>
+  </div>
+</div>
+
 <script>
 const SUPABASE_URL = 'https://pusmroyftjzdkcwuwsph.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB1c21yb3lmdGp6ZGtjd3V3c3BoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUwNTIzNjcsImV4cCI6MjEwMDYyODM2N30.FTL-p8QLjcdErof1-Usolqudh1aUoKkKBw1UkvrkMNI';
@@ -270,6 +286,7 @@ let CATEGORIES = [], SERVICES = [], NOTIFICATIONS = [], SCHEMES = [], DOWNLOADS 
 let ACTIVE_CATEGORY = null;
 
 function esc(s) { return (s == null ? '' : String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function escJs(s) { return (s == null ? '' : String(s)).replace(/\\/g,'\\\\').replace(/'/g,"\\'"); }
 
 // Fire-and-forget event log — never blocks the UI, never surfaces errors to the user.
 function logEvent(event_type, fields) {
@@ -557,8 +574,36 @@ async function openServiceDetail(id) {
 
   if (s.important_notes) html += `<div class="dblock"><h3>గమనిక</h3><p>${esc(s.important_notes)}</p></div>`;
 
-  html += `<div class="cta-note"><i class="fas fa-circle-info" style="color:var(--accent);margin-right:6px"></i>
-    ఈ సర్వీస్ మీ దగ్గరి Seva Kendra ద్వారా అప్లై చేసుకోవచ్చు — మీ ప్రాంతంలోని సెంటర్‌ను సంప్రదించండి.</div>`;
+  // Marketplace — agents who've activated this service (see index.html's "నా సర్వీసులు")
+  const { data: agentSvcs } = await sb.from('agent_services')
+    .select('*, agents(shop_name, city, phone, whatsapp, tab, is_featured, is_active)')
+    .eq('service_key', s.key).eq('is_active', true);
+
+  const offeringAgents = (agentSvcs || [])
+    .filter(a => a.agents && a.agents.is_active)
+    .sort((a, b) => (b.agents.is_featured?1:0) - (a.agents.is_featured?1:0) || (a.agents.shop_name||'').localeCompare(b.agents.shop_name||''));
+
+  if (offeringAgents.length) {
+    html += `<div class="dblock"><h3>ఈ సర్వీస్ అందించే మా సెంటర్లు</h3>${offeringAgents.map(a => {
+      const ag = a.agents;
+      const total = (s.govt_fee || 0) + (a.agent_charge || 0);
+      return `<div class="list-item" style="cursor:default;flex-wrap:wrap">
+        <i class="fas fa-shop lead" style="color:${ag.is_featured?'#fbbf24':'var(--accent)'}"></i>
+        <div class="body">
+          <div class="title">${esc(ag.shop_name)} ${ag.is_featured ? '<i class="fas fa-star" style="color:#fbbf24;font-size:10px"></i>' : ''}</div>
+          <div class="sub">${ag.city ? esc(ag.city) + ' · ' : ''}${total ? `మొత్తం ఖర్చు సుమారు ₹${total}` : ''}</div>
+        </div>
+        <div style="display:flex;gap:6px;width:100%;margin-top:8px">
+          ${ag.phone ? `<a href="tel:${esc(ag.phone)}" onclick="logEvent('call_click',{agent_id:'${a.agent_id}'})" style="flex:1;text-align:center;background:rgba(79,255,176,0.1);border:1px solid rgba(79,255,176,0.3);color:var(--accent);border-radius:8px;padding:7px 0;font-size:12px;font-weight:700;text-decoration:none"><i class="fas fa-phone"></i> కాల్</a>` : ''}
+          ${ag.whatsapp ? `<a href="https://wa.me/${esc(ag.whatsapp)}?text=${encodeURIComponent('Namaste, ' + (cat.name_te||s.key) + ' గురించి enquiry.')}" target="_blank" onclick="logEvent('whatsapp_click',{agent_id:'${a.agent_id}'})" style="flex:1;text-align:center;background:rgba(37,211,102,0.1);border:1px solid rgba(37,211,102,0.3);color:#25d366;border-radius:8px;padding:7px 0;font-size:12px;font-weight:700;text-decoration:none"><i class="fab fa-whatsapp"></i> WhatsApp</a>` : ''}
+          <button onclick="openLeadForm('${a.agent_id}','${escJs(ag.shop_name)}','${s.key}')" style="flex:1;background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:7px 0;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font-te)"><i class="fas fa-phone-volume"></i> Callback</button>
+        </div>
+      </div>`;
+    }).join('')}</div>`;
+  } else {
+    html += `<div class="cta-note"><i class="fas fa-circle-info" style="color:var(--accent);margin-right:6px"></i>
+      ఈ సర్వీస్ కోసం ఇంకా ఏ సెంటర్ activate చేసుకోలేదు — త్వరలో అప్‌డేట్ అవుతుంది.</div>`;
+  }
 
   document.getElementById('dt-body').innerHTML = html || `<div class="empty">వివరాలు త్వరలో అప్‌డేట్ అవుతాయి.</div>`;
 }
@@ -587,6 +632,47 @@ function openSchemeDetail(id) {
 
 function closeDetail() {
   document.getElementById('detail-overlay').classList.remove('show');
+}
+
+/* ── Request Callback (lead) form ── */
+let LEAD_TARGET = null;
+function openLeadForm(agentId, agentName, serviceKey) {
+  LEAD_TARGET = { agentId, serviceKey };
+  document.getElementById('lead-form-sub').textContent = `${agentName} కి పంపబడుతుంది`;
+  document.getElementById('lead-name').value = '';
+  document.getElementById('lead-phone').value = '';
+  document.getElementById('lead-message').value = '';
+  document.getElementById('lead-form-err').style.display = 'none';
+  document.getElementById('lead-overlay').style.display = 'flex';
+}
+function closeLeadForm() {
+  document.getElementById('lead-overlay').style.display = 'none';
+  LEAD_TARGET = null;
+}
+async function submitLeadForm() {
+  const errEl = document.getElementById('lead-form-err');
+  errEl.style.display = 'none';
+  const name = document.getElementById('lead-name').value.trim();
+  const phone = document.getElementById('lead-phone').value.trim();
+  const message = document.getElementById('lead-message').value.trim();
+  if (!phone || phone.length < 10) {
+    errEl.textContent = 'సరైన మొబైల్ నంబర్ పెట్టండి';
+    errEl.style.display = 'block';
+    return;
+  }
+  try {
+    const { error } = await sb.from('leads').insert({
+      agent_id: LEAD_TARGET.agentId, catalog_key: LEAD_TARGET.serviceKey,
+      customer_name: name || null, customer_phone: phone, message: message || null,
+      source: 'marketplace', status: 'new',
+    });
+    if (error) throw error;
+    closeLeadForm();
+    alert('✓ మీ రిక్వెస్ట్ పంపబడింది — త్వరలో సెంటర్ మిమ్మల్ని సంప్రదిస్తారు.');
+  } catch (e) {
+    errEl.textContent = 'పంపడం విఫలమైంది: ' + e.message;
+    errEl.style.display = 'block';
+  }
 }
 
 /* ── PWA install — same shared service worker as the per-agent pages,
