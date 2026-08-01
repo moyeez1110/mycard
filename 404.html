@@ -213,6 +213,8 @@
       <a id="h-call" class="cbtn" href="#"><i class="fas fa-phone"></i> కాల్</a>
       <a id="h-wa" class="cbtn wa" href="#" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a>
       <a id="h-map" class="cbtn" href="#" target="_blank" style="display:none"><i class="fas fa-location-dot"></i> Map</a>
+      <button id="owner-login-btn" class="cbtn" onclick="openOwnerLoginModal()" title="Agent Login" style="margin-left:auto"><i class="fas fa-key"></i></button>
+      <button id="owner-tools-btn" class="cbtn" onclick="openOwnerToolsMenu()" title="నా టూల్స్" style="display:none;margin-left:auto;background:rgba(79,255,176,0.12);border-color:var(--accent);color:var(--accent)"><i class="fas fa-user-gear"></i> నా టూల్స్</button>
     </div>
   </div>
 
@@ -397,6 +399,133 @@
   </div>
 </div>
 
+
+<!-- ═══ OWNER LOGIN MODAL (small — this is not a customer-facing login) ═══ -->
+<div id="owner-login-modal" style="display:none;position:fixed;inset:0;z-index:960;background:rgba(0,0,0,0.75);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:20px" onclick="if(event.target===this) closeOwnerLoginModal()">
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;max-width:360px;width:100%;padding:20px">
+    <div style="font-size:15px;font-weight:700;margin-bottom:2px"><i class="fas fa-key" style="color:var(--accent);margin-right:6px"></i>Agent Login</div>
+    <div style="font-size:11.5px;color:var(--text2);margin-bottom:14px;font-family:var(--font-te)">ఇది ఈ సెంటర్ యజమాని కోసం మాత్రమే — customers ఇక్కడ దేనికీ login అవ్వాల్సిన అవసరం లేదు.</div>
+    <input id="ol-email" type="email" placeholder="Email" style="width:100%;padding:11px 13px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg3);color:var(--text);font-size:13px;margin-bottom:10px;outline:none"/>
+    <input id="ol-password" type="password" placeholder="Password" style="width:100%;padding:11px 13px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg3);color:var(--text);font-size:13px;margin-bottom:6px;outline:none" onkeydown="if(event.key==='Enter') doOwnerLogin()"/>
+    <div id="ol-err" style="color:#f87171;font-size:11.5px;margin-bottom:8px;display:none"></div>
+    <div style="display:flex;gap:8px">
+      <button onclick="doOwnerLogin()" style="flex:1;background:var(--accent);color:#0a0f1a;border:none;padding:11px;border-radius:10px;font-weight:700;font-size:13px;cursor:pointer;font-family:var(--font-te)">Login</button>
+      <button onclick="closeOwnerLoginModal()" style="flex:0 0 auto;padding:0 18px;border-radius:10px;background:var(--bg3);border:1px solid var(--border);color:var(--text2);cursor:pointer;font-family:var(--font-te)">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ OWNER TOOLS MENU (shown after login) ═══ -->
+<div id="owner-tools-modal" style="display:none;position:fixed;inset:0;z-index:850;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);align-items:flex-end;justify-content:center;padding:0" onclick="if(event.target===this) closeOwnerToolsMenu()">
+  <div style="background:var(--bg2);border-radius:20px 20px 0 0;width:100%;max-width:560px;padding:20px 20px 32px;border-top:1px solid var(--border)">
+    <div style="width:40px;height:4px;background:var(--border);border-radius:4px;margin:0 auto 16px"></div>
+    <div style="font-size:15px;font-weight:700;margin-bottom:14px;font-family:var(--font-te)">నా టూల్స్</div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <button onclick="closeOwnerToolsMenu();openMyContentModal()" class="owner-tool-btn"><i class="fas fa-cloud-arrow-up"></i> నా కంటెంట్</button>
+      <button onclick="closeOwnerToolsMenu();openMyServicesModal()" class="owner-tool-btn"><i class="fas fa-store"></i> నా సర్వీసులు</button>
+      <button onclick="closeOwnerToolsMenu();openLeadsModal()" class="owner-tool-btn" style="position:relative"><i class="fas fa-bell-concierge"></i> లీడ్స్
+        <span id="leads-badge" style="display:none;position:absolute;top:8px;right:14px;background:#f87171;color:#fff;font-size:9px;font-weight:700;border-radius:50%;width:15px;height:15px;align-items:center;justify-content:center"></span>
+      </button>
+      <button onclick="closeOwnerToolsMenu();openContentSettingsModal()" class="owner-tool-btn"><i class="fas fa-sliders"></i> గ్లోబల్ కంటెంట్ సెట్టింగ్‌లు</button>
+      <button onclick="doOwnerLogout()" class="owner-tool-btn" style="color:#f87171"><i class="fas fa-right-from-bracket"></i> Logout</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MY CONTENT MODAL (agent self-upload) ═══ -->
+<div id="mycontent-modal" style="display:none;position:fixed;inset:0;z-index:850;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);align-items:flex-end;justify-content:center;padding:0" onclick="if(event.target===this) closeMyContentModal()">
+  <div id="mycontent-sheet" style="background:var(--bg2);border-radius:20px 20px 0 0;width:100%;max-width:560px;max-height:88vh;overflow-y:auto;padding:20px 20px 32px;border-top:1px solid var(--border)">
+    <div style="width:40px;height:4px;background:var(--border);border-radius:4px;margin:0 auto 16px"></div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+      <div style="width:40px;height:40px;border-radius:11px;background:rgba(79,255,176,0.12);border:1.5px solid var(--accent);display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:17px;flex-shrink:0"><i class="fas fa-cloud-arrow-up"></i></div>
+      <div style="flex:1">
+        <div style="font-size:15px;font-weight:700;font-family:var(--font-te)">నా కంటెంట్</div>
+        <div style="font-size:11.5px;color:var(--text2);font-family:var(--font-te)">మీరే content యాడ్ చేసుకోండి</div>
+      </div>
+      <button onclick="closeMyContentModal()" style="background:var(--bg3);border:1px solid var(--border);color:var(--text2);width:32px;height:32px;border-radius:9px;cursor:pointer"><i class="fas fa-times"></i></button>
+    </div>
+    <div id="mc-usage-line" style="font-size:11px;color:var(--text2);margin-bottom:14px;font-family:var(--font-te)"></div>
+    <div id="mc-type-picker" style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:16px"></div>
+    <div id="mc-form-wrap" style="display:none;background:var(--bg3);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:18px">
+      <div id="mc-form-title" style="font-size:13px;font-weight:700;margin-bottom:12px;font-family:var(--font-te)"></div>
+      <div id="mc-form-fields"></div>
+      <div id="mc-form-err" class="al-err"></div>
+      <div style="display:flex;gap:8px;margin-top:6px">
+        <button class="al-btn" style="flex:1" onclick="submitMyContentForm()"><i class="fas fa-check"></i> Save</button>
+        <button onclick="closeMyContentForm()" style="flex:0 0 auto;padding:0 18px;border-radius:11px;background:var(--bg2);border:1px solid var(--border);color:var(--text2);cursor:pointer;font-family:var(--font-te)">Cancel</button>
+      </div>
+    </div>
+    <div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:10px;font-family:var(--font-te)">నా అప్‌లోడ్‌లు</div>
+    <div id="mc-my-list" style="display:flex;flex-direction:column;gap:8px"><div style="font-size:12.5px;color:var(--text2);font-family:var(--font-te)">Loading…</div></div>
+  </div>
+</div>
+
+<!-- ═══ MY SERVICES MODAL (marketplace activation) ═══ -->
+<div id="myservices-modal" style="display:none;position:fixed;inset:0;z-index:850;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);align-items:flex-end;justify-content:center;padding:0" onclick="if(event.target===this) closeMyServicesModal()">
+  <div style="background:var(--bg2);border-radius:20px 20px 0 0;width:100%;max-width:560px;max-height:88vh;overflow-y:auto;padding:20px 20px 32px;border-top:1px solid var(--border)">
+    <div style="width:40px;height:4px;background:var(--border);border-radius:4px;margin:0 auto 16px"></div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+      <div style="width:40px;height:40px;border-radius:11px;background:rgba(79,255,176,0.12);border:1.5px solid var(--accent);display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:17px;flex-shrink:0"><i class="fas fa-store"></i></div>
+      <div style="flex:1">
+        <div style="font-size:15px;font-weight:700;font-family:var(--font-te)">నా సర్వీసులు</div>
+        <div style="font-size:11.5px;color:var(--text2);font-family:var(--font-te)">Marketplace లో మీరు కనిపించే services</div>
+      </div>
+      <button onclick="closeMyServicesModal()" style="background:var(--bg3);border:1px solid var(--border);color:var(--text2);width:32px;height:32px;border-radius:9px;cursor:pointer"><i class="fas fa-times"></i></button>
+    </div>
+    <div style="font-size:11.5px;color:var(--text2);margin-bottom:14px;font-family:var(--font-te)">ఏ సర్వీస్ ఆన్ చేస్తే, customer home page లో వెతికినప్పుడు మీ సెంటర్ కూడా కనిపిస్తుంది. మీ charge పెట్టుకోండి.</div>
+    <div id="ms-list" style="display:flex;flex-direction:column;gap:8px">Loading…</div>
+  </div>
+</div>
+
+<!-- ═══ LEADS INBOX MODAL ═══ -->
+<div id="leads-modal" style="display:none;position:fixed;inset:0;z-index:850;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);align-items:flex-end;justify-content:center;padding:0" onclick="if(event.target===this) closeLeadsModal()">
+  <div style="background:var(--bg2);border-radius:20px 20px 0 0;width:100%;max-width:560px;max-height:88vh;overflow-y:auto;padding:20px 20px 32px;border-top:1px solid var(--border)">
+    <div style="width:40px;height:4px;background:var(--border);border-radius:4px;margin:0 auto 16px"></div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+      <div style="width:40px;height:40px;border-radius:11px;background:rgba(251,191,36,0.12);border:1.5px solid var(--yellow);display:flex;align-items:center;justify-content:center;color:var(--yellow);font-size:17px;flex-shrink:0"><i class="fas fa-bell-concierge"></i></div>
+      <div style="flex:1">
+        <div style="font-size:15px;font-weight:700;font-family:var(--font-te)">లీడ్స్</div>
+        <div style="font-size:11.5px;color:var(--text2);font-family:var(--font-te)">Customers మిమ్మల్ని సంప్రదించారు</div>
+      </div>
+      <button onclick="closeLeadsModal()" style="background:var(--bg3);border:1px solid var(--border);color:var(--text2);width:32px;height:32px;border-radius:9px;cursor:pointer"><i class="fas fa-times"></i></button>
+    </div>
+    <div id="leads-list" style="display:flex;flex-direction:column;gap:8px">Loading…</div>
+  </div>
+</div>
+
+<!-- ═══ CONTENT SETTINGS MODAL (hide/show global content) ═══ -->
+<div id="contentsettings-modal" style="display:none;position:fixed;inset:0;z-index:850;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);align-items:flex-end;justify-content:center;padding:0" onclick="if(event.target===this) closeContentSettingsModal()">
+  <div style="background:var(--bg2);border-radius:20px 20px 0 0;width:100%;max-width:560px;max-height:88vh;overflow-y:auto;padding:20px 20px 32px;border-top:1px solid var(--border)">
+    <div style="width:40px;height:4px;background:var(--border);border-radius:4px;margin:0 auto 16px"></div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+      <div style="width:40px;height:40px;border-radius:11px;background:rgba(79,255,176,0.12);border:1.5px solid var(--accent);display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:17px;flex-shrink:0"><i class="fas fa-sliders"></i></div>
+      <div style="flex:1">
+        <div style="font-size:15px;font-weight:700;font-family:var(--font-te)">గ్లోబల్ కంటెంట్ సెట్టింగ్‌లు</div>
+        <div style="font-size:11.5px;color:var(--text2);font-family:var(--font-te)">మీ పేజీలో ఏది కనిపించాలో నియంత్రించండి</div>
+      </div>
+      <button onclick="closeContentSettingsModal()" style="background:var(--bg3);border:1px solid var(--border);color:var(--text2);width:32px;height:32px;border-radius:9px;cursor:pointer"><i class="fas fa-times"></i></button>
+    </div>
+    <div style="font-size:11.5px;color:var(--text2);margin-bottom:14px;font-family:var(--font-te)">అన్నీ default గా ఆన్ — అనవసరమైనవి ఆఫ్ చేయండి.</div>
+    <div id="cs-type-picker" style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:16px"></div>
+    <div id="cs-list" style="display:flex;flex-direction:column;gap:8px">Loading…</div>
+  </div>
+</div>
+
+<style>
+.owner-tool-btn{display:flex;align-items:center;gap:10px;padding:13px 16px;border-radius:12px;background:var(--bg3);
+  border:1px solid var(--border);color:var(--text);font-size:13.5px;font-weight:600;font-family:var(--font-te);
+  cursor:pointer;text-align:left}
+.owner-tool-btn i{width:18px;color:var(--accent)}
+.al-field{margin-bottom:14px}
+.al-label{font-size:11.5px;color:var(--text2);display:block;margin-bottom:5px;font-family:var(--font-te)}
+.al-input{width:100%;padding:11px 13px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg3);
+  color:var(--text);font-size:13px;font-family:var(--font-te);outline:none}
+.al-input:focus{border-color:var(--accent)}
+.al-btn{background:var(--accent);color:#0a0f1a;border:none;padding:11px;border-radius:10px;font-weight:700;
+  font-size:13px;cursor:pointer;font-family:var(--font-te);display:flex;align-items:center;justify-content:center;gap:6px}
+.al-err{color:#f87171;font-size:11.5px;display:none;align-items:flex-start;gap:6px;margin-top:4px}
+.al-err.show{display:flex}
+</style>
 
 <script>
 const SUPABASE_URL = 'https://pusmroyftjzdkcwuwsph.supabase.co';
@@ -1171,7 +1300,603 @@ function setupInstall(agent, slug) {
   }
 }
 
-loadShop();
+/* ═══════════════════════════════════════════════════════
+   OWNER LOGIN — small, optional. Customers never need this.
+   If the logged-in user's own agent record matches THIS page's
+   agent, owner tools (My Content / My Services / Leads / Content
+   Settings) appear. Logging in elsewhere does nothing here.
+   ═══════════════════════════════════════════════════════ */
+let IS_OWNER = false;
+
+function openOwnerLoginModal() {
+  document.getElementById('ol-email').value = '';
+  document.getElementById('ol-password').value = '';
+  document.getElementById('ol-err').style.display = 'none';
+  document.getElementById('owner-login-modal').style.display = 'flex';
+}
+function closeOwnerLoginModal() {
+  document.getElementById('owner-login-modal').style.display = 'none';
+}
+async function doOwnerLogin() {
+  const email = document.getElementById('ol-email').value.trim();
+  const password = document.getElementById('ol-password').value;
+  const errEl = document.getElementById('ol-err');
+  errEl.style.display = 'none';
+  if (!email || !password) { errEl.textContent = 'Email + Password పెట్టండి'; errEl.style.display = 'block'; return; }
+
+  const { data, error } = await sb.auth.signInWithPassword({ email, password });
+  if (error || !data.user) {
+    errEl.textContent = 'Login విఫలమైంది — email/password చెక్ చేయండి';
+    errEl.style.display = 'block';
+    return;
+  }
+  const { data: myAgent } = await sb.from('agents').select('tab').eq('auth_user_id', data.user.id).single();
+  if (!myAgent || myAgent.tab !== AGENT.tab) {
+    errEl.innerHTML = `ఇది మీ పేజీ కాదు.${myAgent ? ` మీ సొంత లింక్: <b>${esc(myAgent.tab)}</b>` : ''}`;
+    errEl.style.display = 'block';
+    await sb.auth.signOut();
+    return;
+  }
+  closeOwnerLoginModal();
+  activateOwnerMode();
+}
+
+async function activateOwnerMode() {
+  IS_OWNER = true;
+  document.getElementById('owner-login-btn').style.display = 'none';
+  document.getElementById('owner-tools-btn').style.display = 'flex';
+  await loadMyOwnRows();
+  await loadContentTypeSettings();
+  refreshLeadsBadgeQuietly();
+}
+
+async function doOwnerLogout() {
+  await sb.auth.signOut();
+  IS_OWNER = false;
+  document.getElementById('owner-login-btn').style.display = 'flex';
+  document.getElementById('owner-tools-btn').style.display = 'none';
+  closeOwnerToolsMenu();
+}
+
+function openOwnerToolsMenu() { document.getElementById('owner-tools-modal').style.display = 'flex'; }
+function closeOwnerToolsMenu() { document.getElementById('owner-tools-modal').style.display = 'none'; }
+
+// Restore owner mode automatically if this browser already has a
+// valid session for THIS agent (Supabase keeps sessions in localStorage).
+async function checkOwnerSession() {
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session || !session.user) return;
+    const { data: myAgent } = await sb.from('agents').select('tab').eq('auth_user_id', session.user.id).single();
+    if (myAgent && myAgent.tab === AGENT.tab) activateOwnerMode();
+  } catch (e) { /* silent — just means owner tools stay hidden */ }
+}
+
+/* ═══════════════════════════════════════════════════
+   MY CONTENT — agent self-upload (moved from index.html)
+   ═══════════════════════════════════════════════════ */
+let ALL_AGENT_ROWS_RAW = [];
+let MY_ROWS = [];
+let CONTENT_TYPE_SETTINGS = {};
+let MC_EDITING_ID = null;
+let MC_CURRENT_TYPE = null;
+let MC_CHILDREN = [];
+
+async function loadMyOwnRows() {
+  const { data } = await sb.from('agent_rows').select('*').eq('agent_id', AGENT.id).order('display_order', { ascending: true });
+  ALL_AGENT_ROWS_RAW = data || [];
+  MY_ROWS = ALL_AGENT_ROWS_RAW.filter(r => r.source === 'agent');
+}
+
+async function loadContentTypeSettings() {
+  try {
+    const { data, error } = await sb.from('content_type_settings').select('*');
+    if (error) throw error;
+    CONTENT_TYPE_SETTINGS = {};
+    (data || []).forEach(row => { CONTENT_TYPE_SETTINGS[row.key] = !!row.requires_approval; });
+  } catch (e) { CONTENT_TYPE_SETTINGS = {}; }
+}
+
+const MC_TYPES = [
+  { key:'ticker', label:'Ticker',  icon:'fa-scroll' },
+  { key:'update', label:'Update',  icon:'fa-bullhorn' },
+  { key:'banner', label:'Banner',  icon:'fa-panorama' },
+  { key:'service',label:'Service', icon:'fa-hand-holding-hand' },
+  { key:'pdf',    label:'PDF',     icon:'fa-file-pdf' },
+  { key:'doc',    label:'Doc',     icon:'fa-file-lines' },
+  { key:'poster', label:'Poster',  icon:'fa-image' },
+  { key:'voice',  label:'Voice',   icon:'fa-microphone' },
+  { key:'tts',    label:'TTS',     icon:'fa-closed-captioning' },
+  { key:'popup',  label:'Popup',   icon:'fa-bell' },
+  { key:'req_service',   label:'అవసరమైన Documents గ్రూప్', icon:'fa-clipboard-list' },
+  { key:'service_group', label:'ధరల ప్యాకేజీ', icon:'fa-layer-group' },
+];
+const MC_GROUP_TYPES = {
+  req_service:   { childKey:'req_doc',     childLabel:'Document',      groupLabel:'అవసరమైన Documents' },
+  service_group: { childKey:'sub_service', childLabel:'సబ్-సర్వీస్',   groupLabel:'సబ్-సర్వీసులు' },
+};
+const MC_FIELD_DEFS = {
+  ticker:  [{ id:'value', label:'సందేశం (Ticker Text)', type:'text', required:true }],
+  update:  [
+    { id:'title', label:'శీర్షిక (Title)', type:'text', required:true },
+    { id:'value', label:'వివరణ (Description)', type:'textarea' },
+    { id:'link',  label:'లింక్ (optional)', type:'url' },
+    { id:'icon',  label:'Icon (fas fa-…, optional)', type:'text', placeholder:'fas fa-bullhorn' },
+  ],
+  banner: [
+    { id:'title', label:'Caption (optional)', type:'text' },
+    { id:'link',  label:'Image URL', type:'url', required:true },
+    { id:'extra', label:'క్లిక్ చేస్తే వెళ్ళే లింక్ (optional)', type:'url' },
+  ],
+  service: [
+    { id:'title', label:'సర్వీస్ పేరు', type:'text', required:true },
+    { id:'value', label:'వివరణ (optional)', type:'textarea' },
+    { id:'link',  label:'లింక్ (optional)', type:'url' },
+    { id:'icon',  label:'Icon (fas fa-…, optional)', type:'text', placeholder:'fas fa-hand-holding-hand' },
+  ],
+  pdf: [
+    { id:'title', label:'PDF పేరు', type:'text', required:true },
+    { id:'link',  label:'PDF URL', type:'url', required:true },
+    { id:'icon',  label:'Icon (fas fa-…, optional)', type:'text', placeholder:'fas fa-file-pdf' },
+  ],
+  doc: [
+    { id:'title', label:'Document పేరు', type:'text', required:true },
+    { id:'link',  label:'Document URL', type:'url', required:true },
+    { id:'icon',  label:'Icon (fas fa-…, optional)', type:'text', placeholder:'fas fa-file-lines' },
+  ],
+  poster: [
+    { id:'title', label:'Caption (optional)', type:'text' },
+    { id:'link',  label:'Image URL', type:'url', required:true },
+    { id:'extra', label:'తేదీ (optional)', type:'text', placeholder:'e.g. 23 May' },
+  ],
+  voice: [
+    { id:'title', label:'Title / పేరు', type:'text', required:true },
+    { id:'link',  label:'Audio URL', type:'url', required:true },
+    { id:'extra', label:'తేదీ (optional)', type:'text', placeholder:'e.g. 23 May' },
+  ],
+  tts: [
+    { id:'value', label:'నోటీసు Text', type:'textarea', required:true },
+    { id:'extra', label:'తేదీ (optional)', type:'text', placeholder:'e.g. 23 May' },
+  ],
+  popup: [
+    { id:'title', label:'Title', type:'text', required:true },
+    { id:'value', label:'Subtitle / Message', type:'textarea' },
+    { id:'link',  label:'Image URL (optional)', type:'url' },
+    { id:'extra', label:'Show on Open?', type:'select', options:[['yes','Yes — వెంటనే చూపించు'],['no','No — దాచు']] },
+  ],
+  req_service: [
+    { id:'title', label:'సర్వీస్ పేరు (ఉదా: PAN Card)', type:'text', required:true },
+    { id:'icon',  label:'Icon (fas fa-…, optional)', type:'text', placeholder:'fas fa-file-alt' },
+  ],
+  service_group: [
+    { id:'title', label:'ప్యాకేజీ పేరు (ఉదా: PAN Card Services)', type:'text', required:true },
+    { id:'icon',  label:'Icon (fas fa-…, optional)', type:'text', placeholder:'fas fa-layer-group' },
+  ],
+};
+
+function getMyContentLimit() {
+  const plan = (AGENT && AGENT.plan_name) || '';
+  if (plan === 'premium') return Infinity;
+  if (plan === 'yearly') return 20;
+  return 5;
+}
+function renderMcUsageLine() {
+  const el = document.getElementById('mc-usage-line');
+  if (!el) return;
+  const limit = getMyContentLimit();
+  const count = MY_ROWS.filter(r => !['req_doc','sub_service'].includes(r.key)).length;
+  const planLabel = limit === Infinity ? 'Premium' : limit === 20 ? 'Pro' : 'Basic';
+  el.textContent = limit === Infinity ? `${count} items వాడారు — ${planLabel} ప్లాన్ (unlimited)` : `${count} / ${limit} items వాడారు — ${planLabel} ప్లాన్`;
+}
+
+function openMyContentModal() {
+  if (!AGENT) return;
+  renderMcTypePicker();
+  renderMyContentList();
+  renderMcUsageLine();
+  document.getElementById('mycontent-modal').style.display = 'flex';
+}
+function closeMyContentModal() {
+  document.getElementById('mycontent-modal').style.display = 'none';
+  closeMyContentForm();
+}
+function renderMcTypePicker() {
+  document.getElementById('mc-type-picker').innerHTML = MC_TYPES.map(t => `
+    <button onclick="openMcForm('${t.key}')" style="padding:8px 13px;border-radius:10px;background:var(--bg3);border:1px solid var(--border);color:var(--text);font-size:12.5px;font-family:var(--font-te);cursor:pointer;display:flex;align-items:center;gap:6px">
+      <i class="fas ${t.icon}" style="color:var(--accent)"></i> ${t.label}
+    </button>`).join('');
+}
+function openMcForm(type, editId) {
+  MC_CURRENT_TYPE = type;
+  MC_EDITING_ID = editId || null;
+  const defs = MC_FIELD_DEFS[type] || [];
+  const existing = editId ? MY_ROWS.find(r => r.id === editId) : null;
+  const group = MC_GROUP_TYPES[type];
+
+  const fieldsHtml = defs.map(f => {
+    const val = existing ? (existing[f.id] ?? (f.id === 'desc' ? existing.description : '') ?? '') : '';
+    if (f.type === 'textarea') return `<div class="al-field"><label class="al-label">${f.label}</label><textarea class="al-input" id="mc-f-${f.id}" rows="3" placeholder="${f.placeholder||''}">${esc(val)}</textarea></div>`;
+    if (f.type === 'select') {
+      const opts = f.options.map(([v,l]) => `<option value="${v}" ${val===v?'selected':''}>${l}</option>`).join('');
+      return `<div class="al-field"><label class="al-label">${f.label}</label><select class="al-input" id="mc-f-${f.id}">${opts}</select></div>`;
+    }
+    return `<div class="al-field"><label class="al-label">${f.label}</label><input class="al-input" id="mc-f-${f.id}" type="${f.type==='url'?'url':'text'}" placeholder="${f.placeholder||''}" value="${esc(val)}"/></div>`;
+  }).join('');
+
+  let childrenHtml = '';
+  if (group) {
+    MC_CHILDREN = editId ? mcFindGroupChildren(editId, type, group.childKey).map(r =>
+        type === 'req_service' ? { value: r.value || r.title || '' } : { title: r.title || r.value || '', value: r.value || '', desc: r.description || '' }
+      ) : [];
+    childrenHtml = `<div style="margin-top:4px">
+        <label class="al-label">${group.groupLabel}</label>
+        <div id="mc-children-wrap" style="margin-top:6px"></div>
+        <button type="button" onclick="mcSyncChildFromInputs();mcAddChild()" style="width:100%;padding:9px;border-radius:10px;background:rgba(79,255,176,0.1);border:1px solid rgba(79,255,176,0.25);color:var(--accent);font-size:12.5px;cursor:pointer;margin-top:4px;font-family:var(--font-te)">
+          <i class="fas fa-plus"></i> ${group.childLabel} Add చేయండి
+        </button></div>`;
+  }
+
+  document.getElementById('mc-form-title').textContent = (editId ? 'Edit — ' : 'కొత్తది Add చేయండి — ') + (MC_TYPES.find(t=>t.key===type)||{}).label;
+  document.getElementById('mc-form-fields').innerHTML = fieldsHtml + childrenHtml;
+  document.getElementById('mc-form-err').classList.remove('show');
+  document.getElementById('mc-form-wrap').style.display = 'block';
+  document.getElementById('mc-form-wrap').scrollIntoView({ behavior:'smooth', block:'nearest' });
+  if (group) mcRenderChildren();
+}
+function mcFindGroupChildren(parentId, parentKey, childKey) {
+  const idx = MY_ROWS.findIndex(r => r.id === parentId);
+  if (idx === -1) return [];
+  const out = [];
+  for (let i = idx + 1; i < MY_ROWS.length; i++) {
+    if (MY_ROWS[i].key === parentKey) break;
+    if (MY_ROWS[i].key === childKey) out.push(MY_ROWS[i]);
+  }
+  return out;
+}
+function mcAddChild() {
+  if (MC_CURRENT_TYPE === 'req_service') MC_CHILDREN.push({ value: '' });
+  else if (MC_CURRENT_TYPE === 'service_group') MC_CHILDREN.push({ title: '', value: '', desc: '' });
+  mcRenderChildren();
+}
+function mcRemoveChild(i) { MC_CHILDREN.splice(i, 1); mcRenderChildren(); }
+function mcSyncChildFromInputs() {
+  if (MC_CURRENT_TYPE === 'req_service') {
+    document.querySelectorAll('.mc-child-doc').forEach((el, i) => { if (MC_CHILDREN[i]) MC_CHILDREN[i].value = el.value; });
+  } else if (MC_CURRENT_TYPE === 'service_group') {
+    document.querySelectorAll('.mc-child-sub').forEach(wrap => {
+      const i = parseInt(wrap.dataset.idx, 10);
+      if (!MC_CHILDREN[i]) return;
+      MC_CHILDREN[i].title = wrap.querySelector('.mc-sub-title').value;
+      MC_CHILDREN[i].value = wrap.querySelector('.mc-sub-price').value;
+      MC_CHILDREN[i].desc  = wrap.querySelector('.mc-sub-docs').value;
+    });
+  }
+}
+function mcRenderChildren() {
+  const wrap = document.getElementById('mc-children-wrap');
+  if (!wrap) return;
+  if (MC_CURRENT_TYPE === 'req_service') {
+    wrap.innerHTML = MC_CHILDREN.map((c, i) => `
+      <div style="display:flex;gap:6px;margin-bottom:6px">
+        <input class="al-input mc-child-doc" style="flex:1" placeholder="Document ${i+1}" value="${esc(c.value)}"/>
+        <button type="button" onclick="mcSyncChildFromInputs();mcRemoveChild(${i})" style="background:rgba(248,113,113,0.12);border:1px solid rgba(248,113,113,0.3);color:#f87171;border-radius:9px;padding:0 12px;cursor:pointer"><i class="fas fa-trash"></i></button>
+      </div>`).join('') || `<div style="font-size:12px;color:var(--text2);font-family:var(--font-te)">ఇంకా ఏమీ లేవు</div>`;
+  } else if (MC_CURRENT_TYPE === 'service_group') {
+    wrap.innerHTML = MC_CHILDREN.map((c, i) => `
+      <div class="mc-child-sub" data-idx="${i}" style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:10px;margin-bottom:8px">
+        <input class="al-input mc-sub-title" placeholder="సబ్-సర్వీస్ పేరు" value="${esc(c.title)}" style="margin-bottom:6px"/>
+        <input class="al-input mc-sub-price" placeholder="ధర (₹, optional)" value="${esc(c.value)}" style="margin-bottom:6px"/>
+        <textarea class="al-input mc-sub-docs" placeholder="అవసరమైన డాక్యుమెంట్‌లు (optional)" rows="2">${esc(c.desc)}</textarea>
+        <button type="button" onclick="mcSyncChildFromInputs();mcRemoveChild(${i})" style="margin-top:6px;background:rgba(248,113,113,0.12);border:1px solid rgba(248,113,113,0.3);color:#f87171;border-radius:9px;padding:5px 12px;cursor:pointer;font-size:12px;font-family:var(--font-te)"><i class="fas fa-trash"></i> Remove</button>
+      </div>`).join('') || `<div style="font-size:12px;color:var(--text2);font-family:var(--font-te)">ఇంకా ఏమీ లేవు</div>`;
+  }
+}
+function closeMyContentForm() {
+  document.getElementById('mc-form-wrap').style.display = 'none';
+  MC_EDITING_ID = null; MC_CURRENT_TYPE = null; MC_CHILDREN = [];
+}
+async function submitMyContentForm() {
+  const type = MC_CURRENT_TYPE;
+  const defs = MC_FIELD_DEFS[type] || [];
+  const group = MC_GROUP_TYPES[type];
+  const errEl = document.getElementById('mc-form-err');
+  errEl.classList.remove('show');
+
+  if (!MC_EDITING_ID) {
+    const limit = getMyContentLimit();
+    const currentCount = MY_ROWS.filter(r => !['req_doc','sub_service'].includes(r.key)).length;
+    if (limit !== Infinity && currentCount >= limit) {
+      errEl.innerHTML = `<i class="fas fa-circle-exclamation"></i><span>మీ ప్లాన్‌లో గరిష్టంగా ${limit} items మాత్రమే — subscription upgrade గురించి అడ్మిన్‌ని సంప్రదించండి.</span>`;
+      errEl.classList.add('show');
+      return;
+    }
+  }
+
+  const values = {};
+  for (const f of defs) {
+    const el = document.getElementById('mc-f-' + f.id);
+    const v = el ? el.value.trim() : '';
+    if (f.required && !v) {
+      errEl.innerHTML = `<i class="fas fa-circle-exclamation"></i><span>"${f.label}" ఖాళీగా ఉంచకూడదు</span>`;
+      errEl.classList.add('show');
+      return;
+    }
+    values[f.id] = v;
+  }
+
+  const requiresApproval = !!CONTENT_TYPE_SETTINGS[type];
+  const status = requiresApproval ? 'pending' : 'live';
+
+  try {
+    if (group) {
+      mcSyncChildFromInputs();
+      const maxOrder = ALL_AGENT_ROWS_RAW.reduce((m, r) => Math.max(m, r.display_order || 0), 0);
+      const parentRow = { agent_id: AGENT.id, source: 'agent', status, key: type, title: values.title || '', value: values.title || '', icon: values.icon || '', link: '', extra: '', description: '', share: 'yes', isnew: 'no' };
+      const childRows = MC_CHILDREN.filter(c => (type === 'req_service' ? c.value : c.title || '').trim()).map(c => type === 'req_service'
+          ? { agent_id: AGENT.id, source: 'agent', status, key: group.childKey, title: c.value.trim(), value: c.value.trim(), link:'', icon:'', extra:'', description:'', share:'yes', isnew:'no' }
+          : { agent_id: AGENT.id, source: 'agent', status, key: group.childKey, title: (c.title||'').trim(), value: (c.value||'').trim(), description: (c.desc||'').trim(), link:'', icon:'', extra:'', share:'yes', isnew:'no' });
+
+      if (MC_EDITING_ID) {
+        const oldChildIds = mcFindGroupChildren(MC_EDITING_ID, type, group.childKey).map(r => r.id);
+        if (oldChildIds.length) { const { error: delErr } = await sb.from('agent_rows').delete().in('id', oldChildIds); if (delErr) throw delErr; }
+        const { error: updErr } = await sb.from('agent_rows').update({ ...parentRow, agent_id: undefined, display_order: maxOrder + 1 }).eq('id', MC_EDITING_ID);
+        if (updErr) throw updErr;
+        if (childRows.length) { const toInsert = childRows.map((c, i) => ({ ...c, display_order: maxOrder + 2 + i })); const { error: insErr } = await sb.from('agent_rows').insert(toInsert); if (insErr) throw insErr; }
+      } else {
+        const rowsToInsert = [{ ...parentRow, display_order: maxOrder + 1 }, ...childRows.map((c, i) => ({ ...c, display_order: maxOrder + 2 + i }))];
+        const { error } = await sb.from('agent_rows').insert(rowsToInsert);
+        if (error) throw error;
+      }
+    } else {
+      const payload = { key: type, title: values.title || '', value: values.value || '', link: values.link || '', icon: values.icon || '', extra: values.extra || '', description: values.desc || '', share: 'yes', isnew: 'no' };
+      if (MC_EDITING_ID) {
+        const { error } = await sb.from('agent_rows').update({ ...payload, status }).eq('id', MC_EDITING_ID);
+        if (error) throw error;
+      } else {
+        const maxOrder = ALL_AGENT_ROWS_RAW.reduce((m, r) => Math.max(m, r.display_order || 0), 0);
+        const { error } = await sb.from('agent_rows').insert({ ...payload, agent_id: AGENT.id, source: 'agent', status, display_order: maxOrder + 1 });
+        if (error) throw error;
+      }
+    }
+  } catch (e) {
+    errEl.innerHTML = `<i class="fas fa-circle-exclamation"></i><span>Save విఫలమైంది: ${esc(e.message)}</span>`;
+    errEl.classList.add('show');
+    return;
+  }
+
+  const wentLive = !requiresApproval;
+  closeMyContentForm();
+  await loadMyOwnRows();
+  await loadShop();
+  renderMyContentList();
+  renderMcUsageLine();
+  alert(wentLive ? '✓ Live అయ్యింది!' : '✓ Admin approval కోసం పంపబడింది');
+}
+function renderMyContentList() {
+  const list = document.getElementById('mc-my-list');
+  if (!MY_ROWS.length) { list.innerHTML = `<div style="font-size:12.5px;color:var(--text2);font-family:var(--font-te);text-align:center;padding:16px 0">ఇంకా మీరు ఏమీ add చేయలేదు.</div>`; return; }
+  list.innerHTML = MY_ROWS.map(r => {
+    const status = r.status || 'live';
+    const badge = status === 'pending' ? `<span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px;background:rgba(251,191,36,0.15);color:#fbbf24">Pending</span>`
+      : status === 'rejected' ? `<span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px;background:rgba(248,113,113,0.15);color:#f87171">Rejected</span>`
+      : `<span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px;background:rgba(79,255,176,0.12);color:var(--accent)">Live</span>`;
+    const label = r.title || r.value || '(no title)';
+    return `<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg3);border-radius:11px">
+      <div style="flex:1;min-width:0">
+        <div style="display:flex;align-items:center;gap:7px;margin-bottom:2px">${badge}<span style="font-size:12px;color:var(--text2);font-family:var(--font-te)">${r.key}</span></div>
+        <div style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:var(--font-te)">${esc(label)}</div>
+      </div>
+      <button onclick="openMcForm('${r.key}', ${r.id})" style="background:none;border:none;color:var(--text2);cursor:pointer;padding:6px"><i class="fas fa-pen"></i></button>
+      <button onclick="deleteMyRow(${r.id})" style="background:none;border:none;color:#f87171;cursor:pointer;padding:6px"><i class="fas fa-trash"></i></button>
+    </div>`;
+  }).join('');
+}
+async function deleteMyRow(id) {
+  if (!confirm('ఈ content delete చేయాలా?')) return;
+  try {
+    const { error } = await sb.from('agent_rows').delete().eq('id', id).eq('source', 'agent');
+    if (error) throw error;
+    await loadMyOwnRows();
+    await loadShop();
+    renderMyContentList();
+    renderMcUsageLine();
+  } catch (e) { alert('Delete failed: ' + e.message); }
+}
+
+/* ═══════════════════════════════════════════════════
+   MY SERVICES — marketplace activation (agent_services)
+   ═══════════════════════════════════════════════════ */
+let ALL_MASTER_SERVICES = [];
+let MY_ACTIVATED_SERVICES = [];
+async function openMyServicesModal() {
+  if (!AGENT) return;
+  document.getElementById('myservices-modal').style.display = 'flex';
+  const list = document.getElementById('ms-list'); list.innerHTML = 'Loading…';
+  const [svcRes, activeRes] = await Promise.all([
+    sb.from('services').select('*, service_catalog(name_te, name_en, icon), categories(name_te)').eq('is_active', true),
+    sb.from('agent_services').select('*').eq('agent_id', AGENT.id),
+  ]);
+  ALL_MASTER_SERVICES = svcRes.data || [];
+  MY_ACTIVATED_SERVICES = activeRes.data || [];
+  renderMyServicesList();
+}
+function closeMyServicesModal() { document.getElementById('myservices-modal').style.display = 'none'; }
+function renderMyServicesList() {
+  const list = document.getElementById('ms-list');
+  if (!ALL_MASTER_SERVICES.length) { list.innerHTML = `<div style="font-size:12.5px;color:var(--text2);font-family:var(--font-te);text-align:center;padding:16px 0">ఇంకా ఏ global service లేదు.</div>`; return; }
+  list.innerHTML = ALL_MASTER_SERVICES.map(s => {
+    const cat = s.service_catalog || {};
+    const activated = MY_ACTIVATED_SERVICES.find(a => a.service_key === s.key);
+    const isOn = !!(activated && activated.is_active);
+    return `<div style="background:var(--bg3);border-radius:12px;padding:12px 14px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <i class="${cat.icon || 'fas fa-file-alt'}" style="color:var(--accent);width:18px;text-align:center"></i>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:13px;font-weight:700;font-family:var(--font-te)">${esc(cat.name_te || s.key)}</div>
+          <div style="font-size:10.5px;color:var(--text2)">${s.categories ? esc(s.categories.name_te) : ''}${s.govt_fee ? ` · Govt Fee ₹${s.govt_fee}` : ''}</div>
+        </div>
+        <button onclick="toggleMyService('${s.key}', ${isOn})" style="background:${isOn?'rgba(79,255,176,0.15)':'var(--bg2)'};border:1px solid ${isOn?'var(--accent)':'var(--border)'};color:${isOn?'var(--accent)':'var(--text2)'};border-radius:9px;padding:6px 12px;font-size:11.5px;font-weight:700;cursor:pointer;font-family:var(--font-te)">${isOn ? '✓ ఆన్' : 'ఆఫ్'}</button>
+      </div>
+      ${isOn ? `<div style="margin-top:9px;display:flex;align-items:center;gap:8px">
+        <label style="font-size:11px;color:var(--text2);font-family:var(--font-te)">నా Charge (₹)</label>
+        <input type="number" id="ms-charge-${s.key}" value="${activated.agent_charge || 0}" class="al-input" style="flex:0 0 100px;padding:6px 10px;font-size:12px"/>
+        <button onclick="saveMyServiceCharge('${s.key}')" style="background:var(--accent);color:#0a0f1a;border:none;border-radius:8px;padding:6px 12px;font-size:11.5px;font-weight:700;cursor:pointer">Save</button>
+      </div>` : ''}
+    </div>`;
+  }).join('');
+}
+async function toggleMyService(serviceKey, currentlyOn) {
+  try {
+    if (currentlyOn) {
+      const { error } = await sb.from('agent_services').update({ is_active: false }).eq('agent_id', AGENT.id).eq('service_key', serviceKey);
+      if (error) throw error;
+    } else {
+      const existing = MY_ACTIVATED_SERVICES.find(a => a.service_key === serviceKey);
+      if (existing) { const { error } = await sb.from('agent_services').update({ is_active: true }).eq('id', existing.id); if (error) throw error; }
+      else { const { error } = await sb.from('agent_services').insert({ agent_id: AGENT.id, service_key: serviceKey, agent_charge: 0, is_active: true }); if (error) throw error; }
+    }
+    const { data } = await sb.from('agent_services').select('*').eq('agent_id', AGENT.id);
+    MY_ACTIVATED_SERVICES = data || [];
+    renderMyServicesList();
+  } catch (e) { alert('Failed: ' + e.message); }
+}
+async function saveMyServiceCharge(serviceKey) {
+  const el = document.getElementById('ms-charge-' + serviceKey);
+  const charge = parseFloat(el.value) || 0;
+  try {
+    const { error } = await sb.from('agent_services').update({ agent_charge: charge }).eq('agent_id', AGENT.id).eq('service_key', serviceKey);
+    if (error) throw error;
+    alert('✓ Charge saved');
+  } catch (e) { alert('Failed: ' + e.message); }
+}
+
+/* ═══════════════════════════════════════════════════
+   LEADS INBOX
+   ═══════════════════════════════════════════════════ */
+const LEAD_STATUS_LABELS = { new:'కొత్తది', contacted:'సంప్రదించాం', docs_received:'Docs వచ్చాయి', in_progress:'జరుగుతోంది', completed:'పూర్తయింది', rejected:'తిరస్కరించాం' };
+const LEAD_STATUS_ORDER = ['new','contacted','docs_received','in_progress','completed','rejected'];
+let MY_LEADS = [];
+async function openLeadsModal() {
+  if (!AGENT) return;
+  document.getElementById('leads-modal').style.display = 'flex';
+  await loadMyLeads();
+}
+function closeLeadsModal() { document.getElementById('leads-modal').style.display = 'none'; }
+async function loadMyLeads() {
+  const list = document.getElementById('leads-list'); list.innerHTML = 'Loading…';
+  const { data, error } = await sb.from('leads').select('*').eq('agent_id', AGENT.id).order('created_at', { ascending: false });
+  if (error) { list.innerHTML = `<div style="color:#f87171;font-size:12.5px">Load failed: ${esc(error.message)}</div>`; return; }
+  MY_LEADS = data || [];
+  renderLeadsList();
+  updateLeadsBadge();
+}
+function updateLeadsBadge() {
+  const badge = document.getElementById('leads-badge');
+  const newCount = MY_LEADS.filter(l => l.status === 'new').length;
+  if (badge) { if (newCount > 0) { badge.textContent = newCount > 9 ? '9+' : newCount; badge.style.display = 'flex'; } else badge.style.display = 'none'; }
+}
+async function refreshLeadsBadgeQuietly() {
+  if (!IS_OWNER || !AGENT) return;
+  try {
+    const { count } = await sb.from('leads').select('id', { count: 'exact', head: true }).eq('agent_id', AGENT.id).eq('status', 'new');
+    const badge = document.getElementById('leads-badge');
+    if (!badge) return;
+    if (count > 0) { badge.textContent = count > 9 ? '9+' : count; badge.style.display = 'flex'; } else badge.style.display = 'none';
+  } catch (e) {}
+}
+function renderLeadsList() {
+  const list = document.getElementById('leads-list');
+  if (!MY_LEADS.length) { list.innerHTML = `<div style="font-size:12.5px;color:var(--text2);font-family:var(--font-te);text-align:center;padding:16px 0">ఇంకా ఏ లీడ్ రాలేదు.</div>`; return; }
+  list.innerHTML = MY_LEADS.map(l => {
+    const statusOptions = LEAD_STATUS_ORDER.map(s => `<option value="${s}" ${l.status===s?'selected':''}>${LEAD_STATUS_LABELS[s]}</option>`).join('');
+    return `<div style="background:var(--bg3);border-radius:12px;padding:12px 14px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+        <span style="font-size:13px;font-weight:700;font-family:var(--font-te)">${esc(l.customer_name || 'పేరు లేదు')}</span>
+        <span style="font-size:10px;color:var(--text2);margin-left:auto">${new Date(l.created_at).toLocaleDateString('te-IN')}</span>
+      </div>
+      ${l.catalog_key ? `<div style="font-size:11px;color:var(--accent);margin-bottom:4px">సర్వీస్: ${esc(l.catalog_key)}</div>` : ''}
+      ${l.message ? `<div style="font-size:12px;color:var(--text2);margin-bottom:8px">${esc(l.message)}</div>` : ''}
+      <div style="display:flex;align-items:center;gap:8px">
+        <a href="tel:${esc(l.customer_phone)}" style="flex:1;background:rgba(79,255,176,0.1);border:1px solid rgba(79,255,176,0.3);color:var(--accent);border-radius:8px;padding:7px 0;text-align:center;font-size:12px;font-weight:700;text-decoration:none"><i class="fas fa-phone"></i> ${esc(l.customer_phone)}</a>
+        <select onchange="updateLeadStatus(${l.id}, this.value)" class="al-input" style="flex:0 0 130px;padding:6px 8px;font-size:11.5px">${statusOptions}</select>
+      </div>
+    </div>`;
+  }).join('');
+}
+async function updateLeadStatus(leadId, newStatus) {
+  try {
+    const { error } = await sb.from('leads').update({ status: newStatus }).eq('id', leadId);
+    if (error) throw error;
+    const l = MY_LEADS.find(x => x.id === leadId);
+    if (l) l.status = newStatus;
+    updateLeadsBadge();
+  } catch (e) { alert('Failed: ' + e.message); }
+}
+
+/* ═══════════════════════════════════════════════════
+   CONTENT SETTINGS — hide/show global content per agent
+   ═══════════════════════════════════════════════════ */
+const CS_TYPES = [
+  { key:'notification', label:'Notifications', table:'notifications', icon:'fa-bell', nameField:r=>r.title },
+  { key:'scheme', label:'Schemes', table:'government_schemes', icon:'fa-landmark', nameField:r=>r.name_te },
+  { key:'download', label:'Downloads', table:'downloads', icon:'fa-download', nameField:r=>r.title },
+  { key:'poster', label:'Posters', table:'posters', icon:'fa-image', nameField:r=>r.title||'(no title)' },
+  { key:'news', label:'News', table:'news', icon:'fa-newspaper', nameField:r=>r.title },
+  { key:'greeting', label:'Greetings', table:'greetings', icon:'fa-gift', nameField:r=>r.title||'(no title)' },
+];
+let CS_CURRENT_TYPE = 'notification';
+let CS_ITEMS = [];
+let CS_HIDDEN_IDS = new Set();
+async function openContentSettingsModal() {
+  if (!AGENT) return;
+  document.getElementById('contentsettings-modal').style.display = 'flex';
+  renderCsTypePicker();
+  await loadCsHiddenIds();
+  await loadCsItems(CS_CURRENT_TYPE);
+}
+function closeContentSettingsModal() { document.getElementById('contentsettings-modal').style.display = 'none'; }
+function renderCsTypePicker() {
+  document.getElementById('cs-type-picker').innerHTML = CS_TYPES.map(t => `
+    <button onclick="switchCsType('${t.key}')" style="padding:8px 13px;border-radius:10px;background:${CS_CURRENT_TYPE===t.key?'rgba(79,255,176,0.12)':'var(--bg3)'};border:1px solid ${CS_CURRENT_TYPE===t.key?'var(--accent)':'var(--border)'};color:${CS_CURRENT_TYPE===t.key?'var(--accent)':'var(--text)'};font-size:12px;font-family:var(--font-te);cursor:pointer">
+      <i class="fas ${t.icon}"></i> ${t.label}
+    </button>`).join('');
+}
+async function switchCsType(key) { CS_CURRENT_TYPE = key; renderCsTypePicker(); await loadCsItems(key); }
+async function loadCsHiddenIds() {
+  const { data } = await sb.from('agent_hidden_content').select('*').eq('agent_id', AGENT.id);
+  CS_HIDDEN_IDS = new Set((data || []).map(r => r.content_type + ':' + r.content_id));
+}
+async function loadCsItems(typeKey) {
+  const list = document.getElementById('cs-list'); list.innerHTML = 'Loading…';
+  const typeDef = CS_TYPES.find(t => t.key === typeKey);
+  const { data } = await sb.from(typeDef.table).select('*').eq('is_active', true);
+  CS_ITEMS = data || [];
+  renderCsList();
+}
+function renderCsList() {
+  const list = document.getElementById('cs-list');
+  const typeDef = CS_TYPES.find(t => t.key === CS_CURRENT_TYPE);
+  if (!CS_ITEMS.length) { list.innerHTML = `<div style="font-size:12.5px;color:var(--text2);font-family:var(--font-te);text-align:center;padding:16px 0">ఇంకా ఏమీ లేవు.</div>`; return; }
+  list.innerHTML = CS_ITEMS.map(item => {
+    const hideKey = CS_CURRENT_TYPE + ':' + item.id;
+    const isHidden = CS_HIDDEN_IDS.has(hideKey);
+    return `<div style="display:flex;align-items:center;gap:10px;background:var(--bg3);padding:10px 12px;border-radius:11px">
+      <div style="flex:1;font-size:13px;font-family:var(--font-te)">${esc(typeDef.nameField(item))}</div>
+      <button onclick="toggleCsItem(${item.id})" style="background:${isHidden?'var(--bg2)':'rgba(79,255,176,0.15)'};border:1px solid ${isHidden?'var(--border)':'var(--accent)'};color:${isHidden?'var(--text2)':'var(--accent)'};border-radius:9px;padding:6px 12px;font-size:11.5px;font-weight:700;cursor:pointer;font-family:var(--font-te)">${isHidden ? 'ఆఫ్' : '✓ ఆన్'}</button>
+    </div>`;
+  }).join('');
+}
+async function toggleCsItem(itemId) {
+  const hideKey = CS_CURRENT_TYPE + ':' + itemId;
+  const isHidden = CS_HIDDEN_IDS.has(hideKey);
+  try {
+    if (isHidden) { const { error } = await sb.from('agent_hidden_content').delete().eq('agent_id', AGENT.id).eq('content_type', CS_CURRENT_TYPE).eq('content_id', itemId); if (error) throw error; CS_HIDDEN_IDS.delete(hideKey); }
+    else { const { error } = await sb.from('agent_hidden_content').insert({ agent_id: AGENT.id, content_type: CS_CURRENT_TYPE, content_id: itemId }); if (error) throw error; CS_HIDDEN_IDS.add(hideKey); }
+    renderCsList();
+  } catch (e) { alert('Failed: ' + e.message); }
+}
+
+loadShop().then(() => checkOwnerSession());
 </script>
 </body>
 </html>
