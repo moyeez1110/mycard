@@ -165,6 +165,26 @@
   .faq-item.open .faq-a{display:block}
   .cta-note{background:rgba(79,255,176,0.08);border:1px solid rgba(79,255,176,0.25);border-radius:12px;padding:13px;font-size:12.5px;color:var(--text2);line-height:1.6}
 
+  /* Banner carousel (agent's own rotating hero images) */
+  #banner-section{display:none;margin:16px 0 4px;position:relative}
+  .banner-track{border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);background:var(--card);position:relative}
+  .banner-slides{display:flex;transition:transform 0.5s cubic-bezier(0.19,1,0.22,1);will-change:transform}
+  .banner-slide{min-width:100%;position:relative;aspect-ratio:16/6.5;cursor:pointer;flex-shrink:0;background:var(--bg3)}
+  .banner-slide img{width:100%;height:100%;object-fit:cover;display:block;transition:opacity 0.3s}
+  .banner-slide-fallback{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--text2)}
+  .banner-caption{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,0.75));
+    padding:28px 14px 10px;font-size:13px;font-family:var(--font-te);color:#fff;line-height:1.4;pointer-events:none}
+  .banner-dots{position:absolute;bottom:10px;right:12px;display:flex;gap:5px;align-items:center;z-index:2}
+  .bdot{height:6px;border-radius:3px;background:rgba(255,255,255,0.35);cursor:pointer;transition:all 0.35s;border:none;padding:0}
+  .bdot.on{background:var(--accent);width:18px}
+  .bdot:not(.on){width:6px}
+  .banner-arrow{position:absolute;top:50%;transform:translateY(-50%);width:30px;height:30px;border-radius:50%;
+    background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);border:1px solid rgba(255,255,255,0.15);
+    color:#fff;font-size:12px;z-index:2;display:flex;align-items:center;justify-content:center;cursor:pointer}
+  .banner-arrow:hover{background:rgba(0,0,0,0.75);border-color:var(--accent)}
+  .banner-arrow.prev{left:10px}
+  .banner-arrow.next{right:10px}
+
   /* Popup */
   #popup-overlay{position:fixed;inset:0;z-index:900;background:rgba(0,0,0,0.7);backdrop-filter:blur(6px);
     display:flex;align-items:center;justify-content:center;padding:20px}
@@ -209,6 +229,15 @@
   <!-- ═══ HOME TAB ═══ -->
   <div id="page-home" class="page active">
     <div class="wrap">
+      <div id="banner-section">
+        <div class="banner-track">
+          <div class="banner-slides" id="banner-slides"></div>
+          <button class="banner-arrow prev" id="banner-prev" onclick="bannerGo(_bannerCur-1)"><i class="fas fa-chevron-left"></i></button>
+          <button class="banner-arrow next" id="banner-next" onclick="bannerGo(_bannerCur+1)"><i class="fas fa-chevron-right"></i></button>
+          <div class="banner-dots" id="banner-dots"></div>
+        </div>
+      </div>
+
       <div class="section" id="sec-updates" style="display:none">
         <div class="section-head"><h2>📢 తాజా అప్‌డేట్‌లు</h2><div class="section-line"></div></div>
         <div id="updates-list"></div>
@@ -399,6 +428,8 @@ function logEvent(event_type, fields) {
 let AGENT = null;
 let CATEGORIES = [], SERVICES = [], G_NOTIFICATIONS = [], SCHEMES = [], G_DOWNLOADS = [], G_POSTERS = [], G_NEWS = [], G_GREETINGS = [];
 let ACTIVE_CATEGORY = null;
+let BANNERS = [];
+let _bannerCur = 0, _bannerTimer = null;
 
 async function loadShop() {
   const slug = getSlugFromPath();
@@ -479,6 +510,17 @@ function renderShop(agent, rows) {
   if (agent.map_embed_url) {
     const m = document.getElementById('h-map');
     m.href = agent.map_embed_url; m.style.display = 'flex';
+  }
+
+  const bannerRows = rows.filter(r => r.key === 'banner');
+  if (bannerRows.length) {
+    BANNERS = bannerRows.map(r => ({
+      imgUrl: r.link || '',
+      caption: r.title || r.value || '',
+      clickUrl: r.extra && r.extra.startsWith('http') ? r.extra : '',
+      duration: parseInt(r.extra) && !r.extra.startsWith('http') ? parseInt(r.extra) : 4000,
+    }));
+    renderBanner();
   }
 
   const updates = rows.filter(r => r.key === 'update');
@@ -958,6 +1000,55 @@ function renderContactTab(agent) {
   if (agent.footer_text) html += `<div class="cta-note" style="margin-top:12px">${esc(agent.footer_text)}</div>`;
   body.innerHTML = html;
 }
+
+function renderBanner() {
+  if (!BANNERS.length) return;
+  const sec = document.getElementById('banner-section');
+  const slides = document.getElementById('banner-slides');
+  const dots = document.getElementById('banner-dots');
+  const prev = document.getElementById('banner-prev');
+  const next = document.getElementById('banner-next');
+
+  sec.style.display = 'block';
+
+  slides.innerHTML = BANNERS.map((b) => `
+    <div class="banner-slide" ${b.clickUrl ? `onclick="window.open('${esc(b.clickUrl)}','_blank')" style="cursor:pointer"` : ''}>
+      <img src="${esc(b.imgUrl)}" alt="${esc(b.caption)}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+      <div class="banner-slide-fallback" style="display:none">
+        <i class="fas fa-image" style="font-size:28px;opacity:.3"></i>
+        <span style="font-size:12px;font-family:var(--font-te)">${esc(b.caption||'Image')}</span>
+      </div>
+      ${b.caption ? `<div class="banner-caption">${esc(b.caption)}</div>` : ''}
+    </div>`).join('');
+
+  if (BANNERS.length > 1) {
+    dots.innerHTML = BANNERS.map((_, i) => `<button class="bdot${i===0?' on':''}" onclick="bannerGo(${i})"></button>`).join('');
+    prev.style.display = next.style.display = 'flex';
+  } else {
+    prev.style.display = next.style.display = 'none';
+  }
+
+  let touchX = 0;
+  slides.addEventListener('touchstart', e => { touchX = e.touches[0].clientX; }, { passive: true });
+  slides.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - touchX;
+    if (Math.abs(dx) > 40) bannerGo(_bannerCur + (dx < 0 ? 1 : -1));
+  }, { passive: true });
+
+  bannerGo(0);
+}
+
+window.bannerGo = function(n) {
+  if (!BANNERS.length) return;
+  _bannerCur = ((n % BANNERS.length) + BANNERS.length) % BANNERS.length;
+  document.getElementById('banner-slides').style.transform = `translateX(-${_bannerCur * 100}%)`;
+  document.querySelectorAll('.bdot').forEach((d, i) => d.classList.toggle('on', i === _bannerCur));
+  clearInterval(_bannerTimer);
+  if (BANNERS.length > 1) {
+    const dur = BANNERS[_bannerCur].duration || 4000;
+    _bannerTimer = setInterval(() => bannerGo(_bannerCur + 1), dur);
+  }
+};
 
 function grpToggle(i) {
   const item = document.getElementById('grp_'+i);
