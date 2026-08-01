@@ -707,6 +707,7 @@ input,textarea,select{font-family:var(--font);outline:none}
               <span class="add-grp-label">సాధారణ</span>
               <button class="add-row-btn" style="margin-top:0" onclick="addRow('ticker')" title="పైన scroll అయ్యే చిన్న message (ఉదా: 'ఈ వారం సెలవు')"><i class="fas fa-plus"></i> Ticker</button>
               <button class="add-row-btn" style="margin-top:0" onclick="addRow('update')" title="వార్త/announcement card — శీర్షిక+వివరణ+లింక్"><i class="fas fa-plus"></i> Update</button>
+              <button class="add-row-btn" style="margin-top:0" onclick="addRow('banner')" title="పైన rotate అయ్యే పెద్ద image banner (హీరో carousel)"><i class="fas fa-plus"></i> Banner</button>
               <button class="add-row-btn" style="margin-top:0" onclick="addRow('service')" title="మీరు అందించే ఒక్క సర్వీస్ (వివరణ మాత్రమే, ధర ఉండదు)"><i class="fas fa-plus"></i> Service</button>
             </div>
             <div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-bottom:10px">
@@ -888,7 +889,7 @@ const SUPABASE_URL = 'https://pusmroyftjzdkcwuwsph.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB1c21yb3lmdGp6ZGtjd3V3c3BoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUwNTIzNjcsImV4cCI6MjEwMDYyODM2N30.FTL-p8QLjcdErof1-Usolqudh1aUoKkKBw1UkvrkMNI';
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-const CONTENT_KEYS_ALL = ['update','service','pdf','doc','ticker','voice','tts','poster','pdf_notice','canva','req_service','req_doc','popup','service_group','sub_service'];
+const CONTENT_KEYS_ALL = ['update','service','pdf','doc','ticker','voice','tts','poster','pdf_notice','canva','req_service','req_doc','popup','service_group','sub_service','banner'];
 const PROFILE_FIELD_MAP = {
   shopName: 'shop_name', tagline: 'tagline', city: 'city', phone: 'phone',
   whatsapp: 'whatsapp', footerText: 'footer_text', logoIcon: 'logo_icon',
@@ -1087,7 +1088,7 @@ async function loadAgent(tabId) {
 }
 
 /* ═══ Category Drag-Drop Rows ═══ */
-const CONTENT_KEYS = ['update','service','pdf','doc','ticker','voice','tts','poster','pdf_notice','canva','req_service','req_doc','popup','service_group','sub_service'];
+const CONTENT_KEYS = ['update','service','pdf','doc','ticker','voice','tts','poster','pdf_notice','canva','req_service','req_doc','popup','service_group','sub_service','banner'];
 const KB_CLASS = {
   update:'kb-update', service:'kb-service', pdf:'kb-pdf', doc:'kb-doc',
   ticker:'kb-ticker', voice:'kb-voice', tts:'kb-voice', poster:'kb-update',
@@ -1098,7 +1099,7 @@ const KB_CLASS = {
 // Category definitions — order and color
 const CATEGORIES = [
   { key:'ticker',      label:'Ticker',            icon:'fa-scroll',            color:'#a78bfa', keys:['ticker'] },
-  { key:'update',      label:'Updates',           icon:'fa-bullhorn',          color:'var(--yellow)', keys:['update','poster'] },
+  { key:'update',      label:'Updates',           icon:'fa-bullhorn',          color:'var(--yellow)', keys:['update','poster','banner'] },
   { key:'service',     label:'Services',          icon:'fa-hand-holding-hand', color:'var(--blue)',   keys:['service','canva'] },
   { key:'servicegroup',label:'Service Packages',  icon:'fa-layer-group',      color:'#8b5cf6',       keys:['service_group','sub_service'] },
   { key:'reqservice',  label:'Required Services', icon:'fa-clipboard-list',    color:'#22d3ee',       keys:['req_service','req_doc'] },
@@ -1742,6 +1743,7 @@ function renderRowsTable() { renderCatGrid(); }
    Types agents are allowed to self-upload (matches index.html):        */
 const AGENT_UPLOAD_TYPES = [
   { key:'ticker', label:'Ticker' }, { key:'update', label:'Update' },
+  { key:'banner', label:'Banner' },
   { key:'service', label:'Service' }, { key:'pdf', label:'PDF' },
   { key:'doc', label:'Doc' }, { key:'poster', label:'Poster' },
   { key:'voice', label:'Voice' }, { key:'tts', label:'TTS' },
