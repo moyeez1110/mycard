@@ -19,7 +19,7 @@
     --font:'Inter',sans-serif;
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  body{background:var(--bg);color:var(--text);font-family:var(--font-te),var(--font);min-height:100vh;padding-bottom:40px}
+  body{background:var(--bg);color:var(--text);font-family:var(--font-te),var(--font);min-height:100vh;padding-bottom:78px}
   .wrap{max-width:640px;margin:0 auto;padding:0 16px}
   .hero{background:var(--bg2);border-bottom:1px solid var(--border);padding:28px 16px 20px;text-align:center}
   .hero-avatar{width:64px;height:64px;border-radius:16px;background:var(--bg3);border:2px solid var(--accent);
@@ -87,6 +87,84 @@
   .tts-speak-btn{display:inline-flex;align-items:center;gap:6px;margin-top:8px;background:var(--bg3);border:1px solid var(--border);
     color:var(--text);padding:7px 13px;border-radius:9px;font-size:12px;font-weight:600;cursor:pointer}
 
+  /* Page tabs (Home / Categories / Services / Contact) */
+  .page{display:none}
+  .page.active{display:block}
+  #bottom-nav{
+    position:fixed;bottom:0;left:0;right:0;z-index:100;
+    background:var(--bg2);border-top:1px solid var(--border);
+    display:flex;padding:0 0 env(safe-area-inset-bottom);
+    max-width:640px;margin:0 auto
+  }
+  .nav-btn{
+    flex:1;padding:10px 0;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:4px;color:var(--text2);
+    background:transparent;border:none;font-size:10px;font-weight:600;
+    font-family:var(--font-te);cursor:pointer;letter-spacing:0.3px
+  }
+  .nav-btn i{font-size:18px}
+  .nav-btn.active{color:var(--accent)}
+  .nav-btn.active i{filter:drop-shadow(0 0 4px var(--accent))}
+
+  /* Global catalog — search, categories, services (from home.html) */
+  .search-box{max-width:none;margin:0 0 14px;position:relative}
+  .search-box input{width:100%;padding:13px 44px 13px 16px;border-radius:12px;border:1.5px solid var(--border);
+    background:var(--card);color:var(--text);font-size:13.5px;font-family:var(--font-te);outline:none}
+  .search-box input:focus{border-color:var(--accent)}
+  .search-box i{position:absolute;right:15px;top:50%;transform:translateY(-50%);color:var(--text2);font-size:14px}
+  .search-hint{font-size:11px;color:var(--text2);margin:-8px 0 12px}
+  .cats-row{display:flex;gap:8px;overflow-x:auto;padding:0 0 12px;scrollbar-width:none}
+  .cats-row::-webkit-scrollbar{display:none}
+  .cat-chip{flex-shrink:0;display:flex;align-items:center;gap:7px;padding:9px 15px;border-radius:20px;
+    background:var(--card);border:1.5px solid var(--border);font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap}
+  .cat-chip i{color:var(--accent);font-size:13px}
+  .cat-chip.active{background:rgba(79,255,176,0.12);border-color:var(--accent);color:var(--accent)}
+  .section-count{font-size:11px;color:var(--text2)}
+  .svc-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+  .svc-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 12px;cursor:pointer}
+  .svc-card:active{transform:scale(0.97)}
+  .svc-card i{font-size:19px;color:var(--accent);margin-bottom:8px;display:block}
+  .svc-name{font-size:12.5px;font-weight:700;line-height:1.3}
+  .svc-cat{font-size:10px;color:var(--text2);margin-top:3px}
+  .thumb-strip{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+  .thumb-strip::-webkit-scrollbar{display:none}
+  .thumb{flex-shrink:0;width:130px;border-radius:12px;overflow:hidden;background:var(--card);border:1px solid var(--border);cursor:pointer}
+  .thumb img{width:100%;height:150px;object-fit:cover;display:block}
+
+  /* Service Detail slide-up panel (global catalog, agent-locked contact) */
+  #detail-overlay{position:fixed;inset:0;z-index:920;background:rgba(0,0,0,0.7);backdrop-filter:blur(6px);display:none;align-items:flex-end;justify-content:center}
+  #detail-overlay.show{display:flex}
+  #detail-sheet{background:var(--bg2);border-radius:20px 20px 0 0;width:100%;max-width:640px;max-height:90vh;overflow-y:auto;padding:0 0 30px}
+  .detail-head{position:sticky;top:0;background:var(--bg2);z-index:2;padding:18px 20px 14px;border-bottom:1px solid var(--border);
+    display:flex;align-items:center;gap:12px}
+  .detail-icon{width:44px;height:44px;border-radius:12px;background:rgba(79,255,176,0.12);border:1.5px solid var(--accent);
+    display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:18px;flex-shrink:0}
+  .detail-title{font-size:16.5px;font-weight:700}
+  .detail-close{margin-left:auto;background:var(--bg3);border:1px solid var(--border);color:var(--text2);
+    width:34px;height:34px;border-radius:10px;cursor:pointer;flex-shrink:0}
+  .detail-body{padding:16px 20px}
+  .dblock{margin-bottom:18px}
+  .dblock h3{font-size:12px;font-weight:700;color:var(--accent);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.4px}
+  .dblock p{font-size:13px;color:var(--text2);line-height:1.65}
+  .fee-row{display:flex;gap:10px}
+  .fee-box{flex:1;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 12px}
+  .fee-box .k{font-size:10.5px;color:var(--text2)}
+  .fee-box .v{font-size:14px;font-weight:700;margin-top:2px}
+  .doc-row{display:flex;align-items:center;gap:8px;padding:7px 0;font-size:13px}
+  .doc-row i{color:var(--accent);font-size:11px}
+  .step-row{display:flex;gap:10px;padding:9px 0;border-top:1px solid var(--border)}
+  .step-row:first-child{border-top:none}
+  .step-no{width:24px;height:24px;border-radius:50%;background:rgba(79,255,176,0.12);color:var(--accent);
+    font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .step-title{font-size:13px;font-weight:600}
+  .step-desc{font-size:12px;color:var(--text2);margin-top:2px}
+  .faq-item{border-top:1px solid var(--border);padding:10px 0}
+  .faq-item:first-child{border-top:none}
+  .faq-q{font-size:13px;font-weight:600;cursor:pointer;display:flex;justify-content:space-between;gap:8px}
+  .faq-a{font-size:12.5px;color:var(--text2);margin-top:6px;display:none;line-height:1.6}
+  .faq-item.open .faq-a{display:block}
+  .cta-note{background:rgba(79,255,176,0.08);border:1px solid rgba(79,255,176,0.25);border-radius:12px;padding:13px;font-size:12.5px;color:var(--text2);line-height:1.6}
+
   /* Popup */
   #popup-overlay{position:fixed;inset:0;z-index:900;background:rgba(0,0,0,0.7);backdrop-filter:blur(6px);
     display:flex;align-items:center;justify-content:center;padding:20px}
@@ -128,45 +206,123 @@
     <button id="install-btn">Install</button>
   </div>
 
-  <div class="wrap">
-    <div class="section" id="sec-updates" style="display:none">
-      <div class="section-head"><h2>📢 తాజా అప్‌డేట్‌లు</h2><div class="section-line"></div></div>
-      <div id="updates-list"></div>
-    </div>
+  <!-- ═══ HOME TAB ═══ -->
+  <div id="page-home" class="page active">
+    <div class="wrap">
+      <div class="section" id="sec-updates" style="display:none">
+        <div class="section-head"><h2>📢 తాజా అప్‌డేట్‌లు</h2><div class="section-line"></div></div>
+        <div id="updates-list"></div>
+      </div>
 
-    <div class="section" id="sec-ann" style="display:none">
-      <div class="section-head"><h2>🔔 ప్రకటనలు</h2><div class="section-line"></div></div>
-      <div id="ann-list"></div>
-    </div>
+      <div class="section" id="sec-ann" style="display:none">
+        <div class="section-head"><h2>🔔 ప్రకటనలు</h2><div class="section-line"></div></div>
+        <div id="ann-list"></div>
+      </div>
 
-    <div class="section" id="sec-services" style="display:none">
-      <div class="section-head"><h2>🛎️ సర్వీసులు</h2><div class="section-line"></div></div>
-      <div class="services-grid" id="services-list"></div>
-    </div>
+      <div class="section" id="sec-g-notifications" style="display:none">
+        <div class="section-head"><h2>📢 తాజా నోటిఫికేషన్‌లు</h2><div class="section-line"></div></div>
+        <div id="g-notifications-list"></div>
+      </div>
 
-    <div class="section" id="sec-groups" style="display:none">
-      <div class="section-head"><h2>📦 సర్వీస్ ప్యాకేజీలు</h2><div class="section-line"></div></div>
-      <div id="groups-list"></div>
-    </div>
+      <div class="section" id="sec-g-news" style="display:none">
+        <div class="section-head"><h2>📰 వార్తలు</h2><div class="section-line"></div></div>
+        <div id="g-news-list"></div>
+      </div>
 
-    <div class="section" id="sec-reqdocs" style="display:none">
-      <div class="section-head"><h2>📑 అవసరమైన Documents</h2><div class="section-line"></div></div>
-      <div id="reqdocs-list"></div>
-    </div>
+      <div class="section" id="sec-g-greetings" style="display:none">
+        <div class="section-head"><h2>🎉 శుభాకాంక్షలు</h2><div class="section-line"></div></div>
+        <div class="thumb-strip" id="g-greetings-strip"></div>
+      </div>
 
-    <div class="section" id="sec-pdfs" style="display:none">
-      <div class="section-head"><h2>📄 PDF ఫారాలు</h2><div class="section-line"></div></div>
-      <div id="pdfs-list"></div>
+      <div class="footer">Powered by Digital Seva Platform</div>
     </div>
+  </div>
 
-    <div class="section" id="sec-docs" style="display:none">
-      <div class="section-head"><h2>📋 డాక్యుమెంట్‌లు</h2><div class="section-line"></div></div>
-      <div id="docs-list"></div>
+  <!-- ═══ CATEGORIES TAB ═══ -->
+  <div id="page-categories" class="page">
+    <div class="wrap" style="padding-top:20px">
+      <div class="section-head" style="margin-bottom:14px"><h2>అన్ని Categories</h2><div class="section-line"></div></div>
+      <div class="svc-grid" id="cat-grid-full"></div>
+      <div class="footer">Powered by Digital Seva Platform</div>
     </div>
+  </div>
 
-    <div class="footer">Powered by Citizen Digital Seva</div>
+  <!-- ═══ SERVICES TAB ═══ -->
+  <div id="page-services" class="page">
+    <div class="wrap" style="padding-top:20px">
+      <div class="search-box">
+        <input id="search-input" type="text" placeholder="సర్వీస్ వెతకండి..." oninput="onSearch()"/>
+        <i class="fas fa-magnifying-glass"></i>
+      </div>
+      <div class="search-hint" id="search-hint" style="display:none"></div>
+      <div class="cats-row" id="cats-row"></div>
+
+      <div class="section" id="sec-g-services">
+        <div class="section-head"><h2 id="g-services-heading">సర్వీసులు</h2><div class="section-line"></div><span class="section-count" id="g-services-count"></span></div>
+        <div class="svc-grid" id="g-services-grid"></div>
+      </div>
+
+      <div class="section" id="sec-services" style="display:none">
+        <div class="section-head"><h2>🛎️ మా సెంటర్ సర్వీసులు</h2><div class="section-line"></div></div>
+        <div class="services-grid" id="services-list"></div>
+      </div>
+
+      <div class="section" id="sec-groups" style="display:none">
+        <div class="section-head"><h2>📦 మా సెంటర్ సర్వీస్ ప్యాకేజీలు</h2><div class="section-line"></div></div>
+        <div id="groups-list"></div>
+      </div>
+
+      <div class="section" id="sec-reqdocs" style="display:none">
+        <div class="section-head"><h2>📑 మా సెంటర్ — అవసరమైన Documents</h2><div class="section-line"></div></div>
+        <div id="reqdocs-list"></div>
+      </div>
+
+      <div class="section" id="sec-g-schemes" style="display:none">
+        <div class="section-head"><h2>🏛️ ప్రభుత్వ పథకాలు</h2><div class="section-line"></div></div>
+        <div id="g-schemes-list"></div>
+      </div>
+
+      <div class="section" id="sec-pdfs" style="display:none">
+        <div class="section-head"><h2>📄 మా సెంటర్ PDF ఫారాలు</h2><div class="section-line"></div></div>
+        <div id="pdfs-list"></div>
+      </div>
+
+      <div class="section" id="sec-docs" style="display:none">
+        <div class="section-head"><h2>📋 మా సెంటర్ డాక్యుమెంట్‌లు</h2><div class="section-line"></div></div>
+        <div id="docs-list"></div>
+      </div>
+
+      <div class="section" id="sec-g-downloads" style="display:none">
+        <div class="section-head"><h2>📥 అన్ని Downloads</h2><div class="section-line"></div></div>
+        <div id="g-downloads-list"></div>
+      </div>
+
+      <div class="section" id="sec-g-posters" style="display:none">
+        <div class="section-head"><h2>🖼️ పోస్టర్‌లు</h2><div class="section-line"></div></div>
+        <div class="thumb-strip" id="g-posters-strip"></div>
+      </div>
+
+      <div class="footer">Powered by Digital Seva Platform</div>
+    </div>
+  </div>
+
+  <!-- ═══ CONTACT TAB ═══ -->
+  <div id="page-contact" class="page">
+    <div class="wrap" style="padding-top:20px">
+      <div class="section-head" style="margin-bottom:14px"><h2>సంప్రదించండి</h2><div class="section-line"></div></div>
+      <div id="contact-body"></div>
+      <div class="footer">Powered by Digital Seva Platform</div>
+    </div>
   </div>
 </div>
+
+<nav id="bottom-nav">
+  <button class="nav-btn active" onclick="showPage('page-home',this)"><i class="fas fa-house"></i>హోమ్</button>
+  <button class="nav-btn" onclick="showPage('page-categories',this)"><i class="fas fa-folder-tree"></i>Categories</button>
+  <button class="nav-btn" onclick="showPage('page-services',this)"><i class="fas fa-list-check"></i>Services</button>
+  <button class="nav-btn" onclick="showPage('page-contact',this)"><i class="fas fa-address-card"></i>Contact</button>
+</nav>
+
 <div id="notfound" style="display:none" class="loading">ఈ షాప్ ప్రొఫైల్ కనిపించడం లేదు.</div>
 
 <div id="popup-overlay" class="hidden">
@@ -184,6 +340,35 @@
   </div>
 </div>
 
+<!-- Service Detail slide-up (global catalog, contact locked to THIS agent) -->
+<div id="detail-overlay" onclick="if(event.target===this) closeDetail()">
+  <div id="detail-sheet">
+    <div class="detail-head">
+      <div class="detail-icon" id="dt-icon"><i class="fas fa-file-alt"></i></div>
+      <div class="detail-title" id="dt-title">—</div>
+      <button class="detail-close" onclick="closeDetail()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="detail-body" id="dt-body"></div>
+  </div>
+</div>
+
+<!-- Request Callback (lead) form — always targets THIS agent -->
+<div id="lead-overlay" style="position:fixed;inset:0;z-index:950;background:rgba(0,0,0,0.75);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:20px" onclick="if(event.target===this) closeLeadForm()">
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;max-width:380px;width:100%;padding:20px">
+    <div style="font-size:15px;font-weight:700;margin-bottom:4px">Callback Request చేయండి</div>
+    <div id="lead-form-sub" style="font-size:12px;color:var(--text2);margin-bottom:14px"></div>
+    <input id="lead-name" type="text" placeholder="మీ పేరు" style="width:100%;padding:11px 13px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg3);color:var(--text);font-size:13px;font-family:var(--font-te);margin-bottom:10px;outline:none"/>
+    <input id="lead-phone" type="tel" placeholder="మొబైల్ నంబర్" style="width:100%;padding:11px 13px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg3);color:var(--text);font-size:13px;font-family:var(--font-te);margin-bottom:10px;outline:none"/>
+    <textarea id="lead-message" rows="2" placeholder="మెసేజ్ (optional)" style="width:100%;padding:11px 13px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg3);color:var(--text);font-size:13px;font-family:var(--font-te);margin-bottom:6px;outline:none;resize:none"></textarea>
+    <div id="lead-form-err" style="color:#f87171;font-size:11.5px;margin-bottom:8px;display:none"></div>
+    <div style="display:flex;gap:8px">
+      <button onclick="submitLeadForm()" style="flex:1;background:var(--accent);color:#0a0f1a;border:none;padding:11px;border-radius:10px;font-weight:700;font-size:13px;cursor:pointer;font-family:var(--font-te)">పంపండి</button>
+      <button onclick="closeLeadForm()" style="flex:0 0 auto;padding:0 18px;border-radius:10px;background:var(--bg3);border:1px solid var(--border);color:var(--text2);cursor:pointer;font-family:var(--font-te)">Cancel</button>
+    </div>
+  </div>
+</div>
+
+
 <script>
 const SUPABASE_URL = 'https://pusmroyftjzdkcwuwsph.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB1c21yb3lmdGp6ZGtjd3V3c3BoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUwNTIzNjcsImV4cCI6MjEwMDYyODM2N30.FTL-p8QLjcdErof1-Usolqudh1aUoKkKBw1UkvrkMNI';
@@ -200,11 +385,20 @@ function getSlugFromPath() {
 function esc(s) {
   return (s == null ? '' : String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
+function escJs(s) { return (s == null ? '' : String(s)).replace(/\\/g,'\\\\').replace(/'/g,"\\'"); }
 
 // Fire-and-forget analytics — never blocks the UI, never surfaces errors to the visitor.
 function logEvent(event_type, fields) {
   sb.from('analytics_events').insert({ event_type, ...fields }).then(() => {}, () => {});
 }
+
+/* ── Global catalog (Service Master + Categories + Notifications/
+   Schemes/News/Greetings/Downloads/Posters) — same data every agent
+   page shows, just rendered under this agent's own branding, with
+   every "contact"/"apply" action locked to THIS agent (no picker). ── */
+let AGENT = null;
+let CATEGORIES = [], SERVICES = [], G_NOTIFICATIONS = [], SCHEMES = [], G_DOWNLOADS = [], G_POSTERS = [], G_NEWS = [], G_GREETINGS = [];
+let ACTIVE_CATEGORY = null;
 
 async function loadShop() {
   const slug = getSlugFromPath();
@@ -213,13 +407,46 @@ async function loadShop() {
   const { data: agent, error: agentErr } = await sb
     .from('agents').select('*').eq('tab', slug).eq('is_active', true).single();
   if (agentErr || !agent) { showNotFound(); return; }
+  AGENT = agent;
 
-  const { data: rows } = await sb
-    .from('agent_rows').select('*').eq('agent_id', agent.id)
-    .eq('status', 'live').order('display_order', { ascending: true });
+  const [rowsRes, catsRes, svcsRes, ntfsRes, schemesRes, dlsRes, pstsRes, newsRes, grtsRes, hiddenRes] = await Promise.all([
+    sb.from('agent_rows').select('*').eq('agent_id', agent.id).eq('status', 'live').order('display_order', { ascending: true }),
+    sb.from('categories').select('*').eq('is_active', true).order('sort_order'),
+    sb.from('services').select('*, service_catalog(name_te, name_en, icon), categories(key, name_te)').eq('is_active', true),
+    sb.from('notifications').select('*').eq('is_active', true).order('created_at', { ascending: false }).limit(10),
+    sb.from('government_schemes').select('*, categories(name_te)').eq('is_active', true),
+    sb.from('downloads').select('*').eq('is_active', true).order('sort_order').limit(20),
+    sb.from('posters').select('*').eq('is_active', true).order('sort_order').limit(15),
+    sb.from('news').select('*').eq('is_active', true).order('created_at', { ascending: false }).limit(10),
+    sb.from('greetings').select('*').eq('is_active', true).order('created_at', { ascending: false }).limit(10),
+    sb.from('agent_hidden_content').select('*').eq('agent_id', agent.id),
+  ]);
 
-  renderShop(agent, rows || []);
-  showPopups(rows || []);
+  // Opt-out filtering — anything this agent has explicitly hidden
+  // (via index.html's "గ్లోబల్ కంటెంట్ సెట్టింగ్‌లు") drops out here.
+  const hiddenKeys = new Set((hiddenRes.data || []).map(h => h.content_type + ':' + h.content_id));
+  const notHidden = (type) => (item) => !hiddenKeys.has(type + ':' + item.id);
+
+  const rows = rowsRes.data || [];
+  CATEGORIES = catsRes.data || []; SERVICES = svcsRes.data || [];
+  G_NOTIFICATIONS = (ntfsRes.data || []).filter(notHidden('notification'));
+  SCHEMES = (schemesRes.data || []).filter(notHidden('scheme'));
+  G_DOWNLOADS = (dlsRes.data || []).filter(notHidden('download'));
+  G_POSTERS = (pstsRes.data || []).filter(notHidden('poster'));
+  G_NEWS = (newsRes.data || []).filter(notHidden('news'));
+  G_GREETINGS = (grtsRes.data || []).filter(notHidden('greeting'));
+
+  renderShop(agent, rows);
+  renderCategories();
+  renderServices();
+  renderGlobalNotifications();
+  renderGlobalSchemes();
+  renderGlobalDownloads();
+  renderGlobalPosters();
+  renderGlobalNews();
+  renderGlobalGreetings();
+  renderContactTab(agent);
+  showPopups(rows);
   setupInstall(agent, slug);
 }
 
@@ -399,6 +626,337 @@ function renderShop(agent, rows) {
         <i class="fas fa-file-lines"></i><div style="flex:1;font-size:13px;font-weight:600">${esc(d.title || d.value)}</div>
       </a>`).join('');
   }
+}
+
+/* ═══════════════════════════════════════════════════
+   PAGE NAVIGATION (Home / Categories / Services / Contact)
+   ═══════════════════════════════════════════════════ */
+function showPage(id, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const target = document.getElementById(id);
+  if (target) target.classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  else {
+    const map = { 'page-home':0, 'page-categories':1, 'page-services':2, 'page-contact':3 };
+    const idx = map[id];
+    if (idx !== undefined) {
+      const navBtns = document.querySelectorAll('.nav-btn');
+      if (navBtns[idx]) navBtns[idx].classList.add('active');
+    }
+  }
+  window.scrollTo(0, 0);
+}
+
+/* ═══════════════════════════════════════════════════
+   GLOBAL CATEGORIES + SERVICES (Service Master catalog)
+   ═══════════════════════════════════════════════════ */
+function renderCategories() {
+  const chipsHtml = `<div class="cat-chip ${!ACTIVE_CATEGORY?'active':''}" onclick="filterByCategory(null)"><i class="fas fa-grid-2"></i> అన్నీ</div>` +
+    CATEGORIES.filter(c => !c.parent_id).map(c => `
+      <div class="cat-chip ${ACTIVE_CATEGORY===c.id?'active':''}" onclick="filterByCategory(${c.id})">
+        <i class="${c.icon || 'fas fa-folder'}"></i> ${esc(c.name_te)}
+      </div>`).join('');
+  const svcRow = document.getElementById('cats-row');
+  if (svcRow) svcRow.innerHTML = chipsHtml;
+
+  const fullGrid = document.getElementById('cat-grid-full');
+  if (fullGrid) {
+    fullGrid.innerHTML = CATEGORIES.filter(c => !c.parent_id).map(c => {
+      const count = SERVICES.filter(s => s.category_id === c.id).length;
+      return `<div class="svc-card" onclick="filterByCategory(${c.id})">
+        <i class="${c.icon || 'fas fa-folder'}"></i>
+        <div class="svc-name">${esc(c.name_te)}</div>
+        <div class="svc-cat">${count} services</div>
+      </div>`;
+    }).join('');
+  }
+}
+
+function filterByCategory(catId) {
+  ACTIVE_CATEGORY = catId;
+  const si = document.getElementById('search-input'); if (si) si.value = '';
+  const hint = document.getElementById('search-hint'); if (hint) hint.style.display = 'none';
+  renderCategories();
+  renderServices();
+  showPage('page-services');
+}
+
+function renderServices(filtered) {
+  const list = filtered || (ACTIVE_CATEGORY ? SERVICES.filter(s => s.category_id === ACTIVE_CATEGORY) : SERVICES);
+  const countEl = document.getElementById('g-services-count');
+  if (countEl) countEl.textContent = list.length ? list.length + ' services' : '';
+  const grid = document.getElementById('g-services-grid');
+  if (!grid) return;
+  if (!list.length) {
+    grid.innerHTML = `<div class="empty" style="grid-column:1/-1">ఏమీ దొరకలేదు.</div>`;
+    return;
+  }
+  grid.innerHTML = list.map(s => {
+    const cat = s.service_catalog || {};
+    return `<div class="svc-card" onclick="openServiceDetail(${s.id})">
+      <i class="${cat.icon || 'fas fa-file-alt'}"></i>
+      <div class="svc-name">${esc(cat.name_te || s.key)}</div>
+      <div class="svc-cat">${s.categories ? esc(s.categories.name_te) : ''}</div>
+    </div>`;
+  }).join('');
+}
+
+let _searchLogTimer = null;
+function onSearch() {
+  const q = document.getElementById('search-input').value.trim().toLowerCase();
+  const hint = document.getElementById('search-hint');
+  if (!q) {
+    hint.style.display = 'none';
+    ACTIVE_CATEGORY = null;
+    renderCategories();
+    renderServices();
+    return;
+  }
+  const matched = SERVICES.filter(s => {
+    const cat = s.service_catalog || {};
+    return (cat.name_te || '').toLowerCase().includes(q) || (cat.name_en || '').toLowerCase().includes(q) || (s.key || '').toLowerCase().includes(q);
+  });
+  hint.style.display = 'block';
+  hint.textContent = `"${document.getElementById('search-input').value}" కోసం ${matched.length} ఫలితాలు`;
+  renderServices(matched);
+
+  clearTimeout(_searchLogTimer);
+  const rawQuery = document.getElementById('search-input').value.trim();
+  _searchLogTimer = setTimeout(() => { if (rawQuery) logEvent('search', { query_text: rawQuery, agent_id: AGENT.id }); }, 800);
+}
+
+/* ═══════════════════════════════════════════════════
+   SERVICE / SCHEME DETAIL — "సంప్రదించండి" always locked to THIS agent
+   ═══════════════════════════════════════════════════ */
+async function openServiceDetail(id) {
+  const s = SERVICES.find(x => x.id === id);
+  if (!s) return;
+  logEvent('service_view', { service_key: s.key, agent_id: AGENT.id });
+  const cat = s.service_catalog || {};
+  document.getElementById('dt-icon').innerHTML = `<i class="${cat.icon || 'fas fa-file-alt'}"></i>`;
+  document.getElementById('dt-title').textContent = cat.name_te || s.key;
+  document.getElementById('dt-body').innerHTML = `<div class="empty">లోడ్ అవుతోంది…</div>`;
+  document.getElementById('detail-overlay').classList.add('show');
+
+  const [docs, steps, faqs, videos, myCharge] = await Promise.all([
+    sb.from('service_documents').select('*').eq('service_id', id).order('sort_order'),
+    sb.from('service_process').select('*').eq('service_id', id).order('step_no'),
+    sb.from('service_faq').select('*').eq('service_id', id).order('sort_order'),
+    sb.from('service_videos').select('*').eq('service_id', id),
+    sb.from('agent_services').select('*').eq('agent_id', AGENT.id).eq('service_key', s.key).eq('is_active', true).maybeSingle(),
+  ]);
+  const relatedDownloads = G_DOWNLOADS.filter(d => d.service_id === id);
+  const relatedPosters = G_POSTERS.filter(p => p.service_id === id);
+
+  let html = '';
+  if (s.overview) html += `<div class="dblock"><h3>Overview</h3><p>${esc(s.overview)}</p></div>`;
+
+  const agentCharge = (myCharge.data && myCharge.data.agent_charge) || 0;
+  const total = (s.govt_fee || 0) + agentCharge;
+  if (s.govt_fee || s.processing_time || agentCharge) {
+    html += `<div class="fee-row dblock">
+      ${s.govt_fee ? `<div class="fee-box"><div class="k">Govt Fee</div><div class="v">₹${s.govt_fee}</div></div>` : ''}
+      ${agentCharge ? `<div class="fee-box"><div class="k">మా సెంటర్ Charge</div><div class="v">₹${agentCharge}</div></div>` : ''}
+      ${s.processing_time ? `<div class="fee-box"><div class="k">Processing Time</div><div class="v">${esc(s.processing_time)}</div></div>` : ''}
+    </div>`;
+  }
+
+  if (s.benefits) html += `<div class="dblock"><h3>Benefits</h3><p>${esc(s.benefits)}</p></div>`;
+  if (s.eligibility) html += `<div class="dblock"><h3>Eligibility</h3><p>${esc(s.eligibility)}</p></div>`;
+
+  const docsData = docs.data || [];
+  if (docsData.length) html += `<div class="dblock"><h3>అవసరమైన Documents</h3>${docsData.map(d => `<div class="doc-row"><i class="fas fa-check"></i> ${esc(d.doc_name)}</div>`).join('')}</div>`;
+
+  const stepsData = steps.data || [];
+  if (stepsData.length) html += `<div class="dblock"><h3>Step-by-Step Guide</h3>${stepsData.map(p => `
+    <div class="step-row"><div class="step-no">${p.step_no}</div><div><div class="step-title">${esc(p.title)}</div>${p.description ? `<div class="step-desc">${esc(p.description)}</div>` : ''}</div></div>`).join('')}</div>`;
+
+  if (relatedDownloads.length) html += `<div class="dblock"><h3>Downloads</h3>${relatedDownloads.map(d => `
+    <a class="list-item" href="${esc(d.file_url)}" target="_blank" style="margin-bottom:6px" onclick="logEvent('download_click',{service_key:'${s.key}',agent_id:'${AGENT.id}'})">
+      <i class="fas fa-file-arrow-down"></i><div style="flex:1;font-size:13px;font-weight:600">${esc(d.title)}</div>
+      <i class="fas fa-arrow-up-right-from-square" style="font-size:11px"></i></a>`).join('')}</div>`;
+
+  const videosData = videos.data || [];
+  if (videosData.length) html += `<div class="dblock"><h3>Videos</h3>${videosData.map(v => `
+    <a class="list-item" href="${esc(v.video_url)}" target="_blank" style="margin-bottom:6px">
+      <i class="fas fa-video"></i><div style="flex:1;font-size:13px;font-weight:600">${esc(v.title || 'Video')}</div>
+      <i class="fas fa-arrow-up-right-from-square" style="font-size:11px"></i></a>`).join('')}</div>`;
+
+  if (relatedPosters.length) html += `<div class="dblock"><h3>Posters</h3><div class="thumb-strip">${relatedPosters.map(p => `
+    <div class="thumb" onclick="window.open('${esc(p.image_url)}','_blank')"><img src="${esc(p.image_url)}"/></div>`).join('')}</div></div>`;
+
+  const faqData = faqs.data || [];
+  if (faqData.length) html += `<div class="dblock"><h3>FAQ</h3>${faqData.map((f,i) => `
+    <div class="faq-item" id="faq_${i}">
+      <div class="faq-q" onclick="document.getElementById('faq_${i}').classList.toggle('open')">
+        <span>${esc(f.question)}</span><i class="fas fa-chevron-down" style="font-size:10px;margin-top:3px"></i>
+      </div>
+      <div class="faq-a">${esc(f.answer)}</div>
+    </div>`).join('')}</div>`;
+
+  if (s.important_notes) html += `<div class="dblock"><h3>గమనిక</h3><p>${esc(s.important_notes)}</p></div>`;
+
+  // Contact section — always THIS agent, no picker.
+  html += `<div class="dblock"><h3>ఈ సర్వీస్ కోసం సంప్రదించండి</h3>
+    <div style="display:flex;gap:8px">
+      ${AGENT.phone ? `<a href="tel:${esc(AGENT.phone)}" onclick="logEvent('call_click',{agent_id:'${AGENT.id}',service_key:'${s.key}'})" style="flex:1;text-align:center;background:rgba(79,255,176,0.1);border:1px solid rgba(79,255,176,0.3);color:var(--accent);border-radius:8px;padding:9px 0;font-size:12.5px;font-weight:700;text-decoration:none"><i class="fas fa-phone"></i> కాల్</a>` : ''}
+      ${AGENT.whatsapp ? `<a href="https://wa.me/${esc(AGENT.whatsapp)}?text=${encodeURIComponent('Namaste, ' + (cat.name_te||s.key) + ' గురించి enquiry.')}" target="_blank" onclick="logEvent('whatsapp_click',{agent_id:'${AGENT.id}',service_key:'${s.key}'})" style="flex:1;text-align:center;background:rgba(37,211,102,0.1);border:1px solid rgba(37,211,102,0.3);color:#25d366;border-radius:8px;padding:9px 0;font-size:12.5px;font-weight:700;text-decoration:none"><i class="fab fa-whatsapp"></i> WhatsApp</a>` : ''}
+      <button onclick="openLeadForm('${s.key}')" style="flex:1;background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:9px 0;font-size:12.5px;font-weight:700;cursor:pointer;font-family:var(--font-te)"><i class="fas fa-phone-volume"></i> Callback</button>
+    </div>
+  </div>`;
+
+  document.getElementById('dt-body').innerHTML = html;
+}
+
+function openSchemeDetail(id) {
+  const s = SCHEMES.find(x => x.id === id);
+  if (!s) return;
+  document.getElementById('dt-icon').innerHTML = `<i class="fas fa-landmark"></i>`;
+  document.getElementById('dt-title').textContent = s.name_te;
+  document.getElementById('detail-overlay').classList.add('show');
+
+  let html = '';
+  if (s.overview) html += `<div class="dblock"><h3>Overview</h3><p>${esc(s.overview)}</p></div>`;
+  if (s.benefits) html += `<div class="dblock"><h3>Benefits</h3><p>${esc(s.benefits)}</p></div>`;
+  if (s.eligibility) html += `<div class="dblock"><h3>Eligibility</h3><p>${esc(s.eligibility)}</p></div>`;
+  if (s.required_documents) html += `<div class="dblock"><h3>Required Documents</h3><p>${esc(s.required_documents)}</p></div>`;
+  if (s.last_date) html += `<div class="dblock"><h3>Last Date</h3><p>${s.last_date}</p></div>`;
+  const links = [];
+  if (s.go_url) links.push(`<a class="list-item" href="${esc(s.go_url)}" target="_blank"><i class="fas fa-file-lines"></i><div style="flex:1;font-size:13px;font-weight:600">G.O.</div></a>`);
+  if (s.circular_url) links.push(`<a class="list-item" href="${esc(s.circular_url)}" target="_blank"><i class="fas fa-file-lines"></i><div style="flex:1;font-size:13px;font-weight:600">Circular</div></a>`);
+  if (links.length) html += `<div class="dblock">${links.join('')}</div>`;
+  if (s.poster_url) html += `<div class="dblock"><div class="thumb-strip"><div class="thumb" onclick="window.open('${esc(s.poster_url)}','_blank')"><img src="${esc(s.poster_url)}"/></div></div></div>`;
+
+  html += `<div class="dblock"><h3>సంప్రదించండి</h3>
+    <div style="display:flex;gap:8px">
+      ${AGENT.phone ? `<a href="tel:${esc(AGENT.phone)}" style="flex:1;text-align:center;background:rgba(79,255,176,0.1);border:1px solid rgba(79,255,176,0.3);color:var(--accent);border-radius:8px;padding:9px 0;font-size:12.5px;font-weight:700;text-decoration:none"><i class="fas fa-phone"></i> కాల్</a>` : ''}
+      ${AGENT.whatsapp ? `<a href="https://wa.me/${esc(AGENT.whatsapp)}" target="_blank" style="flex:1;text-align:center;background:rgba(37,211,102,0.1);border:1px solid rgba(37,211,102,0.3);color:#25d366;border-radius:8px;padding:9px 0;font-size:12.5px;font-weight:700;text-decoration:none"><i class="fab fa-whatsapp"></i> WhatsApp</a>` : ''}
+    </div>
+  </div>`;
+
+  document.getElementById('dt-body').innerHTML = html;
+}
+
+function closeDetail() {
+  document.getElementById('detail-overlay').classList.remove('show');
+}
+
+/* ── Request Callback (lead) — always targets THIS agent ── */
+let LEAD_SERVICE_KEY = null;
+function openLeadForm(serviceKey) {
+  LEAD_SERVICE_KEY = serviceKey;
+  document.getElementById('lead-form-sub').textContent = `${AGENT.shop_name} కి పంపబడుతుంది`;
+  document.getElementById('lead-name').value = '';
+  document.getElementById('lead-phone').value = '';
+  document.getElementById('lead-message').value = '';
+  document.getElementById('lead-form-err').style.display = 'none';
+  document.getElementById('lead-overlay').style.display = 'flex';
+}
+function closeLeadForm() {
+  document.getElementById('lead-overlay').style.display = 'none';
+}
+async function submitLeadForm() {
+  const errEl = document.getElementById('lead-form-err');
+  errEl.style.display = 'none';
+  const name = document.getElementById('lead-name').value.trim();
+  const phone = document.getElementById('lead-phone').value.trim();
+  const message = document.getElementById('lead-message').value.trim();
+  if (!phone || phone.length < 10) {
+    errEl.textContent = 'సరైన మొబైల్ నంబర్ పెట్టండి';
+    errEl.style.display = 'block';
+    return;
+  }
+  try {
+    const { error } = await sb.from('leads').insert({
+      agent_id: AGENT.id, catalog_key: LEAD_SERVICE_KEY,
+      customer_name: name || null, customer_phone: phone, message: message || null,
+      source: 'agent_page', status: 'new',
+    });
+    if (error) throw error;
+    closeLeadForm();
+    alert('✓ మీ రిక్వెస్ట్ పంపబడింది — త్వరలో మేము మిమ్మల్ని సంప్రదిస్తాము.');
+  } catch (e) {
+    errEl.textContent = 'పంపడం విఫలమైంది: ' + e.message;
+    errEl.style.display = 'block';
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+   GLOBAL Notifications / News / Greetings / Schemes / Downloads / Posters
+   ═══════════════════════════════════════════════════ */
+function renderGlobalNotifications() {
+  if (!G_NOTIFICATIONS.length) return;
+  document.getElementById('sec-g-notifications').style.display = 'block';
+  document.getElementById('g-notifications-list').innerHTML = G_NOTIFICATIONS.map(n => `
+    <div class="list-item" ${n.attachment_url ? `onclick="window.open('${esc(n.attachment_url)}','_blank')" style="cursor:pointer"` : ''}>
+      <i class="fas fa-bullhorn"></i>
+      <div style="flex:1">
+        <div style="font-weight:600;font-size:13px">${esc(n.title)}</div>
+        ${n.description ? `<div style="font-size:12px;color:var(--text2)">${esc(n.description).slice(0,80)}</div>` : ''}
+      </div>
+    </div>`).join('');
+}
+
+function renderGlobalNews() {
+  if (!G_NEWS.length) return;
+  document.getElementById('sec-g-news').style.display = 'block';
+  document.getElementById('g-news-list').innerHTML = G_NEWS.map(n => `
+    <div class="list-item" style="cursor:default">
+      <i class="fas fa-newspaper" style="color:#3b82f6"></i>
+      <div style="flex:1"><div style="font-weight:600;font-size:13px">${esc(n.title)}</div>${n.description ? `<div style="font-size:12px;color:var(--text2)">${esc(n.description).slice(0,90)}</div>` : ''}</div>
+    </div>`).join('');
+}
+
+function renderGlobalGreetings() {
+  if (!G_GREETINGS.length) return;
+  document.getElementById('sec-g-greetings').style.display = 'block';
+  document.getElementById('g-greetings-strip').innerHTML = G_GREETINGS.map(g => `
+    <div class="thumb" onclick="window.open('${esc(g.image_url)}','_blank')"><img src="${esc(g.image_url)}"/></div>`).join('');
+}
+
+function renderGlobalSchemes() {
+  if (!SCHEMES.length) return;
+  document.getElementById('sec-g-schemes').style.display = 'block';
+  document.getElementById('g-schemes-list').innerHTML = SCHEMES.map(s => `
+    <div class="list-item" onclick="openSchemeDetail(${s.id})">
+      <i class="fas fa-landmark" style="color:#8b5cf6"></i>
+      <div style="flex:1"><div style="font-weight:600;font-size:13px">${esc(s.name_te)}</div><div style="font-size:12px;color:var(--text2)">${s.categories ? esc(s.categories.name_te) : ''}${s.last_date ? ` · Last date: ${s.last_date}` : ''}</div></div>
+      <i class="fas fa-chevron-right" style="font-size:11px;color:var(--text2)"></i>
+    </div>`).join('');
+}
+
+function renderGlobalDownloads() {
+  if (!G_DOWNLOADS.length) return;
+  document.getElementById('sec-g-downloads').style.display = 'block';
+  document.getElementById('g-downloads-list').innerHTML = G_DOWNLOADS.map(d => `
+    <a class="list-item" href="${esc(d.file_url)}" target="_blank" onclick="logEvent('download_click',{service_key:null,agent_id:'${AGENT.id}'})">
+      <i class="fas fa-file-arrow-down"></i><div style="flex:1;font-size:13px;font-weight:600">${esc(d.title)}</div>
+      <i class="fas fa-arrow-up-right-from-square" style="font-size:11px"></i></a>`).join('');
+}
+
+function renderGlobalPosters() {
+  if (!G_POSTERS.length) return;
+  document.getElementById('sec-g-posters').style.display = 'block';
+  document.getElementById('g-posters-strip').innerHTML = G_POSTERS.map(p => `
+    <div class="thumb" onclick="window.open('${esc(p.image_url)}','_blank')"><img src="${esc(p.image_url)}"/></div>`).join('');
+}
+
+function renderContactTab(agent) {
+  const body = document.getElementById('contact-body');
+  if (!body) return;
+  let html = `<div class="list-item" style="cursor:default">
+    <i class="fas fa-shop"></i>
+    <div style="flex:1"><div style="font-weight:600;font-size:13.5px">${esc(agent.shop_name)}</div>${agent.city ? `<div style="font-size:12px;color:var(--text2)">${esc(agent.city)}</div>` : ''}</div>
+  </div>`;
+  if (agent.phone) html += `<a class="list-item" href="tel:${esc(agent.phone)}" onclick="logEvent('call_click',{agent_id:'${agent.id}'})">
+    <i class="fas fa-phone"></i><div style="flex:1;font-size:13px;font-weight:600">${esc(agent.phone)}</div></a>`;
+  if (agent.whatsapp) html += `<a class="list-item" href="https://wa.me/${esc(agent.whatsapp)}" target="_blank" onclick="logEvent('whatsapp_click',{agent_id:'${agent.id}'})">
+    <i class="fab fa-whatsapp"></i><div style="flex:1;font-size:13px;font-weight:600">WhatsApp</div></a>`;
+  if (agent.map_embed_url) html += `<a class="list-item" href="${esc(agent.map_embed_url)}" target="_blank">
+    <i class="fas fa-location-dot"></i><div style="flex:1;font-size:13px;font-weight:600">Google Maps లో చూడండి</div></a>`;
+  if (agent.footer_text) html += `<div class="cta-note" style="margin-top:12px">${esc(agent.footer_text)}</div>`;
+  body.innerHTML = html;
 }
 
 function grpToggle(i) {
