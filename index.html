@@ -2420,6 +2420,7 @@ let MC_CURRENT_TYPE = null;
 const MC_TYPES = [
   { key:'ticker', label:'Ticker',  icon:'fa-scroll' },
   { key:'update', label:'Update',  icon:'fa-bullhorn' },
+  { key:'banner', label:'Banner',  icon:'fa-panorama' },
   { key:'service',label:'Service', icon:'fa-hand-holding-hand' },
   { key:'pdf',    label:'PDF',     icon:'fa-file-pdf' },
   { key:'doc',    label:'Doc',     icon:'fa-file-lines' },
@@ -2446,6 +2447,11 @@ const MC_FIELD_DEFS = {
     { id:'value', label:'వివరణ (Description)', type:'textarea' },
     { id:'link',  label:'లింక్ (optional)', type:'url' },
     { id:'icon',  label:'Icon (fas fa-…, optional)', type:'text', placeholder:'fas fa-bullhorn' },
+  ],
+  banner: [
+    { id:'title', label:'Caption (optional)', type:'text' },
+    { id:'link',  label:'Image URL', type:'url', required:true },
+    { id:'extra', label:'క్లిక్ చేస్తే వెళ్ళే లింక్ (optional)', type:'url' },
   ],
   service: [
     { id:'title', label:'సర్వీస్ పేరు', type:'text', required:true },
