@@ -1990,6 +1990,13 @@ body.light-mode .wc-btn-confirm { color:#fff;background:#0a8a5a; }
     <button class="hbtn" id="mycontent-btn" onclick="openMyContentModal()" title="నా కంటెంట్ యాడ్ చేయండి">
       <i class="fas fa-cloud-arrow-up"></i>
     </button>
+    <button class="hbtn" id="myservices-btn" onclick="openMyServicesModal()" title="నా సర్వీసులు (Marketplace)">
+      <i class="fas fa-store"></i>
+    </button>
+    <button class="hbtn" id="leads-btn" onclick="openLeadsModal()" title="లీడ్స్" style="position:relative">
+      <i class="fas fa-bell-concierge"></i>
+      <span id="leads-badge" style="display:none;position:absolute;top:2px;right:2px;background:#f87171;color:#fff;font-size:9px;font-weight:700;border-radius:50%;width:15px;height:15px;align-items:center;justify-content:center"></span>
+    </button>
     <a id="fab-call" href="#" class="hbtn"><i class="fas fa-phone"></i></a>
     <a id="fab-wa" href="#" target="_blank" class="hbtn" style="color:#25d366"><i class="fab fa-whatsapp"></i></a>
     <button id="chpass-btn" onclick="openCpModal()" title="Password మార్చండి"><i class="fas fa-key"></i></button>
@@ -2237,6 +2244,45 @@ body.light-mode .wc-btn-confirm { color:#fff;background:#0a8a5a; }
     <div id="mc-my-list" style="display:flex;flex-direction:column;gap:8px">
       <div style="font-size:12.5px;color:var(--text2);font-family:var(--font-te)">Loading…</div>
     </div>
+  </div>
+</div>
+
+<!-- ═══ MY SERVICES MODAL (marketplace activation) ═══ -->
+<div id="myservices-modal" style="display:none;position:fixed;inset:0;z-index:850;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);align-items:flex-end;justify-content:center;padding:0" onclick="if(event.target===this) closeMyServicesModal()">
+  <div style="background:var(--bg2);border-radius:20px 20px 0 0;width:100%;max-width:560px;max-height:88vh;overflow-y:auto;padding:20px 20px 32px;border-top:1px solid var(--border)">
+    <div style="width:40px;height:4px;background:var(--border);border-radius:4px;margin:0 auto 16px"></div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+      <div style="width:40px;height:40px;border-radius:11px;background:rgba(79,255,176,0.12);border:1.5px solid var(--accent);display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:17px;flex-shrink:0">
+        <i class="fas fa-store"></i>
+      </div>
+      <div style="flex:1">
+        <div style="font-size:15px;font-weight:700;font-family:var(--font-te)">నా సర్వీసులు</div>
+        <div style="font-size:11.5px;color:var(--text2);font-family:var(--font-te)">Marketplace లో మీరు కనిపించే services</div>
+      </div>
+      <button onclick="closeMyServicesModal()" style="background:var(--bg3);border:1px solid var(--border);color:var(--text2);width:32px;height:32px;border-radius:9px;cursor:pointer"><i class="fas fa-times"></i></button>
+    </div>
+    <div style="font-size:11.5px;color:var(--text2);margin-bottom:14px;font-family:var(--font-te)">
+      ఏ సర్వీస్ ఆన్ చేస్తే, ఆ సర్వీస్ కోసం customer home page లో వెతికినప్పుడు మీ సెంటర్ కూడా కనిపిస్తుంది. మీ charge పెట్టుకోండి — govt fee కి అదనంగా ఇది కనిపిస్తుంది.
+    </div>
+    <div id="ms-list" style="display:flex;flex-direction:column;gap:8px">Loading…</div>
+  </div>
+</div>
+
+<!-- ═══ LEADS INBOX MODAL ═══ -->
+<div id="leads-modal" style="display:none;position:fixed;inset:0;z-index:850;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);align-items:flex-end;justify-content:center;padding:0" onclick="if(event.target===this) closeLeadsModal()">
+  <div style="background:var(--bg2);border-radius:20px 20px 0 0;width:100%;max-width:560px;max-height:88vh;overflow-y:auto;padding:20px 20px 32px;border-top:1px solid var(--border)">
+    <div style="width:40px;height:4px;background:var(--border);border-radius:4px;margin:0 auto 16px"></div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+      <div style="width:40px;height:40px;border-radius:11px;background:rgba(251,191,36,0.12);border:1.5px solid var(--yellow);display:flex;align-items:center;justify-content:center;color:var(--yellow);font-size:17px;flex-shrink:0">
+        <i class="fas fa-bell-concierge"></i>
+      </div>
+      <div style="flex:1">
+        <div style="font-size:15px;font-weight:700;font-family:var(--font-te)">లీడ్స్</div>
+        <div style="font-size:11.5px;color:var(--text2);font-family:var(--font-te)">Customers మిమ్మల్ని marketplace నుండి సంప్రదించారు</div>
+      </div>
+      <button onclick="closeLeadsModal()" style="background:var(--bg3);border:1px solid var(--border);color:var(--text2);width:32px;height:32px;border-radius:9px;cursor:pointer"><i class="fas fa-times"></i></button>
+    </div>
+    <div id="leads-list" style="display:flex;flex-direction:column;gap:8px">Loading…</div>
   </div>
 </div>
 
@@ -2791,7 +2837,11 @@ async function loadData() {
         }));
 
       CLIENT = buildClient([...profileRows, ...contentRows]);
-      if (CLIENT) { renderAll(); return; }
+      if (CLIENT) {
+        renderAll();
+        refreshLeadsBadgeQuietly();
+        return;
+      }
       throw new Error('No data from Supabase');
     } catch(e) {
       console.warn('Supabase fetch failed:', e.message);
@@ -3148,6 +3198,188 @@ async function deleteMyRow(id) {
     renderMcUsageLine();
   } catch (e) {
     alert('Delete failed: ' + e.message);
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+   MY SERVICES — marketplace activation (agent_services)
+   Agent picks which global Service Master entries they offer,
+   and sets their own charge on top of the govt fee.
+   ═══════════════════════════════════════════════════ */
+let ALL_MASTER_SERVICES = [];
+let MY_ACTIVATED_SERVICES = [];
+
+async function openMyServicesModal() {
+  if (!AGENT_DB) return;
+  document.getElementById('myservices-modal').style.display = 'flex';
+  const list = document.getElementById('ms-list');
+  list.innerHTML = 'Loading…';
+
+  const [svcRes, activeRes] = await Promise.all([
+    sb.from('services').select('*, service_catalog(name_te, name_en, icon), categories(name_te)').eq('is_active', true),
+    sb.from('agent_services').select('*').eq('agent_id', AGENT_DB.id),
+  ]);
+  ALL_MASTER_SERVICES = svcRes.data || [];
+  MY_ACTIVATED_SERVICES = activeRes.data || [];
+  renderMyServicesList();
+}
+
+function closeMyServicesModal() {
+  document.getElementById('myservices-modal').style.display = 'none';
+}
+
+function renderMyServicesList() {
+  const list = document.getElementById('ms-list');
+  if (!ALL_MASTER_SERVICES.length) {
+    list.innerHTML = `<div style="font-size:12.5px;color:var(--text2);font-family:var(--font-te);text-align:center;padding:16px 0">
+      ఇంకా ఏ global service లేదు — admin దీన్ని Service Master లో యాడ్ చేయాలి.</div>`;
+    return;
+  }
+  list.innerHTML = ALL_MASTER_SERVICES.map(s => {
+    const cat = s.service_catalog || {};
+    const activated = MY_ACTIVATED_SERVICES.find(a => a.service_key === s.key);
+    const isOn = !!(activated && activated.is_active);
+    return `<div style="background:var(--bg3);border-radius:12px;padding:12px 14px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <i class="${cat.icon || 'fas fa-file-alt'}" style="color:var(--accent);width:18px;text-align:center"></i>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:13px;font-weight:700;font-family:var(--font-te)">${escMc(cat.name_te || s.key)}</div>
+          <div style="font-size:10.5px;color:var(--text2)">${s.categories ? escMc(s.categories.name_te) : ''}${s.govt_fee ? ` · Govt Fee ₹${s.govt_fee}` : ''}</div>
+        </div>
+        <button onclick="toggleMyService('${s.key}', ${isOn})" style="background:${isOn?'rgba(79,255,176,0.15)':'var(--bg2)'};border:1px solid ${isOn?'var(--accent)':'var(--border)'};color:${isOn?'var(--accent)':'var(--text2)'};border-radius:9px;padding:6px 12px;font-size:11.5px;font-weight:700;cursor:pointer;font-family:var(--font-te)">
+          ${isOn ? '✓ ఆన్' : 'ఆఫ్'}
+        </button>
+      </div>
+      ${isOn ? `<div style="margin-top:9px;display:flex;align-items:center;gap:8px">
+        <label style="font-size:11px;color:var(--text2);font-family:var(--font-te)">నా Charge (₹)</label>
+        <input type="number" id="ms-charge-${s.key}" value="${activated.agent_charge || 0}" class="al-input" style="flex:0 0 100px;padding:6px 10px;font-size:12px"/>
+        <button onclick="saveMyServiceCharge('${s.key}')" style="background:var(--accent);color:#0a0f1a;border:none;border-radius:8px;padding:6px 12px;font-size:11.5px;font-weight:700;cursor:pointer">Save</button>
+      </div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+async function toggleMyService(serviceKey, currentlyOn) {
+  try {
+    if (currentlyOn) {
+      const { error } = await sb.from('agent_services').update({ is_active: false }).eq('agent_id', AGENT_DB.id).eq('service_key', serviceKey);
+      if (error) throw error;
+    } else {
+      const existing = MY_ACTIVATED_SERVICES.find(a => a.service_key === serviceKey);
+      if (existing) {
+        const { error } = await sb.from('agent_services').update({ is_active: true }).eq('id', existing.id);
+        if (error) throw error;
+      } else {
+        const { error } = await sb.from('agent_services').insert({ agent_id: AGENT_DB.id, service_key: serviceKey, agent_charge: 0, is_active: true });
+        if (error) throw error;
+      }
+    }
+    const { data } = await sb.from('agent_services').select('*').eq('agent_id', AGENT_DB.id);
+    MY_ACTIVATED_SERVICES = data || [];
+    renderMyServicesList();
+  } catch (e) {
+    alert('Failed: ' + e.message);
+  }
+}
+
+async function saveMyServiceCharge(serviceKey) {
+  const el = document.getElementById('ms-charge-' + serviceKey);
+  const charge = parseFloat(el.value) || 0;
+  try {
+    const { error } = await sb.from('agent_services').update({ agent_charge: charge }).eq('agent_id', AGENT_DB.id).eq('service_key', serviceKey);
+    if (error) throw error;
+    showShareToast('✓ Charge saved');
+  } catch (e) {
+    alert('Failed: ' + e.message);
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+   LEADS INBOX — customers who requested a callback from the
+   marketplace (home.html) land here.
+   ═══════════════════════════════════════════════════ */
+const LEAD_STATUS_LABELS = { new:'కొత్తది', contacted:'సంప్రదించాం', docs_received:'Docs వచ్చాయి', in_progress:'జరుగుతోంది', completed:'పూర్తయింది', rejected:'తిరస్కరించాం' };
+const LEAD_STATUS_ORDER = ['new','contacted','docs_received','in_progress','completed','rejected'];
+let MY_LEADS = [];
+
+async function openLeadsModal() {
+  if (!AGENT_DB) return;
+  document.getElementById('leads-modal').style.display = 'flex';
+  await loadMyLeads();
+}
+
+function closeLeadsModal() {
+  document.getElementById('leads-modal').style.display = 'none';
+}
+
+async function loadMyLeads() {
+  const list = document.getElementById('leads-list');
+  list.innerHTML = 'Loading…';
+  const { data, error } = await sb.from('leads').select('*').eq('agent_id', AGENT_DB.id).order('created_at', { ascending: false });
+  if (error) { list.innerHTML = `<div style="color:#f87171;font-size:12.5px">Load failed: ${escMc(error.message)}</div>`; return; }
+  MY_LEADS = data || [];
+  renderLeadsList();
+  updateLeadsBadge();
+}
+
+function updateLeadsBadge() {
+  const badge = document.getElementById('leads-badge');
+  const newCount = MY_LEADS.filter(l => l.status === 'new').length;
+  if (badge) {
+    if (newCount > 0) { badge.textContent = newCount > 9 ? '9+' : newCount; badge.style.display = 'flex'; }
+    else badge.style.display = 'none';
+  }
+}
+
+// Cheap badge-only refresh — used after every loadData() so the leads
+// count stays current without opening the Leads modal or refetching its list.
+async function refreshLeadsBadgeQuietly() {
+  if (!AGENT_DB) return;
+  try {
+    const { count } = await sb.from('leads').select('id', { count: 'exact', head: true }).eq('agent_id', AGENT_DB.id).eq('status', 'new');
+    const badge = document.getElementById('leads-badge');
+    if (!badge) return;
+    if (count > 0) { badge.textContent = count > 9 ? '9+' : count; badge.style.display = 'flex'; }
+    else badge.style.display = 'none';
+  } catch (e) { /* silent — badge is a nice-to-have, never block the page on it */ }
+}
+
+function renderLeadsList() {
+  const list = document.getElementById('leads-list');
+  if (!MY_LEADS.length) {
+    list.innerHTML = `<div style="font-size:12.5px;color:var(--text2);font-family:var(--font-te);text-align:center;padding:16px 0">
+      ఇంకా ఏ లీడ్ రాలేదు. "నా సర్వీసులు" లో మీరు అందించే services ఆన్ చేస్తే, customers home page నుండి మిమ్మల్ని కనుక్కోగలుగుతారు.</div>`;
+    return;
+  }
+  list.innerHTML = MY_LEADS.map(l => {
+    const statusOptions = LEAD_STATUS_ORDER.map(s => `<option value="${s}" ${l.status===s?'selected':''}>${LEAD_STATUS_LABELS[s]}</option>`).join('');
+    return `<div style="background:var(--bg3);border-radius:12px;padding:12px 14px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+        <span style="font-size:13px;font-weight:700;font-family:var(--font-te)">${escMc(l.customer_name || 'పేరు లేదు')}</span>
+        <span style="font-size:10px;color:var(--text2);margin-left:auto">${new Date(l.created_at).toLocaleDateString('te-IN')}</span>
+      </div>
+      ${l.catalog_key ? `<div style="font-size:11px;color:var(--accent);margin-bottom:4px">సర్వీస్: ${escMc(l.catalog_key)}</div>` : ''}
+      ${l.message ? `<div style="font-size:12px;color:var(--text2);margin-bottom:8px">${escMc(l.message)}</div>` : ''}
+      <div style="display:flex;align-items:center;gap:8px">
+        <a href="tel:${escMc(l.customer_phone)}" style="flex:1;background:rgba(79,255,176,0.1);border:1px solid rgba(79,255,176,0.3);color:var(--accent);border-radius:8px;padding:7px 0;text-align:center;font-size:12px;font-weight:700;text-decoration:none">
+          <i class="fas fa-phone"></i> ${escMc(l.customer_phone)}
+        </a>
+        <select onchange="updateLeadStatus(${l.id}, this.value)" class="al-input" style="flex:0 0 130px;padding:6px 8px;font-size:11.5px">${statusOptions}</select>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function updateLeadStatus(leadId, newStatus) {
+  try {
+    const { error } = await sb.from('leads').update({ status: newStatus }).eq('id', leadId);
+    if (error) throw error;
+    const l = MY_LEADS.find(x => x.id === leadId);
+    if (l) l.status = newStatus;
+    updateLeadsBadge();
+    showShareToast('✓ Status అప్‌డేట్ అయ్యింది');
+  } catch (e) {
+    alert('Failed: ' + e.message);
   }
 }
 
