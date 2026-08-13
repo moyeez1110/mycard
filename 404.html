@@ -14,38 +14,61 @@
     --bg:#0a0f1a; --bg2:#111827; --bg3:#1a2235; --card:#141e2e;
     --border:rgba(255,255,255,0.08);
     --text:#e8edf5; --text2:#8899aa;
-    --radius:14px; --shadow:0 4px 24px rgba(0,0,0,0.4);
-    --font-te:'Noto Sans Telugu',sans-serif;
-    --font:'Inter',sans-serif;
+    --radius:14px;
+    --font-te:'Noto Sans Telugu',sans-serif; --font:'Inter',sans-serif;
+    --navh:60px;
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  body{background:var(--bg);color:var(--text);font-family:var(--font-te),var(--font);min-height:100vh;padding-bottom:78px}
+  body{background:var(--bg);color:var(--text);font-family:var(--font-te),var(--font);min-height:100vh;padding-bottom:calc(var(--navh) + 10px)}
   .wrap{max-width:640px;margin:0 auto;padding:0 16px}
-  .hero{background:var(--bg2);border-bottom:1px solid var(--border);padding:28px 16px 20px;text-align:center}
-  .hero-avatar{width:64px;height:64px;border-radius:16px;background:var(--bg3);border:2px solid var(--accent);
-    display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:var(--accent);margin:0 auto 12px}
-  .hero-name{font-size:19px;font-weight:700}
-  .hero-tag{font-size:13px;color:var(--text2);margin-top:3px}
-  .contact-row{display:flex;gap:8px;justify-content:center;margin-top:16px;flex-wrap:wrap}
-  .cbtn{display:flex;align-items:center;gap:6px;padding:9px 16px;border-radius:20px;font-size:13px;font-weight:600;
-    text-decoration:none;color:var(--text);background:var(--bg3);border:1px solid var(--border)}
-  .cbtn.wa{background:rgba(37,211,102,0.12);border-color:rgba(37,211,102,0.3);color:#25d366}
+  /* Header */
+  header{display:flex;align-items:center;gap:10px;padding:10px 16px;background:var(--bg2);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50}
+  header .logo{width:34px;height:34px;border-radius:9px;background:rgba(79,255,176,0.12);border:1.5px solid var(--accent);
+    display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:14px}
+  header .htext{flex:1;min-width:0}
+  header .hname{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  header .htag{font-size:10px;color:var(--text2)}
+  header a.hicon{width:32px;height:32px;border-radius:8px;background:var(--bg3);display:flex;align-items:center;justify-content:center;color:var(--text2);text-decoration:none}
+  /* Ticker */
+  .ticker{display:none;background:rgba(79,255,176,0.08);border-bottom:1px solid var(--border);overflow:hidden;white-space:nowrap;position:relative}
+  .ticker .tinner{display:inline-block;padding:7px 0;animation:tickmove 22s linear infinite}
+  .ticker span{padding:0 28px;font-size:12px;color:var(--accent-dim);font-weight:600}
+  @keyframes tickmove{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+  /* Hero */
+  .hero{background:var(--bg2);padding:22px 16px 18px;text-align:center;border-bottom:1px solid var(--border)}
+  .hero-avatar{width:60px;height:60px;border-radius:16px;background:var(--bg3);border:2px solid var(--accent);
+    display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:var(--accent);margin:0 auto 10px}
+  .hero-name{font-size:18px;font-weight:700}
+  .hero-loc{font-size:12.5px;color:var(--text2);margin-top:3px}
+  .contact-row{display:flex;gap:8px;justify-content:center;margin-top:14px}
+  .cbtn{flex:1;max-width:160px;display:flex;align-items:center;justify-content:center;gap:6px;padding:10px;border-radius:11px;
+    font-size:13px;font-weight:700;text-decoration:none;color:#0a0f1a;background:var(--accent);border:none}
+  .cbtn.wa{background:#25d366}
   .install-bar{display:none;align-items:center;gap:10px;background:rgba(79,255,176,0.1);border:1px solid rgba(79,255,176,0.3);
-    border-radius:12px;padding:10px 14px;margin:14px 16px 0;font-size:12.5px}
+    border-radius:12px;padding:10px 14px;margin:14px 16px 0;font-size:12px}
   .install-bar.show{display:flex}
-  .install-bar button{margin-left:auto;background:var(--accent);color:#0a0f1a;border:none;padding:7px 14px;border-radius:8px;font-weight:700;font-size:12.5px}
-  .section{margin-top:22px}
+  .install-bar button{margin-left:auto;background:var(--accent);color:#0a0f1a;border:none;padding:7px 12px;border-radius:8px;font-weight:700;font-size:12px}
+  /* Tabs / pages */
+  .page{display:none;padding:18px 16px 8px}
+  .page.active{display:block}
+  .section{margin-bottom:22px}
   .section-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
-  .section-head h2{font-size:15px;font-weight:700}
+  .section-head h2{font-size:14.5px;font-weight:700}
+  .section-count{font-size:11px;color:var(--text2);background:var(--bg3);padding:2px 8px;border-radius:20px}
   .section-line{flex:1;height:1px;background:var(--border)}
-  .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px}
-  .services-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-  .service-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 10px;text-align:center}
-  .service-card i{font-size:20px;color:var(--accent);margin-bottom:6px;display:block}
-  .service-name{font-size:12.5px;font-weight:600}
+  /* Services grid */
+  .services-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+  .service-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 6px;text-align:center}
+  .service-card i{font-size:18px;color:var(--accent);margin-bottom:5px;display:block}
+  .service-card .sname{font-size:10.5px;font-weight:600;line-height:1.25}
+  /* Generic list item */
   .list-item{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--border);
     border-radius:11px;padding:11px 13px;margin-bottom:8px;text-decoration:none;color:var(--text)}
-  .list-item i{color:var(--accent);width:18px;text-align:center}
+  .list-item i.lead{color:var(--accent);width:18px;text-align:center;flex-shrink:0}
+  .list-item .body{flex:1;min-width:0}
+  .list-item .title{font-weight:600;font-size:13px}
+  .list-item .sub{font-size:11.5px;color:var(--text2);margin-top:2px}
+  /* Accordion (service packages + required docs) */
   .acc-item{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:8px;overflow:hidden}
   .acc-header{display:flex;align-items:center;gap:10px;padding:13px;cursor:pointer}
   .acc-header i.grp{color:#8b5cf6}
@@ -60,472 +83,174 @@
   .sub-name{font-size:13px;font-weight:600}
   .sub-docs{font-size:11px;color:var(--text2);margin-top:2px}
   .sub-price{font-weight:700;color:var(--accent);white-space:nowrap}
-  .empty{font-size:13px;color:var(--text2);text-align:center;padding:20px 0}
-  .footer{text-align:center;font-size:11px;color:var(--text2);margin-top:30px}
+  .req-doc-line{display:flex;gap:8px;align-items:flex-start;padding:6px 0;font-size:12.5px}
+  .req-doc-line i{color:var(--accent);font-size:11px;margin-top:3px}
+  /* Notices: voice/tts/pdf/text */
+  .notice-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:13px;margin-bottom:10px}
+  .notice-date{font-size:10.5px;color:var(--text2);margin-bottom:6px}
+  .notice-text{font-size:13px;line-height:1.6;margin-bottom:8px}
+  .voice-row{display:flex;align-items:center;gap:10px}
+  .play-btn{width:34px;height:34px;border-radius:50%;background:var(--accent);color:#0a0f1a;border:none;flex-shrink:0;font-size:13px}
+  .listen-btn{display:inline-flex;align-items:center;gap:6px;background:var(--bg3);border:1px solid var(--border);color:var(--accent);
+    padding:6px 12px;border-radius:20px;font-size:12px;font-weight:600}
+  .pdf-download{display:inline-flex;align-items:center;gap:6px;color:var(--accent);font-size:12.5px;font-weight:600;text-decoration:none}
+  /* Address tab */
+  .addr-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:14px}
+  .addr-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+  .addr-row:last-child{border-bottom:none}
+  .addr-row i{color:var(--accent);width:20px;text-align:center}
+  .addr-label{font-size:10.5px;color:var(--text2)}
+  .addr-value{font-size:13.5px;font-weight:600}
+  .map-embed{width:100%;height:260px;border:none;border-radius:12px;margin-top:10px}
+  .empty{font-size:13px;color:var(--text2);text-align:center;padding:24px 0}
+  .footer{text-align:center;font-size:11px;color:var(--text2);margin:20px 0 6px}
   .loading{display:flex;align-items:center;justify-content:center;min-height:70vh;font-size:13px;color:var(--text2)}
-
-  /* Ticker */
-  .ticker-bar{display:none;background:var(--bg3);border-top:1px solid var(--border);border-bottom:1px solid var(--border);
-    overflow:hidden;white-space:nowrap;padding:9px 0}
-  .ticker-bar.show{display:block}
-  .ticker-track{display:inline-block;padding-left:100%;animation:ticker-scroll 22s linear infinite;font-size:12.5px;font-weight:600;color:var(--accent)}
-  .ticker-track i{margin-right:8px}
-  @keyframes ticker-scroll{0%{transform:translateX(0)}100%{transform:translateX(-100%)}}
-
-  /* Announcements */
-  .ann-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:13px;margin-bottom:9px}
-  .ann-head{display:flex;align-items:center;gap:8px;margin-bottom:2px}
-  .ann-head i{color:var(--accent);width:16px;text-align:center}
-  .ann-title{font-size:13.5px;font-weight:700;flex:1}
-  .ann-date{font-size:10.5px;color:var(--text2)}
-  .ann-body{font-size:12.5px;color:var(--text2);margin-top:4px;line-height:1.5}
-  .ann-new{font-size:9.5px;font-weight:700;background:rgba(79,255,176,0.15);color:var(--accent);padding:1px 6px;border-radius:5px}
-  .ann-audio{width:100%;margin-top:8px;height:36px}
-  .ann-poster-img{width:100%;border-radius:10px;margin-top:8px;display:block;cursor:pointer}
-  .ann-link-btn{display:inline-flex;align-items:center;gap:6px;margin-top:8px;background:rgba(79,255,176,0.1);
-    color:var(--accent);border:1px solid rgba(79,255,176,0.3);padding:7px 13px;border-radius:9px;font-size:12px;font-weight:600;text-decoration:none}
-  .tts-speak-btn{display:inline-flex;align-items:center;gap:6px;margin-top:8px;background:var(--bg3);border:1px solid var(--border);
-    color:var(--text);padding:7px 13px;border-radius:9px;font-size:12px;font-weight:600;cursor:pointer}
-
-  /* Page tabs (Home / Categories / Services / Contact) */
-  .page{display:none}
-  .page.active{display:block}
-  #bottom-nav{
-    position:fixed;bottom:0;left:0;right:0;z-index:100;
-    background:var(--bg2);border-top:1px solid var(--border);
-    display:flex;padding:0 0 env(safe-area-inset-bottom);
-    max-width:640px;margin:0 auto
-  }
-  .nav-btn{
-    flex:1;padding:10px 0;display:flex;flex-direction:column;
-    align-items:center;justify-content:center;gap:4px;color:var(--text2);
-    background:transparent;border:none;font-size:10px;font-weight:600;
-    font-family:var(--font-te);cursor:pointer;letter-spacing:0.3px
-  }
-  .nav-btn i{font-size:18px}
+  /* Bottom nav */
+  .bottom-nav{position:fixed;bottom:0;left:0;right:0;height:var(--navh);background:var(--bg2);border-top:1px solid var(--border);
+    display:flex;z-index:60;max-width:640px;margin:0 auto}
+  .nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:none;border:none;
+    color:var(--text2);font-size:10.5px;font-family:var(--font-te)}
+  .nav-btn i{font-size:17px}
   .nav-btn.active{color:var(--accent)}
-  .nav-btn.active i{filter:drop-shadow(0 0 4px var(--accent))}
-
-  /* Global catalog — search, categories, services (from home.html) */
-  .search-box{max-width:none;margin:0 0 14px;position:relative}
-  .search-box input{width:100%;padding:13px 44px 13px 16px;border-radius:12px;border:1.5px solid var(--border);
-    background:var(--card);color:var(--text);font-size:13.5px;font-family:var(--font-te);outline:none}
-  .search-box input:focus{border-color:var(--accent)}
-  .search-box i{position:absolute;right:15px;top:50%;transform:translateY(-50%);color:var(--text2);font-size:14px}
-  .search-hint{font-size:11px;color:var(--text2);margin:-8px 0 12px}
-  .cats-row{display:flex;gap:8px;overflow-x:auto;padding:0 0 12px;scrollbar-width:none}
-  .cats-row::-webkit-scrollbar{display:none}
-  .cat-chip{flex-shrink:0;display:flex;align-items:center;gap:7px;padding:9px 15px;border-radius:20px;
-    background:var(--card);border:1.5px solid var(--border);font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap}
-  .cat-chip i{color:var(--accent);font-size:13px}
-  .cat-chip.active{background:rgba(79,255,176,0.12);border-color:var(--accent);color:var(--accent)}
-  .section-count{font-size:11px;color:var(--text2)}
-  .svc-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-  .svc-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 12px;cursor:pointer}
-  .svc-card:active{transform:scale(0.97)}
-  .svc-card i{font-size:19px;color:var(--accent);margin-bottom:8px;display:block}
-  .svc-name{font-size:12.5px;font-weight:700;line-height:1.3}
-  .svc-cat{font-size:10px;color:var(--text2);margin-top:3px}
-  .thumb-strip{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
-  .thumb-strip::-webkit-scrollbar{display:none}
-  .thumb{flex-shrink:0;width:130px;border-radius:12px;overflow:hidden;background:var(--card);border:1px solid var(--border);cursor:pointer}
-  .thumb img{width:100%;height:150px;object-fit:cover;display:block}
-
-  /* Service Detail slide-up panel (global catalog, agent-locked contact) */
-  #detail-overlay{position:fixed;inset:0;z-index:920;background:rgba(0,0,0,0.7);backdrop-filter:blur(6px);display:none;align-items:flex-end;justify-content:center}
-  #detail-overlay.show{display:flex}
-  #detail-sheet{background:var(--bg2);border-radius:20px 20px 0 0;width:100%;max-width:640px;max-height:90vh;overflow-y:auto;padding:0 0 30px}
-  .detail-head{position:sticky;top:0;background:var(--bg2);z-index:2;padding:18px 20px 14px;border-bottom:1px solid var(--border);
-    display:flex;align-items:center;gap:12px}
-  .detail-icon{width:44px;height:44px;border-radius:12px;background:rgba(79,255,176,0.12);border:1.5px solid var(--accent);
-    display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:18px;flex-shrink:0}
-  .detail-title{font-size:16.5px;font-weight:700}
-  .detail-close{margin-left:auto;background:var(--bg3);border:1px solid var(--border);color:var(--text2);
-    width:34px;height:34px;border-radius:10px;cursor:pointer;flex-shrink:0}
-  .detail-body{padding:16px 20px}
-  .dblock{margin-bottom:18px}
-  .dblock h3{font-size:12px;font-weight:700;color:var(--accent);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.4px}
-  .dblock p{font-size:13px;color:var(--text2);line-height:1.65}
-  .fee-row{display:flex;gap:10px}
-  .fee-box{flex:1;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 12px}
-  .fee-box .k{font-size:10.5px;color:var(--text2)}
-  .fee-box .v{font-size:14px;font-weight:700;margin-top:2px}
-  .doc-row{display:flex;align-items:center;gap:8px;padding:7px 0;font-size:13px}
-  .doc-row i{color:var(--accent);font-size:11px}
-  .step-row{display:flex;gap:10px;padding:9px 0;border-top:1px solid var(--border)}
-  .step-row:first-child{border-top:none}
-  .step-no{width:24px;height:24px;border-radius:50%;background:rgba(79,255,176,0.12);color:var(--accent);
-    font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-  .step-title{font-size:13px;font-weight:600}
-  .step-desc{font-size:12px;color:var(--text2);margin-top:2px}
-  .faq-item{border-top:1px solid var(--border);padding:10px 0}
-  .faq-item:first-child{border-top:none}
-  .faq-q{font-size:13px;font-weight:600;cursor:pointer;display:flex;justify-content:space-between;gap:8px}
-  .faq-a{font-size:12.5px;color:var(--text2);margin-top:6px;display:none;line-height:1.6}
-  .faq-item.open .faq-a{display:block}
-  .cta-note{background:rgba(79,255,176,0.08);border:1px solid rgba(79,255,176,0.25);border-radius:12px;padding:13px;font-size:12.5px;color:var(--text2);line-height:1.6}
-
-  /* Banner carousel (agent's own rotating hero images) */
-  #banner-section{display:none;margin:16px 0 4px;position:relative}
-  .banner-track{border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);background:var(--card);position:relative}
-  .banner-slides{display:flex;transition:transform 0.5s cubic-bezier(0.19,1,0.22,1);will-change:transform}
-  .banner-slide{min-width:100%;position:relative;aspect-ratio:16/6.5;cursor:pointer;flex-shrink:0;background:var(--bg3)}
-  .banner-slide img{width:100%;height:100%;object-fit:cover;display:block;transition:opacity 0.3s}
-  .banner-slide-fallback{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--text2)}
-  .banner-caption{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,0.75));
-    padding:28px 14px 10px;font-size:13px;font-family:var(--font-te);color:#fff;line-height:1.4;pointer-events:none}
-  .banner-dots{position:absolute;bottom:10px;right:12px;display:flex;gap:5px;align-items:center;z-index:2}
-  .bdot{height:6px;border-radius:3px;background:rgba(255,255,255,0.35);cursor:pointer;transition:all 0.35s;border:none;padding:0}
-  .bdot.on{background:var(--accent);width:18px}
-  .bdot:not(.on){width:6px}
-  .banner-arrow{position:absolute;top:50%;transform:translateY(-50%);width:30px;height:30px;border-radius:50%;
-    background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);border:1px solid rgba(255,255,255,0.15);
-    color:#fff;font-size:12px;z-index:2;display:flex;align-items:center;justify-content:center;cursor:pointer}
-  .banner-arrow:hover{background:rgba(0,0,0,0.75);border-color:var(--accent)}
-  .banner-arrow.prev{left:10px}
-  .banner-arrow.next{right:10px}
-
-  /* Popup */
-  #popup-overlay{position:fixed;inset:0;z-index:900;background:rgba(0,0,0,0.7);backdrop-filter:blur(6px);
-    display:flex;align-items:center;justify-content:center;padding:20px}
-  #popup-overlay.hidden{display:none}
-  #popup-box{background:var(--card);border:1px solid var(--border);border-radius:16px;max-width:400px;width:100%;overflow:hidden;box-shadow:var(--shadow)}
-  #popup-img{width:100%;max-height:220px;object-fit:cover;display:none}
-  #popup-img.show{display:block}
-  .popup-body{padding:20px}
-  .popup-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-  .popup-badge{font-size:10px;font-weight:700;background:rgba(79,255,176,0.12);color:var(--accent);padding:3px 8px;border-radius:6px;display:inline-flex;align-items:center;gap:4px}
-  .popup-counter{font-size:11px;color:var(--text2);margin-left:auto}
-  #popup-title{font-size:16px;font-weight:700;font-family:var(--font-te)}
-  #popup-subtitle{font-size:13px;color:var(--text2);margin-top:6px;line-height:1.6;font-family:var(--font-te)}
-  #popup-close{width:100%;margin-top:14px;background:var(--accent);color:#0a0f1a;border:none;padding:11px;border-radius:10px;font-weight:700;font-size:13px;cursor:pointer;font-family:var(--font-te)}
 </style>
 </head>
 <body>
 
 <div id="loading" class="loading">లోడ్ అవుతోంది…</div>
-<div id="app" style="display:none">
-  <div class="hero">
-    <div class="hero-avatar" id="h-avatar">SK</div>
-    <div class="hero-name" id="h-name">—</div>
-    <div class="hero-tag" id="h-tag" style="display:none"></div>
-    <div class="contact-row">
-      <a id="h-call" class="cbtn" href="#"><i class="fas fa-phone"></i> కాల్</a>
-      <a id="h-wa" class="cbtn wa" href="#" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a>
-      <a id="h-map" class="cbtn" href="#" target="_blank" style="display:none"><i class="fas fa-location-dot"></i> Map</a>
-      <button id="owner-login-btn" class="cbtn" onclick="openOwnerLoginModal()" title="Agent Login" style="margin-left:auto"><i class="fas fa-key"></i></button>
-      <button id="owner-tools-btn" class="cbtn" onclick="openOwnerToolsMenu()" title="నా టూల్స్" style="display:none;margin-left:auto;background:rgba(79,255,176,0.12);border-color:var(--accent);color:var(--accent)"><i class="fas fa-user-gear"></i> నా టూల్స్</button>
-    </div>
-  </div>
 
-  <div id="ticker-bar" class="ticker-bar">
-    <div class="ticker-track" id="ticker-track"></div>
-  </div>
+<div id="app" style="display:none">
+  <header>
+    <div class="logo" id="h-avatar">SK</div>
+    <div class="htext">
+      <div class="hname" id="h-name">—</div>
+      <div class="htag" id="h-tag" style="display:none"></div>
+    </div>
+    <a class="hicon" id="h-call-icon" href="#"><i class="fas fa-phone"></i></a>
+  </header>
+
+  <div class="ticker" id="ticker-bar"><div class="tinner" id="ticker-inner"></div></div>
 
   <div id="install-bar" class="install-bar">
     <i class="fas fa-download" style="color:var(--accent)"></i>
-    <span>ఈ షాప్ యాప్‌ని install చేసుకోండి — updates వెంటనే తెలుసుకోండి</span>
+    <span>ఈ షాప్ యాప్‌ని install చేసుకోండి</span>
     <button id="install-btn">Install</button>
   </div>
 
-  <!-- ═══ HOME TAB ═══ -->
-  <div id="page-home" class="page active">
-    <div class="wrap">
-      <div id="banner-section">
-        <div class="banner-track">
-          <div class="banner-slides" id="banner-slides"></div>
-          <button class="banner-arrow prev" id="banner-prev" onclick="bannerGo(_bannerCur-1)"><i class="fas fa-chevron-left"></i></button>
-          <button class="banner-arrow next" id="banner-next" onclick="bannerGo(_bannerCur+1)"><i class="fas fa-chevron-right"></i></button>
-          <div class="banner-dots" id="banner-dots"></div>
-        </div>
+  <!-- ══ HOME PAGE ══ -->
+  <div class="page active" id="page-home">
+    <div class="hero" style="margin:0 -16px 18px;border-radius:0">
+      <div class="hero-avatar" id="h-avatar2">SK</div>
+      <div class="hero-name" id="h-name2">—</div>
+      <div class="hero-loc" id="h-loc" style="display:none"></div>
+      <div class="contact-row">
+        <a id="h-call" class="cbtn" href="#"><i class="fas fa-phone"></i> కాల్ చేయండి</a>
+        <a id="h-wa" class="cbtn wa" href="#" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a>
       </div>
+    </div>
 
+    <div class="wrap" style="padding:0">
       <div class="section" id="sec-updates" style="display:none">
-        <div class="section-head"><h2>📢 తాజా అప్‌డేట్‌లు</h2><div class="section-line"></div></div>
+        <div class="section-head"><h2>🔔 తాజా అప్‌డేట్‌లు</h2><div class="section-line"></div></div>
         <div id="updates-list"></div>
       </div>
 
-      <div class="section" id="sec-ann" style="display:none">
-        <div class="section-head"><h2>🔔 ప్రకటనలు</h2><div class="section-line"></div></div>
-        <div id="ann-list"></div>
-      </div>
-
-      <div class="section" id="sec-g-notifications" style="display:none">
-        <div class="section-head"><h2>📢 తాజా నోటిఫికేషన్‌లు</h2><div class="section-line"></div></div>
-        <div id="g-notifications-list"></div>
-      </div>
-
-      <div class="section" id="sec-g-news" style="display:none">
-        <div class="section-head"><h2>📰 వార్తలు</h2><div class="section-line"></div></div>
-        <div id="g-news-list"></div>
-      </div>
-
-      <div class="section" id="sec-g-greetings" style="display:none">
-        <div class="section-head"><h2>🎉 శుభాకాంక్షలు</h2><div class="section-line"></div></div>
-        <div class="thumb-strip" id="g-greetings-strip"></div>
-      </div>
-
-      <div class="footer">Powered by Digital Seva Platform</div>
-    </div>
-  </div>
-
-  <!-- ═══ CATEGORIES TAB ═══ -->
-  <div id="page-categories" class="page">
-    <div class="wrap" style="padding-top:20px">
-      <div class="section-head" style="margin-bottom:14px"><h2>అన్ని Categories</h2><div class="section-line"></div></div>
-      <div class="svc-grid" id="cat-grid-full"></div>
-      <div class="footer">Powered by Digital Seva Platform</div>
-    </div>
-  </div>
-
-  <!-- ═══ SERVICES TAB ═══ -->
-  <div id="page-services" class="page">
-    <div class="wrap" style="padding-top:20px">
-      <div class="search-box">
-        <input id="search-input" type="text" placeholder="సర్వీస్ వెతకండి..." oninput="onSearch()"/>
-        <i class="fas fa-magnifying-glass"></i>
-      </div>
-      <div class="search-hint" id="search-hint" style="display:none"></div>
-      <div class="cats-row" id="cats-row"></div>
-
-      <div class="section" id="sec-g-services">
-        <div class="section-head"><h2 id="g-services-heading">సర్వీసులు</h2><div class="section-line"></div><span class="section-count" id="g-services-count"></span></div>
-        <div class="svc-grid" id="g-services-grid"></div>
-      </div>
-
       <div class="section" id="sec-services" style="display:none">
-        <div class="section-head"><h2>🛎️ మా సెంటర్ సర్వీసులు</h2><div class="section-line"></div></div>
+        <div class="section-head"><h2>🛎️ మా సేవలు</h2><div class="section-line"></div></div>
         <div class="services-grid" id="services-list"></div>
       </div>
 
       <div class="section" id="sec-groups" style="display:none">
-        <div class="section-head"><h2>📦 మా సెంటర్ సర్వీస్ ప్యాకేజీలు</h2><div class="section-line"></div></div>
+        <div class="section-head"><h2>📦 సర్వీస్ ప్యాకేజీలు</h2><div class="section-line"></div></div>
         <div id="groups-list"></div>
       </div>
 
-      <div class="section" id="sec-reqdocs" style="display:none">
-        <div class="section-head"><h2>📑 మా సెంటర్ — అవసరమైన Documents</h2><div class="section-line"></div></div>
-        <div id="reqdocs-list"></div>
-      </div>
+      <div class="footer">Powered by Citizen Digital Seva</div>
+    </div>
+  </div>
 
-      <div class="section" id="sec-g-schemes" style="display:none">
-        <div class="section-head"><h2>🏛️ ప్రభుత్వ పథకాలు</h2><div class="section-line"></div></div>
-        <div id="g-schemes-list"></div>
-      </div>
-
+  <!-- ══ DOCUMENTS PAGE ══ -->
+  <div class="page" id="page-docs">
+    <div class="wrap" style="padding:0">
       <div class="section" id="sec-pdfs" style="display:none">
-        <div class="section-head"><h2>📄 మా సెంటర్ PDF ఫారాలు</h2><div class="section-line"></div></div>
+        <div class="section-head"><h2>📄 PDF ఫారాలు</h2><div class="section-line"></div></div>
         <div id="pdfs-list"></div>
       </div>
 
+      <div class="section" id="sec-reqdocs" style="display:none">
+        <div class="section-head"><h2>📋 అవసరమైన పత్రాలు</h2><div class="section-line"></div></div>
+        <div id="reqdocs-list"></div>
+      </div>
+
       <div class="section" id="sec-docs" style="display:none">
-        <div class="section-head"><h2>📋 మా సెంటర్ డాక్యుమెంట్‌లు</h2><div class="section-line"></div></div>
+        <div class="section-head"><h2>📁 ఇతర డాక్యుమెంట్‌లు</h2><div class="section-line"></div></div>
         <div id="docs-list"></div>
       </div>
 
-      <div class="section" id="sec-g-downloads" style="display:none">
-        <div class="section-head"><h2>📥 అన్ని Downloads</h2><div class="section-line"></div></div>
-        <div id="g-downloads-list"></div>
+      <div class="empty" id="docs-empty" style="display:none">ఇంకా ఏమీ యాడ్ చేయలేదు</div>
+    </div>
+  </div>
+
+  <!-- ══ NOTICES PAGE ══ -->
+  <div class="page" id="page-notices">
+    <div class="wrap" style="padding:0">
+      <div class="section" id="sec-voice" style="display:none">
+        <div class="section-head"><h2>🎙️ వాయిస్ అనౌన్స్‌మెంట్‌లు</h2><div class="section-line"></div></div>
+        <div id="voice-list"></div>
       </div>
 
-      <div class="section" id="sec-g-posters" style="display:none">
+      <div class="section" id="sec-pdfnotice" style="display:none">
+        <div class="section-head"><h2>📄 PDF నోటీసులు</h2><div class="section-line"></div></div>
+        <div id="pdfnotice-list"></div>
+      </div>
+
+      <div class="section" id="sec-tts" style="display:none">
+        <div class="section-head"><h2>📢 టెక్స్ట్ నోటీసులు</h2><div class="section-line"></div></div>
+        <div id="tts-list"></div>
+      </div>
+
+      <div class="section" id="sec-poster" style="display:none">
         <div class="section-head"><h2>🖼️ పోస్టర్‌లు</h2><div class="section-line"></div></div>
-        <div class="thumb-strip" id="g-posters-strip"></div>
+        <div id="poster-list"></div>
       </div>
 
-      <div class="footer">Powered by Digital Seva Platform</div>
+      <div class="empty" id="notices-empty" style="display:none">నోటీసులు లేవు</div>
     </div>
   </div>
 
-  <!-- ═══ CONTACT TAB ═══ -->
-  <div id="page-contact" class="page">
-    <div class="wrap" style="padding-top:20px">
-      <div class="section-head" style="margin-bottom:14px"><h2>సంప్రదించండి</h2><div class="section-line"></div></div>
-      <div id="contact-body"></div>
-      <div class="footer">Powered by Digital Seva Platform</div>
+  <!-- ══ ADDRESS PAGE ══ -->
+  <div class="page" id="page-address">
+    <div class="wrap" style="padding:0">
+      <div class="addr-card">
+        <div class="addr-row">
+          <i class="fas fa-shop"></i>
+          <div><div class="addr-label">షాప్ పేరు</div><div class="addr-value" id="ad-name">—</div></div>
+        </div>
+        <div class="addr-row" id="ad-loc-row" style="display:none">
+          <i class="fas fa-location-dot"></i>
+          <div><div class="addr-label">స్థానం</div><div class="addr-value" id="ad-loc">—</div></div>
+        </div>
+        <div class="addr-row" id="ad-phone-row" style="display:none">
+          <i class="fas fa-phone"></i>
+          <div><div class="addr-label">ఫోన్</div><div class="addr-value" id="ad-phone">—</div></div>
+        </div>
+        <div class="addr-row" id="ad-wa-row" style="display:none">
+          <i class="fab fa-whatsapp"></i>
+          <div><div class="addr-label">WhatsApp</div><div class="addr-value" id="ad-wa">—</div></div>
+        </div>
+      </div>
+      <iframe id="ad-map" class="map-embed" style="display:none" loading="lazy"></iframe>
     </div>
   </div>
+
+  <nav class="bottom-nav">
+    <button class="nav-btn active" data-page="home" onclick="switchPage('home')"><i class="fas fa-house"></i>హోమ్</button>
+    <button class="nav-btn" data-page="docs" onclick="switchPage('docs')"><i class="fas fa-file-lines"></i>పత్రాలు</button>
+    <button class="nav-btn" data-page="notices" onclick="switchPage('notices')"><i class="fas fa-bullhorn"></i>నోటీసులు</button>
+    <button class="nav-btn" data-page="address" onclick="switchPage('address')"><i class="fas fa-location-dot"></i>చిరునామా</button>
+  </nav>
 </div>
-
-<nav id="bottom-nav">
-  <button class="nav-btn active" onclick="showPage('page-home',this)"><i class="fas fa-house"></i>హోమ్</button>
-  <button class="nav-btn" onclick="showPage('page-categories',this)"><i class="fas fa-folder-tree"></i>Categories</button>
-  <button class="nav-btn" onclick="showPage('page-services',this)"><i class="fas fa-list-check"></i>Services</button>
-  <button class="nav-btn" onclick="showPage('page-contact',this)"><i class="fas fa-address-card"></i>Contact</button>
-</nav>
 
 <div id="notfound" style="display:none" class="loading">ఈ షాప్ ప్రొఫైల్ కనిపించడం లేదు.</div>
-
-<div id="popup-overlay" class="hidden">
-  <div id="popup-box">
-    <img id="popup-img" src="" alt="popup"/>
-    <div class="popup-body">
-      <div class="popup-head">
-        <span class="popup-badge"><i class="fas fa-bell"></i> ప్రకటన</span>
-        <span class="popup-counter" id="popup-counter" style="display:none"></span>
-      </div>
-      <div id="popup-title"></div>
-      <div id="popup-subtitle"></div>
-      <button id="popup-close">అర్థమైంది ✓</button>
-    </div>
-  </div>
-</div>
-
-<!-- Service Detail slide-up (global catalog, contact locked to THIS agent) -->
-<div id="detail-overlay" onclick="if(event.target===this) closeDetail()">
-  <div id="detail-sheet">
-    <div class="detail-head">
-      <div class="detail-icon" id="dt-icon"><i class="fas fa-file-alt"></i></div>
-      <div class="detail-title" id="dt-title">—</div>
-      <button class="detail-close" onclick="closeDetail()"><i class="fas fa-times"></i></button>
-    </div>
-    <div class="detail-body" id="dt-body"></div>
-  </div>
-</div>
-
-<!-- Request Callback (lead) form — always targets THIS agent -->
-<div id="lead-overlay" style="position:fixed;inset:0;z-index:950;background:rgba(0,0,0,0.75);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:20px" onclick="if(event.target===this) closeLeadForm()">
-  <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;max-width:380px;width:100%;padding:20px">
-    <div style="font-size:15px;font-weight:700;margin-bottom:4px">Callback Request చేయండి</div>
-    <div id="lead-form-sub" style="font-size:12px;color:var(--text2);margin-bottom:14px"></div>
-    <input id="lead-name" type="text" placeholder="మీ పేరు" style="width:100%;padding:11px 13px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg3);color:var(--text);font-size:13px;font-family:var(--font-te);margin-bottom:10px;outline:none"/>
-    <input id="lead-phone" type="tel" placeholder="మొబైల్ నంబర్" style="width:100%;padding:11px 13px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg3);color:var(--text);font-size:13px;font-family:var(--font-te);margin-bottom:10px;outline:none"/>
-    <textarea id="lead-message" rows="2" placeholder="మెసేజ్ (optional)" style="width:100%;padding:11px 13px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg3);color:var(--text);font-size:13px;font-family:var(--font-te);margin-bottom:6px;outline:none;resize:none"></textarea>
-    <div id="lead-form-err" style="color:#f87171;font-size:11.5px;margin-bottom:8px;display:none"></div>
-    <div style="display:flex;gap:8px">
-      <button onclick="submitLeadForm()" style="flex:1;background:var(--accent);color:#0a0f1a;border:none;padding:11px;border-radius:10px;font-weight:700;font-size:13px;cursor:pointer;font-family:var(--font-te)">పంపండి</button>
-      <button onclick="closeLeadForm()" style="flex:0 0 auto;padding:0 18px;border-radius:10px;background:var(--bg3);border:1px solid var(--border);color:var(--text2);cursor:pointer;font-family:var(--font-te)">Cancel</button>
-    </div>
-  </div>
-</div>
-
-
-<!-- ═══ OWNER LOGIN MODAL (small — this is not a customer-facing login) ═══ -->
-<div id="owner-login-modal" style="display:none;position:fixed;inset:0;z-index:960;background:rgba(0,0,0,0.75);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:20px" onclick="if(event.target===this) closeOwnerLoginModal()">
-  <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;max-width:360px;width:100%;padding:20px">
-    <div style="font-size:15px;font-weight:700;margin-bottom:2px"><i class="fas fa-key" style="color:var(--accent);margin-right:6px"></i>Agent Login</div>
-    <div style="font-size:11.5px;color:var(--text2);margin-bottom:14px;font-family:var(--font-te)">ఇది ఈ సెంటర్ యజమాని కోసం మాత్రమే — customers ఇక్కడ దేనికీ login అవ్వాల్సిన అవసరం లేదు.</div>
-    <input id="ol-email" type="email" placeholder="Email" style="width:100%;padding:11px 13px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg3);color:var(--text);font-size:13px;margin-bottom:10px;outline:none"/>
-    <input id="ol-password" type="password" placeholder="Password" style="width:100%;padding:11px 13px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg3);color:var(--text);font-size:13px;margin-bottom:6px;outline:none" onkeydown="if(event.key==='Enter') doOwnerLogin()"/>
-    <div id="ol-err" style="color:#f87171;font-size:11.5px;margin-bottom:8px;display:none"></div>
-    <div style="display:flex;gap:8px">
-      <button onclick="doOwnerLogin()" style="flex:1;background:var(--accent);color:#0a0f1a;border:none;padding:11px;border-radius:10px;font-weight:700;font-size:13px;cursor:pointer;font-family:var(--font-te)">Login</button>
-      <button onclick="closeOwnerLoginModal()" style="flex:0 0 auto;padding:0 18px;border-radius:10px;background:var(--bg3);border:1px solid var(--border);color:var(--text2);cursor:pointer;font-family:var(--font-te)">Cancel</button>
-    </div>
-  </div>
-</div>
-
-<!-- ═══ OWNER TOOLS MENU (shown after login) ═══ -->
-<div id="owner-tools-modal" style="display:none;position:fixed;inset:0;z-index:850;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);align-items:flex-end;justify-content:center;padding:0" onclick="if(event.target===this) closeOwnerToolsMenu()">
-  <div style="background:var(--bg2);border-radius:20px 20px 0 0;width:100%;max-width:560px;padding:20px 20px 32px;border-top:1px solid var(--border)">
-    <div style="width:40px;height:4px;background:var(--border);border-radius:4px;margin:0 auto 16px"></div>
-    <div style="font-size:15px;font-weight:700;margin-bottom:14px;font-family:var(--font-te)">నా టూల్స్</div>
-    <div style="display:flex;flex-direction:column;gap:8px">
-      <button onclick="closeOwnerToolsMenu();openMyContentModal()" class="owner-tool-btn"><i class="fas fa-cloud-arrow-up"></i> నా కంటెంట్</button>
-      <button onclick="closeOwnerToolsMenu();openMyServicesModal()" class="owner-tool-btn"><i class="fas fa-store"></i> నా సర్వీసులు</button>
-      <button onclick="closeOwnerToolsMenu();openLeadsModal()" class="owner-tool-btn" style="position:relative"><i class="fas fa-bell-concierge"></i> లీడ్స్
-        <span id="leads-badge" style="display:none;position:absolute;top:8px;right:14px;background:#f87171;color:#fff;font-size:9px;font-weight:700;border-radius:50%;width:15px;height:15px;align-items:center;justify-content:center"></span>
-      </button>
-      <button onclick="closeOwnerToolsMenu();openContentSettingsModal()" class="owner-tool-btn"><i class="fas fa-sliders"></i> గ్లోబల్ కంటెంట్ సెట్టింగ్‌లు</button>
-      <button onclick="doOwnerLogout()" class="owner-tool-btn" style="color:#f87171"><i class="fas fa-right-from-bracket"></i> Logout</button>
-    </div>
-  </div>
-</div>
-
-<!-- ═══ MY CONTENT MODAL (agent self-upload) ═══ -->
-<div id="mycontent-modal" style="display:none;position:fixed;inset:0;z-index:850;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);align-items:flex-end;justify-content:center;padding:0" onclick="if(event.target===this) closeMyContentModal()">
-  <div id="mycontent-sheet" style="background:var(--bg2);border-radius:20px 20px 0 0;width:100%;max-width:560px;max-height:88vh;overflow-y:auto;padding:20px 20px 32px;border-top:1px solid var(--border)">
-    <div style="width:40px;height:4px;background:var(--border);border-radius:4px;margin:0 auto 16px"></div>
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
-      <div style="width:40px;height:40px;border-radius:11px;background:rgba(79,255,176,0.12);border:1.5px solid var(--accent);display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:17px;flex-shrink:0"><i class="fas fa-cloud-arrow-up"></i></div>
-      <div style="flex:1">
-        <div style="font-size:15px;font-weight:700;font-family:var(--font-te)">నా కంటెంట్</div>
-        <div style="font-size:11.5px;color:var(--text2);font-family:var(--font-te)">మీరే content యాడ్ చేసుకోండి</div>
-      </div>
-      <button onclick="closeMyContentModal()" style="background:var(--bg3);border:1px solid var(--border);color:var(--text2);width:32px;height:32px;border-radius:9px;cursor:pointer"><i class="fas fa-times"></i></button>
-    </div>
-    <div id="mc-usage-line" style="font-size:11px;color:var(--text2);margin-bottom:14px;font-family:var(--font-te)"></div>
-    <div id="mc-type-picker" style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:16px"></div>
-    <div id="mc-form-wrap" style="display:none;background:var(--bg3);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:18px">
-      <div id="mc-form-title" style="font-size:13px;font-weight:700;margin-bottom:12px;font-family:var(--font-te)"></div>
-      <div id="mc-form-fields"></div>
-      <div id="mc-form-err" class="al-err"></div>
-      <div style="display:flex;gap:8px;margin-top:6px">
-        <button class="al-btn" style="flex:1" onclick="submitMyContentForm()"><i class="fas fa-check"></i> Save</button>
-        <button onclick="closeMyContentForm()" style="flex:0 0 auto;padding:0 18px;border-radius:11px;background:var(--bg2);border:1px solid var(--border);color:var(--text2);cursor:pointer;font-family:var(--font-te)">Cancel</button>
-      </div>
-    </div>
-    <div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:10px;font-family:var(--font-te)">నా అప్‌లోడ్‌లు</div>
-    <div id="mc-my-list" style="display:flex;flex-direction:column;gap:8px"><div style="font-size:12.5px;color:var(--text2);font-family:var(--font-te)">Loading…</div></div>
-  </div>
-</div>
-
-<!-- ═══ MY SERVICES MODAL (marketplace activation) ═══ -->
-<div id="myservices-modal" style="display:none;position:fixed;inset:0;z-index:850;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);align-items:flex-end;justify-content:center;padding:0" onclick="if(event.target===this) closeMyServicesModal()">
-  <div style="background:var(--bg2);border-radius:20px 20px 0 0;width:100%;max-width:560px;max-height:88vh;overflow-y:auto;padding:20px 20px 32px;border-top:1px solid var(--border)">
-    <div style="width:40px;height:4px;background:var(--border);border-radius:4px;margin:0 auto 16px"></div>
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
-      <div style="width:40px;height:40px;border-radius:11px;background:rgba(79,255,176,0.12);border:1.5px solid var(--accent);display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:17px;flex-shrink:0"><i class="fas fa-store"></i></div>
-      <div style="flex:1">
-        <div style="font-size:15px;font-weight:700;font-family:var(--font-te)">నా సర్వీసులు</div>
-        <div style="font-size:11.5px;color:var(--text2);font-family:var(--font-te)">Marketplace లో మీరు కనిపించే services</div>
-      </div>
-      <button onclick="closeMyServicesModal()" style="background:var(--bg3);border:1px solid var(--border);color:var(--text2);width:32px;height:32px;border-radius:9px;cursor:pointer"><i class="fas fa-times"></i></button>
-    </div>
-    <div style="font-size:11.5px;color:var(--text2);margin-bottom:14px;font-family:var(--font-te)">ఏ సర్వీస్ ఆన్ చేస్తే, customer home page లో వెతికినప్పుడు మీ సెంటర్ కూడా కనిపిస్తుంది. మీ charge పెట్టుకోండి.</div>
-    <div id="ms-list" style="display:flex;flex-direction:column;gap:8px">Loading…</div>
-  </div>
-</div>
-
-<!-- ═══ LEADS INBOX MODAL ═══ -->
-<div id="leads-modal" style="display:none;position:fixed;inset:0;z-index:850;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);align-items:flex-end;justify-content:center;padding:0" onclick="if(event.target===this) closeLeadsModal()">
-  <div style="background:var(--bg2);border-radius:20px 20px 0 0;width:100%;max-width:560px;max-height:88vh;overflow-y:auto;padding:20px 20px 32px;border-top:1px solid var(--border)">
-    <div style="width:40px;height:4px;background:var(--border);border-radius:4px;margin:0 auto 16px"></div>
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
-      <div style="width:40px;height:40px;border-radius:11px;background:rgba(251,191,36,0.12);border:1.5px solid var(--yellow);display:flex;align-items:center;justify-content:center;color:var(--yellow);font-size:17px;flex-shrink:0"><i class="fas fa-bell-concierge"></i></div>
-      <div style="flex:1">
-        <div style="font-size:15px;font-weight:700;font-family:var(--font-te)">లీడ్స్</div>
-        <div style="font-size:11.5px;color:var(--text2);font-family:var(--font-te)">Customers మిమ్మల్ని సంప్రదించారు</div>
-      </div>
-      <button onclick="closeLeadsModal()" style="background:var(--bg3);border:1px solid var(--border);color:var(--text2);width:32px;height:32px;border-radius:9px;cursor:pointer"><i class="fas fa-times"></i></button>
-    </div>
-    <div id="leads-list" style="display:flex;flex-direction:column;gap:8px">Loading…</div>
-  </div>
-</div>
-
-<!-- ═══ CONTENT SETTINGS MODAL (hide/show global content) ═══ -->
-<div id="contentsettings-modal" style="display:none;position:fixed;inset:0;z-index:850;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);align-items:flex-end;justify-content:center;padding:0" onclick="if(event.target===this) closeContentSettingsModal()">
-  <div style="background:var(--bg2);border-radius:20px 20px 0 0;width:100%;max-width:560px;max-height:88vh;overflow-y:auto;padding:20px 20px 32px;border-top:1px solid var(--border)">
-    <div style="width:40px;height:4px;background:var(--border);border-radius:4px;margin:0 auto 16px"></div>
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
-      <div style="width:40px;height:40px;border-radius:11px;background:rgba(79,255,176,0.12);border:1.5px solid var(--accent);display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:17px;flex-shrink:0"><i class="fas fa-sliders"></i></div>
-      <div style="flex:1">
-        <div style="font-size:15px;font-weight:700;font-family:var(--font-te)">గ్లోబల్ కంటెంట్ సెట్టింగ్‌లు</div>
-        <div style="font-size:11.5px;color:var(--text2);font-family:var(--font-te)">మీ పేజీలో ఏది కనిపించాలో నియంత్రించండి</div>
-      </div>
-      <button onclick="closeContentSettingsModal()" style="background:var(--bg3);border:1px solid var(--border);color:var(--text2);width:32px;height:32px;border-radius:9px;cursor:pointer"><i class="fas fa-times"></i></button>
-    </div>
-    <div style="font-size:11.5px;color:var(--text2);margin-bottom:14px;font-family:var(--font-te)">అన్నీ default గా ఆన్ — అనవసరమైనవి ఆఫ్ చేయండి.</div>
-    <div id="cs-type-picker" style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:16px"></div>
-    <div id="cs-list" style="display:flex;flex-direction:column;gap:8px">Loading…</div>
-  </div>
-</div>
-
-<style>
-.owner-tool-btn{display:flex;align-items:center;gap:10px;padding:13px 16px;border-radius:12px;background:var(--bg3);
-  border:1px solid var(--border);color:var(--text);font-size:13.5px;font-weight:600;font-family:var(--font-te);
-  cursor:pointer;text-align:left}
-.owner-tool-btn i{width:18px;color:var(--accent)}
-.al-field{margin-bottom:14px}
-.al-label{font-size:11.5px;color:var(--text2);display:block;margin-bottom:5px;font-family:var(--font-te)}
-.al-input{width:100%;padding:11px 13px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg3);
-  color:var(--text);font-size:13px;font-family:var(--font-te);outline:none}
-.al-input:focus{border-color:var(--accent)}
-.al-btn{background:var(--accent);color:#0a0f1a;border:none;padding:11px;border-radius:10px;font-weight:700;
-  font-size:13px;cursor:pointer;font-family:var(--font-te);display:flex;align-items:center;justify-content:center;gap:6px}
-.al-err{color:#f87171;font-size:11.5px;display:none;align-items:flex-start;gap:6px;margin-top:4px}
-.al-err.show{display:flex}
-</style>
 
 <script>
 const SUPABASE_URL = 'https://pusmroyftjzdkcwuwsph.supabase.co';
@@ -533,83 +258,31 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 function getSlugFromPath() {
-  // Works whether the repo is served at the domain root or under /mycard/
   const parts = window.location.pathname.split('/').filter(Boolean);
-  // Drop a trailing "404.html" if present, and a leading "mycard" repo folder if present
   const cleaned = parts.filter(p => p.toLowerCase() !== '404.html');
   return cleaned[cleaned.length - 1] || '';
 }
+function esc(s) { return (s == null ? '' : String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-function esc(s) {
-  return (s == null ? '' : String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+function switchPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.page === name));
+  window.scrollTo(0, 0);
 }
-function escJs(s) { return (s == null ? '' : String(s)).replace(/\\/g,'\\\\').replace(/'/g,"\\'"); }
-
-// Fire-and-forget analytics — never blocks the UI, never surfaces errors to the visitor.
-function logEvent(event_type, fields) {
-  sb.from('analytics_events').insert({ event_type, ...fields }).then(() => {}, () => {});
-}
-
-/* ── Global catalog (Service Master + Categories + Notifications/
-   Schemes/News/Greetings/Downloads/Posters) — same data every agent
-   page shows, just rendered under this agent's own branding, with
-   every "contact"/"apply" action locked to THIS agent (no picker). ── */
-let AGENT = null;
-let CATEGORIES = [], SERVICES = [], G_NOTIFICATIONS = [], SCHEMES = [], G_DOWNLOADS = [], G_POSTERS = [], G_NEWS = [], G_GREETINGS = [];
-let ACTIVE_CATEGORY = null;
-let BANNERS = [];
-let _bannerCur = 0, _bannerTimer = null;
 
 async function loadShop() {
   const slug = getSlugFromPath();
   if (!slug) { showNotFound(); return; }
-
   const { data: agent, error: agentErr } = await sb
     .from('agents').select('*').eq('tab', slug).eq('is_active', true).single();
   if (agentErr || !agent) { showNotFound(); return; }
-  AGENT = agent;
-
-  const [rowsRes, catsRes, svcsRes, ntfsRes, schemesRes, dlsRes, pstsRes, newsRes, grtsRes, hiddenRes] = await Promise.all([
-    sb.from('agent_rows').select('*').eq('agent_id', agent.id).eq('status', 'live').order('display_order', { ascending: true }),
-    sb.from('categories').select('*').eq('is_active', true).order('sort_order'),
-    sb.from('services').select('*, service_catalog(name_te, name_en, icon), categories(key, name_te)').eq('is_active', true),
-    sb.from('notifications').select('*').eq('is_active', true).order('created_at', { ascending: false }).limit(10),
-    sb.from('government_schemes').select('*, categories(name_te)').eq('is_active', true),
-    sb.from('downloads').select('*').eq('is_active', true).order('sort_order').limit(20),
-    sb.from('posters').select('*').eq('is_active', true).order('sort_order').limit(15),
-    sb.from('news').select('*').eq('is_active', true).order('created_at', { ascending: false }).limit(10),
-    sb.from('greetings').select('*').eq('is_active', true).order('created_at', { ascending: false }).limit(10),
-    sb.from('agent_hidden_content').select('*').eq('agent_id', agent.id),
-  ]);
-
-  // Opt-out filtering — anything this agent has explicitly hidden
-  // (via index.html's "గ్లోబల్ కంటెంట్ సెట్టింగ్‌లు") drops out here.
-  const hiddenKeys = new Set((hiddenRes.data || []).map(h => h.content_type + ':' + h.content_id));
-  const notHidden = (type) => (item) => !hiddenKeys.has(type + ':' + item.id);
-
-  const rows = rowsRes.data || [];
-  CATEGORIES = catsRes.data || []; SERVICES = svcsRes.data || [];
-  G_NOTIFICATIONS = (ntfsRes.data || []).filter(notHidden('notification'));
-  SCHEMES = (schemesRes.data || []).filter(notHidden('scheme'));
-  G_DOWNLOADS = (dlsRes.data || []).filter(notHidden('download'));
-  G_POSTERS = (pstsRes.data || []).filter(notHidden('poster'));
-  G_NEWS = (newsRes.data || []).filter(notHidden('news'));
-  G_GREETINGS = (grtsRes.data || []).filter(notHidden('greeting'));
-
-  renderShop(agent, rows);
-  renderCategories();
-  renderServices();
-  renderGlobalNotifications();
-  renderGlobalSchemes();
-  renderGlobalDownloads();
-  renderGlobalPosters();
-  renderGlobalNews();
-  renderGlobalGreetings();
-  renderContactTab(agent);
-  showPopups(rows);
-  setupInstall(agent, slug);
+  const { data: rows } = await sb
+    .from('agent_rows').select('*').eq('agent_id', agent.id)
+    .eq('status', 'live').order('display_order', { ascending: true });
+  renderShop(agent, rows || []);
+  setupInstall(agent);
 }
-
 function showNotFound() {
   document.getElementById('loading').style.display = 'none';
   document.getElementById('notfound').style.display = 'flex';
@@ -620,113 +293,55 @@ function renderShop(agent, rows) {
   document.getElementById('app').style.display = 'block';
   document.title = agent.shop_name || 'Seva Kendra';
 
-  document.getElementById('h-name').textContent = agent.shop_name || '';
   const initials = (agent.shop_name || 'SK').trim().split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
-  document.getElementById('h-avatar').textContent = initials;
-  if (agent.tagline) {
-    const t = document.getElementById('h-tag');
-    t.textContent = agent.tagline; t.style.display = 'block';
+  ['h-avatar','h-avatar2'].forEach(id => document.getElementById(id).textContent = initials);
+  ['h-name','h-name2'].forEach(id => document.getElementById(id).textContent = agent.shop_name || '');
+  if (agent.tagline) { const t = document.getElementById('h-tag'); t.textContent = agent.tagline; t.style.display = 'block'; }
+  if (agent.city) { const l = document.getElementById('h-loc'); l.textContent = agent.city; l.style.display = 'block'; }
+  if (agent.phone) { document.getElementById('h-call').href = 'tel:'+agent.phone; document.getElementById('h-call-icon').href = 'tel:'+agent.phone; }
+  if (agent.whatsapp) document.getElementById('h-wa').href = 'https://wa.me/'+agent.whatsapp+'?text='+encodeURIComponent('Namaste, naaku meeku service kavali gurinchi enquiry cheyali.');
+
+  // Address tab
+  document.getElementById('ad-name').textContent = agent.shop_name || '—';
+  if (agent.address || agent.city) {
+    document.getElementById('ad-loc-row').style.display = 'flex';
+    document.getElementById('ad-loc').textContent = agent.address || agent.city;
   }
-  if (agent.phone) {
-    document.getElementById('h-call').href = 'tel:' + agent.phone;
-    document.getElementById('h-call').addEventListener('click', () => logEvent('call_click', { agent_id: agent.id }));
-  }
-  if (agent.whatsapp) {
-    document.getElementById('h-wa').href = 'https://wa.me/' + agent.whatsapp +
-      '?text=' + encodeURIComponent('Namaste, naaku meeku service kavali gurinchi enquiry cheyali.');
-    document.getElementById('h-wa').addEventListener('click', () => logEvent('whatsapp_click', { agent_id: agent.id }));
-  }
+  if (agent.phone) { document.getElementById('ad-phone-row').style.display = 'flex'; document.getElementById('ad-phone').textContent = agent.phone; }
+  if (agent.whatsapp) { document.getElementById('ad-wa-row').style.display = 'flex'; document.getElementById('ad-wa').textContent = agent.whatsapp; }
   if (agent.map_embed_url) {
-    const m = document.getElementById('h-map');
-    m.href = agent.map_embed_url; m.style.display = 'flex';
+    const m = document.getElementById('ad-map');
+    m.src = agent.map_embed_url; m.style.display = 'block';
   }
 
-  const bannerRows = rows.filter(r => r.key === 'banner');
-  if (bannerRows.length) {
-    BANNERS = bannerRows.map(r => ({
-      imgUrl: r.link || '',
-      caption: r.title || r.value || '',
-      clickUrl: r.extra && r.extra.startsWith('http') ? r.extra : '',
-      duration: parseInt(r.extra) && !r.extra.startsWith('http') ? parseInt(r.extra) : 4000,
-    }));
-    renderBanner();
+  // Ticker
+  const tickers = rows.filter(r => r.key === 'ticker');
+  if (tickers.length) {
+    document.getElementById('ticker-bar').style.display = 'block';
+    const items = tickers.map(t => `<span>📢 ${esc(t.value || t.title)}</span>`).join('');
+    document.getElementById('ticker-inner').innerHTML = items + items; // doubled for seamless loop
   }
 
+  // Updates
   const updates = rows.filter(r => r.key === 'update');
   if (updates.length) {
     document.getElementById('sec-updates').style.display = 'block';
     document.getElementById('updates-list').innerHTML = updates.map(u => `
-      <a class="list-item" href="${u.link && u.link !== '#' ? u.link : '#'}" ${u.link && u.link!=='#' ? 'target="_blank"' : 'onclick="return false"'}>
-        <i class="fas fa-bullhorn"></i>
-        <div style="flex:1">
-          <div style="font-weight:600;font-size:13px">${esc(u.title)}</div>
-          ${u.value ? `<div style="font-size:12px;color:var(--text2)">${esc(u.value)}</div>` : ''}
-        </div>
+      <a class="list-item" href="${u.link && u.link!=='#' ? u.link : '#'}" ${u.link && u.link!=='#' ? 'target="_blank"' : 'onclick="return false"'}>
+        <i class="fas fa-bullhorn lead"></i>
+        <div class="body"><div class="title">${esc(u.title)}</div>${u.value ? `<div class="sub">${esc(u.value)}</div>` : ''}</div>
       </a>`).join('');
   }
 
-  // Ticker — scrolling strip built from every 'ticker' row, joined together
-  const tickers = rows.filter(r => r.key === 'ticker').map(r => (r.value || r.title || '').trim()).filter(Boolean);
-  if (tickers.length) {
-    document.getElementById('ticker-bar').classList.add('show');
-    document.getElementById('ticker-track').innerHTML =
-      tickers.map(t => `<i class="fas fa-circle" style="font-size:5px"></i>${esc(t)}`).join('&nbsp;&nbsp;&nbsp;&nbsp;');
-  }
-
-  // Announcements — voice notes, TTS notices, posters, canva templates, PDF notices
-  const announcements = [];
-  rows.forEach(r => {
-    if (r.key === 'voice')       announcements.push({ type:'voice',  title:r.title||r.value, link:r.link||'', date:r.extra||'', isnew:(r.isnew||'no')==='yes' });
-    else if (r.key === 'tts')    announcements.push({ type:'tts',    text:r.value||r.title,   date:r.extra||'', isnew:(r.isnew||'no')==='yes' });
-    else if (r.key === 'poster') announcements.push({ type:'poster', title:r.title||'',       link:r.link||'', date:r.extra||'', isnew:(r.isnew||'no')==='yes' });
-    else if (r.key === 'canva')  announcements.push({ type:'canva',  title:r.title||'Canva Template', desc:r.value||'Template తెరవండి', link:r.link||'#', date:r.extra||'', isnew:(r.isnew||'no')==='yes' });
-    else if (r.key === 'pdf_notice') announcements.push({ type:'pdf', title:r.title||r.value, desc:r.value||'PDF డౌన్‌లోడ్', link:r.link||'#', date:r.extra||'', isnew:(r.isnew||'no')==='yes' });
-  });
-  if (announcements.length) {
-    document.getElementById('sec-ann').style.display = 'block';
-    document.getElementById('ann-list').innerHTML = announcements.map((a, i) => {
-      const newBadge = a.isnew ? `<span class="ann-new">కొత్తది</span>` : '';
-      const dateHtml = a.date ? `<span class="ann-date">${esc(a.date)}</span>` : '';
-      if (a.type === 'voice') {
-        return `<div class="ann-card">
-          <div class="ann-head"><i class="fas fa-microphone"></i><div class="ann-title">${esc(a.title)}</div>${newBadge}${dateHtml}</div>
-          ${a.link ? `<audio class="ann-audio" controls src="${esc(a.link)}"></audio>` : ''}
-        </div>`;
-      }
-      if (a.type === 'tts') {
-        return `<div class="ann-card">
-          <div class="ann-head"><i class="fas fa-closed-captioning"></i><div class="ann-title">నోటీసు</div>${newBadge}${dateHtml}</div>
-          <div class="ann-body">${esc(a.text)}</div>
-          <button class="tts-speak-btn" onclick="speakTts(${i})"><i class="fas fa-volume-high"></i> వినండి</button>
-        </div>`;
-      }
-      if (a.type === 'poster') {
-        return `<div class="ann-card">
-          <div class="ann-head"><i class="fas fa-image"></i><div class="ann-title">${esc(a.title || 'పోస్టర్')}</div>${newBadge}${dateHtml}</div>
-          ${a.link ? `<img class="ann-poster-img" src="${esc(a.link)}" onclick="window.open('${esc(a.link)}','_blank')"/>` : ''}
-        </div>`;
-      }
-      // canva / pdf
-      const icon = a.type === 'canva' ? 'fa-palette' : 'fa-file-pdf';
-      return `<div class="ann-card">
-        <div class="ann-head"><i class="fas ${icon}"></i><div class="ann-title">${esc(a.title)}</div>${newBadge}${dateHtml}</div>
-        ${a.desc ? `<div class="ann-body">${esc(a.desc)}</div>` : ''}
-        <a class="ann-link-btn" href="${esc(a.link)}" target="_blank"><i class="fas fa-arrow-up-right-from-square"></i> తెరవండి</a>
-      </div>`;
-    }).join('');
-    window._ANN_DATA = announcements; // used by speakTts()
-  }
-
+  // Services
   const services = rows.filter(r => r.key === 'service');
   if (services.length) {
     document.getElementById('sec-services').style.display = 'block';
     document.getElementById('services-list').innerHTML = services.map(s => `
-      <div class="service-card">
-        <i class="${s.icon || 'fas fa-star'}"></i>
-        <div class="service-name">${esc(s.title || s.value)}</div>
-      </div>`).join('');
+      <div class="service-card"><i class="${s.icon || 'fas fa-star'}"></i><div class="sname">${esc(s.title || s.value)}</div></div>`).join('');
   }
 
+  // Service groups (packages)
   const groups = [];
   rows.forEach(r => {
     if (r.key === 'service_group') groups.push({ name: r.title || r.value, icon: r.icon || 'fas fa-layer-group', subs: [] });
@@ -736,1167 +351,153 @@ function renderShop(agent, rows) {
     document.getElementById('sec-groups').style.display = 'block';
     document.getElementById('groups-list').innerHTML = groups.map((g,i) => `
       <div class="acc-item" id="grp_${i}">
-        <div class="acc-header" onclick="grpToggle(${i})">
-          <i class="grp ${g.icon}"></i>
-          <div class="name">${esc(g.name)}</div>
-          <span class="acc-count">${g.subs.length} options</span>
-          <i class="fas fa-chevron-down acc-arrow"></i>
+        <div class="acc-header" onclick="accToggle('grp_${i}')">
+          <i class="grp ${g.icon}"></i><div class="name">${esc(g.name)}</div>
+          <span class="acc-count">${g.subs.length} options</span><i class="fas fa-chevron-down acc-arrow"></i>
         </div>
-        <div class="acc-body">
-          ${g.subs.map(s => `
-            <div class="sub-row">
-              <div>
-                <div class="sub-name">${esc(s.name)}</div>
-                ${s.docs ? `<div class="sub-docs">${esc(s.docs)}</div>` : ''}
-              </div>
-              ${s.price ? `<div class="sub-price">₹${esc(s.price)}</div>` : ''}
-            </div>`).join('') || '<div class="empty">వివరాలు లేవు</div>'}
-        </div>
+        <div class="acc-body">${g.subs.map(s => `
+          <div class="sub-row"><div><div class="sub-name">${esc(s.name)}</div>${s.docs ? `<div class="sub-docs">${esc(s.docs)}</div>` : ''}</div>
+          ${s.price ? `<div class="sub-price">₹${esc(s.price)}</div>` : ''}</div>`).join('') || '<div class="empty">వివరాలు లేవు</div>'}</div>
       </div>`).join('');
   }
 
-  const reqServices = [];
-  rows.forEach(r => {
-    if (r.key === 'req_service') reqServices.push({ name: r.title || r.value, icon: r.icon || 'fas fa-file-alt', docs: [] });
-    else if (r.key === 'req_doc' && reqServices.length) reqServices[reqServices.length-1].docs.push(r.title || r.value);
-  });
-  if (reqServices.length) {
-    document.getElementById('sec-reqdocs').style.display = 'block';
-    document.getElementById('reqdocs-list').innerHTML = reqServices.map((g,i) => `
-      <div class="acc-item" id="reqdoc_${i}">
-        <div class="acc-header" onclick="reqDocToggle(${i})">
-          <i class="grp ${g.icon}" style="color:#22d3ee"></i>
-          <div class="name">${esc(g.name)}</div>
-          <span class="acc-count">${g.docs.length} docs</span>
-          <i class="fas fa-chevron-down acc-arrow"></i>
-        </div>
-        <div class="acc-body">
-          ${g.docs.filter(Boolean).map(d => `
-            <div class="sub-row">
-              <div class="sub-name"><i class="fas fa-check" style="color:var(--accent);margin-right:6px;font-size:11px"></i>${esc(d)}</div>
-            </div>`).join('') || '<div class="empty">వివరాలు లేవు</div>'}
-        </div>
-      </div>`).join('');
-  }
-
+  // PDFs (blank forms)
   const pdfs = rows.filter(r => r.key === 'pdf');
   if (pdfs.length) {
     document.getElementById('sec-pdfs').style.display = 'block';
     document.getElementById('pdfs-list').innerHTML = pdfs.map(p => `
       <a class="list-item" href="${p.link || '#'}" target="_blank">
-        <i class="fas fa-file-pdf"></i><div style="flex:1;font-size:13px;font-weight:600">${esc(p.title || p.value)}</div>
-        <i class="fas fa-arrow-up-right-from-square" style="font-size:11px;color:var(--text2)"></i>
+        <i class="fas fa-file-pdf lead"></i><div class="body"><div class="title">${esc(p.title || p.value)}</div></div>
+        <i class="fas fa-download" style="color:var(--text2);font-size:12px"></i>
       </a>`).join('');
   }
 
+  // Required documents (req_service → req_doc groups)
+  const reqServices = [];
+  rows.forEach(r => {
+    if (r.key === 'req_service') reqServices.push({ name: r.value || r.title, icon: r.icon || 'fas fa-file-alt', docs: [] });
+    else if (r.key === 'req_doc' && reqServices.length) reqServices[reqServices.length-1].docs.push(r.value || r.title);
+  });
+  if (reqServices.length) {
+    document.getElementById('sec-reqdocs').style.display = 'block';
+    document.getElementById('reqdocs-list').innerHTML = reqServices.map((rs,i) => `
+      <div class="acc-item" id="req_${i}">
+        <div class="acc-header" onclick="accToggle('req_${i}')">
+          <i class="grp ${rs.icon}"></i><div class="name">${esc(rs.name)}</div>
+          <span class="acc-count">${rs.docs.length} పత్రాలు</span><i class="fas fa-chevron-down acc-arrow"></i>
+        </div>
+        <div class="acc-body">${rs.docs.map(d => `<div class="req-doc-line"><i class="fas fa-circle-check"></i><span>${esc(d)}</span></div>`).join('') || '<div class="empty">వివరాలు లేవు</div>'}</div>
+      </div>`).join('');
+  }
+
+  // Other docs
   const docs = rows.filter(r => r.key === 'doc');
   if (docs.length) {
     document.getElementById('sec-docs').style.display = 'block';
     document.getElementById('docs-list').innerHTML = docs.map(d => `
       <a class="list-item" href="${d.link || '#'}" target="_blank">
-        <i class="fas fa-file-lines"></i><div style="flex:1;font-size:13px;font-weight:600">${esc(d.title || d.value)}</div>
+        <i class="fas fa-file-lines lead"></i><div class="body"><div class="title">${esc(d.title || d.value)}</div></div>
       </a>`).join('');
   }
-}
+  if (!pdfs.length && !reqServices.length && !docs.length) document.getElementById('docs-empty').style.display = 'block';
 
-/* ═══════════════════════════════════════════════════
-   PAGE NAVIGATION (Home / Categories / Services / Contact)
-   ═══════════════════════════════════════════════════ */
-function showPage(id, btn) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  const target = document.getElementById(id);
-  if (target) target.classList.add('active');
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  if (btn) btn.classList.add('active');
-  else {
-    const map = { 'page-home':0, 'page-categories':1, 'page-services':2, 'page-contact':3 };
-    const idx = map[id];
-    if (idx !== undefined) {
-      const navBtns = document.querySelectorAll('.nav-btn');
-      if (navBtns[idx]) navBtns[idx].classList.add('active');
-    }
-  }
-  window.scrollTo(0, 0);
-}
-
-/* ═══════════════════════════════════════════════════
-   GLOBAL CATEGORIES + SERVICES (Service Master catalog)
-   ═══════════════════════════════════════════════════ */
-function renderCategories() {
-  const chipsHtml = `<div class="cat-chip ${!ACTIVE_CATEGORY?'active':''}" onclick="filterByCategory(null)"><i class="fas fa-grid-2"></i> అన్నీ</div>` +
-    CATEGORIES.filter(c => !c.parent_id).map(c => `
-      <div class="cat-chip ${ACTIVE_CATEGORY===c.id?'active':''}" onclick="filterByCategory(${c.id})">
-        <i class="${c.icon || 'fas fa-folder'}"></i> ${esc(c.name_te)}
+  // Notices: voice / pdf_notice / tts / poster
+  const voice = rows.filter(r => r.key === 'voice');
+  if (voice.length) {
+    document.getElementById('sec-voice').style.display = 'block';
+    document.getElementById('voice-list').innerHTML = voice.map((v,i) => `
+      <div class="notice-card">
+        ${v.extra ? `<div class="notice-date">${esc(v.extra)}</div>` : ''}
+        <div class="notice-text">${esc(v.title || v.value)}</div>
+        ${v.link ? `<audio controls style="width:100%;height:34px"><source src="${esc(v.link)}"></audio>` : ''}
       </div>`).join('');
-  const svcRow = document.getElementById('cats-row');
-  if (svcRow) svcRow.innerHTML = chipsHtml;
-
-  const fullGrid = document.getElementById('cat-grid-full');
-  if (fullGrid) {
-    fullGrid.innerHTML = CATEGORIES.filter(c => !c.parent_id).map(c => {
-      const count = SERVICES.filter(s => s.category_id === c.id).length;
-      return `<div class="svc-card" onclick="filterByCategory(${c.id})">
-        <i class="${c.icon || 'fas fa-folder'}"></i>
-        <div class="svc-name">${esc(c.name_te)}</div>
-        <div class="svc-cat">${count} services</div>
-      </div>`;
-    }).join('');
-  }
-}
-
-function filterByCategory(catId) {
-  ACTIVE_CATEGORY = catId;
-  const si = document.getElementById('search-input'); if (si) si.value = '';
-  const hint = document.getElementById('search-hint'); if (hint) hint.style.display = 'none';
-  renderCategories();
-  renderServices();
-  showPage('page-services');
-}
-
-function renderServices(filtered) {
-  const list = filtered || (ACTIVE_CATEGORY ? SERVICES.filter(s => s.category_id === ACTIVE_CATEGORY) : SERVICES);
-  const countEl = document.getElementById('g-services-count');
-  if (countEl) countEl.textContent = list.length ? list.length + ' services' : '';
-  const grid = document.getElementById('g-services-grid');
-  if (!grid) return;
-  if (!list.length) {
-    grid.innerHTML = `<div class="empty" style="grid-column:1/-1">ఏమీ దొరకలేదు.</div>`;
-    return;
-  }
-  grid.innerHTML = list.map(s => {
-    const cat = s.service_catalog || {};
-    return `<div class="svc-card" onclick="openServiceDetail(${s.id})">
-      <i class="${cat.icon || 'fas fa-file-alt'}"></i>
-      <div class="svc-name">${esc(cat.name_te || s.key)}</div>
-      <div class="svc-cat">${s.categories ? esc(s.categories.name_te) : ''}</div>
-    </div>`;
-  }).join('');
-}
-
-let _searchLogTimer = null;
-function onSearch() {
-  const q = document.getElementById('search-input').value.trim().toLowerCase();
-  const hint = document.getElementById('search-hint');
-  if (!q) {
-    hint.style.display = 'none';
-    ACTIVE_CATEGORY = null;
-    renderCategories();
-    renderServices();
-    return;
-  }
-  const matched = SERVICES.filter(s => {
-    const cat = s.service_catalog || {};
-    return (cat.name_te || '').toLowerCase().includes(q) || (cat.name_en || '').toLowerCase().includes(q) || (s.key || '').toLowerCase().includes(q);
-  });
-  hint.style.display = 'block';
-  hint.textContent = `"${document.getElementById('search-input').value}" కోసం ${matched.length} ఫలితాలు`;
-  renderServices(matched);
-
-  clearTimeout(_searchLogTimer);
-  const rawQuery = document.getElementById('search-input').value.trim();
-  _searchLogTimer = setTimeout(() => { if (rawQuery) logEvent('search', { query_text: rawQuery, agent_id: AGENT.id }); }, 800);
-}
-
-/* ═══════════════════════════════════════════════════
-   SERVICE / SCHEME DETAIL — "సంప్రదించండి" always locked to THIS agent
-   ═══════════════════════════════════════════════════ */
-async function openServiceDetail(id) {
-  const s = SERVICES.find(x => x.id === id);
-  if (!s) return;
-  logEvent('service_view', { service_key: s.key, agent_id: AGENT.id });
-  const cat = s.service_catalog || {};
-  document.getElementById('dt-icon').innerHTML = `<i class="${cat.icon || 'fas fa-file-alt'}"></i>`;
-  document.getElementById('dt-title').textContent = cat.name_te || s.key;
-  document.getElementById('dt-body').innerHTML = `<div class="empty">లోడ్ అవుతోంది…</div>`;
-  document.getElementById('detail-overlay').classList.add('show');
-
-  const [docs, steps, faqs, videos, myCharge] = await Promise.all([
-    sb.from('service_documents').select('*').eq('service_id', id).order('sort_order'),
-    sb.from('service_process').select('*').eq('service_id', id).order('step_no'),
-    sb.from('service_faq').select('*').eq('service_id', id).order('sort_order'),
-    sb.from('service_videos').select('*').eq('service_id', id),
-    sb.from('agent_services').select('*').eq('agent_id', AGENT.id).eq('service_key', s.key).eq('is_active', true).maybeSingle(),
-  ]);
-  const relatedDownloads = G_DOWNLOADS.filter(d => d.service_id === id);
-  const relatedPosters = G_POSTERS.filter(p => p.service_id === id);
-
-  let html = '';
-  if (s.overview) html += `<div class="dblock"><h3>Overview</h3><p>${esc(s.overview)}</p></div>`;
-
-  const agentCharge = (myCharge.data && myCharge.data.agent_charge) || 0;
-  const total = (s.govt_fee || 0) + agentCharge;
-  if (s.govt_fee || s.processing_time || agentCharge) {
-    html += `<div class="fee-row dblock">
-      ${s.govt_fee ? `<div class="fee-box"><div class="k">Govt Fee</div><div class="v">₹${s.govt_fee}</div></div>` : ''}
-      ${agentCharge ? `<div class="fee-box"><div class="k">మా సెంటర్ Charge</div><div class="v">₹${agentCharge}</div></div>` : ''}
-      ${s.processing_time ? `<div class="fee-box"><div class="k">Processing Time</div><div class="v">${esc(s.processing_time)}</div></div>` : ''}
-    </div>`;
   }
 
-  if (s.benefits) html += `<div class="dblock"><h3>Benefits</h3><p>${esc(s.benefits)}</p></div>`;
-  if (s.eligibility) html += `<div class="dblock"><h3>Eligibility</h3><p>${esc(s.eligibility)}</p></div>`;
-
-  const docsData = docs.data || [];
-  if (docsData.length) html += `<div class="dblock"><h3>అవసరమైన Documents</h3>${docsData.map(d => `<div class="doc-row"><i class="fas fa-check"></i> ${esc(d.doc_name)}</div>`).join('')}</div>`;
-
-  const stepsData = steps.data || [];
-  if (stepsData.length) html += `<div class="dblock"><h3>Step-by-Step Guide</h3>${stepsData.map(p => `
-    <div class="step-row"><div class="step-no">${p.step_no}</div><div><div class="step-title">${esc(p.title)}</div>${p.description ? `<div class="step-desc">${esc(p.description)}</div>` : ''}</div></div>`).join('')}</div>`;
-
-  if (relatedDownloads.length) html += `<div class="dblock"><h3>Downloads</h3>${relatedDownloads.map(d => `
-    <a class="list-item" href="${esc(d.file_url)}" target="_blank" style="margin-bottom:6px" onclick="logEvent('download_click',{service_key:'${s.key}',agent_id:'${AGENT.id}'})">
-      <i class="fas fa-file-arrow-down"></i><div style="flex:1;font-size:13px;font-weight:600">${esc(d.title)}</div>
-      <i class="fas fa-arrow-up-right-from-square" style="font-size:11px"></i></a>`).join('')}</div>`;
-
-  const videosData = videos.data || [];
-  if (videosData.length) html += `<div class="dblock"><h3>Videos</h3>${videosData.map(v => `
-    <a class="list-item" href="${esc(v.video_url)}" target="_blank" style="margin-bottom:6px">
-      <i class="fas fa-video"></i><div style="flex:1;font-size:13px;font-weight:600">${esc(v.title || 'Video')}</div>
-      <i class="fas fa-arrow-up-right-from-square" style="font-size:11px"></i></a>`).join('')}</div>`;
-
-  if (relatedPosters.length) html += `<div class="dblock"><h3>Posters</h3><div class="thumb-strip">${relatedPosters.map(p => `
-    <div class="thumb" onclick="window.open('${esc(p.image_url)}','_blank')"><img src="${esc(p.image_url)}"/></div>`).join('')}</div></div>`;
-
-  const faqData = faqs.data || [];
-  if (faqData.length) html += `<div class="dblock"><h3>FAQ</h3>${faqData.map((f,i) => `
-    <div class="faq-item" id="faq_${i}">
-      <div class="faq-q" onclick="document.getElementById('faq_${i}').classList.toggle('open')">
-        <span>${esc(f.question)}</span><i class="fas fa-chevron-down" style="font-size:10px;margin-top:3px"></i>
-      </div>
-      <div class="faq-a">${esc(f.answer)}</div>
-    </div>`).join('')}</div>`;
-
-  if (s.important_notes) html += `<div class="dblock"><h3>గమనిక</h3><p>${esc(s.important_notes)}</p></div>`;
-
-  // Contact section — always THIS agent, no picker.
-  html += `<div class="dblock"><h3>ఈ సర్వీస్ కోసం సంప్రదించండి</h3>
-    <div style="display:flex;gap:8px">
-      ${AGENT.phone ? `<a href="tel:${esc(AGENT.phone)}" onclick="logEvent('call_click',{agent_id:'${AGENT.id}',service_key:'${s.key}'})" style="flex:1;text-align:center;background:rgba(79,255,176,0.1);border:1px solid rgba(79,255,176,0.3);color:var(--accent);border-radius:8px;padding:9px 0;font-size:12.5px;font-weight:700;text-decoration:none"><i class="fas fa-phone"></i> కాల్</a>` : ''}
-      ${AGENT.whatsapp ? `<a href="https://wa.me/${esc(AGENT.whatsapp)}?text=${encodeURIComponent('Namaste, ' + (cat.name_te||s.key) + ' గురించి enquiry.')}" target="_blank" onclick="logEvent('whatsapp_click',{agent_id:'${AGENT.id}',service_key:'${s.key}'})" style="flex:1;text-align:center;background:rgba(37,211,102,0.1);border:1px solid rgba(37,211,102,0.3);color:#25d366;border-radius:8px;padding:9px 0;font-size:12.5px;font-weight:700;text-decoration:none"><i class="fab fa-whatsapp"></i> WhatsApp</a>` : ''}
-      <button onclick="openLeadForm('${s.key}')" style="flex:1;background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:9px 0;font-size:12.5px;font-weight:700;cursor:pointer;font-family:var(--font-te)"><i class="fas fa-phone-volume"></i> Callback</button>
-    </div>
-  </div>`;
-
-  document.getElementById('dt-body').innerHTML = html;
-}
-
-function openSchemeDetail(id) {
-  const s = SCHEMES.find(x => x.id === id);
-  if (!s) return;
-  document.getElementById('dt-icon').innerHTML = `<i class="fas fa-landmark"></i>`;
-  document.getElementById('dt-title').textContent = s.name_te;
-  document.getElementById('detail-overlay').classList.add('show');
-
-  let html = '';
-  if (s.overview) html += `<div class="dblock"><h3>Overview</h3><p>${esc(s.overview)}</p></div>`;
-  if (s.benefits) html += `<div class="dblock"><h3>Benefits</h3><p>${esc(s.benefits)}</p></div>`;
-  if (s.eligibility) html += `<div class="dblock"><h3>Eligibility</h3><p>${esc(s.eligibility)}</p></div>`;
-  if (s.required_documents) html += `<div class="dblock"><h3>Required Documents</h3><p>${esc(s.required_documents)}</p></div>`;
-  if (s.last_date) html += `<div class="dblock"><h3>Last Date</h3><p>${s.last_date}</p></div>`;
-  const links = [];
-  if (s.go_url) links.push(`<a class="list-item" href="${esc(s.go_url)}" target="_blank"><i class="fas fa-file-lines"></i><div style="flex:1;font-size:13px;font-weight:600">G.O.</div></a>`);
-  if (s.circular_url) links.push(`<a class="list-item" href="${esc(s.circular_url)}" target="_blank"><i class="fas fa-file-lines"></i><div style="flex:1;font-size:13px;font-weight:600">Circular</div></a>`);
-  if (links.length) html += `<div class="dblock">${links.join('')}</div>`;
-  if (s.poster_url) html += `<div class="dblock"><div class="thumb-strip"><div class="thumb" onclick="window.open('${esc(s.poster_url)}','_blank')"><img src="${esc(s.poster_url)}"/></div></div></div>`;
-
-  html += `<div class="dblock"><h3>సంప్రదించండి</h3>
-    <div style="display:flex;gap:8px">
-      ${AGENT.phone ? `<a href="tel:${esc(AGENT.phone)}" style="flex:1;text-align:center;background:rgba(79,255,176,0.1);border:1px solid rgba(79,255,176,0.3);color:var(--accent);border-radius:8px;padding:9px 0;font-size:12.5px;font-weight:700;text-decoration:none"><i class="fas fa-phone"></i> కాల్</a>` : ''}
-      ${AGENT.whatsapp ? `<a href="https://wa.me/${esc(AGENT.whatsapp)}" target="_blank" style="flex:1;text-align:center;background:rgba(37,211,102,0.1);border:1px solid rgba(37,211,102,0.3);color:#25d366;border-radius:8px;padding:9px 0;font-size:12.5px;font-weight:700;text-decoration:none"><i class="fab fa-whatsapp"></i> WhatsApp</a>` : ''}
-    </div>
-  </div>`;
-
-  document.getElementById('dt-body').innerHTML = html;
-}
-
-function closeDetail() {
-  document.getElementById('detail-overlay').classList.remove('show');
-}
-
-/* ── Request Callback (lead) — always targets THIS agent ── */
-let LEAD_SERVICE_KEY = null;
-function openLeadForm(serviceKey) {
-  LEAD_SERVICE_KEY = serviceKey;
-  document.getElementById('lead-form-sub').textContent = `${AGENT.shop_name} కి పంపబడుతుంది`;
-  document.getElementById('lead-name').value = '';
-  document.getElementById('lead-phone').value = '';
-  document.getElementById('lead-message').value = '';
-  document.getElementById('lead-form-err').style.display = 'none';
-  document.getElementById('lead-overlay').style.display = 'flex';
-}
-function closeLeadForm() {
-  document.getElementById('lead-overlay').style.display = 'none';
-}
-async function submitLeadForm() {
-  const errEl = document.getElementById('lead-form-err');
-  errEl.style.display = 'none';
-  const name = document.getElementById('lead-name').value.trim();
-  const phone = document.getElementById('lead-phone').value.trim();
-  const message = document.getElementById('lead-message').value.trim();
-  if (!phone || phone.length < 10) {
-    errEl.textContent = 'సరైన మొబైల్ నంబర్ పెట్టండి';
-    errEl.style.display = 'block';
-    return;
-  }
-  try {
-    const { error } = await sb.from('leads').insert({
-      agent_id: AGENT.id, catalog_key: LEAD_SERVICE_KEY,
-      customer_name: name || null, customer_phone: phone, message: message || null,
-      source: 'agent_page', status: 'new',
-    });
-    if (error) throw error;
-    closeLeadForm();
-    alert('✓ మీ రిక్వెస్ట్ పంపబడింది — త్వరలో మేము మిమ్మల్ని సంప్రదిస్తాము.');
-  } catch (e) {
-    errEl.textContent = 'పంపడం విఫలమైంది: ' + e.message;
-    errEl.style.display = 'block';
-  }
-}
-
-/* ═══════════════════════════════════════════════════
-   GLOBAL Notifications / News / Greetings / Schemes / Downloads / Posters
-   ═══════════════════════════════════════════════════ */
-function renderGlobalNotifications() {
-  if (!G_NOTIFICATIONS.length) return;
-  document.getElementById('sec-g-notifications').style.display = 'block';
-  document.getElementById('g-notifications-list').innerHTML = G_NOTIFICATIONS.map(n => `
-    <div class="list-item" ${n.attachment_url ? `onclick="window.open('${esc(n.attachment_url)}','_blank')" style="cursor:pointer"` : ''}>
-      <i class="fas fa-bullhorn"></i>
-      <div style="flex:1">
-        <div style="font-weight:600;font-size:13px">${esc(n.title)}</div>
-        ${n.description ? `<div style="font-size:12px;color:var(--text2)">${esc(n.description).slice(0,80)}</div>` : ''}
-      </div>
-    </div>`).join('');
-}
-
-function renderGlobalNews() {
-  if (!G_NEWS.length) return;
-  document.getElementById('sec-g-news').style.display = 'block';
-  document.getElementById('g-news-list').innerHTML = G_NEWS.map(n => `
-    <div class="list-item" style="cursor:default">
-      <i class="fas fa-newspaper" style="color:#3b82f6"></i>
-      <div style="flex:1"><div style="font-weight:600;font-size:13px">${esc(n.title)}</div>${n.description ? `<div style="font-size:12px;color:var(--text2)">${esc(n.description).slice(0,90)}</div>` : ''}</div>
-    </div>`).join('');
-}
-
-function renderGlobalGreetings() {
-  if (!G_GREETINGS.length) return;
-  document.getElementById('sec-g-greetings').style.display = 'block';
-  document.getElementById('g-greetings-strip').innerHTML = G_GREETINGS.map(g => `
-    <div class="thumb" onclick="window.open('${esc(g.image_url)}','_blank')"><img src="${esc(g.image_url)}"/></div>`).join('');
-}
-
-function renderGlobalSchemes() {
-  if (!SCHEMES.length) return;
-  document.getElementById('sec-g-schemes').style.display = 'block';
-  document.getElementById('g-schemes-list').innerHTML = SCHEMES.map(s => `
-    <div class="list-item" onclick="openSchemeDetail(${s.id})">
-      <i class="fas fa-landmark" style="color:#8b5cf6"></i>
-      <div style="flex:1"><div style="font-weight:600;font-size:13px">${esc(s.name_te)}</div><div style="font-size:12px;color:var(--text2)">${s.categories ? esc(s.categories.name_te) : ''}${s.last_date ? ` · Last date: ${s.last_date}` : ''}</div></div>
-      <i class="fas fa-chevron-right" style="font-size:11px;color:var(--text2)"></i>
-    </div>`).join('');
-}
-
-function renderGlobalDownloads() {
-  if (!G_DOWNLOADS.length) return;
-  document.getElementById('sec-g-downloads').style.display = 'block';
-  document.getElementById('g-downloads-list').innerHTML = G_DOWNLOADS.map(d => `
-    <a class="list-item" href="${esc(d.file_url)}" target="_blank" onclick="logEvent('download_click',{service_key:null,agent_id:'${AGENT.id}'})">
-      <i class="fas fa-file-arrow-down"></i><div style="flex:1;font-size:13px;font-weight:600">${esc(d.title)}</div>
-      <i class="fas fa-arrow-up-right-from-square" style="font-size:11px"></i></a>`).join('');
-}
-
-function renderGlobalPosters() {
-  if (!G_POSTERS.length) return;
-  document.getElementById('sec-g-posters').style.display = 'block';
-  document.getElementById('g-posters-strip').innerHTML = G_POSTERS.map(p => `
-    <div class="thumb" onclick="window.open('${esc(p.image_url)}','_blank')"><img src="${esc(p.image_url)}"/></div>`).join('');
-}
-
-function renderContactTab(agent) {
-  const body = document.getElementById('contact-body');
-  if (!body) return;
-  let html = `<div class="list-item" style="cursor:default">
-    <i class="fas fa-shop"></i>
-    <div style="flex:1"><div style="font-weight:600;font-size:13.5px">${esc(agent.shop_name)}</div>${agent.city ? `<div style="font-size:12px;color:var(--text2)">${esc(agent.city)}</div>` : ''}</div>
-  </div>`;
-  if (agent.phone) html += `<a class="list-item" href="tel:${esc(agent.phone)}" onclick="logEvent('call_click',{agent_id:'${agent.id}'})">
-    <i class="fas fa-phone"></i><div style="flex:1;font-size:13px;font-weight:600">${esc(agent.phone)}</div></a>`;
-  if (agent.whatsapp) html += `<a class="list-item" href="https://wa.me/${esc(agent.whatsapp)}" target="_blank" onclick="logEvent('whatsapp_click',{agent_id:'${agent.id}'})">
-    <i class="fab fa-whatsapp"></i><div style="flex:1;font-size:13px;font-weight:600">WhatsApp</div></a>`;
-  if (agent.map_embed_url) html += `<a class="list-item" href="${esc(agent.map_embed_url)}" target="_blank">
-    <i class="fas fa-location-dot"></i><div style="flex:1;font-size:13px;font-weight:600">Google Maps లో చూడండి</div></a>`;
-  if (agent.footer_text) html += `<div class="cta-note" style="margin-top:12px">${esc(agent.footer_text)}</div>`;
-  body.innerHTML = html;
-}
-
-function renderBanner() {
-  if (!BANNERS.length) return;
-  const sec = document.getElementById('banner-section');
-  const slides = document.getElementById('banner-slides');
-  const dots = document.getElementById('banner-dots');
-  const prev = document.getElementById('banner-prev');
-  const next = document.getElementById('banner-next');
-
-  sec.style.display = 'block';
-
-  slides.innerHTML = BANNERS.map((b) => `
-    <div class="banner-slide" ${b.clickUrl ? `onclick="window.open('${esc(b.clickUrl)}','_blank')" style="cursor:pointer"` : ''}>
-      <img src="${esc(b.imgUrl)}" alt="${esc(b.caption)}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
-      <div class="banner-slide-fallback" style="display:none">
-        <i class="fas fa-image" style="font-size:28px;opacity:.3"></i>
-        <span style="font-size:12px;font-family:var(--font-te)">${esc(b.caption||'Image')}</span>
-      </div>
-      ${b.caption ? `<div class="banner-caption">${esc(b.caption)}</div>` : ''}
-    </div>`).join('');
-
-  if (BANNERS.length > 1) {
-    dots.innerHTML = BANNERS.map((_, i) => `<button class="bdot${i===0?' on':''}" onclick="bannerGo(${i})"></button>`).join('');
-    prev.style.display = next.style.display = 'flex';
-  } else {
-    prev.style.display = next.style.display = 'none';
+  const pdfNotices = rows.filter(r => r.key === 'pdf_notice');
+  if (pdfNotices.length) {
+    document.getElementById('sec-pdfnotice').style.display = 'block';
+    document.getElementById('pdfnotice-list').innerHTML = pdfNotices.map(n => `
+      <div class="notice-card">
+        ${n.extra ? `<div class="notice-date">${esc(n.extra)}</div>` : ''}
+        <div class="notice-text">${esc(n.title || n.value)}</div>
+        <a class="pdf-download" href="${n.link || '#'}" target="_blank"><i class="fas fa-download"></i> PDF డౌన్‌లోడ్</a>
+      </div>`).join('');
   }
 
-  let touchX = 0;
-  slides.addEventListener('touchstart', e => { touchX = e.touches[0].clientX; }, { passive: true });
-  slides.addEventListener('touchend', e => {
-    const dx = e.changedTouches[0].clientX - touchX;
-    if (Math.abs(dx) > 40) bannerGo(_bannerCur + (dx < 0 ? 1 : -1));
-  }, { passive: true });
+  const ttsNotices = rows.filter(r => r.key === 'tts');
+  if (ttsNotices.length) {
+    document.getElementById('sec-tts').style.display = 'block';
+    document.getElementById('tts-list').innerHTML = ttsNotices.map((t,i) => `
+      <div class="notice-card">
+        ${t.extra ? `<div class="notice-date">${esc(t.extra)}</div>` : ''}
+        <div class="notice-text" id="tts-text-${i}">${esc(t.value || t.title)}</div>
+        <button class="listen-btn" onclick="speakText(${i})"><i class="fas fa-volume-high"></i> వినండి</button>
+      </div>`).join('');
+  }
 
-  bannerGo(0);
+  const posters = rows.filter(r => r.key === 'poster');
+  if (posters.length) {
+    document.getElementById('sec-poster').style.display = 'block';
+    document.getElementById('poster-list').innerHTML = posters.map(p => `
+      <a class="list-item" href="${p.link || '#'}" target="_blank">
+        <i class="fas fa-image lead"></i><div class="body"><div class="title">${esc(p.title || 'పోస్టర్')}</div></div>
+      </a>`).join('');
+  }
+  if (!voice.length && !pdfNotices.length && !ttsNotices.length && !posters.length) document.getElementById('notices-empty').style.display = 'block';
 }
 
-window.bannerGo = function(n) {
-  if (!BANNERS.length) return;
-  _bannerCur = ((n % BANNERS.length) + BANNERS.length) % BANNERS.length;
-  document.getElementById('banner-slides').style.transform = `translateX(-${_bannerCur * 100}%)`;
-  document.querySelectorAll('.bdot').forEach((d, i) => d.classList.toggle('on', i === _bannerCur));
-  clearInterval(_bannerTimer);
-  if (BANNERS.length > 1) {
-    const dur = BANNERS[_bannerCur].duration || 4000;
-    _bannerTimer = setInterval(() => bannerGo(_bannerCur + 1), dur);
-  }
-};
-
-function grpToggle(i) {
-  const item = document.getElementById('grp_'+i);
+function accToggle(id) {
+  const item = document.getElementById(id);
   if (!item) return;
   const wasOpen = item.classList.contains('open');
-  document.querySelectorAll('#groups-list .acc-item.open').forEach(el=>el.classList.remove('open'));
+  item.parentElement.querySelectorAll('.acc-item.open').forEach(el => el.classList.remove('open'));
   if (!wasOpen) item.classList.add('open');
 }
 
-function reqDocToggle(i) {
-  const item = document.getElementById('reqdoc_'+i);
-  if (!item) return;
-  const wasOpen = item.classList.contains('open');
-  document.querySelectorAll('#reqdocs-list .acc-item.open').forEach(el=>el.classList.remove('open'));
-  if (!wasOpen) item.classList.add('open');
-}
-
-// Popups — shown one at a time, in order, right after the shop loads.
-// extra !== 'no' means "show"; multiple popups get a "1/3" style counter.
-function showPopups(rows) {
-  const popups = rows
-    .filter(r => r.key === 'popup' && (r.extra || 'yes').toLowerCase().trim() !== 'no')
-    .map(r => ({ title: r.title || '', subtitle: r.value || '', imageUrl: r.link || '' }));
-  if (!popups.length) return;
-
-  let idx = 0;
-  const total = popups.length;
-
-  function show() {
-    const p = popups[idx];
-    const img = document.getElementById('popup-img');
-    document.getElementById('popup-title').textContent = p.title;
-    document.getElementById('popup-subtitle').textContent = p.subtitle;
-    img.src = p.imageUrl || '';
-    p.imageUrl ? img.classList.add('show') : img.classList.remove('show');
-
-    const counter = document.getElementById('popup-counter');
-    if (total > 1) {
-      counter.textContent = (idx + 1) + ' / ' + total;
-      counter.style.display = 'inline-flex';
-    } else {
-      counter.style.display = 'none';
-    }
-    const isLast = idx === total - 1;
-    document.getElementById('popup-close').textContent = isLast ? 'అర్థమైంది ✓' : 'తదుపరి → (' + (idx + 1) + '/' + total + ')';
-    document.getElementById('popup-overlay').classList.remove('hidden');
-  }
-
-  function next() {
-    document.getElementById('popup-overlay').classList.add('hidden');
-    idx++;
-    if (idx < total) setTimeout(show, 350);
-  }
-
-  document.getElementById('popup-close').onclick = next;
-  document.getElementById('popup-overlay').onclick = e => {
-    if (e.target === document.getElementById('popup-overlay')) next();
-  };
-  show();
-}
-
-function speakTts(i) {
-  const a = (window._ANN_DATA || [])[i];
-  if (!a || !a.text || !('speechSynthesis' in window)) return;
-  window.speechSynthesis.cancel(); // stop anything already playing
-  const u = new SpeechSynthesisUtterance(a.text);
+function speakText(i) {
+  const el = document.getElementById('tts-text-' + i);
+  if (!el || !('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(el.textContent);
   u.lang = 'te-IN';
   window.speechSynthesis.speak(u);
 }
 
-/* ── PWA: one shared app, but each install remembers the shop the
-   customer installed it from (start_url = that shop's own URL). We
-   generate the manifest per-page as a Blob since GitHub Pages can't
-   generate one dynamically per request. ── */
-function setupInstall(agent, slug) {
+function setupInstall(agent) {
   const manifest = {
     name: agent.shop_name || 'Seva Kendra',
     short_name: (agent.shop_name || 'Seva').slice(0, 12),
-    start_url: window.location.pathname,
-    scope: window.location.pathname,
-    display: 'standalone',
-    background_color: '#0a0f1a',
-    theme_color: '#0a0f1a',
-    icons: [
-      { src: '/icon-192.png', sizes: '192x192', type: 'image/png' },
-      { src: '/icon-512.png', sizes: '512x512', type: 'image/png' },
-    ],
+    start_url: window.location.pathname, scope: window.location.pathname,
+    display: 'standalone', background_color: '#0a0f1a', theme_color: '#0a0f1a',
+    icons: [{ src:'/icon-192.png', sizes:'192x192', type:'image/png' }, { src:'/icon-512.png', sizes:'512x512', type:'image/png' }],
   };
   const blob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
   const link = document.createElement('link');
-  link.rel = 'manifest';
-  link.href = URL.createObjectURL(blob);
+  link.rel = 'manifest'; link.href = URL.createObjectURL(blob);
   document.head.appendChild(link);
-
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/customer-sw.js').catch(()=>{});
-  }
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('/customer-sw.js').catch(()=>{});
 
   let deferredPrompt = null;
   window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
+    e.preventDefault(); deferredPrompt = e;
     document.getElementById('install-bar').classList.add('show');
   });
   document.getElementById('install-btn').addEventListener('click', async () => {
     if (!deferredPrompt) return;
-    deferredPrompt.prompt();
-    await deferredPrompt.userChoice;
-    deferredPrompt = null;
+    deferredPrompt.prompt(); await deferredPrompt.userChoice; deferredPrompt = null;
     document.getElementById('install-bar').classList.remove('show');
   });
-  // iOS Safari has no beforeinstallprompt — show a manual hint instead
   const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
   const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
   if (isIOS && !isStandalone) {
     const bar = document.getElementById('install-bar');
     bar.classList.add('show');
-    bar.querySelector('span').textContent = 'Install చేసుకోవడానికి: Share బటన్ → "Add to Home Screen"';
+    bar.querySelector('span').textContent = 'Install: Share బటన్ → "Add to Home Screen"';
     bar.querySelector('button').style.display = 'none';
   }
 }
 
-/* ═══════════════════════════════════════════════════════
-   OWNER LOGIN — small, optional. Customers never need this.
-   If the logged-in user's own agent record matches THIS page's
-   agent, owner tools (My Content / My Services / Leads / Content
-   Settings) appear. Logging in elsewhere does nothing here.
-   ═══════════════════════════════════════════════════════ */
-let IS_OWNER = false;
-
-function openOwnerLoginModal() {
-  document.getElementById('ol-email').value = '';
-  document.getElementById('ol-password').value = '';
-  document.getElementById('ol-err').style.display = 'none';
-  document.getElementById('owner-login-modal').style.display = 'flex';
-}
-function closeOwnerLoginModal() {
-  document.getElementById('owner-login-modal').style.display = 'none';
-}
-async function doOwnerLogin() {
-  const email = document.getElementById('ol-email').value.trim();
-  const password = document.getElementById('ol-password').value;
-  const errEl = document.getElementById('ol-err');
-  errEl.style.display = 'none';
-  if (!email || !password) { errEl.textContent = 'Email + Password పెట్టండి'; errEl.style.display = 'block'; return; }
-
-  const { data, error } = await sb.auth.signInWithPassword({ email, password });
-  if (error || !data.user) {
-    errEl.textContent = 'Login విఫలమైంది — email/password చెక్ చేయండి';
-    errEl.style.display = 'block';
-    return;
-  }
-  const { data: myAgent } = await sb.from('agents').select('tab').eq('auth_user_id', data.user.id).single();
-  if (!myAgent || myAgent.tab !== AGENT.tab) {
-    errEl.innerHTML = `ఇది మీ పేజీ కాదు.${myAgent ? ` మీ సొంత లింక్: <b>${esc(myAgent.tab)}</b>` : ''}`;
-    errEl.style.display = 'block';
-    await sb.auth.signOut();
-    return;
-  }
-  closeOwnerLoginModal();
-  activateOwnerMode();
-}
-
-async function activateOwnerMode() {
-  IS_OWNER = true;
-  document.getElementById('owner-login-btn').style.display = 'none';
-  document.getElementById('owner-tools-btn').style.display = 'flex';
-  await loadMyOwnRows();
-  await loadContentTypeSettings();
-  refreshLeadsBadgeQuietly();
-}
-
-async function doOwnerLogout() {
-  await sb.auth.signOut();
-  IS_OWNER = false;
-  document.getElementById('owner-login-btn').style.display = 'flex';
-  document.getElementById('owner-tools-btn').style.display = 'none';
-  closeOwnerToolsMenu();
-}
-
-function openOwnerToolsMenu() { document.getElementById('owner-tools-modal').style.display = 'flex'; }
-function closeOwnerToolsMenu() { document.getElementById('owner-tools-modal').style.display = 'none'; }
-
-// Restore owner mode automatically if this browser already has a
-// valid session for THIS agent (Supabase keeps sessions in localStorage).
-async function checkOwnerSession() {
-  try {
-    const { data: { session } } = await sb.auth.getSession();
-    if (!session || !session.user) return;
-    const { data: myAgent } = await sb.from('agents').select('tab').eq('auth_user_id', session.user.id).single();
-    if (myAgent && myAgent.tab === AGENT.tab) activateOwnerMode();
-  } catch (e) { /* silent — just means owner tools stay hidden */ }
-}
-
-/* ═══════════════════════════════════════════════════
-   MY CONTENT — agent self-upload (moved from index.html)
-   ═══════════════════════════════════════════════════ */
-let ALL_AGENT_ROWS_RAW = [];
-let MY_ROWS = [];
-let CONTENT_TYPE_SETTINGS = {};
-let MC_EDITING_ID = null;
-let MC_CURRENT_TYPE = null;
-let MC_CHILDREN = [];
-
-async function loadMyOwnRows() {
-  const { data } = await sb.from('agent_rows').select('*').eq('agent_id', AGENT.id).order('display_order', { ascending: true });
-  ALL_AGENT_ROWS_RAW = data || [];
-  MY_ROWS = ALL_AGENT_ROWS_RAW.filter(r => r.source === 'agent');
-}
-
-async function loadContentTypeSettings() {
-  try {
-    const { data, error } = await sb.from('content_type_settings').select('*');
-    if (error) throw error;
-    CONTENT_TYPE_SETTINGS = {};
-    (data || []).forEach(row => { CONTENT_TYPE_SETTINGS[row.key] = !!row.requires_approval; });
-  } catch (e) { CONTENT_TYPE_SETTINGS = {}; }
-}
-
-const MC_TYPES = [
-  { key:'ticker', label:'Ticker',  icon:'fa-scroll' },
-  { key:'update', label:'Update',  icon:'fa-bullhorn' },
-  { key:'banner', label:'Banner',  icon:'fa-panorama' },
-  { key:'service',label:'Service', icon:'fa-hand-holding-hand' },
-  { key:'pdf',    label:'PDF',     icon:'fa-file-pdf' },
-  { key:'doc',    label:'Doc',     icon:'fa-file-lines' },
-  { key:'poster', label:'Poster',  icon:'fa-image' },
-  { key:'voice',  label:'Voice',   icon:'fa-microphone' },
-  { key:'tts',    label:'TTS',     icon:'fa-closed-captioning' },
-  { key:'popup',  label:'Popup',   icon:'fa-bell' },
-  { key:'req_service',   label:'అవసరమైన Documents గ్రూప్', icon:'fa-clipboard-list' },
-  { key:'service_group', label:'ధరల ప్యాకేజీ', icon:'fa-layer-group' },
-];
-const MC_GROUP_TYPES = {
-  req_service:   { childKey:'req_doc',     childLabel:'Document',      groupLabel:'అవసరమైన Documents' },
-  service_group: { childKey:'sub_service', childLabel:'సబ్-సర్వీస్',   groupLabel:'సబ్-సర్వీసులు' },
-};
-const MC_FIELD_DEFS = {
-  ticker:  [{ id:'value', label:'సందేశం (Ticker Text)', type:'text', required:true }],
-  update:  [
-    { id:'title', label:'శీర్షిక (Title)', type:'text', required:true },
-    { id:'value', label:'వివరణ (Description)', type:'textarea' },
-    { id:'link',  label:'లింక్ (optional)', type:'url' },
-    { id:'icon',  label:'Icon (fas fa-…, optional)', type:'text', placeholder:'fas fa-bullhorn' },
-  ],
-  banner: [
-    { id:'title', label:'Caption (optional)', type:'text' },
-    { id:'link',  label:'Image URL', type:'url', required:true },
-    { id:'extra', label:'క్లిక్ చేస్తే వెళ్ళే లింక్ (optional)', type:'url' },
-  ],
-  service: [
-    { id:'title', label:'సర్వీస్ పేరు', type:'text', required:true },
-    { id:'value', label:'వివరణ (optional)', type:'textarea' },
-    { id:'link',  label:'లింక్ (optional)', type:'url' },
-    { id:'icon',  label:'Icon (fas fa-…, optional)', type:'text', placeholder:'fas fa-hand-holding-hand' },
-  ],
-  pdf: [
-    { id:'title', label:'PDF పేరు', type:'text', required:true },
-    { id:'link',  label:'PDF URL', type:'url', required:true },
-    { id:'icon',  label:'Icon (fas fa-…, optional)', type:'text', placeholder:'fas fa-file-pdf' },
-  ],
-  doc: [
-    { id:'title', label:'Document పేరు', type:'text', required:true },
-    { id:'link',  label:'Document URL', type:'url', required:true },
-    { id:'icon',  label:'Icon (fas fa-…, optional)', type:'text', placeholder:'fas fa-file-lines' },
-  ],
-  poster: [
-    { id:'title', label:'Caption (optional)', type:'text' },
-    { id:'link',  label:'Image URL', type:'url', required:true },
-    { id:'extra', label:'తేదీ (optional)', type:'text', placeholder:'e.g. 23 May' },
-  ],
-  voice: [
-    { id:'title', label:'Title / పేరు', type:'text', required:true },
-    { id:'link',  label:'Audio URL', type:'url', required:true },
-    { id:'extra', label:'తేదీ (optional)', type:'text', placeholder:'e.g. 23 May' },
-  ],
-  tts: [
-    { id:'value', label:'నోటీసు Text', type:'textarea', required:true },
-    { id:'extra', label:'తేదీ (optional)', type:'text', placeholder:'e.g. 23 May' },
-  ],
-  popup: [
-    { id:'title', label:'Title', type:'text', required:true },
-    { id:'value', label:'Subtitle / Message', type:'textarea' },
-    { id:'link',  label:'Image URL (optional)', type:'url' },
-    { id:'extra', label:'Show on Open?', type:'select', options:[['yes','Yes — వెంటనే చూపించు'],['no','No — దాచు']] },
-  ],
-  req_service: [
-    { id:'title', label:'సర్వీస్ పేరు (ఉదా: PAN Card)', type:'text', required:true },
-    { id:'icon',  label:'Icon (fas fa-…, optional)', type:'text', placeholder:'fas fa-file-alt' },
-  ],
-  service_group: [
-    { id:'title', label:'ప్యాకేజీ పేరు (ఉదా: PAN Card Services)', type:'text', required:true },
-    { id:'icon',  label:'Icon (fas fa-…, optional)', type:'text', placeholder:'fas fa-layer-group' },
-  ],
-};
-
-function getMyContentLimit() {
-  const plan = (AGENT && AGENT.plan_name) || '';
-  if (plan === 'premium') return Infinity;
-  if (plan === 'yearly') return 20;
-  return 5;
-}
-function renderMcUsageLine() {
-  const el = document.getElementById('mc-usage-line');
-  if (!el) return;
-  const limit = getMyContentLimit();
-  const count = MY_ROWS.filter(r => !['req_doc','sub_service'].includes(r.key)).length;
-  const planLabel = limit === Infinity ? 'Premium' : limit === 20 ? 'Pro' : 'Basic';
-  el.textContent = limit === Infinity ? `${count} items వాడారు — ${planLabel} ప్లాన్ (unlimited)` : `${count} / ${limit} items వాడారు — ${planLabel} ప్లాన్`;
-}
-
-function openMyContentModal() {
-  if (!AGENT) return;
-  renderMcTypePicker();
-  renderMyContentList();
-  renderMcUsageLine();
-  document.getElementById('mycontent-modal').style.display = 'flex';
-}
-function closeMyContentModal() {
-  document.getElementById('mycontent-modal').style.display = 'none';
-  closeMyContentForm();
-}
-function renderMcTypePicker() {
-  document.getElementById('mc-type-picker').innerHTML = MC_TYPES.map(t => `
-    <button onclick="openMcForm('${t.key}')" style="padding:8px 13px;border-radius:10px;background:var(--bg3);border:1px solid var(--border);color:var(--text);font-size:12.5px;font-family:var(--font-te);cursor:pointer;display:flex;align-items:center;gap:6px">
-      <i class="fas ${t.icon}" style="color:var(--accent)"></i> ${t.label}
-    </button>`).join('');
-}
-function openMcForm(type, editId) {
-  MC_CURRENT_TYPE = type;
-  MC_EDITING_ID = editId || null;
-  const defs = MC_FIELD_DEFS[type] || [];
-  const existing = editId ? MY_ROWS.find(r => r.id === editId) : null;
-  const group = MC_GROUP_TYPES[type];
-
-  const fieldsHtml = defs.map(f => {
-    const val = existing ? (existing[f.id] ?? (f.id === 'desc' ? existing.description : '') ?? '') : '';
-    if (f.type === 'textarea') return `<div class="al-field"><label class="al-label">${f.label}</label><textarea class="al-input" id="mc-f-${f.id}" rows="3" placeholder="${f.placeholder||''}">${esc(val)}</textarea></div>`;
-    if (f.type === 'select') {
-      const opts = f.options.map(([v,l]) => `<option value="${v}" ${val===v?'selected':''}>${l}</option>`).join('');
-      return `<div class="al-field"><label class="al-label">${f.label}</label><select class="al-input" id="mc-f-${f.id}">${opts}</select></div>`;
-    }
-    return `<div class="al-field"><label class="al-label">${f.label}</label><input class="al-input" id="mc-f-${f.id}" type="${f.type==='url'?'url':'text'}" placeholder="${f.placeholder||''}" value="${esc(val)}"/></div>`;
-  }).join('');
-
-  let childrenHtml = '';
-  if (group) {
-    MC_CHILDREN = editId ? mcFindGroupChildren(editId, type, group.childKey).map(r =>
-        type === 'req_service' ? { value: r.value || r.title || '' } : { title: r.title || r.value || '', value: r.value || '', desc: r.description || '' }
-      ) : [];
-    childrenHtml = `<div style="margin-top:4px">
-        <label class="al-label">${group.groupLabel}</label>
-        <div id="mc-children-wrap" style="margin-top:6px"></div>
-        <button type="button" onclick="mcSyncChildFromInputs();mcAddChild()" style="width:100%;padding:9px;border-radius:10px;background:rgba(79,255,176,0.1);border:1px solid rgba(79,255,176,0.25);color:var(--accent);font-size:12.5px;cursor:pointer;margin-top:4px;font-family:var(--font-te)">
-          <i class="fas fa-plus"></i> ${group.childLabel} Add చేయండి
-        </button></div>`;
-  }
-
-  document.getElementById('mc-form-title').textContent = (editId ? 'Edit — ' : 'కొత్తది Add చేయండి — ') + (MC_TYPES.find(t=>t.key===type)||{}).label;
-  document.getElementById('mc-form-fields').innerHTML = fieldsHtml + childrenHtml;
-  document.getElementById('mc-form-err').classList.remove('show');
-  document.getElementById('mc-form-wrap').style.display = 'block';
-  document.getElementById('mc-form-wrap').scrollIntoView({ behavior:'smooth', block:'nearest' });
-  if (group) mcRenderChildren();
-}
-function mcFindGroupChildren(parentId, parentKey, childKey) {
-  const idx = MY_ROWS.findIndex(r => r.id === parentId);
-  if (idx === -1) return [];
-  const out = [];
-  for (let i = idx + 1; i < MY_ROWS.length; i++) {
-    if (MY_ROWS[i].key === parentKey) break;
-    if (MY_ROWS[i].key === childKey) out.push(MY_ROWS[i]);
-  }
-  return out;
-}
-function mcAddChild() {
-  if (MC_CURRENT_TYPE === 'req_service') MC_CHILDREN.push({ value: '' });
-  else if (MC_CURRENT_TYPE === 'service_group') MC_CHILDREN.push({ title: '', value: '', desc: '' });
-  mcRenderChildren();
-}
-function mcRemoveChild(i) { MC_CHILDREN.splice(i, 1); mcRenderChildren(); }
-function mcSyncChildFromInputs() {
-  if (MC_CURRENT_TYPE === 'req_service') {
-    document.querySelectorAll('.mc-child-doc').forEach((el, i) => { if (MC_CHILDREN[i]) MC_CHILDREN[i].value = el.value; });
-  } else if (MC_CURRENT_TYPE === 'service_group') {
-    document.querySelectorAll('.mc-child-sub').forEach(wrap => {
-      const i = parseInt(wrap.dataset.idx, 10);
-      if (!MC_CHILDREN[i]) return;
-      MC_CHILDREN[i].title = wrap.querySelector('.mc-sub-title').value;
-      MC_CHILDREN[i].value = wrap.querySelector('.mc-sub-price').value;
-      MC_CHILDREN[i].desc  = wrap.querySelector('.mc-sub-docs').value;
-    });
-  }
-}
-function mcRenderChildren() {
-  const wrap = document.getElementById('mc-children-wrap');
-  if (!wrap) return;
-  if (MC_CURRENT_TYPE === 'req_service') {
-    wrap.innerHTML = MC_CHILDREN.map((c, i) => `
-      <div style="display:flex;gap:6px;margin-bottom:6px">
-        <input class="al-input mc-child-doc" style="flex:1" placeholder="Document ${i+1}" value="${esc(c.value)}"/>
-        <button type="button" onclick="mcSyncChildFromInputs();mcRemoveChild(${i})" style="background:rgba(248,113,113,0.12);border:1px solid rgba(248,113,113,0.3);color:#f87171;border-radius:9px;padding:0 12px;cursor:pointer"><i class="fas fa-trash"></i></button>
-      </div>`).join('') || `<div style="font-size:12px;color:var(--text2);font-family:var(--font-te)">ఇంకా ఏమీ లేవు</div>`;
-  } else if (MC_CURRENT_TYPE === 'service_group') {
-    wrap.innerHTML = MC_CHILDREN.map((c, i) => `
-      <div class="mc-child-sub" data-idx="${i}" style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:10px;margin-bottom:8px">
-        <input class="al-input mc-sub-title" placeholder="సబ్-సర్వీస్ పేరు" value="${esc(c.title)}" style="margin-bottom:6px"/>
-        <input class="al-input mc-sub-price" placeholder="ధర (₹, optional)" value="${esc(c.value)}" style="margin-bottom:6px"/>
-        <textarea class="al-input mc-sub-docs" placeholder="అవసరమైన డాక్యుమెంట్‌లు (optional)" rows="2">${esc(c.desc)}</textarea>
-        <button type="button" onclick="mcSyncChildFromInputs();mcRemoveChild(${i})" style="margin-top:6px;background:rgba(248,113,113,0.12);border:1px solid rgba(248,113,113,0.3);color:#f87171;border-radius:9px;padding:5px 12px;cursor:pointer;font-size:12px;font-family:var(--font-te)"><i class="fas fa-trash"></i> Remove</button>
-      </div>`).join('') || `<div style="font-size:12px;color:var(--text2);font-family:var(--font-te)">ఇంకా ఏమీ లేవు</div>`;
-  }
-}
-function closeMyContentForm() {
-  document.getElementById('mc-form-wrap').style.display = 'none';
-  MC_EDITING_ID = null; MC_CURRENT_TYPE = null; MC_CHILDREN = [];
-}
-async function submitMyContentForm() {
-  const type = MC_CURRENT_TYPE;
-  const defs = MC_FIELD_DEFS[type] || [];
-  const group = MC_GROUP_TYPES[type];
-  const errEl = document.getElementById('mc-form-err');
-  errEl.classList.remove('show');
-
-  if (!MC_EDITING_ID) {
-    const limit = getMyContentLimit();
-    const currentCount = MY_ROWS.filter(r => !['req_doc','sub_service'].includes(r.key)).length;
-    if (limit !== Infinity && currentCount >= limit) {
-      errEl.innerHTML = `<i class="fas fa-circle-exclamation"></i><span>మీ ప్లాన్‌లో గరిష్టంగా ${limit} items మాత్రమే — subscription upgrade గురించి అడ్మిన్‌ని సంప్రదించండి.</span>`;
-      errEl.classList.add('show');
-      return;
-    }
-  }
-
-  const values = {};
-  for (const f of defs) {
-    const el = document.getElementById('mc-f-' + f.id);
-    const v = el ? el.value.trim() : '';
-    if (f.required && !v) {
-      errEl.innerHTML = `<i class="fas fa-circle-exclamation"></i><span>"${f.label}" ఖాళీగా ఉంచకూడదు</span>`;
-      errEl.classList.add('show');
-      return;
-    }
-    values[f.id] = v;
-  }
-
-  const requiresApproval = !!CONTENT_TYPE_SETTINGS[type];
-  const status = requiresApproval ? 'pending' : 'live';
-
-  try {
-    if (group) {
-      mcSyncChildFromInputs();
-      const maxOrder = ALL_AGENT_ROWS_RAW.reduce((m, r) => Math.max(m, r.display_order || 0), 0);
-      const parentRow = { agent_id: AGENT.id, source: 'agent', status, key: type, title: values.title || '', value: values.title || '', icon: values.icon || '', link: '', extra: '', description: '', share: 'yes', isnew: 'no' };
-      const childRows = MC_CHILDREN.filter(c => (type === 'req_service' ? c.value : c.title || '').trim()).map(c => type === 'req_service'
-          ? { agent_id: AGENT.id, source: 'agent', status, key: group.childKey, title: c.value.trim(), value: c.value.trim(), link:'', icon:'', extra:'', description:'', share:'yes', isnew:'no' }
-          : { agent_id: AGENT.id, source: 'agent', status, key: group.childKey, title: (c.title||'').trim(), value: (c.value||'').trim(), description: (c.desc||'').trim(), link:'', icon:'', extra:'', share:'yes', isnew:'no' });
-
-      if (MC_EDITING_ID) {
-        const oldChildIds = mcFindGroupChildren(MC_EDITING_ID, type, group.childKey).map(r => r.id);
-        if (oldChildIds.length) { const { error: delErr } = await sb.from('agent_rows').delete().in('id', oldChildIds); if (delErr) throw delErr; }
-        const { error: updErr } = await sb.from('agent_rows').update({ ...parentRow, agent_id: undefined, display_order: maxOrder + 1 }).eq('id', MC_EDITING_ID);
-        if (updErr) throw updErr;
-        if (childRows.length) { const toInsert = childRows.map((c, i) => ({ ...c, display_order: maxOrder + 2 + i })); const { error: insErr } = await sb.from('agent_rows').insert(toInsert); if (insErr) throw insErr; }
-      } else {
-        const rowsToInsert = [{ ...parentRow, display_order: maxOrder + 1 }, ...childRows.map((c, i) => ({ ...c, display_order: maxOrder + 2 + i }))];
-        const { error } = await sb.from('agent_rows').insert(rowsToInsert);
-        if (error) throw error;
-      }
-    } else {
-      const payload = { key: type, title: values.title || '', value: values.value || '', link: values.link || '', icon: values.icon || '', extra: values.extra || '', description: values.desc || '', share: 'yes', isnew: 'no' };
-      if (MC_EDITING_ID) {
-        const { error } = await sb.from('agent_rows').update({ ...payload, status }).eq('id', MC_EDITING_ID);
-        if (error) throw error;
-      } else {
-        const maxOrder = ALL_AGENT_ROWS_RAW.reduce((m, r) => Math.max(m, r.display_order || 0), 0);
-        const { error } = await sb.from('agent_rows').insert({ ...payload, agent_id: AGENT.id, source: 'agent', status, display_order: maxOrder + 1 });
-        if (error) throw error;
-      }
-    }
-  } catch (e) {
-    errEl.innerHTML = `<i class="fas fa-circle-exclamation"></i><span>Save విఫలమైంది: ${esc(e.message)}</span>`;
-    errEl.classList.add('show');
-    return;
-  }
-
-  const wentLive = !requiresApproval;
-  closeMyContentForm();
-  await loadMyOwnRows();
-  await loadShop();
-  renderMyContentList();
-  renderMcUsageLine();
-  alert(wentLive ? '✓ Live అయ్యింది!' : '✓ Admin approval కోసం పంపబడింది');
-}
-function renderMyContentList() {
-  const list = document.getElementById('mc-my-list');
-  if (!MY_ROWS.length) { list.innerHTML = `<div style="font-size:12.5px;color:var(--text2);font-family:var(--font-te);text-align:center;padding:16px 0">ఇంకా మీరు ఏమీ add చేయలేదు.</div>`; return; }
-  list.innerHTML = MY_ROWS.map(r => {
-    const status = r.status || 'live';
-    const badge = status === 'pending' ? `<span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px;background:rgba(251,191,36,0.15);color:#fbbf24">Pending</span>`
-      : status === 'rejected' ? `<span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px;background:rgba(248,113,113,0.15);color:#f87171">Rejected</span>`
-      : `<span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px;background:rgba(79,255,176,0.12);color:var(--accent)">Live</span>`;
-    const label = r.title || r.value || '(no title)';
-    return `<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg3);border-radius:11px">
-      <div style="flex:1;min-width:0">
-        <div style="display:flex;align-items:center;gap:7px;margin-bottom:2px">${badge}<span style="font-size:12px;color:var(--text2);font-family:var(--font-te)">${r.key}</span></div>
-        <div style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:var(--font-te)">${esc(label)}</div>
-      </div>
-      <button onclick="openMcForm('${r.key}', ${r.id})" style="background:none;border:none;color:var(--text2);cursor:pointer;padding:6px"><i class="fas fa-pen"></i></button>
-      <button onclick="deleteMyRow(${r.id})" style="background:none;border:none;color:#f87171;cursor:pointer;padding:6px"><i class="fas fa-trash"></i></button>
-    </div>`;
-  }).join('');
-}
-async function deleteMyRow(id) {
-  if (!confirm('ఈ content delete చేయాలా?')) return;
-  try {
-    const { error } = await sb.from('agent_rows').delete().eq('id', id).eq('source', 'agent');
-    if (error) throw error;
-    await loadMyOwnRows();
-    await loadShop();
-    renderMyContentList();
-    renderMcUsageLine();
-  } catch (e) { alert('Delete failed: ' + e.message); }
-}
-
-/* ═══════════════════════════════════════════════════
-   MY SERVICES — marketplace activation (agent_services)
-   ═══════════════════════════════════════════════════ */
-let ALL_MASTER_SERVICES = [];
-let MY_ACTIVATED_SERVICES = [];
-async function openMyServicesModal() {
-  if (!AGENT) return;
-  document.getElementById('myservices-modal').style.display = 'flex';
-  const list = document.getElementById('ms-list'); list.innerHTML = 'Loading…';
-  const [svcRes, activeRes] = await Promise.all([
-    sb.from('services').select('*, service_catalog(name_te, name_en, icon), categories(name_te)').eq('is_active', true),
-    sb.from('agent_services').select('*').eq('agent_id', AGENT.id),
-  ]);
-  ALL_MASTER_SERVICES = svcRes.data || [];
-  MY_ACTIVATED_SERVICES = activeRes.data || [];
-  renderMyServicesList();
-}
-function closeMyServicesModal() { document.getElementById('myservices-modal').style.display = 'none'; }
-function renderMyServicesList() {
-  const list = document.getElementById('ms-list');
-  if (!ALL_MASTER_SERVICES.length) { list.innerHTML = `<div style="font-size:12.5px;color:var(--text2);font-family:var(--font-te);text-align:center;padding:16px 0">ఇంకా ఏ global service లేదు.</div>`; return; }
-  list.innerHTML = ALL_MASTER_SERVICES.map(s => {
-    const cat = s.service_catalog || {};
-    const activated = MY_ACTIVATED_SERVICES.find(a => a.service_key === s.key);
-    const isOn = !!(activated && activated.is_active);
-    return `<div style="background:var(--bg3);border-radius:12px;padding:12px 14px">
-      <div style="display:flex;align-items:center;gap:10px">
-        <i class="${cat.icon || 'fas fa-file-alt'}" style="color:var(--accent);width:18px;text-align:center"></i>
-        <div style="flex:1;min-width:0">
-          <div style="font-size:13px;font-weight:700;font-family:var(--font-te)">${esc(cat.name_te || s.key)}</div>
-          <div style="font-size:10.5px;color:var(--text2)">${s.categories ? esc(s.categories.name_te) : ''}${s.govt_fee ? ` · Govt Fee ₹${s.govt_fee}` : ''}</div>
-        </div>
-        <button onclick="toggleMyService('${s.key}', ${isOn})" style="background:${isOn?'rgba(79,255,176,0.15)':'var(--bg2)'};border:1px solid ${isOn?'var(--accent)':'var(--border)'};color:${isOn?'var(--accent)':'var(--text2)'};border-radius:9px;padding:6px 12px;font-size:11.5px;font-weight:700;cursor:pointer;font-family:var(--font-te)">${isOn ? '✓ ఆన్' : 'ఆఫ్'}</button>
-      </div>
-      ${isOn ? `<div style="margin-top:9px;display:flex;align-items:center;gap:8px">
-        <label style="font-size:11px;color:var(--text2);font-family:var(--font-te)">నా Charge (₹)</label>
-        <input type="number" id="ms-charge-${s.key}" value="${activated.agent_charge || 0}" class="al-input" style="flex:0 0 100px;padding:6px 10px;font-size:12px"/>
-        <button onclick="saveMyServiceCharge('${s.key}')" style="background:var(--accent);color:#0a0f1a;border:none;border-radius:8px;padding:6px 12px;font-size:11.5px;font-weight:700;cursor:pointer">Save</button>
-      </div>` : ''}
-    </div>`;
-  }).join('');
-}
-async function toggleMyService(serviceKey, currentlyOn) {
-  try {
-    if (currentlyOn) {
-      const { error } = await sb.from('agent_services').update({ is_active: false }).eq('agent_id', AGENT.id).eq('service_key', serviceKey);
-      if (error) throw error;
-    } else {
-      const existing = MY_ACTIVATED_SERVICES.find(a => a.service_key === serviceKey);
-      if (existing) { const { error } = await sb.from('agent_services').update({ is_active: true }).eq('id', existing.id); if (error) throw error; }
-      else { const { error } = await sb.from('agent_services').insert({ agent_id: AGENT.id, service_key: serviceKey, agent_charge: 0, is_active: true }); if (error) throw error; }
-    }
-    const { data } = await sb.from('agent_services').select('*').eq('agent_id', AGENT.id);
-    MY_ACTIVATED_SERVICES = data || [];
-    renderMyServicesList();
-  } catch (e) { alert('Failed: ' + e.message); }
-}
-async function saveMyServiceCharge(serviceKey) {
-  const el = document.getElementById('ms-charge-' + serviceKey);
-  const charge = parseFloat(el.value) || 0;
-  try {
-    const { error } = await sb.from('agent_services').update({ agent_charge: charge }).eq('agent_id', AGENT.id).eq('service_key', serviceKey);
-    if (error) throw error;
-    alert('✓ Charge saved');
-  } catch (e) { alert('Failed: ' + e.message); }
-}
-
-/* ═══════════════════════════════════════════════════
-   LEADS INBOX
-   ═══════════════════════════════════════════════════ */
-const LEAD_STATUS_LABELS = { new:'కొత్తది', contacted:'సంప్రదించాం', docs_received:'Docs వచ్చాయి', in_progress:'జరుగుతోంది', completed:'పూర్తయింది', rejected:'తిరస్కరించాం' };
-const LEAD_STATUS_ORDER = ['new','contacted','docs_received','in_progress','completed','rejected'];
-let MY_LEADS = [];
-async function openLeadsModal() {
-  if (!AGENT) return;
-  document.getElementById('leads-modal').style.display = 'flex';
-  await loadMyLeads();
-}
-function closeLeadsModal() { document.getElementById('leads-modal').style.display = 'none'; }
-async function loadMyLeads() {
-  const list = document.getElementById('leads-list'); list.innerHTML = 'Loading…';
-  const { data, error } = await sb.from('leads').select('*').eq('agent_id', AGENT.id).order('created_at', { ascending: false });
-  if (error) { list.innerHTML = `<div style="color:#f87171;font-size:12.5px">Load failed: ${esc(error.message)}</div>`; return; }
-  MY_LEADS = data || [];
-  renderLeadsList();
-  updateLeadsBadge();
-}
-function updateLeadsBadge() {
-  const badge = document.getElementById('leads-badge');
-  const newCount = MY_LEADS.filter(l => l.status === 'new').length;
-  if (badge) { if (newCount > 0) { badge.textContent = newCount > 9 ? '9+' : newCount; badge.style.display = 'flex'; } else badge.style.display = 'none'; }
-}
-async function refreshLeadsBadgeQuietly() {
-  if (!IS_OWNER || !AGENT) return;
-  try {
-    const { count } = await sb.from('leads').select('id', { count: 'exact', head: true }).eq('agent_id', AGENT.id).eq('status', 'new');
-    const badge = document.getElementById('leads-badge');
-    if (!badge) return;
-    if (count > 0) { badge.textContent = count > 9 ? '9+' : count; badge.style.display = 'flex'; } else badge.style.display = 'none';
-  } catch (e) {}
-}
-function renderLeadsList() {
-  const list = document.getElementById('leads-list');
-  if (!MY_LEADS.length) { list.innerHTML = `<div style="font-size:12.5px;color:var(--text2);font-family:var(--font-te);text-align:center;padding:16px 0">ఇంకా ఏ లీడ్ రాలేదు.</div>`; return; }
-  list.innerHTML = MY_LEADS.map(l => {
-    const statusOptions = LEAD_STATUS_ORDER.map(s => `<option value="${s}" ${l.status===s?'selected':''}>${LEAD_STATUS_LABELS[s]}</option>`).join('');
-    return `<div style="background:var(--bg3);border-radius:12px;padding:12px 14px">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
-        <span style="font-size:13px;font-weight:700;font-family:var(--font-te)">${esc(l.customer_name || 'పేరు లేదు')}</span>
-        <span style="font-size:10px;color:var(--text2);margin-left:auto">${new Date(l.created_at).toLocaleDateString('te-IN')}</span>
-      </div>
-      ${l.catalog_key ? `<div style="font-size:11px;color:var(--accent);margin-bottom:4px">సర్వీస్: ${esc(l.catalog_key)}</div>` : ''}
-      ${l.message ? `<div style="font-size:12px;color:var(--text2);margin-bottom:8px">${esc(l.message)}</div>` : ''}
-      <div style="display:flex;align-items:center;gap:8px">
-        <a href="tel:${esc(l.customer_phone)}" style="flex:1;background:rgba(79,255,176,0.1);border:1px solid rgba(79,255,176,0.3);color:var(--accent);border-radius:8px;padding:7px 0;text-align:center;font-size:12px;font-weight:700;text-decoration:none"><i class="fas fa-phone"></i> ${esc(l.customer_phone)}</a>
-        <select onchange="updateLeadStatus(${l.id}, this.value)" class="al-input" style="flex:0 0 130px;padding:6px 8px;font-size:11.5px">${statusOptions}</select>
-      </div>
-    </div>`;
-  }).join('');
-}
-async function updateLeadStatus(leadId, newStatus) {
-  try {
-    const { error } = await sb.from('leads').update({ status: newStatus }).eq('id', leadId);
-    if (error) throw error;
-    const l = MY_LEADS.find(x => x.id === leadId);
-    if (l) l.status = newStatus;
-    updateLeadsBadge();
-  } catch (e) { alert('Failed: ' + e.message); }
-}
-
-/* ═══════════════════════════════════════════════════
-   CONTENT SETTINGS — hide/show global content per agent
-   ═══════════════════════════════════════════════════ */
-const CS_TYPES = [
-  { key:'notification', label:'Notifications', table:'notifications', icon:'fa-bell', nameField:r=>r.title },
-  { key:'scheme', label:'Schemes', table:'government_schemes', icon:'fa-landmark', nameField:r=>r.name_te },
-  { key:'download', label:'Downloads', table:'downloads', icon:'fa-download', nameField:r=>r.title },
-  { key:'poster', label:'Posters', table:'posters', icon:'fa-image', nameField:r=>r.title||'(no title)' },
-  { key:'news', label:'News', table:'news', icon:'fa-newspaper', nameField:r=>r.title },
-  { key:'greeting', label:'Greetings', table:'greetings', icon:'fa-gift', nameField:r=>r.title||'(no title)' },
-];
-let CS_CURRENT_TYPE = 'notification';
-let CS_ITEMS = [];
-let CS_HIDDEN_IDS = new Set();
-async function openContentSettingsModal() {
-  if (!AGENT) return;
-  document.getElementById('contentsettings-modal').style.display = 'flex';
-  renderCsTypePicker();
-  await loadCsHiddenIds();
-  await loadCsItems(CS_CURRENT_TYPE);
-}
-function closeContentSettingsModal() { document.getElementById('contentsettings-modal').style.display = 'none'; }
-function renderCsTypePicker() {
-  document.getElementById('cs-type-picker').innerHTML = CS_TYPES.map(t => `
-    <button onclick="switchCsType('${t.key}')" style="padding:8px 13px;border-radius:10px;background:${CS_CURRENT_TYPE===t.key?'rgba(79,255,176,0.12)':'var(--bg3)'};border:1px solid ${CS_CURRENT_TYPE===t.key?'var(--accent)':'var(--border)'};color:${CS_CURRENT_TYPE===t.key?'var(--accent)':'var(--text)'};font-size:12px;font-family:var(--font-te);cursor:pointer">
-      <i class="fas ${t.icon}"></i> ${t.label}
-    </button>`).join('');
-}
-async function switchCsType(key) { CS_CURRENT_TYPE = key; renderCsTypePicker(); await loadCsItems(key); }
-async function loadCsHiddenIds() {
-  const { data } = await sb.from('agent_hidden_content').select('*').eq('agent_id', AGENT.id);
-  CS_HIDDEN_IDS = new Set((data || []).map(r => r.content_type + ':' + r.content_id));
-}
-async function loadCsItems(typeKey) {
-  const list = document.getElementById('cs-list'); list.innerHTML = 'Loading…';
-  const typeDef = CS_TYPES.find(t => t.key === typeKey);
-  const { data } = await sb.from(typeDef.table).select('*').eq('is_active', true);
-  CS_ITEMS = data || [];
-  renderCsList();
-}
-function renderCsList() {
-  const list = document.getElementById('cs-list');
-  const typeDef = CS_TYPES.find(t => t.key === CS_CURRENT_TYPE);
-  if (!CS_ITEMS.length) { list.innerHTML = `<div style="font-size:12.5px;color:var(--text2);font-family:var(--font-te);text-align:center;padding:16px 0">ఇంకా ఏమీ లేవు.</div>`; return; }
-  list.innerHTML = CS_ITEMS.map(item => {
-    const hideKey = CS_CURRENT_TYPE + ':' + item.id;
-    const isHidden = CS_HIDDEN_IDS.has(hideKey);
-    return `<div style="display:flex;align-items:center;gap:10px;background:var(--bg3);padding:10px 12px;border-radius:11px">
-      <div style="flex:1;font-size:13px;font-family:var(--font-te)">${esc(typeDef.nameField(item))}</div>
-      <button onclick="toggleCsItem(${item.id})" style="background:${isHidden?'var(--bg2)':'rgba(79,255,176,0.15)'};border:1px solid ${isHidden?'var(--border)':'var(--accent)'};color:${isHidden?'var(--text2)':'var(--accent)'};border-radius:9px;padding:6px 12px;font-size:11.5px;font-weight:700;cursor:pointer;font-family:var(--font-te)">${isHidden ? 'ఆఫ్' : '✓ ఆన్'}</button>
-    </div>`;
-  }).join('');
-}
-async function toggleCsItem(itemId) {
-  const hideKey = CS_CURRENT_TYPE + ':' + itemId;
-  const isHidden = CS_HIDDEN_IDS.has(hideKey);
-  try {
-    if (isHidden) { const { error } = await sb.from('agent_hidden_content').delete().eq('agent_id', AGENT.id).eq('content_type', CS_CURRENT_TYPE).eq('content_id', itemId); if (error) throw error; CS_HIDDEN_IDS.delete(hideKey); }
-    else { const { error } = await sb.from('agent_hidden_content').insert({ agent_id: AGENT.id, content_type: CS_CURRENT_TYPE, content_id: itemId }); if (error) throw error; CS_HIDDEN_IDS.add(hideKey); }
-    renderCsList();
-  } catch (e) { alert('Failed: ' + e.message); }
-}
-
-loadShop().then(() => checkOwnerSession());
+loadShop();
 </script>
 </body>
 </html>
