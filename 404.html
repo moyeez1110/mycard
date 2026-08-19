@@ -112,6 +112,26 @@
     color:var(--text2);font-size:10.5px;font-family:var(--font-te)}
   .nav-btn i{font-size:17px}
   .nav-btn.active{color:var(--accent)}
+  /* Facebook-style cover banner */
+  .cover-wrap{position:relative;margin:0 0 46px}
+  .cover-img{width:100%;height:150px;object-fit:cover;display:block;background:linear-gradient(135deg,#111827,#1a2235)}
+  .cover-avatar{position:absolute;left:16px;bottom:-38px;width:76px;height:76px;border-radius:18px;background:var(--bg3);
+    border:3px solid var(--bg2);display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:700;color:var(--accent);overflow:hidden}
+  .cover-avatar img{width:100%;height:100%;object-fit:cover}
+  .cover-info{padding:0 16px;margin-top:8px}
+  .cover-name{font-size:18px;font-weight:700}
+  .cover-loc{font-size:12.5px;color:var(--text2);margin-top:2px}
+  .cover-contact{display:flex;gap:8px;margin-top:12px;padding:0 16px}
+  /* Detail / enquiry popup */
+  .enq-btn{display:inline-flex;align-items:center;gap:5px;margin-top:8px;background:var(--bg3);border:1px solid var(--border);
+    color:var(--accent);padding:6px 12px;border-radius:20px;font-size:11.5px;font-weight:600}
+  .detail-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:200;align-items:flex-end;justify-content:center}
+  .detail-overlay.show{display:flex}
+  .detail-sheet{background:var(--bg2);border-radius:18px 18px 0 0;max-width:640px;width:100%;max-height:80vh;overflow-y:auto;padding:20px 18px 28px}
+  .detail-sheet h3{font-size:16px;margin-bottom:10px;padding-right:30px}
+  .detail-sheet .dtext{font-size:13.5px;line-height:1.8;color:var(--text)}
+  .detail-close{position:absolute;top:14px;right:16px;background:var(--bg3);border:none;color:var(--text2);width:30px;height:30px;border-radius:50%}
+  .detail-sheet-wrap{position:relative}
 </style>
 </head>
 <body>
@@ -137,19 +157,21 @@
   </div>
 
   <!-- ══ HOME PAGE ══ -->
-  <div class="page active" id="page-home">
-    <div class="hero" style="margin:0 -16px 18px;border-radius:0">
-      <div class="hero-avatar" id="h-avatar2">SK</div>
-      <div class="hero-name" id="h-name2">—</div>
-      <div class="hero-loc" id="h-loc" style="display:none"></div>
-      <div class="contact-row">
-        <a id="h-call" class="cbtn" href="#"><i class="fas fa-phone"></i> కాల్ చేయండి</a>
-        <a id="h-wa" class="cbtn wa" href="#" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a>
-      </div>
+  <div class="page active" id="page-home" style="padding:0 0 8px">
+    <div class="cover-wrap">
+      <img class="cover-img" id="cover-img" src="" alt=""/>
+      <div class="cover-avatar" id="h-avatar2">SK</div>
+    </div>
+    <div class="cover-info">
+      <div class="cover-name" id="h-name2">—</div>
+      <div class="cover-loc" id="h-loc" style="display:none"></div>
+    </div>
+    <div class="cover-contact">
+      <a id="h-call" class="cbtn" href="#"><i class="fas fa-phone"></i> కాల్ చేయండి</a>
+      <a id="h-wa" class="cbtn wa" href="#" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a>
     </div>
 
-    <div class="wrap" style="padding:0">
-      <div class="section" id="sec-updates" style="display:none">
+    <div class="wrap" style="padding:0 16px;margin-top:18px">
         <div class="section-head"><h2>🔔 తాజా అప్‌డేట్‌లు</h2><div class="section-line"></div></div>
         <div id="updates-list"></div>
       </div>
@@ -252,6 +274,14 @@
 
 <div id="notfound" style="display:none" class="loading">ఈ షాప్ ప్రొఫైల్ కనిపించడం లేదు.</div>
 
+<div class="detail-overlay" id="detail-overlay" onclick="if(event.target===this)closeDetail()">
+  <div class="detail-sheet detail-sheet-wrap">
+    <button class="detail-close" onclick="closeDetail()"><i class="fas fa-xmark"></i></button>
+    <h3 id="detail-title">—</h3>
+    <div class="dtext" id="detail-text"></div>
+  </div>
+</div>
+
 <script>
 const SUPABASE_URL = 'https://pusmroyftjzdkcwuwsph.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB1c21yb3lmdGp6ZGtjd3V3c3BoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUwNTIzNjcsImV4cCI6MjEwMDYyODM2N30.FTL-p8QLjcdErof1-Usolqudh1aUoKkKBw1UkvrkMNI';
@@ -263,6 +293,18 @@ function getSlugFromPath() {
   return cleaned[cleaned.length - 1] || '';
 }
 function esc(s) { return (s == null ? '' : String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+const DETAILS = [];
+function openDetail(i) {
+  const d = DETAILS[i];
+  if (!d) return;
+  document.getElementById('detail-title').textContent = d.title || '';
+  document.getElementById('detail-text').textContent = d.text || '';
+  document.getElementById('detail-overlay').classList.add('show');
+}
+function closeDetail() {
+  document.getElementById('detail-overlay').classList.remove('show');
+}
 
 function switchPage(name) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -294,9 +336,14 @@ function renderShop(agent, rows) {
   document.title = agent.shop_name || 'Seva Kendra';
 
   const initials = (agent.shop_name || 'SK').trim().split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
-  ['h-avatar','h-avatar2'].forEach(id => document.getElementById(id).textContent = initials);
-  ['h-name','h-name2'].forEach(id => document.getElementById(id).textContent = agent.shop_name || '');
+  document.getElementById('h-avatar').textContent = initials;
+  document.getElementById('h-name').textContent = agent.shop_name || '';
   if (agent.tagline) { const t = document.getElementById('h-tag'); t.textContent = agent.tagline; t.style.display = 'block'; }
+  const coverEl = document.getElementById('cover-img');
+  if (agent.cover_url) { coverEl.src = agent.cover_url; }
+  else { coverEl.style.display = 'none'; document.querySelector('.cover-wrap').style.height = '54px'; document.getElementById('h-avatar2').style.top='8px'; }
+  ['h-avatar2'].forEach(id => document.getElementById(id).textContent = initials);
+  ['h-name2'].forEach(id => document.getElementById(id).textContent = agent.shop_name || '');
   if (agent.city) { const l = document.getElementById('h-loc'); l.textContent = agent.city; l.style.display = 'block'; }
   if (agent.phone) { document.getElementById('h-call').href = 'tel:'+agent.phone; document.getElementById('h-call-icon').href = 'tel:'+agent.phone; }
   if (agent.whatsapp) document.getElementById('h-wa').href = 'https://wa.me/'+agent.whatsapp+'?text='+encodeURIComponent('Namaste, naaku meeku service kavali gurinchi enquiry cheyali.');
@@ -324,21 +371,36 @@ function renderShop(agent, rows) {
 
   // Updates
   const updates = rows.filter(r => r.key === 'update');
+  DETAILS.length = 0; // reset detail lookup for this render
   if (updates.length) {
     document.getElementById('sec-updates').style.display = 'block';
-    document.getElementById('updates-list').innerHTML = updates.map(u => `
-      <a class="list-item" href="${u.link && u.link!=='#' ? u.link : '#'}" ${u.link && u.link!=='#' ? 'target="_blank"' : 'onclick="return false"'}>
-        <i class="fas fa-bullhorn lead"></i>
-        <div class="body"><div class="title">${esc(u.title)}</div>${u.value ? `<div class="sub">${esc(u.value)}</div>` : ''}</div>
-      </a>`).join('');
+    document.getElementById('updates-list').innerHTML = updates.map(u => {
+      const di = DETAILS.push({ title: u.title, text: u.full_details || u.value || u.title }) - 1;
+      return `
+      <div class="list-item" style="align-items:flex-start">
+        <i class="fas fa-bullhorn lead" style="margin-top:2px"></i>
+        <div class="body">
+          <div class="title">${esc(u.title)}</div>
+          ${u.value ? `<div class="sub">${esc(u.value)}</div>` : ''}
+          <button class="enq-btn" onclick="openDetail(${di})"><i class="fas fa-circle-info"></i> వివరాలు</button>
+        </div>
+      </div>`;
+    }).join('');
   }
 
   // Services
   const services = rows.filter(r => r.key === 'service');
   if (services.length) {
     document.getElementById('sec-services').style.display = 'block';
-    document.getElementById('services-list').innerHTML = services.map(s => `
-      <div class="service-card"><i class="${s.icon || 'fas fa-star'}"></i><div class="sname">${esc(s.title || s.value)}</div></div>`).join('');
+    document.getElementById('services-list').innerHTML = services.map(s => {
+      const di = DETAILS.push({ title: s.title || s.value, text: s.full_details || s.desc || s.title || s.value }) - 1;
+      return `
+      <div class="service-card">
+        <i class="${s.icon || 'fas fa-star'}"></i>
+        <div class="sname">${esc(s.title || s.value)}</div>
+        <button class="enq-btn" style="margin-top:6px;padding:4px 8px;font-size:10px" onclick="openDetail(${di})"><i class="fas fa-circle-info"></i> వివరాలు</button>
+      </div>`;
+    }).join('');
   }
 
   // Service groups (packages)
