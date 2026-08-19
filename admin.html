@@ -466,21 +466,6 @@ input,textarea,select{font-family:var(--font);outline:none}
     <button class="sb-nav-btn" onclick="showView('posters',this)">
       <i class="fas fa-image"></i> Poster Library
     </button>
-    <button class="sb-nav-btn" onclick="showView('notifications',this)">
-      <i class="fas fa-bell"></i> Notifications
-    </button>
-    <button class="sb-nav-btn" onclick="showView('schemes',this)">
-      <i class="fas fa-landmark"></i> Govt Schemes
-    </button>
-    <button class="sb-nav-btn" onclick="showView('news',this)">
-      <i class="fas fa-newspaper"></i> News
-    </button>
-    <button class="sb-nav-btn" onclick="showView('greetings',this)">
-      <i class="fas fa-gift"></i> Greetings
-    </button>
-    <button class="sb-nav-btn" onclick="showView('reports',this)">
-      <i class="fas fa-chart-line"></i> Reports
-    </button>
     <button class="sb-nav-btn" onclick="showView('settings',this)">
       <i class="fas fa-gear"></i> Settings
     </button>
@@ -601,67 +586,13 @@ input,textarea,select{font-family:var(--font);outline:none}
         </div>
       </div>
 
-      <!-- NOTIFICATIONS VIEW -->
-      <div id="view-notifications" class="view">
-        <div style="margin-bottom:16px">
-          <div style="font-size:17px;font-weight:700">Notifications</div>
-          <div style="font-size:12px;color:var(--text2);margin-top:2px">Category/Service తో linked announcements — అన్ని customers కి కనిపిస్తాయి</div>
-        </div>
-        <div id="notifications-grid" style="display:flex;flex-direction:column;gap:8px">
-          <div style="padding:20px;color:var(--text3);font-size:13px">లోడ్ అవుతోంది…</div>
-        </div>
-      </div>
-
-      <!-- SCHEMES VIEW -->
-      <div id="view-schemes" class="view">
-        <div style="margin-bottom:16px">
-          <div style="font-size:17px;font-weight:700">Government Schemes</div>
-          <div style="font-size:12px;color:var(--text2);margin-top:2px">పథకాలు — overview, benefits, eligibility, last date</div>
-        </div>
-        <div id="schemes-grid" style="display:flex;flex-direction:column;gap:8px">
-          <div style="padding:20px;color:var(--text3);font-size:13px">లోడ్ అవుతోంది…</div>
-        </div>
-      </div>
-
-      <!-- NEWS VIEW -->
-      <div id="view-news" class="view">
-        <div style="margin-bottom:16px">
-          <div style="font-size:17px;font-weight:700">News</div>
-          <div style="font-size:12px;color:var(--text2);margin-top:2px">Government updates, fee revisions, server maintenance వార్తలు</div>
-        </div>
-        <div id="news-grid" style="display:flex;flex-direction:column;gap:8px">
-          <div style="padding:20px;color:var(--text3);font-size:13px">లోడ్ అవుతోంది…</div>
-        </div>
-      </div>
-
-      <!-- GREETINGS VIEW -->
-      <div id="view-greetings" class="view">
-        <div style="margin-bottom:16px">
-          <div style="font-size:17px;font-weight:700">Greetings</div>
-          <div style="font-size:12px;color:var(--text2);margin-top:2px">పండుగలు, జాతీయ దినాలు — image-based greeting cards</div>
-        </div>
-        <div id="greetings-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px">
-          <div style="padding:20px;color:var(--text3);font-size:13px">లోడ్ అవుతోంది…</div>
-        </div>
-      </div>
-
-      <!-- REPORTS VIEW -->
-      <div id="view-reports" class="view">
-        <div style="margin-bottom:16px">
-          <div style="font-size:17px;font-weight:700">Reports</div>
-          <div style="font-size:12px;color:var(--text2);margin-top:2px">గత 30 రోజుల activity — home.html + agent pages నుండి</div>
-        </div>
-        <div id="reports-body">
-          <div style="padding:20px;color:var(--text3);font-size:13px">లోడ్ అవుతోంది…</div>
-        </div>
-      </div>
-
       <div id="view-agent" class="view">
         <div class="tab-bar">
           <div class="tab-item active" onclick="switchTab('basic',this)">Basic Info</div>
           <div class="tab-item" onclick="switchTab('content',this)">Content</div>
           <div class="tab-item" onclick="switchTab('csvurl',this)">Sheet URL</div>
           <div class="tab-item" onclick="switchTab('wallet',this)">📅 Subscription</div>
+          <div class="tab-item" onclick="switchTab('marketplace',this)">🌐 Marketplace</div>
         </div>
 
         <!-- Basic Info Tab -->
@@ -707,7 +638,6 @@ input,textarea,select{font-family:var(--font);outline:none}
               <span class="add-grp-label">సాధారణ</span>
               <button class="add-row-btn" style="margin-top:0" onclick="addRow('ticker')" title="పైన scroll అయ్యే చిన్న message (ఉదా: 'ఈ వారం సెలవు')"><i class="fas fa-plus"></i> Ticker</button>
               <button class="add-row-btn" style="margin-top:0" onclick="addRow('update')" title="వార్త/announcement card — శీర్షిక+వివరణ+లింక్"><i class="fas fa-plus"></i> Update</button>
-              <button class="add-row-btn" style="margin-top:0" onclick="addRow('banner')" title="పైన rotate అయ్యే పెద్ద image banner (హీరో carousel)"><i class="fas fa-plus"></i> Banner</button>
               <button class="add-row-btn" style="margin-top:0" onclick="addRow('service')" title="మీరు అందించే ఒక్క సర్వీస్ (వివరణ మాత్రమే, ధర ఉండదు)"><i class="fas fa-plus"></i> Service</button>
             </div>
             <div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-bottom:10px">
@@ -833,6 +763,19 @@ input,textarea,select{font-family:var(--font);outline:none}
             </div>
           </div>
         </div>
+
+        <!-- MARKETPLACE TAB -->
+        <div id="tab-marketplace" style="display:none">
+          <div class="editor-card">
+            <div class="editor-card-title"><i class="fas fa-globe"></i> Marketplace Services</div>
+            <p style="font-size:12.5px;color:var(--text2);margin-bottom:16px;line-height:1.6">
+              ఈ ఏజెంట్ ఏయే గ్లోబల్ సర్వీసులు అందిస్తారో select చేయండి — customer home.html లో ఆ సర్వీస్ చూసినప్పుడు, ఈ ఏజెంట్ "సమీపంలోని Seva Kendra" గా కనిపిస్తారు.
+            </p>
+            <div id="mkt-services-list" style="display:flex;flex-direction:column;gap:8px">
+              <div style="font-size:13px;color:var(--text2)">Loading…</div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- SETTINGS VIEW -->
@@ -889,7 +832,7 @@ const SUPABASE_URL = 'https://pusmroyftjzdkcwuwsph.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB1c21yb3lmdGp6ZGtjd3V3c3BoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUwNTIzNjcsImV4cCI6MjEwMDYyODM2N30.FTL-p8QLjcdErof1-Usolqudh1aUoKkKBw1UkvrkMNI';
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-const CONTENT_KEYS_ALL = ['update','service','pdf','doc','ticker','voice','tts','poster','pdf_notice','canva','req_service','req_doc','popup','service_group','sub_service','banner'];
+const CONTENT_KEYS_ALL = ['update','service','pdf','doc','ticker','voice','tts','poster','pdf_notice','canva','req_service','req_doc','popup','service_group','sub_service'];
 const PROFILE_FIELD_MAP = {
   shopName: 'shop_name', tagline: 'tagline', city: 'city', phone: 'phone',
   whatsapp: 'whatsapp', footerText: 'footer_text', logoIcon: 'logo_icon',
@@ -1051,7 +994,7 @@ async function loadAgent(tabId) {
     key: r.key, title: r.title, value: r.value, link: r.link, icon: r.icon,
     extra: r.extra, desc: r.description, badge: r.badge, share: r.share,
     isnew: r.isnew, _dbId: r.id, display_order: r.display_order,
-    source: r.source || 'admin', status: r.status || 'live',
+    source: r.source || 'admin', status: r.status || 'live', full_details: r.full_details || '',
   }));
   ORIGINAL_ROW_IDS = ALL_ROWS.map(r => r._dbId).filter(Boolean);
 
@@ -1088,7 +1031,7 @@ async function loadAgent(tabId) {
 }
 
 /* ═══ Category Drag-Drop Rows ═══ */
-const CONTENT_KEYS = ['update','service','pdf','doc','ticker','voice','tts','poster','pdf_notice','canva','req_service','req_doc','popup','service_group','sub_service','banner'];
+const CONTENT_KEYS = ['update','service','pdf','doc','ticker','voice','tts','poster','pdf_notice','canva','req_service','req_doc','popup','service_group','sub_service'];
 const KB_CLASS = {
   update:'kb-update', service:'kb-service', pdf:'kb-pdf', doc:'kb-doc',
   ticker:'kb-ticker', voice:'kb-voice', tts:'kb-voice', poster:'kb-update',
@@ -1099,7 +1042,7 @@ const KB_CLASS = {
 // Category definitions — order and color
 const CATEGORIES = [
   { key:'ticker',      label:'Ticker',            icon:'fa-scroll',            color:'#a78bfa', keys:['ticker'] },
-  { key:'update',      label:'Updates',           icon:'fa-bullhorn',          color:'var(--yellow)', keys:['update','poster','banner'] },
+  { key:'update',      label:'Updates',           icon:'fa-bullhorn',          color:'var(--yellow)', keys:['update','poster'] },
   { key:'service',     label:'Services',          icon:'fa-hand-holding-hand', color:'var(--blue)',   keys:['service','canva'] },
   { key:'servicegroup',label:'Service Packages',  icon:'fa-layer-group',      color:'#8b5cf6',       keys:['service_group','sub_service'] },
   { key:'reqservice',  label:'Required Services', icon:'fa-clipboard-list',    color:'#22d3ee',       keys:['req_service','req_doc'] },
@@ -1523,6 +1466,7 @@ function editRowInline(gi) {
     <div class="field-row"><label>Link</label><input type="url" id="er-link" class="field-input" value="${esc(r.link)}" placeholder="https://…"/></div>
     <div class="field-row"><label>Icon (fas fa-…)</label><input type="text" id="er-icon" class="field-input" value="${esc(r.icon)}" placeholder="fas fa-file"/></div>
     <div class="field-row"><label>Extra (optional)</label><input type="text" id="er-extra" class="field-input" value="${esc(plainExtra)}"/></div>
+    ${r.key === 'update' ? `<div class="field-row"><label>పూర్తి వివరాలు (customer "వివరాలు" నొక్కితే ఇది కనిపిస్తుంది)</label><textarea id="er-full-details" class="field-input" rows="4" placeholder="ఎక్కువ వివరాలు ఇక్కడ రాయండి…">${esc(r.full_details)}</textarea></div>` : ''}
     <div style="display:flex;gap:8px;margin-top:8px">
       <button class="topbar-btn primary" style="flex:1" onclick="saveInlineEdit(${gi})"><i class="fas fa-check"></i> Update</button>
       <button class="add-row-btn" onclick="closeModal()">Cancel</button>
@@ -1683,6 +1627,8 @@ function saveInlineEdit(gi) {
   r.title = document.getElementById('er-title').value;
   r.link  = document.getElementById('er-link').value;
   r.icon  = document.getElementById('er-icon').value;
+  const fdEl = document.getElementById('er-full-details');
+  if (fdEl) r.full_details = fdEl.value;
   const plainVal = document.getElementById('er-extra').value.trim();
   // Preserve share/new flags
   const existingParts = (r.extra||'').split('|').map(s=>s.trim()).filter(Boolean);
@@ -1743,7 +1689,6 @@ function renderRowsTable() { renderCatGrid(); }
    Types agents are allowed to self-upload (matches index.html):        */
 const AGENT_UPLOAD_TYPES = [
   { key:'ticker', label:'Ticker' }, { key:'update', label:'Update' },
-  { key:'banner', label:'Banner' },
   { key:'service', label:'Service' }, { key:'pdf', label:'PDF' },
   { key:'doc', label:'Doc' }, { key:'poster', label:'Poster' },
   { key:'voice', label:'Voice' }, { key:'tts', label:'TTS' },
@@ -1815,7 +1760,7 @@ async function saveAgent() {
     const toInsert = contentRows.filter(r => !r._dbId).map((r, i) => ({
       agent_id: CURRENT_AGENT_DB.id, key: r.key, title: r.title || '', value: r.value || '',
       link: r.link || '', icon: r.icon || '', extra: r.extra || '', description: r.desc || '',
-      badge: r.badge || '', share: r.share || 'yes', isnew: r.isnew || 'no',
+      badge: r.badge || '', share: r.share || 'yes', isnew: r.isnew || 'no', full_details: r.full_details || '',
       display_order: contentRows.indexOf(r), source: 'admin', status: 'live',
     }));
     if (toInsert.length) {
@@ -1830,7 +1775,7 @@ async function saveAgent() {
       const { error } = await sb.from('agent_rows').update({
         key: r.key, title: r.title || '', value: r.value || '',
         link: r.link || '', icon: r.icon || '', extra: r.extra || '', description: r.desc || '',
-        badge: r.badge || '', share: r.share || 'yes', isnew: r.isnew || 'no',
+        badge: r.badge || '', share: r.share || 'yes', isnew: r.isnew || 'no', full_details: r.full_details || '',
         display_order: contentRows.indexOf(r),
       }).eq('id', r._dbId);
       if (error) { saveErr = error; break; }
@@ -2045,50 +1990,6 @@ function showView(name, btn) {
     CURRENT_TAB = null; DIRTY = false;
     loadPosters();
   }
-  if (name === 'notifications') {
-    document.getElementById('topbar-title').textContent = 'Notifications';
-    document.getElementById('topbar-badge').style.display = 'none';
-    document.getElementById('topbar-actions').innerHTML =
-      '<button class="topbar-btn primary" onclick="showAddNotification()"><i class="fas fa-plus"></i> Add Notification</button>';
-    document.querySelectorAll('.agent-item').forEach(e => e.classList.remove('active'));
-    CURRENT_TAB = null; DIRTY = false;
-    loadNotifications();
-  }
-  if (name === 'schemes') {
-    document.getElementById('topbar-title').textContent = 'Government Schemes';
-    document.getElementById('topbar-badge').style.display = 'none';
-    document.getElementById('topbar-actions').innerHTML =
-      '<button class="topbar-btn primary" onclick="showAddScheme()"><i class="fas fa-plus"></i> Add Scheme</button>';
-    document.querySelectorAll('.agent-item').forEach(e => e.classList.remove('active'));
-    CURRENT_TAB = null; DIRTY = false;
-    loadSchemes();
-  }
-  if (name === 'news') {
-    document.getElementById('topbar-title').textContent = 'News';
-    document.getElementById('topbar-badge').style.display = 'none';
-    document.getElementById('topbar-actions').innerHTML =
-      '<button class="topbar-btn primary" onclick="showAddNews()"><i class="fas fa-plus"></i> Add News</button>';
-    document.querySelectorAll('.agent-item').forEach(e => e.classList.remove('active'));
-    CURRENT_TAB = null; DIRTY = false;
-    loadNews();
-  }
-  if (name === 'greetings') {
-    document.getElementById('topbar-title').textContent = 'Greetings';
-    document.getElementById('topbar-badge').style.display = 'none';
-    document.getElementById('topbar-actions').innerHTML =
-      '<button class="topbar-btn primary" onclick="showAddGreeting()"><i class="fas fa-plus"></i> Add Greeting</button>';
-    document.querySelectorAll('.agent-item').forEach(e => e.classList.remove('active'));
-    CURRENT_TAB = null; DIRTY = false;
-    loadGreetings();
-  }
-  if (name === 'reports') {
-    document.getElementById('topbar-title').textContent = 'Reports';
-    document.getElementById('topbar-badge').style.display = 'none';
-    document.getElementById('topbar-actions').innerHTML = '';
-    document.querySelectorAll('.agent-item').forEach(e => e.classList.remove('active'));
-    CURRENT_TAB = null; DIRTY = false;
-    loadReports();
-  }
   if (name === 'settings') {
     document.getElementById('topbar-title').textContent = 'Settings';
     document.getElementById('topbar-badge').style.display = 'none';
@@ -2099,10 +2000,11 @@ function showView(name, btn) {
 function switchTab(name, btn) {
   document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
   btn.classList.add('active');
-  ['basic','content','csvurl','wallet'].forEach(t => {
+  ['basic','content','csvurl','wallet','marketplace'].forEach(t => {
     document.getElementById('tab-'+t).style.display = t === name ? 'block' : 'none';
   });
   if (name === 'wallet' && CURRENT_TAB) loadSubscription();
+  if (name === 'marketplace' && CURRENT_TAB) loadMarketplaceServices();
 }
 
 /* ═══════════════════════════════════════
@@ -2117,6 +2019,49 @@ function subStatusInfo(endDateStr) {
   if (daysLeft < 0)  return { label: '❌ Expired', color: 'var(--red)', bg: 'rgba(248,113,113,0.08)' };
   if (daysLeft <= 10) return { label: `⚠️ ${daysLeft} రోజుల్లో Expire అవుతుంది`, color: 'var(--yellow,#f0b429)', bg: 'rgba(240,180,41,0.08)' };
   return { label: '✅ Active', color: 'var(--accent)', bg: 'rgba(79,255,176,0.08)' };
+}
+
+/* ── Marketplace: which global services this agent offers ── */
+async function loadMarketplaceServices() {
+  if (!CURRENT_AGENT_DB) return;
+  const listEl = document.getElementById('mkt-services-list');
+  listEl.innerHTML = '<div style="font-size:13px;color:var(--text2)">Loading…</div>';
+
+  const [{ data: allServices, error: svcErr }, { data: linked, error: linkErr }] = await Promise.all([
+    sb.from('services').select('key, is_active, service_catalog(name_te, name_en)').eq('is_active', true),
+    sb.from('agent_services').select('service_key').eq('agent_id', CURRENT_AGENT_DB.id),
+  ]);
+
+  if (svcErr) { listEl.innerHTML = '<div style="font-size:13px;color:var(--red)">Load failed: '+svcErr.message+'</div>'; return; }
+  const linkedKeys = new Set((linked || []).map(l => l.service_key));
+
+  if (!allServices || !allServices.length) {
+    listEl.innerHTML = '<div style="font-size:13px;color:var(--text2)">ఇంకా గ్లోబల్ సర్వీసులు లేవు — ముందు "Service Master" లో యాడ్ చేయండి.</div>';
+    return;
+  }
+
+  listEl.innerHTML = allServices.map(s => {
+    const checked = linkedKeys.has(s.key);
+    const label = (s.service_catalog && (s.service_catalog.name_te || s.service_catalog.name_en)) || s.key;
+    return `<label style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg3);border-radius:10px;cursor:pointer">
+      <input type="checkbox" ${checked ? 'checked' : ''} onchange="toggleMarketplaceService('${s.key}', this.checked)" style="width:16px;height:16px;accent-color:var(--accent)"/>
+      <span style="font-size:13.5px;font-weight:500">${label}</span>
+    </label>`;
+  }).join('');
+}
+
+async function toggleMarketplaceService(serviceKey, isChecked) {
+  if (!CURRENT_AGENT_DB) return;
+  if (isChecked) {
+    const { error } = await sb.from('agent_services').insert({ agent_id: CURRENT_AGENT_DB.id, service_key: serviceKey });
+    if (error) showToast('Failed: ' + error.message, 'error');
+    else showToast('Add అయ్యింది ✓', 'success');
+  } else {
+    const { error } = await sb.from('agent_services').delete()
+      .eq('agent_id', CURRENT_AGENT_DB.id).eq('service_key', serviceKey);
+    if (error) showToast('Failed: ' + error.message, 'error');
+    else showToast('తీసేయబడింది', 'info');
+  }
 }
 
 async function loadSubscription() {
@@ -2900,486 +2845,6 @@ async function deletePoster(id) {
   if (error) { showToast(error.message||'Failed','error'); return; }
   showToast('Deleted ✓','success');
   await loadPosters();
-}
-
-/* ═══════════════════════════════════════════════════
-   NOTIFICATIONS
-   ═══════════════════════════════════════════════════ */
-let ALL_NOTIFICATIONS = [];
-
-async function loadNotifications() {
-  const { data, error } = await sb.from('notifications').select('*, categories(name_te), services(key, service_catalog(name_te))').order('created_at', { ascending: false });
-  if (error) { showToast('Load failed: ' + error.message, 'error'); return; }
-  ALL_NOTIFICATIONS = data || [];
-  renderNotificationsGrid();
-}
-
-function renderNotificationsGrid() {
-  const grid = document.getElementById('notifications-grid');
-  if (!ALL_NOTIFICATIONS.length) {
-    grid.innerHTML = `<div style="padding:32px;color:var(--text3);font-size:13px;text-align:center">
-      <i class="fas fa-bell" style="font-size:28px;margin-bottom:10px;display:block"></i>
-      ఇంకా ఏ notification లేదు.</div>`;
-    return;
-  }
-  grid.innerHTML = ALL_NOTIFICATIONS.map(n => {
-    const svcName = n.services && n.services.service_catalog ? n.services.service_catalog.name_te : '';
-    return `<div class="stat-card" style="display:flex;align-items:center;gap:12px;${n.is_active?'':'opacity:0.55'}">
-      <div style="width:36px;height:36px;border-radius:9px;background:rgba(251,191,36,0.12);border:1.5px solid var(--yellow);
-        display:flex;align-items:center;justify-content:center;color:var(--yellow);flex-shrink:0"><i class="fas fa-bell"></i></div>
-      <div style="flex:1;min-width:0">
-        <div style="font-weight:600;font-size:13.5px">${esc(n.title)}</div>
-        <div style="font-size:11px;color:var(--text3)">
-          ${n.categories?esc(n.categories.name_te):''}${svcName?` · ${esc(svcName)}`:''}${n.last_date?` · Last date: ${n.last_date}`:''}
-          ${n.is_active?'':' · <span style="color:var(--red)">Inactive</span>'}
-        </div>
-      </div>
-      <button class="row-card-edit" onclick="toggleNotificationActive(${n.id}, ${n.is_active})" title="Toggle">
-        <i class="fas fa-${n.is_active?'toggle-on':'toggle-off'}" style="color:${n.is_active?'var(--accent)':'var(--text3)'}"></i></button>
-      <button class="row-card-edit" onclick="showAddNotification(${n.id})" title="Edit"><i class="fas fa-pen"></i></button>
-      <button class="row-card-del" onclick="deleteNotification(${n.id})" title="Delete"><i class="fas fa-trash"></i></button>
-    </div>`;
-  }).join('');
-}
-
-async function showAddNotification(editId) {
-  await ensureCategoriesAndServicesLoaded();
-  const existing = editId ? ALL_NOTIFICATIONS.find(n => n.id === editId) : null;
-  const catOptions = ALL_CATEGORIES.map(c => `<option value="${c.id}" ${existing && existing.category_id===c.id?'selected':''}>${esc(c.name_te)}</option>`).join('');
-  const svcOptions = ALL_SERVICES.map(s => `<option value="${s.id}" ${existing && existing.service_id===s.id?'selected':''}>${esc((s.service_catalog&&s.service_catalog.name_te)||s.key)}</option>`).join('');
-
-  showModal(existing?'Notification Edit చేయండి':'కొత్త Notification', '', `
-    <div class="field-row"><label>Title</label>
-      <input type="text" id="ntf-title" class="field-input" value="${existing?esc(existing.title):''}" style="margin-bottom:10px"/></div>
-    <div class="field-row"><label>Banner URL (optional)</label>
-      <input type="url" id="ntf-banner" class="field-input" value="${existing?esc(existing.banner_url||''):''}" style="margin-bottom:10px"/></div>
-    <div class="field-row"><label>Description</label>
-      <textarea id="ntf-desc" class="field-input" rows="3" style="margin-bottom:10px">${existing?esc(existing.description||''):''}</textarea></div>
-    <div class="field-row"><label>Important Notes (optional)</label>
-      <textarea id="ntf-notes" class="field-input" rows="2" style="margin-bottom:10px">${existing?esc(existing.important_notes||''):''}</textarea></div>
-    <div style="display:flex;gap:10px">
-      <div class="field-row" style="flex:1"><label>Last Date (optional)</label>
-        <input type="date" id="ntf-lastdate" class="field-input" value="${existing?(existing.last_date||''):''}" style="margin-bottom:10px"/></div>
-      <div class="field-row" style="flex:1"><label>Attachment URL (optional)</label>
-        <input type="url" id="ntf-attach" class="field-input" value="${existing?esc(existing.attachment_url||''):''}" style="margin-bottom:10px"/></div>
-    </div>
-    <div class="field-row"><label>Category (optional)</label>
-      <select id="ntf-category" class="field-input" style="margin-bottom:10px"><option value="">— None —</option>${catOptions}</select></div>
-    <div class="field-row"><label>Service (optional)</label>
-      <select id="ntf-service" class="field-input" style="margin-bottom:10px"><option value="">— None —</option>${svcOptions}</select></div>
-    <div style="display:flex;gap:10px;margin-top:4px">
-      <button class="topbar-btn primary" style="flex:1" onclick="doSaveNotification(${editId||'null'})"><i class="fas fa-check"></i> ${existing?'Update':'Create'}</button>
-      <button class="topbar-btn secondary" style="flex:1" onclick="closeModal()">Cancel</button>
-    </div>`, true);
-}
-
-async function doSaveNotification(editId) {
-  const title = document.getElementById('ntf-title').value.trim();
-  if (!title) { showToast('Title అవసరం', 'error'); return; }
-  const payload = {
-    title,
-    banner_url: document.getElementById('ntf-banner').value.trim() || null,
-    description: document.getElementById('ntf-desc').value.trim() || null,
-    important_notes: document.getElementById('ntf-notes').value.trim() || null,
-    last_date: document.getElementById('ntf-lastdate').value || null,
-    attachment_url: document.getElementById('ntf-attach').value.trim() || null,
-    category_id: document.getElementById('ntf-category').value ? parseInt(document.getElementById('ntf-category').value,10) : null,
-    service_id: document.getElementById('ntf-service').value ? parseInt(document.getElementById('ntf-service').value,10) : null,
-  };
-  showLoader('Saving…');
-  const { error } = editId
-    ? await sb.from('notifications').update(payload).eq('id', editId)
-    : await sb.from('notifications').insert(payload);
-  hideLoader();
-  if (error) { showToast(error.message||'Failed','error'); return; }
-  closeModal();
-  showToast(editId?'Updated ✓':'Created ✓','success');
-  await loadNotifications();
-}
-
-async function toggleNotificationActive(id, currentVal) {
-  const { error } = await sb.from('notifications').update({ is_active: !currentVal }).eq('id', id);
-  if (error) { showToast(error.message||'Failed','error'); return; }
-  await loadNotifications();
-}
-
-async function deleteNotification(id) {
-  if (!confirm('ఈ notification delete చేయాలా?')) return;
-  const { error } = await sb.from('notifications').delete().eq('id', id);
-  if (error) { showToast(error.message||'Failed','error'); return; }
-  showToast('Deleted ✓','success');
-  await loadNotifications();
-}
-
-/* ═══════════════════════════════════════════════════
-   GOVERNMENT SCHEMES
-   ═══════════════════════════════════════════════════ */
-let ALL_SCHEMES = [];
-
-async function loadSchemes() {
-  const { data, error } = await sb.from('government_schemes').select('*, categories(name_te)').order('id');
-  if (error) { showToast('Load failed: ' + error.message, 'error'); return; }
-  ALL_SCHEMES = data || [];
-  renderSchemesGrid();
-}
-
-function renderSchemesGrid() {
-  const grid = document.getElementById('schemes-grid');
-  if (!ALL_SCHEMES.length) {
-    grid.innerHTML = `<div style="padding:32px;color:var(--text3);font-size:13px;text-align:center">
-      <i class="fas fa-landmark" style="font-size:28px;margin-bottom:10px;display:block"></i>
-      ఇంకా ఏ scheme లేదు.</div>`;
-    return;
-  }
-  grid.innerHTML = ALL_SCHEMES.map(s => `
-    <div class="stat-card" style="display:flex;align-items:center;gap:12px;${s.is_active?'':'opacity:0.55'}">
-      <div style="width:36px;height:36px;border-radius:9px;background:rgba(139,92,246,0.12);border:1.5px solid #8b5cf6;
-        display:flex;align-items:center;justify-content:center;color:#8b5cf6;flex-shrink:0"><i class="fas fa-landmark"></i></div>
-      <div style="flex:1;min-width:0">
-        <div style="font-weight:600;font-size:13.5px">${esc(s.name_te)} ${s.name_en?`<span style="color:var(--text3);font-weight:400">(${esc(s.name_en)})</span>`:''}</div>
-        <div style="font-size:11px;color:var(--text3)">
-          key: ${esc(s.key)}${s.categories?` · ${esc(s.categories.name_te)}`:''}${s.last_date?` · Last date: ${s.last_date}`:''}
-          ${s.is_active?'':' · <span style="color:var(--red)">Inactive</span>'}
-        </div>
-      </div>
-      <button class="row-card-edit" onclick="toggleSchemeActive(${s.id}, ${s.is_active})" title="Toggle">
-        <i class="fas fa-${s.is_active?'toggle-on':'toggle-off'}" style="color:${s.is_active?'var(--accent)':'var(--text3)'}"></i></button>
-      <button class="row-card-edit" onclick="showAddScheme(${s.id})" title="Edit"><i class="fas fa-pen"></i></button>
-      <button class="row-card-del" onclick="deleteScheme(${s.id})" title="Delete"><i class="fas fa-trash"></i></button>
-    </div>`).join('');
-}
-
-async function showAddScheme(editId) {
-  await ensureCategoriesAndServicesLoaded();
-  const existing = editId ? ALL_SCHEMES.find(s => s.id === editId) : null;
-  const catOptions = ALL_CATEGORIES.map(c => `<option value="${c.id}" ${existing && existing.category_id===c.id?'selected':''}>${esc(c.name_te)}</option>`).join('');
-
-  showModal(existing?'Scheme Edit చేయండి':'కొత్త Scheme', '', `
-    <div class="field-row"><label>Key (unique)</label>
-      <input type="text" id="sch-key" class="field-input" value="${existing?esc(existing.key):''}" placeholder="rythu_bandhu" ${existing?'disabled':''} style="margin-bottom:10px"/></div>
-    <div class="field-row"><label>పేరు (తెలుగు)</label>
-      <input type="text" id="sch-name-te" class="field-input" value="${existing?esc(existing.name_te):''}" style="margin-bottom:10px"/></div>
-    <div class="field-row"><label>పేరు (English, optional)</label>
-      <input type="text" id="sch-name-en" class="field-input" value="${existing?esc(existing.name_en||''):''}" style="margin-bottom:10px"/></div>
-    <div class="field-row"><label>Category (optional)</label>
-      <select id="sch-category" class="field-input" style="margin-bottom:10px"><option value="">— None —</option>${catOptions}</select></div>
-    <div class="field-row"><label>Overview</label>
-      <textarea id="sch-overview" class="field-input" rows="2" style="margin-bottom:10px">${existing?esc(existing.overview||''):''}</textarea></div>
-    <div class="field-row"><label>Benefits</label>
-      <textarea id="sch-benefits" class="field-input" rows="2" style="margin-bottom:10px">${existing?esc(existing.benefits||''):''}</textarea></div>
-    <div class="field-row"><label>Eligibility</label>
-      <textarea id="sch-eligibility" class="field-input" rows="2" style="margin-bottom:10px">${existing?esc(existing.eligibility||''):''}</textarea></div>
-    <div class="field-row"><label>Required Documents</label>
-      <textarea id="sch-docs" class="field-input" rows="2" style="margin-bottom:10px">${existing?esc(existing.required_documents||''):''}</textarea></div>
-    <div class="field-row"><label>Last Date (optional)</label>
-      <input type="date" id="sch-lastdate" class="field-input" value="${existing?(existing.last_date||''):''}" style="margin-bottom:10px"/></div>
-    <div class="field-row"><label>G.O. URL (optional)</label>
-      <input type="url" id="sch-go" class="field-input" value="${existing?esc(existing.go_url||''):''}" style="margin-bottom:10px"/></div>
-    <div class="field-row"><label>Circular URL (optional)</label>
-      <input type="url" id="sch-circular" class="field-input" value="${existing?esc(existing.circular_url||''):''}" style="margin-bottom:10px"/></div>
-    <div class="field-row"><label>Poster URL (optional)</label>
-      <input type="url" id="sch-poster" class="field-input" value="${existing?esc(existing.poster_url||''):''}" style="margin-bottom:10px"/></div>
-    <div style="display:flex;gap:10px;margin-top:4px">
-      <button class="topbar-btn primary" style="flex:1" onclick="doSaveScheme(${editId||'null'})"><i class="fas fa-check"></i> ${existing?'Update':'Create'}</button>
-      <button class="topbar-btn secondary" style="flex:1" onclick="closeModal()">Cancel</button>
-    </div>`, true);
-}
-
-async function doSaveScheme(editId) {
-  const key = document.getElementById('sch-key').value.trim();
-  const name_te = document.getElementById('sch-name-te').value.trim();
-  if (!key) { showToast('Key అవసరం', 'error'); return; }
-  if (!name_te) { showToast('తెలుగు పేరు అవసరం', 'error'); return; }
-  const payload = {
-    key, name_te,
-    name_en: document.getElementById('sch-name-en').value.trim() || null,
-    category_id: document.getElementById('sch-category').value ? parseInt(document.getElementById('sch-category').value,10) : null,
-    overview: document.getElementById('sch-overview').value.trim() || null,
-    benefits: document.getElementById('sch-benefits').value.trim() || null,
-    eligibility: document.getElementById('sch-eligibility').value.trim() || null,
-    required_documents: document.getElementById('sch-docs').value.trim() || null,
-    last_date: document.getElementById('sch-lastdate').value || null,
-    go_url: document.getElementById('sch-go').value.trim() || null,
-    circular_url: document.getElementById('sch-circular').value.trim() || null,
-    poster_url: document.getElementById('sch-poster').value.trim() || null,
-  };
-  showLoader('Saving…');
-  const { error } = editId
-    ? await sb.from('government_schemes').update(payload).eq('id', editId)
-    : await sb.from('government_schemes').insert(payload);
-  hideLoader();
-  if (error) { showToast(error.message||'Failed','error'); return; }
-  closeModal();
-  showToast(editId?'Updated ✓':'Created ✓','success');
-  await loadSchemes();
-}
-
-async function toggleSchemeActive(id, currentVal) {
-  const { error } = await sb.from('government_schemes').update({ is_active: !currentVal }).eq('id', id);
-  if (error) { showToast(error.message||'Failed','error'); return; }
-  await loadSchemes();
-}
-
-async function deleteScheme(id) {
-  if (!confirm('ఈ scheme delete చేయాలా?')) return;
-  const { error } = await sb.from('government_schemes').delete().eq('id', id);
-  if (error) { showToast(error.message||'Failed','error'); return; }
-  showToast('Deleted ✓','success');
-  await loadSchemes();
-}
-
-/* ═══════════════════════════════════════════════════
-   NEWS
-   ═══════════════════════════════════════════════════ */
-let ALL_NEWS = [];
-const NEWS_TYPE_LABELS = { govt_update:'Govt Update', department:'Department', fee_revision:'Fee Revision', maintenance:'Maintenance', announcement:'Announcement' };
-
-async function loadNews() {
-  const { data, error } = await sb.from('news').select('*').order('created_at', { ascending: false });
-  if (error) { showToast('Load failed: ' + error.message, 'error'); return; }
-  ALL_NEWS = data || [];
-  renderNewsGrid();
-}
-
-function renderNewsGrid() {
-  const grid = document.getElementById('news-grid');
-  if (!ALL_NEWS.length) {
-    grid.innerHTML = `<div style="padding:32px;color:var(--text3);font-size:13px;text-align:center">
-      <i class="fas fa-newspaper" style="font-size:28px;margin-bottom:10px;display:block"></i>
-      ఇంకా ఏ news లేదు.</div>`;
-    return;
-  }
-  grid.innerHTML = ALL_NEWS.map(n => `
-    <div class="stat-card" style="display:flex;align-items:center;gap:12px;${n.is_active?'':'opacity:0.55'}">
-      <div style="width:36px;height:36px;border-radius:9px;background:rgba(59,130,246,0.12);border:1.5px solid #3b82f6;
-        display:flex;align-items:center;justify-content:center;color:#3b82f6;flex-shrink:0"><i class="fas fa-newspaper"></i></div>
-      <div style="flex:1;min-width:0">
-        <div style="font-weight:600;font-size:13.5px">${esc(n.title)}</div>
-        <div style="font-size:11px;color:var(--text3)">${NEWS_TYPE_LABELS[n.news_type]||n.news_type}${n.is_active?'':' · <span style="color:var(--red)">Inactive</span>'}</div>
-      </div>
-      <button class="row-card-edit" onclick="toggleNewsActive(${n.id}, ${n.is_active})" title="Toggle">
-        <i class="fas fa-${n.is_active?'toggle-on':'toggle-off'}" style="color:${n.is_active?'var(--accent)':'var(--text3)'}"></i></button>
-      <button class="row-card-edit" onclick="showAddNews(${n.id})" title="Edit"><i class="fas fa-pen"></i></button>
-      <button class="row-card-del" onclick="deleteNews(${n.id})" title="Delete"><i class="fas fa-trash"></i></button>
-    </div>`).join('');
-}
-
-function showAddNews(editId) {
-  const existing = editId ? ALL_NEWS.find(n => n.id === editId) : null;
-  const typeOptions = Object.keys(NEWS_TYPE_LABELS).map(k => `<option value="${k}" ${existing && existing.news_type===k?'selected':''}>${NEWS_TYPE_LABELS[k]}</option>`).join('');
-  showModal(existing?'News Edit చేయండి':'కొత్త News', '', `
-    <div class="field-row"><label>Title</label>
-      <input type="text" id="news-title" class="field-input" value="${existing?esc(existing.title):''}" style="margin-bottom:10px"/></div>
-    <div class="field-row"><label>Description</label>
-      <textarea id="news-desc" class="field-input" rows="3" style="margin-bottom:10px">${existing?esc(existing.description||''):''}</textarea></div>
-    <div class="field-row"><label>Type</label>
-      <select id="news-type" class="field-input" style="margin-bottom:10px">${typeOptions}</select></div>
-    <div style="display:flex;gap:10px;margin-top:4px">
-      <button class="topbar-btn primary" style="flex:1" onclick="doSaveNews(${editId||'null'})"><i class="fas fa-check"></i> ${existing?'Update':'Create'}</button>
-      <button class="topbar-btn secondary" style="flex:1" onclick="closeModal()">Cancel</button>
-    </div>`, true);
-}
-
-async function doSaveNews(editId) {
-  const title = document.getElementById('news-title').value.trim();
-  if (!title) { showToast('Title అవసరం', 'error'); return; }
-  const payload = { title, description: document.getElementById('news-desc').value.trim() || null, news_type: document.getElementById('news-type').value };
-  showLoader('Saving…');
-  const { error } = editId
-    ? await sb.from('news').update(payload).eq('id', editId)
-    : await sb.from('news').insert(payload);
-  hideLoader();
-  if (error) { showToast(error.message||'Failed','error'); return; }
-  closeModal();
-  showToast(editId?'Updated ✓':'Created ✓','success');
-  await loadNews();
-}
-
-async function toggleNewsActive(id, currentVal) {
-  const { error } = await sb.from('news').update({ is_active: !currentVal }).eq('id', id);
-  if (error) { showToast(error.message||'Failed','error'); return; }
-  await loadNews();
-}
-
-async function deleteNews(id) {
-  if (!confirm('ఈ news delete చేయాలా?')) return;
-  const { error } = await sb.from('news').delete().eq('id', id);
-  if (error) { showToast(error.message||'Failed','error'); return; }
-  showToast('Deleted ✓','success');
-  await loadNews();
-}
-
-/* ═══════════════════════════════════════════════════
-   GREETINGS
-   ═══════════════════════════════════════════════════ */
-let ALL_GREETINGS = [];
-const GREETING_TYPE_LABELS = { festival:'Festival', national_day:'National Day', business:'Business', awareness:'Awareness' };
-
-async function loadGreetings() {
-  const { data, error } = await sb.from('greetings').select('*').order('created_at', { ascending: false });
-  if (error) { showToast('Load failed: ' + error.message, 'error'); return; }
-  ALL_GREETINGS = data || [];
-  renderGreetingsGrid();
-}
-
-function renderGreetingsGrid() {
-  const grid = document.getElementById('greetings-grid');
-  if (!ALL_GREETINGS.length) {
-    grid.innerHTML = `<div style="padding:32px;color:var(--text3);font-size:13px;text-align:center;grid-column:1/-1">
-      <i class="fas fa-gift" style="font-size:28px;margin-bottom:10px;display:block"></i>
-      ఇంకా ఏ greeting లేదు.</div>`;
-    return;
-  }
-  grid.innerHTML = ALL_GREETINGS.map(g => `
-    <div class="stat-card" style="padding:0;overflow:hidden;${g.is_active?'':'opacity:0.55'}">
-      <img src="${esc(g.image_url)}" style="width:100%;height:120px;object-fit:cover;display:block" onerror="this.style.display='none'"/>
-      <div style="padding:10px">
-        <div style="font-weight:600;font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(g.title||'(no title)')}</div>
-        <div style="font-size:10.5px;color:var(--text3);margin:3px 0 8px">${GREETING_TYPE_LABELS[g.greeting_type]||g.greeting_type}${g.occasion_date?` · ${g.occasion_date}`:''}</div>
-        <div style="display:flex;gap:6px">
-          <button class="row-card-edit" style="flex:0" onclick="toggleGreetingActive(${g.id}, ${g.is_active})" title="Toggle">
-            <i class="fas fa-${g.is_active?'toggle-on':'toggle-off'}" style="color:${g.is_active?'var(--accent)':'var(--text3)'}"></i></button>
-          <button class="row-card-edit" style="flex:0" onclick="showAddGreeting(${g.id})" title="Edit"><i class="fas fa-pen"></i></button>
-          <button class="row-card-del" style="flex:0" onclick="deleteGreeting(${g.id})" title="Delete"><i class="fas fa-trash"></i></button>
-        </div>
-      </div>
-    </div>`).join('');
-}
-
-function showAddGreeting(editId) {
-  const existing = editId ? ALL_GREETINGS.find(g => g.id === editId) : null;
-  const typeOptions = Object.keys(GREETING_TYPE_LABELS).map(k => `<option value="${k}" ${existing && existing.greeting_type===k?'selected':''}>${GREETING_TYPE_LABELS[k]}</option>`).join('');
-  showModal(existing?'Greeting Edit చేయండి':'కొత్త Greeting', '', `
-    <div class="field-row"><label>Title (optional)</label>
-      <input type="text" id="grt-title" class="field-input" value="${existing?esc(existing.title||''):''}" style="margin-bottom:10px"/></div>
-    <div class="field-row"><label>Image URL</label>
-      <input type="url" id="grt-url" class="field-input" value="${existing?esc(existing.image_url):''}" style="margin-bottom:10px"/></div>
-    <div class="field-row"><label>Type</label>
-      <select id="grt-type" class="field-input" style="margin-bottom:10px">${typeOptions}</select></div>
-    <div class="field-row"><label>Occasion Date (optional)</label>
-      <input type="date" id="grt-date" class="field-input" value="${existing?(existing.occasion_date||''):''}" style="margin-bottom:10px"/></div>
-    <div style="display:flex;gap:10px;margin-top:4px">
-      <button class="topbar-btn primary" style="flex:1" onclick="doSaveGreeting(${editId||'null'})"><i class="fas fa-check"></i> ${existing?'Update':'Create'}</button>
-      <button class="topbar-btn secondary" style="flex:1" onclick="closeModal()">Cancel</button>
-    </div>`, true);
-}
-
-async function doSaveGreeting(editId) {
-  const image_url = document.getElementById('grt-url').value.trim();
-  if (!image_url) { showToast('Image URL అవసరం', 'error'); return; }
-  const payload = {
-    title: document.getElementById('grt-title').value.trim() || null,
-    image_url,
-    greeting_type: document.getElementById('grt-type').value,
-    occasion_date: document.getElementById('grt-date').value || null,
-  };
-  showLoader('Saving…');
-  const { error } = editId
-    ? await sb.from('greetings').update(payload).eq('id', editId)
-    : await sb.from('greetings').insert(payload);
-  hideLoader();
-  if (error) { showToast(error.message||'Failed','error'); return; }
-  closeModal();
-  showToast(editId?'Updated ✓':'Created ✓','success');
-  await loadGreetings();
-}
-
-async function toggleGreetingActive(id, currentVal) {
-  const { error } = await sb.from('greetings').update({ is_active: !currentVal }).eq('id', id);
-  if (error) { showToast(error.message||'Failed','error'); return; }
-  await loadGreetings();
-}
-
-async function deleteGreeting(id) {
-  if (!confirm('ఈ greeting delete చేయాలా?')) return;
-  const { error } = await sb.from('greetings').delete().eq('id', id);
-  if (error) { showToast(error.message||'Failed','error'); return; }
-  showToast('Deleted ✓','success');
-  await loadGreetings();
-}
-
-/* ═══════════════════════════════════════════════════
-   REPORTS — aggregates analytics_events (last 30 days) into the
-   summaries the platform brief asked for: most viewed services,
-   popular categories, downloads, search terms, call/WhatsApp clicks.
-   ═══════════════════════════════════════════════════ */
-let ALL_AGENTS_CACHE = [];
-
-async function loadReports() {
-  const body = document.getElementById('reports-body');
-  body.innerHTML = `<div style="padding:20px;color:var(--text3);font-size:13px">లోడ్ అవుతోంది…</div>`;
-
-  const since = new Date(Date.now() - 30*24*60*60*1000).toISOString();
-  const { data: events, error } = await sb.from('analytics_events').select('*').gte('created_at', since);
-  if (error) { body.innerHTML = `<div style="padding:20px;color:var(--red);font-size:13px">Load failed: ${esc(error.message)}</div>`; return; }
-
-  await ensureCategoriesAndServicesLoaded();
-  if (!ALL_AGENTS_CACHE.length) {
-    const { data } = await sb.from('agents').select('id, shop_name');
-    ALL_AGENTS_CACHE = data || [];
-  }
-
-  const count = (arr, key) => {
-    const m = {};
-    arr.forEach(e => { const k = e[key]; if (k) m[k] = (m[k]||0)+1; });
-    return Object.entries(m).sort((a,b)=>b[1]-a[1]);
-  };
-
-  const svcNameFor = (key) => {
-    const s = ALL_SERVICES.find(x => x.key === key);
-    return (s && s.service_catalog && s.service_catalog.name_te) || key;
-  };
-  const catNameFor = (key) => {
-    const s = ALL_SERVICES.find(x => x.key === key);
-    const cat = s && ALL_CATEGORIES.find(c => c.id === s.category_id);
-    return cat ? cat.name_te : null;
-  };
-  const agentNameFor = (id) => (ALL_AGENTS_CACHE.find(a => a.id === id) || {}).shop_name || id;
-
-  const views = events.filter(e => e.event_type === 'service_view');
-  const downloads = events.filter(e => e.event_type === 'download_click');
-  const searches = events.filter(e => e.event_type === 'search' && e.query_text);
-  const calls = events.filter(e => e.event_type === 'call_click');
-  const whatsapps = events.filter(e => e.event_type === 'whatsapp_click');
-
-  const topServices = count(views, 'service_key').slice(0, 10);
-  const catCounts = {};
-  views.forEach(e => { const c = catNameFor(e.service_key); if (c) catCounts[c] = (catCounts[c]||0)+1; });
-  const topCategories = Object.entries(catCounts).sort((a,b)=>b[1]-a[1]).slice(0, 8);
-  const topDownloads = count(downloads, 'service_key').slice(0, 8);
-  const topSearches = count(searches, 'query_text').slice(0, 10);
-  const topCallAgents = count(calls, 'agent_id').slice(0, 8);
-  const topWaAgents = count(whatsapps, 'agent_id').slice(0, 8);
-
-  const statBox = (label, val, icon, color) => `
-    <div class="stat-card" style="text-align:center">
-      <i class="fas ${icon}" style="font-size:18px;color:${color};margin-bottom:6px;display:block"></i>
-      <div style="font-size:22px;font-weight:700">${val}</div>
-      <div style="font-size:10.5px;color:var(--text3);margin-top:2px">${label}</div>
-    </div>`;
-
-  const barList = (rows, labelFn, emptyMsg) => rows.length ? rows.map(([k,v]) => `
-    <div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-top:1px solid var(--border)">
-      <div style="flex:1;font-size:12.5px">${esc(labelFn(k))}</div>
-      <div style="font-size:12px;font-weight:700;color:var(--accent)">${v}</div>
-    </div>`).join('') : `<div style="padding:12px 0;color:var(--text3);font-size:12.5px">${emptyMsg}</div>`;
-
-  document.getElementById('reports-body').innerHTML = `
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin-bottom:22px">
-      ${statBox('Service Views', views.length, 'fa-eye', 'var(--accent)')}
-      ${statBox('Downloads', downloads.length, 'fa-download', '#3b82f6')}
-      ${statBox('Searches', searches.length, 'fa-magnifying-glass', '#fbbf24')}
-      ${statBox('Call Clicks', calls.length, 'fa-phone', '#34d399')}
-      ${statBox('WhatsApp Clicks', whatsapps.length, 'fa-brands fa-whatsapp', '#25d366')}
-    </div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px">
-      <div class="editor-card"><div class="editor-card-title"><i class="fas fa-fire"></i> Most Viewed Services</div>${barList(topServices, svcNameFor, 'ఇంకా views లేవు')}</div>
-      <div class="editor-card"><div class="editor-card-title"><i class="fas fa-folder-tree"></i> Popular Categories</div>${barList(topCategories, k=>k, 'ఇంకా data లేదు')}</div>
-      <div class="editor-card"><div class="editor-card-title"><i class="fas fa-download"></i> Top Downloads</div>${barList(topDownloads, svcNameFor, 'ఇంకా downloads లేవు')}</div>
-      <div class="editor-card"><div class="editor-card-title"><i class="fas fa-magnifying-glass"></i> Search Terms</div>${barList(topSearches, k=>k, 'ఇంకా searches లేవు')}</div>
-      <div class="editor-card"><div class="editor-card-title"><i class="fas fa-phone"></i> Call Clicks by Agent</div>${barList(topCallAgents, agentNameFor, 'ఇంకా లేవు')}</div>
-      <div class="editor-card"><div class="editor-card-title"><i class="fas fa-brands fa-whatsapp"></i> WhatsApp Clicks by Agent</div>${barList(topWaAgents, agentNameFor, 'ఇంకా లేవు')}</div>
-    </div>`;
 }
 
 function showCreateUserModal() {
