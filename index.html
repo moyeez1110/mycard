@@ -2445,6 +2445,7 @@ const MC_FIELD_DEFS = {
   update:  [
     { id:'title', label:'శీర్షిక (Title)', type:'text', required:true },
     { id:'value', label:'వివరణ (Description)', type:'textarea' },
+    { id:'full_details', label:'పూర్తి వివరాలు (customer "వివరాలు" నొక్కితే ఇది కనిపిస్తుంది, optional)', type:'textarea' },
     { id:'link',  label:'లింక్ (optional)', type:'url' },
     { id:'icon',  label:'Icon (fas fa-…, optional)', type:'text', placeholder:'fas fa-bullhorn' },
   ],
@@ -3164,6 +3165,7 @@ async function submitMyContentForm() {
         key: type,
         title: values.title || '', value: values.value || '', link: values.link || '',
         icon: values.icon || '', extra: values.extra || '', description: values.desc || '',
+        full_details: values.full_details || '',
         share: 'yes', isnew: 'no',
       };
       if (MC_EDITING_ID) {
