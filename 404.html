@@ -187,6 +187,13 @@
         <div id="groups-list"></div>
       </div>
 
+      <div class="section">
+        <div class="section-head"><h2>⭐ రివ్యూలు</h2><div class="section-line"></div></div>
+        <div id="rating-summary" style="margin-bottom:10px;font-size:13px;color:var(--text2)"></div>
+        <div id="reviews-list" style="margin-bottom:12px"></div>
+        <button class="enq-btn" onclick="openReviewForm()"><i class="fas fa-star"></i> రివ్యూ ఇవ్వండి</button>
+      </div>
+
       <div class="footer">Powered by Citizen Digital Seva</div>
     </div>
   </div>
@@ -283,6 +290,19 @@
   </div>
 </div>
 
+<div class="detail-overlay" id="review-overlay" onclick="if(event.target===this)closeReviewForm()">
+  <div class="detail-sheet detail-sheet-wrap">
+    <button class="detail-close" onclick="closeReviewForm()"><i class="fas fa-xmark"></i></button>
+    <h3>రివ్యూ ఇవ్వండి</h3>
+    <div style="margin-top:10px">
+      <input id="rv-name" type="text" placeholder="మీ పేరు" style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--border);background:var(--bg3);color:var(--text);font-family:var(--font-te);margin-bottom:10px"/>
+      <div id="rv-stars" style="font-size:26px;letter-spacing:6px;margin-bottom:10px;cursor:pointer">☆☆☆☆☆</div>
+      <textarea id="rv-comment" rows="3" placeholder="మీ అభిప్రాయం (ఐచ్ఛికం)" style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--border);background:var(--bg3);color:var(--text);font-family:var(--font-te);margin-bottom:10px"></textarea>
+      <button class="cbtn" style="width:100%" onclick="submitReview()">Submit చేయండి</button>
+    </div>
+  </div>
+</div>
+
 <script>
 const SUPABASE_URL = 'https://pusmroyftjzdkcwuwsph.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB1c21yb3lmdGp6ZGtjd3V3c3BoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUwNTIzNjcsImV4cCI6MjEwMDYyODM2N30.FTL-p8QLjcdErof1-Usolqudh1aUoKkKBw1UkvrkMNI';
@@ -296,6 +316,9 @@ function getSlugFromPath() {
 function esc(s) { return (s == null ? '' : String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
 const DETAILS = [];
+let CURRENT_AGENT_ID = null;
+let RV_RATING = 0;
+
 function openDetail(i) {
   const d = DETAILS[i];
   if (!d) return;
@@ -305,6 +328,67 @@ function openDetail(i) {
 }
 function closeDetail() {
   document.getElementById('detail-overlay').classList.remove('show');
+}
+
+/* ── Reviews ── */
+async function loadReviews(agentId) {
+  const { data: reviews, error } = await sb.from('agent_reviews')
+    .select('*').eq('agent_id', agentId).order('created_at', { ascending: false });
+  const summaryEl = document.getElementById('rating-summary');
+  const listEl = document.getElementById('reviews-list');
+  if (error || !reviews || !reviews.length) {
+    summaryEl.textContent = 'ఇంకా రివ్యూలు లేవు — మొదటి రివ్యూ మీరే ఇవ్వండి!';
+    listEl.innerHTML = '';
+    return;
+  }
+  const avg = reviews.reduce((s,r) => s + r.rating, 0) / reviews.length;
+  summaryEl.innerHTML = `⭐ ${avg.toFixed(1)} <span style="color:var(--text2)">(${reviews.length} రివ్యూలు)</span>`;
+  listEl.innerHTML = reviews.slice(0, 10).map(r => `
+    <div class="notice-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+        <span style="font-weight:700;font-size:13px">${esc(r.customer_name)}</span>
+        <span style="color:#f0b429;font-size:12px">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</span>
+      </div>
+      ${r.comment ? `<div class="notice-text" style="margin-bottom:0">${esc(r.comment)}</div>` : ''}
+    </div>`).join('');
+}
+
+function openReviewForm() {
+  RV_RATING = 0;
+  document.getElementById('rv-name').value = '';
+  document.getElementById('rv-comment').value = '';
+  updateStars();
+  document.getElementById('review-overlay').classList.add('show');
+}
+function closeReviewForm() {
+  document.getElementById('review-overlay').classList.remove('show');
+}
+function updateStars() {
+  document.getElementById('rv-stars').textContent = '★'.repeat(RV_RATING) + '☆'.repeat(5-RV_RATING);
+}
+document.addEventListener('DOMContentLoaded', () => {
+  const starsEl = document.getElementById('rv-stars');
+  if (starsEl) {
+    starsEl.addEventListener('click', (e) => {
+      const rect = starsEl.getBoundingClientRect();
+      const pct = (e.clientX - rect.left) / rect.width;
+      RV_RATING = Math.max(1, Math.min(5, Math.ceil(pct * 5)));
+      updateStars();
+    });
+  }
+});
+
+async function submitReview() {
+  const name = document.getElementById('rv-name').value.trim();
+  const comment = document.getElementById('rv-comment').value.trim();
+  if (!name) { alert('మీ పేరు enter చేయండి'); return; }
+  if (!RV_RATING) { alert('Rating select చేయండి (⭐ మీద క్లిక్ చేయండి)'); return; }
+  const { error } = await sb.from('agent_reviews').insert({
+    agent_id: CURRENT_AGENT_ID, customer_name: name, rating: RV_RATING, comment: comment || null,
+  });
+  if (error) { alert('Error: ' + error.message); return; }
+  closeReviewForm();
+  loadReviews(CURRENT_AGENT_ID);
 }
 
 function switchPage(name) {
@@ -325,6 +409,7 @@ async function loadShop() {
     .eq('status', 'live').order('display_order', { ascending: true });
   renderShop(agent, rows || []);
   setupInstall(agent);
+  loadReviews(agent.id);
 }
 function showNotFound() {
   document.getElementById('loading').style.display = 'none';
@@ -332,6 +417,7 @@ function showNotFound() {
 }
 
 function renderShop(agent, rows) {
+  CURRENT_AGENT_ID = agent.id;
   document.getElementById('loading').style.display = 'none';
   document.getElementById('app').style.display = 'block';
   document.title = agent.shop_name || 'Seva Kendra';
